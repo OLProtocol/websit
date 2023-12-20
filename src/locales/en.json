@@ -1,0 +1,89 @@
+{
+  "app": {
+    "title": "PayToView"
+  },
+  "common": {
+    "text": "Text",
+    "image": "Image",
+    "pay": "pay",
+    "forward": "Forward",
+    "release": "Publish",
+    "change": "Modify",
+    "gas": "Gas",
+    "upload": {
+      "title": "Upload",
+      "blur": "Blur",
+      "description": "Upload a file to IPFS"
+    },
+    "empty": {
+      "title": "No Data",
+      "description": "Empty"
+    },
+    "copy": {
+      "title": "Copy",
+      "success": "Copy Success"
+    },
+    "request_error": "Request failed"
+  },
+  "pages": {
+    "publish": {
+      "title": "Publish",
+      "icon_title": "Publish",
+      "preview_mode": "Preview Mode",
+      "password_mode": "Encrypted Password",
+      "blur_show": "Blur",
+      "divide_ratio": "Share Ratio",
+      "network": "Network",
+      "app": "App",
+      "sender": "Owner",
+      "forwarder": "Forwarder",
+      "contract_name": "Contract Name",
+      "paied": "Paied"
+    },
+    "earning": {
+      "title": "Earning",
+      "icon_title": "Earning"
+    },
+    "published": {
+      "title": "Published List",
+      "icon_title": "Published"
+    },
+    "paid": {
+      "title": "Paid List",
+      "icon_title": "Paid"
+    },
+    "forwarded": {
+      "title": "Forwarded List",
+      "icon_title": "Forwarded"
+    },
+    "forward": {
+      "title": "Forward"
+    },
+    "detail": {
+      "title": "Detail"
+    },
+    "tx_list": {
+      "title": "Transaction Record"
+    },
+    "topup": {
+      "title": "Topup",
+      "placeholder": "Top up amount",
+      "btn_connect": "Connect Wallet",
+      "btn_disconnect": "Disconnect",
+      "btn_ton_topup": "Top up with Ton Wallet",
+      "btn_eth_topup": "Top up with Eth Wallet"
+    },
+    "index": {
+      "title": "PayToView",
+      "address": "Wallet Address",
+      "transaction_record": "Transaction Record",
+      "more": "more",
+      "profit": "24 Hour Earnings",
+      "tab_1": "Published",
+      "tab_2": "Paid",
+      "tab_3": "Forwarded",
+      "tx_receiver": "Receiver",
+      "tx_sender": "Sender"
+    }
+  }
+}
