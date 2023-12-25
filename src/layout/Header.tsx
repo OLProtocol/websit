@@ -8,12 +8,12 @@ export const Header = () => {
       <div className='flex h-full items-center px-4'>
         <div className='flex-1 flex h-full items-center py-4'>
           <div className='mr-8'>Logo</div>
-          <LinkBox>
+          {/* <LinkBox>
             <LinkOverlay href='/#/'>
               Home
             </LinkOverlay>
-          </LinkBox>
-          <Divider orientation='vertical' className='mx-4' />
+          </LinkBox> */}
+          {/* <Divider orientation='vertical' className='mx-4' /> */}
           <LinkBox>
             <LinkOverlay href='/#/inscribe'>
               Inscribe
