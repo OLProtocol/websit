@@ -14,6 +14,7 @@ import {
 import { useState, useMemo, useEffect } from 'react';
 import { BtcFeeRateItem } from './BtcFeeRateItem';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { fetchChainFeeRate } from '../utils';
 interface BtcFeeRate {
   onChange?: (value: number) => void;
 }
@@ -34,9 +35,7 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
     }
   };
   const getRecommendFee = async () => {
-    const res = await fetch(
-      `https://mempool.space/${network}/api/v1/fees/recommended`,
-    ).then((res) => res.json());
+    const res = await fetchChainFeeRate(network as any)
     setCustomValue(res.fastestFee);
     setEconomyValue(res.hourFee);
     setNormalValue(res.halfHourFee);

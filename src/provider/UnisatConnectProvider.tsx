@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useMemo,
+} from 'react';
 import { useToast } from '@chakra-ui/react';
 
 declare global {
@@ -28,8 +34,6 @@ export const ConnectionContext = createContext<ConnectionContextProps>(
   {} as ConnectionContextProps,
 );
 
-
-
 interface ConnectionProviderProps {
   children: ReactNode;
 }
@@ -45,7 +49,7 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
     total: 0,
   });
   const [currentAccount, setCurrentAccount] = useState('');
-  const [network, setNetwork] = useState('testnet'); // Default network
+  const [unisatNetwork, setUnisatNetwork] = useState('testnet'); // Default network
   const toast = useToast();
   useEffect(() => {
     const checkUnisat = async () => {
@@ -55,7 +59,7 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
         try {
           // Check the current network
           const currentNetwork = await unisat.getNetwork();
-          setNetwork(currentNetwork);
+          setUnisatNetwork(currentNetwork);
 
           // Check for accounts and balance
           const accounts = await unisat.getAccounts();
@@ -113,9 +117,9 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
     const unisat = window.unisat;
     if (unisat) {
       try {
-        const newNetwork = network === 'livenet' ? 'testnet' : 'livenet';
+        const newNetwork = unisatNetwork === 'livenet' ? 'testnet' : 'livenet';
         await unisat.switchNetwork(n || newNetwork);
-        setNetwork(newNetwork);
+        setUnisatNetwork(newNetwork);
 
         // After switching the network, refresh the account details
         const accounts = await unisat.getAccounts();
@@ -140,7 +144,9 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
       }
     }
   };
-
+  const network = useMemo(() => {
+    return unisatNetwork === 'livenet' ? 'main' : 'testnet';
+  }, [unisatNetwork]);
   return (
     <ConnectionContext.Provider
       value={{

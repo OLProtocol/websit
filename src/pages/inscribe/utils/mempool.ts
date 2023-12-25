@@ -1,3 +1,4 @@
+import mempoolJS from "@mempool/mempool.js";
 const getData = async (url) => {
   const response = await fetch(url);
   const data = await response.text();
@@ -47,6 +48,22 @@ async function addressOnceHadMoney(address, network, includeMempool) {
   }
   return false;
 }
+export const fetchChainFeeRate = async (network: "main" | "testnet") => {
+  // const { bitcoin: { fees } } = mempoolJS({
+  //   hostname: 'mempool.space',
+  //   network,
+  // });
+
+  // const data = await fees.getFeesRecommended();
+  // return data;
+  const url =
+    network === "testnet"
+      ? "https://mempool.space/testnet/api/v1/fees/recommended"
+      : "https://mempool.space/api/v1/fees/recommended";
+  const resp = await fetch(url);
+  const data = await resp.json();
+  return data;
+};
 export const waitSomeSeconds = async (num: number) => {
   return new Promise(function (resolve) {
     setTimeout(function () {
