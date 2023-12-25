@@ -21,7 +21,7 @@ interface ConnectionContextProps {
   network: string;
   connectWallet: () => Promise<void>;
   disconnectWallet: () => void;
-  switchNetwork: () => Promise<void>;
+  switchNetwork: (n?: string) => Promise<void>;
 }
 
 export const ConnectionContext = createContext<ConnectionContextProps>(
@@ -109,12 +109,12 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
     setBalance({ confirmed: 0, unconfirmed: 0, total: 0 });
   };
 
-  const switchNetwork = async () => {
+  const switchNetwork = async (n) => {
     const unisat = window.unisat;
     if (unisat) {
       try {
         const newNetwork = network === 'livenet' ? 'testnet' : 'livenet';
-        await unisat.switchNetwork(newNetwork);
+        await unisat.switchNetwork(n || newNetwork);
         setNetwork(newNetwork);
 
         // After switching the network, refresh the account details

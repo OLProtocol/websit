@@ -83,11 +83,13 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
             onClick={() => clickHandler(item.label, item.value)}
           />
         ))}
-      </SimpleGrid>
-      <div className='text-sm text-orange-400 mb-2'>
-        The current Bitcoin network is highly congested. please be patient and
-        wait.
-      </div>
+      </SimpleGrid>{' '}
+      {economyValue > 100 && (
+        <div className='text-sm text-orange-400 mb-2'>
+          The current Bitcoin network is highly congested. please be patient and
+          wait.
+        </div>
+      )}
       {type === 'Custom' && (
         <div>
           <Flex>

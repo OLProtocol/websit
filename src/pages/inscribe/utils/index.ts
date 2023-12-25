@@ -1,30 +1,8 @@
-import { Address, Script, Signer, Tap, Tx, Networks } from '@cmdcode/tapscript';
 export * from './mempool';
-interface FileItem {
-  mimetype: string;
-  text: string;
-  name: string;
-  hex: string;
-  sha256: string;
-}
-interface InscriptionItem {
-  leaf: any;
-  tapkey: any;
-  cblock: any;
-  inscriptionAddress: any;
-  txsize: any;
-  fee: any;
-  script: any;
-  script_orig: any;
-}
-import { keys } from '@cmdcode/crypto-tools';
-import { buffer } from 'stream/consumers';
-const { gen_keypair, get_seckey, get_pubkey } = keys;
-// main: 'main', signet/testnet: 'tb'
-const encodedAddressPrefix = 'main';
+export * from './mint';
+export * from './index_back';
 
-// mainnet: '', 'signet/', 'testnet/'
-const mempoolNetwork = '';
+import { keys } from '@cmdcode/crypto-tools';
 export const textToHex = (text: string) => {
   const encoder = new TextEncoder().encode(text);
   return [...new Uint8Array(encoder)]
@@ -32,7 +10,7 @@ export const textToHex = (text: string) => {
     .join('');
 };
 export const encodeBase64 = (file: File) => {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function (resolve) {
     const imgReader = new FileReader();
     imgReader.onloadend = function () {
       resolve(imgReader?.result?.toString());
@@ -64,31 +42,10 @@ export const buf2hex = (buffer) => {
     .join('');
 };
 
-export const generateFundingAccount = () => {
-  // const privkey = bytesToHex(window.cryptoUtils.Noble.utils.randomPrivateKey());
-  const privkey =
-    '8004fdece0e5675d2b7777d64676230884a6caa8ca802cf53dd38afda1d6bae7';
-  console.log(typeof privkey)
-  console.log('privkey:', privkey);
-  const KeyPair = window.cryptoUtils.KeyPair;
-
-  const seckey = new KeyPair(privkey);
-  const pubkey = seckey.pub.rawX;
-  // console.log(buf2hex(seckey.raw));
-  // console.log(buf2hex(pubkey.buffer));
-  // const seckey2 = get_seckey(privkey);
-  // const pubkey2 = get_pubkey(seckey2);
-  // console.log('seckey2:', buf2hex(seckey2));
-  // console.log('pubkey2:', buf2hex(pubkey2));
-  return {
-    seckey,
-    pubkey,
-  };
-  // const [seckey, pubkey] = gen_keypair();
-  // return {
-  //   seckey,
-  //   pubkey,
-  // };
+export const generatePrivateKey = (): string => {
+  const privkey = keys.gen_seckey();
+  const privString = bytesToHex(privkey);
+  return privString;
 };
 const hexToBytes = (hex) => {
   return Uint8Array.from(
@@ -104,119 +61,9 @@ export const satsToBitcoin = (sats) => {
   if (string.substring(0, 1) == '.') string = '0' + string;
   return string;
 };
-export const generteFiles = async (list: any[]) => {
-  const files: FileItem[] = list.map((item) => {
-    const { type, value } = item;
-    const file: any = {};
-    if (type === 'text') {
-      const _value = value?.trim();
-      file.mimetype = 'text/plain;charset=utf-8';
-      file.text = JSON.stringify(_value);
-      file.name = textToHex(_value);
-      file.hex = textToHex(_value);
-      file.sha256 = '';
-    }
-    return file;
-  });
-  return files;
-};
-export const generateInscriptionsAndTotalFee = async ({
-  files,
-  feerate,
-  pubkey,
-  network = 'main',
-}: {
-  files: FileItem[];
-  feerate: number;
-  pubkey: any;
-  network: any;
-}) => {
-  const inscriptions: InscriptionItem[] = [];
-  let total_fee = 0;
 
-  const ec = new TextEncoder();
-  for (let i = 0; i < files.length; i++) {
-    const hex = files[i].hex;
-    const data = hexToBytes(hex);
-    const mimetype = ec.encode(files[i].mimetype);
-
-    const script = [
-      pubkey,
-      'OP_CHECKSIG',
-      'OP_0',
-      'OP_IF',
-      ec.encode('ord'),
-      '01',
-      mimetype,
-      'OP_0',
-      data,
-      'OP_ENDIF',
-    ];
-
-    const script_backup = [
-      '0x' + buf2hex(pubkey.buffer),
-      'OP_CHECKSIG',
-      'OP_0',
-      'OP_IF',
-      '0x' + buf2hex(ec.encode('ord')),
-      '01',
-      '0x' + buf2hex(mimetype),
-      'OP_0',
-      '0x' + buf2hex(data),
-      'OP_ENDIF',
-    ];
-
-    const leaf = await Tap.tree.getLeaf(Script.encode(script));
-    const [tapkey, cblock] = await Tap.getPubKey(pubkey, { target: leaf });
-    console.log('network:', network);
-    const inscriptionAddress = Address.p2tr.encode(tapkey, network);
-
-    console.log('Inscription address: ', inscriptionAddress);
-    console.log('Tapkey:', tapkey);
-
-    let prefix = 160;
-
-    if (files[i].sha256 != '') {
-      prefix = feerate > 1 ? 546 : 700;
-    }
-
-    const txsize = prefix + Math.floor(data.length / 4);
-
-    console.log('TXSIZE', txsize);
-
-    const fee = feerate * txsize;
-    total_fee += fee;
-
-    inscriptions.push({
-      leaf: leaf,
-      tapkey: tapkey,
-      cblock: cblock,
-      inscriptionAddress: inscriptionAddress,
-      txsize: txsize,
-      fee: fee,
-      script: script_backup,
-      script_orig: script,
-    });
-  }
-  return { inscriptions, total_fee };
-};
-
-export const calcTotalFees = async ({
-  inscriptions,
-  feerate,
-  padding,
-  total_fee,
-}: {
-  inscriptions: InscriptionItem[];
-  feerate: number;
-  padding: number;
-  total_fee: number;
-}) => {
-  const base_size = 160;
-  return (
-    total_fee +
-    (69 + (inscriptions.length + 1) * 2 * 31 + 10) * feerate +
-    base_size * inscriptions.length +
-    padding * inscriptions.length
-  );
+export const clacTextSize = (text: string) => {
+  const data = hexToBytes(textToHex(text));
+  const txsize = data.length;
+  return txsize;
 };

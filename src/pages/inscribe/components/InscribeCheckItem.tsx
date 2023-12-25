@@ -1,3 +1,4 @@
+
 interface InscribeCheckItemProps {
   label: string | number;
   value: string;

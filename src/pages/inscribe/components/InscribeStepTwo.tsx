@@ -50,7 +50,7 @@ export const InscribeStepTwo = ({
       <VStack spacing='10px' className='w-full py-4'>
         {
           list.map((item, index) => (
-            <InscribeCheckItem key={item.value} label={index + 1} value={item.value} />
+            <InscribeCheckItem key={index} label={index + 1} value={item.value} />
           ))
         }
       </VStack>

@@ -26,6 +26,7 @@ export const UnisatConnectButton = () => {
     network,
     isUnisatInstalled,
     connectWallet,
+    switchNetwork,
     disconnectWallet,
   } = useUnisatConnect();
   const disconnect = async () => {
@@ -43,6 +44,7 @@ export const UnisatConnectButton = () => {
       return;
     }
     await connectWallet();
+    await switchNetwork('testnet');
   };
   const hideAccount = useMemo(() => {
     return hideStr(currentAccount, 4);

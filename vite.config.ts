@@ -1,22 +1,27 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  build: { commonjsOptions: { transformMixedEsModules: true, include: ['@mempool/mempool.js'] } },
+  // build: { commonjsOptions: { transformMixedEsModules: true, include: ['@mempool/mempool.js'] } },
+  plugins: [
+    nodePolyfills(),
+    react(),
+  ],
+  build: {
+    rollupOptions: {
+      // plugins: [nodePolyfills()],
+    },
+  },
   optimizeDeps: {
+    exclude: ['events'],
     esbuildOptions: {
       // Node.js global to browser globalThis
       define: {
         global: 'globalThis',
       },
-      // Enable esbuild polyfill plugins
-      // plugins: [
-      //   NodeGlobalsPolyfillPlugin({
-      //     buffer: true
-      //   })
-      // ]
     },
   },
   // server: {
@@ -25,7 +30,6 @@ export default defineConfig({
   //     cert: path.resolve(__dirname, 'keys/cert.crt'),
   //   }
   // },
-  plugins: [react()],
   define: {
     'process.env': process.env,
   },

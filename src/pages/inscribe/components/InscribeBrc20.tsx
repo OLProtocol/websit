@@ -17,13 +17,14 @@ import {
   SliderThumb,
   Button,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
 
 interface InscribeBrc20Props {
   onNext?: () => void;
+  onChange?: (data: any) => void;
 }
-export const InscribeBrc20 = ({ onNext }: InscribeBrc20Props) => {
+export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
   const [data, { set }] = useMap({
     type: 'mint',
     tick: '',
@@ -32,6 +33,9 @@ export const InscribeBrc20 = ({ onNext }: InscribeBrc20Props) => {
     limitPerMint: 1,
     totalSupply: 21000000,
   });
+  useEffect(() => {
+    onChange?.(data);
+  }, [data]);
   return (
     <div>
       <div className='mb-2'>

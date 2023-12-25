@@ -1,5 +1,6 @@
 import { IconButton } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
+import { clacTextSize } from '../utils';
 interface InscribeCheckItemProps {
   label: string | number;
   value: string;
@@ -17,9 +18,9 @@ export const InscribeRemoveItem = ({
           {label}
         </div>
       </div>
-      <div className='flex flex-1 items-center px-4 py-2'>{value}</div>
+      <div className='flex flex-1 text-sm items-center py-2'>{value}</div>
       <div className='flex items-center pr-2'>
-        <span className='mr-2'>1 B</span>
+        <span className='mr-2'>{clacTextSize(value)} B</span>
         <IconButton
           onClick={onRemove}
           aria-label='remove item'

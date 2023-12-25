@@ -48,7 +48,7 @@ async function addressOnceHadMoney(address, network, includeMempool) {
   return false;
 }
 export const waitSomeSeconds = async (num: number) => {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function (resolve) {
     setTimeout(function () {
       resolve('');
     }, num);
@@ -62,7 +62,7 @@ export const loopTilAddressReceivesMoney = async (
   let itReceivedMoney = false;
 
   async function isDataSetYet(data_i_seek) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
       if (!data_i_seek) {
         setTimeout(async function () {
           console.log('waiting for address to receive money...');
