@@ -58,16 +58,19 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
             onChange={(e) => set('tick', e.target.value)}
           />
         </FormControl>
-        <FormControl>
-          <FormLabel>Amount</FormLabel>
-          <NumberInput
-            value={data.amount}
-            onChange={(_, e) => set('amount', e)}
-            min={1}
-            max={30}>
-            <NumberInputField />
-          </NumberInput>
-        </FormControl>
+        {data.type !== 'deploy' && (
+          <FormControl>
+            <FormLabel>Amount</FormLabel>
+            <NumberInput
+              value={data.amount}
+              onChange={(_, e) => set('amount', e)}
+              min={1}
+              max={30}>
+              <NumberInputField />
+            </NumberInput>
+          </FormControl>
+        )}
+
         {data.type === 'deploy' && (
           <>
             <FormControl>
@@ -125,7 +128,7 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
         )}
       </div>
       <div className='w-60 mx-auto'>
-        <Button size='md' isDisabled={!data.tick} width='100%' onClick={onNext}>
+        <Button size='md' colorScheme='blue' isDisabled={!data.tick} width='100%' onClick={onNext}>
           Next
         </Button>
       </div>

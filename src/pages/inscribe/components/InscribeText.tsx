@@ -48,7 +48,7 @@ export const InscribeText = ({ onNext, onChange }: InscribeBrc20Props) => {
         </FormControl>
       </div>
       <div className='w-full mx-auto'>
-        <Button size='md' isDisabled={!data.text} width='100%' onClick={onNext}>
+        <Button size='md' colorScheme='blue' isDisabled={!data.text} width='100%' onClick={onNext}>
           Next
         </Button>
       </div>

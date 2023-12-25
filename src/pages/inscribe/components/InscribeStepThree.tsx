@@ -115,41 +115,9 @@ export const InscribeStepThree = ({
       inscriptionSize: baseNum,
       status: 'pending',
       createAt: Date.now().valueOf(),
-    }
+    };
     addOrder(order);
-    onAddOrder?.(order)
-    // try {
-    //   const txid = await unisat.sendBitcoin(inscriptionAddress, fee, {
-    //     feeRate,
-    //   });
-    //   await loopTilAddressReceivesMoney(inscriptionAddress, network, true);
-    //   changeStatus(orderId, 'scribing');
-    //   console.log(txid);
-    //   addTxid(orderId, txid);
-    //   try {
-    //     await inscribe({
-    //       secret,
-    //       text: files[0].text,
-    //       network: network as any,
-    //       txid,
-    //       vout: 0,
-    //       fee,
-    //       toAddress: data.toSingleAddress,
-    //       inscribeFee: baseNum,
-    //     });
-    //     changeStatus(orderId, 'scribe_success');
-    //   } catch (error) {
-    //     changeStatus(orderId, 'scribe_fail');
-    //   }
-    // } catch (error: any) {
-    //   toast({
-    //     title: 'Error',
-    //     description: error.message,
-    //     status: 'error',
-    //     duration: 3000,
-    //     isClosable: true,
-    //   });
-    // }
+    onAddOrder?.(order);
   };
 
   return (
@@ -202,10 +170,9 @@ export const InscribeStepThree = ({
           Please note the inscribing transaction delivers the inscription to the
           receiving address directly.
         </p>
-        <div></div>
       </div>
       <div className='w-60 mx-auto'>
-        <Button size='md' width='100%' onClick={submit}>
+        <Button size='md' colorScheme='blue' width='100%' onClick={submit}>
           Submit & Pay invoice
         </Button>
       </div>

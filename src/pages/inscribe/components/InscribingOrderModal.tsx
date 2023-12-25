@@ -97,7 +97,7 @@ export const InscribingOrderModal = ({
       return;
     }
     try {
-      await inscribe({
+      const txid = await inscribe({
         secret: order.secret,
         text: order.files[0].text,
         network: network as any,
@@ -116,10 +116,12 @@ export const InscribingOrderModal = ({
         isClosable: true,
         position: 'top',
       });
-      onClose?.();
-      onFinished?.();
+      if (txid) {
+        changeStatus(orderId, 'inscribe_success');
+        onClose?.();
+        onFinished?.();
+      }
     } catch (error: any) {
-      changeStatus(orderId, 'inscribe_success');
       toast({
         title: 'Error',
         description: error.message || JSON.stringify(error),

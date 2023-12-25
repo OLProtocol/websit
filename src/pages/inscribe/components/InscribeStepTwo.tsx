@@ -55,10 +55,10 @@ export const InscribeStepTwo = ({
         }
       </VStack>
       <SimpleGrid columns={2} spacingX='20px'>
-        <Button size='md' width='100%' onClick={onBack}>
+        <Button size='md' colorScheme='green' width='100%' onClick={onBack}>
           Back
         </Button>
-        <Button size='md' width='100%' onClick={onNext}>
+        <Button size='md' colorScheme='blue' width='100%' onClick={onNext}>
           Next
         </Button>
       </SimpleGrid>

@@ -119,7 +119,7 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
       try {
         const newNetwork = unisatNetwork === 'livenet' ? 'testnet' : 'livenet';
         await unisat.switchNetwork(n || newNetwork);
-        setUnisatNetwork(newNetwork);
+        setUnisatNetwork(n || newNetwork);
 
         // After switching the network, refresh the account details
         const accounts = await unisat.getAccounts();
@@ -147,6 +147,7 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
   const network = useMemo(() => {
     return unisatNetwork === 'livenet' ? 'main' : 'testnet';
   }, [unisatNetwork]);
+  console.log('network', network);
   return (
     <ConnectionContext.Provider
       value={{

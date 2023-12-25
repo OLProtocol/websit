@@ -61,8 +61,8 @@ export default function Inscribe() {
           value: JSON.stringify({
             p: 'brc-20',
             op: 'mint',
-            tick: brc20Data.tick,
-            amt: brc20Data.amount,
+            tick: brc20Data.tick.toString(),
+            amt: brc20Data.amount.toString(),
           }),
         });
       }
@@ -73,9 +73,9 @@ export default function Inscribe() {
         value: JSON.stringify({
           p: 'brc-20',
           op: 'deploy',
-          tick: brc20Data.tick,
-          lim: brc20Data.limitPerMint,
-          max: brc20Data.totalSupply,
+          tick: brc20Data.tick.toString(),
+          max: brc20Data.totalSupply.toString(),
+          lim: brc20Data.limitPerMint.toString(),
         }),
       });
     } else if (brc20Data.type === 'transfer') {
@@ -85,8 +85,8 @@ export default function Inscribe() {
         value: JSON.stringify({
           p: 'brc-20',
           op: 'transfer',
-          tick: brc20Data.tick,
-          amt: brc20Data.amount,
+          tick: brc20Data.tick.toString(),
+          amt: brc20Data.amount.toString(),
         }),
       });
     }
