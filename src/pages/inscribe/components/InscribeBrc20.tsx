@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
+import { clacTextSize } from '../utils';
 
 interface InscribeBrc20Props {
   onNext?: () => void;
@@ -33,20 +34,59 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
     limitPerMint: 1,
     totalSupply: 21000000,
   });
+  const [errorText, setErrorText] = useState('');
+  const [loading, setLoading] = useState(false);
+  const nextHandler = async () => {
+    setErrorText('');
+    const textSize = clacTextSize(data.tick);
+    console.log('textSize', textSize);
+    console.log(textSize < 4);
+    if (textSize < 4) {
+      setErrorText('Tick must be 4 byte long');
+      return;
+    }
+    setLoading(true);
+    onNext?.();
+    // const info = await fetchBrc20Info();
+
+    // if (info.error === 'no ticker info' && data.type === 'deploy') {
+    //   setErrorText(`${data.tick} has been deployed`);
+    //   return;
+    // }
+    // if (data.type === 'mint') {
+    //   console.log(data.type);
+    //   console.log(data.amount);
+    //   if (data.amount > (info.limit || 1000)) {
+    //     setErrorText(`Mint amount must be less than ${info.limit} Tick`);
+    //   }
+    // }
+    setLoading(false);
+  };
+  const fetchBrc20Info = async () => {
+    const res = await fetch(
+      `http://192.168.1.111:8001/v1/brc20/get_tickinfo/${data.tick}/info`,
+    );
+    const json = await res.json();
+    return json;
+  };
   useEffect(() => {
     onChange?.(data);
   }, [data]);
   return (
     <div>
       <div className='mb-2'>
-        <RadioGroup onChange={(e) => set('type', e)} value={data.type}>
-          <Stack direction='row' justify='center'>
+        <RadioGroup size='lg' onChange={(e) => set('type', e)} value={data.type}>
+          <Stack direction='row' justify='center' spacing='20px'>
             <Radio value='mint'>Mint</Radio>
             <Radio value='deploy'>Deploy</Radio>
             <Radio value='transfer'>Transfer</Radio>
           </Stack>
         </RadioGroup>
       </div>
+      {errorText && (
+        <div className='mb-2 text-md text-center text-red-500'>{errorText}</div>
+      )}
+
       <div className='mb-2'>
         <FormControl>
           <FormLabel>Tick</FormLabel>
@@ -64,8 +104,7 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
             <NumberInput
               value={data.amount}
               onChange={(_, e) => set('amount', e)}
-              min={1}
-              max={30}>
+              min={1}>
               <NumberInputField />
             </NumberInput>
           </FormControl>
@@ -128,7 +167,13 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
         )}
       </div>
       <div className='w-60 mx-auto'>
-        <Button size='md' colorScheme='blue' isDisabled={!data.tick} width='100%' onClick={onNext}>
+        <Button
+          size='md'
+          colorScheme='blue'
+          isLoading={loading}
+          isDisabled={!data.tick}
+          width='100%'
+          onClick={nextHandler}>
           Next
         </Button>
       </div>

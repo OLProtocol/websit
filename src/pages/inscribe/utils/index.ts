@@ -1,6 +1,6 @@
 export * from './mempool';
 export * from './mint';
-export * from './index_back';
+// export * from './index_back';
 
 import { keys } from '@cmdcode/crypto-tools';
 export const textToHex = (text: string) => {

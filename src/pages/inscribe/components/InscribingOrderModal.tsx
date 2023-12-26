@@ -20,12 +20,21 @@ import {
   Box,
   useToast,
   Divider,
+  VStack,
 } from '@chakra-ui/react';
+import { Tx } from '@cmdcode/tapscript';
 import { InscribeOrderItem } from './InscribeOrderItem';
 import { useUnisat, useUnisatConnect } from '@/lib/hooks/unisat';
 import { useOrderStore, OrderItemType } from '@/store';
-import { loopTilAddressReceivesMoney, inscribe } from '../utils';
+import {
+  loopTilAddressReceivesMoney,
+  inscribe,
+  pushCommitTx,
+  getFundingAddress,
+  waitSomeSeconds,
+} from '../utils';
 import { useEffect, useMemo, useState } from 'react';
+import { _0n } from '@cmdcode/crypto-utils/dist/const';
 
 interface InscribingOrderMdaolProps {
   show: boolean;
@@ -45,11 +54,18 @@ export const InscribingOrderModal = ({
     { title: 'Payment Result' },
     { title: 'Start Inscribing' },
   ];
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const { changeStatus, addTxid, findOrder } = useOrderStore((state) => state);
+  const {
+    changeStatus,
+    setCommitTx,
+    addTxidToInscription,
+    findOrder,
+    changeInscriptionStatus,
+    setFunding,
+  } = useOrderStore((state) => state);
   const unisat = useUnisat();
   const [payStatus, setPayStatus] = useState(false);
-  const { network } = useUnisatConnect();
   const { activeStep, setActiveStep } = useSteps({
     index: 1,
     count: steps.length,
@@ -57,69 +73,100 @@ export const InscribingOrderModal = ({
   const order = useMemo(() => {
     return findOrder(orderId);
   }, [orderId]);
+  const fee = useMemo(() => {
+    if (!order) {
+      return 0;
+    }
+    const base_size = 157;
+    const { feeRate, inscriptionSize, inscriptions } = order;
+    if (inscriptions.length === 1) {
+      return feeRate * base_size + inscriptionSize;
+    } else {
+      let totalInscriptionFee = 0;
+      for (let i = 0; i < inscriptions.length; i++) {
+        totalInscriptionFee += inscriptions[i].txsize * feeRate;
+      }
+      const networkFee =
+        (base_size + 34 * inscriptions.length + 10) * feeRate +
+        totalInscriptionFee;
+      const fee = networkFee + inscriptionSize * inscriptions.length;
+
+      totalInscriptionFee;
+      return fee;
+    }
+  }, [order]);
   const payOrder = async () => {
     if (!order) {
       return;
     }
+    setLoading(true);
+
     try {
-      const txid = await unisat.sendBitcoin(
-        order.inscriptionAddress,
-        order.fee,
-        {
-          feeRate: order.feeRate,
-        },
-      );
-      changeStatus(order.orderId, 'paid');
-      console.log(txid);
-      addTxid(order.orderId, txid);
-      setActiveStep(2);
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || JSON.stringify(error),
-        status: 'error',
-        duration: 2000,
-        isClosable: true,
-        position: 'top',
-      });
-    }
-  };
-  const startInscribe = async () => {
-    if (!order || payStatus) {
-      return;
-    }
-    setPayStatus(true);
-    await loopTilAddressReceivesMoney(order.inscriptionAddress, network, true);
-    setActiveStep(3);
-  };
-  const inscribeHandler = async () => {
-    if (!order?.txid || !order) {
-      return;
-    }
-    try {
-      const txid = await inscribe({
-        secret: order.secret,
-        text: order.files[0].text,
-        network: network as any,
-        txid: order.txid,
-        vout: 0,
-        fee: order.fee,
-        toAddress: order.toAddress[0],
-        inscribeFee: order.inscriptionSize,
-      });
-      changeStatus(orderId, 'inscribe_success');
-      toast({
-        title: 'Success',
-        description: 'Inscribe Success',
-        status: 'success',
-        duration: 2000,
-        isClosable: true,
-        position: 'top',
-      });
-      if (txid) {
-        changeStatus(orderId, 'inscribe_success');
-        onClose?.();
-        onFinished?.();
+      const { inscriptions, feeRate, inscriptionSize, secret, network } = order;
+      console.log('fee', fee);
+      console.log('feeRate', feeRate);
+      if (inscriptions.length === 1) {
+        const txid = await unisat.sendBitcoin(
+          inscriptions[0].inscriptionAddress,
+          fee,
+          {
+            feeRate: feeRate,
+          },
+        );
+        const commitTx = {
+          txid,
+          inscription: [
+            {
+              vout: 0,
+              amount: fee,
+            },
+          ],
+        };
+        setCommitTx(orderId, commitTx);
+        changeStatus(orderId, 'paid');
+        setActiveStep(2);
+      } else {
+        let funding = order.funding;
+        if (!funding) {
+          const fundingData = getFundingAddress(secret, network);
+          // let totalInscriptionFee = 0;
+          // for (let i = 0; i < inscriptions.length; i++) {
+          //   totalInscriptionFee +=
+          //     inscriptionSize + inscriptions[i].txsize * feeRate;
+          // }
+          // const fee =
+          //   base_size * feeRate +
+          //   totalInscriptionFee +
+          //   inscriptionSize * inscriptions.length;
+          // const total_fees =
+          //   totalInscriptionFee +
+          //   (69 + (inscriptions.length + 1) * 2 * 31 + 10) * feeRate +
+          //   base_size * inscriptions.length +
+          //   inscriptionSize * inscriptions.length;
+          const txid = await unisat.sendBitcoin(fundingData.address, fee, {
+            feeRate: feeRate,
+          });
+          funding = {
+            txid,
+            vout: 0,
+            amount: fee,
+            ...fundingData,
+          };
+          setFunding(orderId, funding);
+        }
+
+        await loopTilAddressReceivesMoney(funding.address, order.network, true);
+        const commitData = await pushCommitTx({
+          inscriptions,
+          secret,
+          network,
+          funding,
+          inscriptionSize,
+          feeRate,
+        });
+        changeStatus(orderId, 'paid');
+        setCommitTx(orderId, commitData);
+        setActiveStep(2);
       }
     } catch (error: any) {
       toast({
@@ -131,9 +178,84 @@ export const InscribingOrderModal = ({
         position: 'top',
       });
     }
+    setLoading(false);
+  };
+  const startInscribe = async () => {
+    if (!order || payStatus) {
+      return;
+    }
+    setLoading(true);
+    setPayStatus(true);
+    if (order.inscriptions.length === 1) {
+      await loopTilAddressReceivesMoney(
+        order.inscriptions[0].inscriptionAddress,
+        order.network,
+        true,
+      );
+    }
+    setLoading(false);
+    setActiveStep(3);
+  };
+  const inscribeHandler = async () => {
+    if (!(order && order.commitTx)) {
+      return;
+    }
+    setLoading(true);
+    try {
+      console.log('order', order);
+      const { commitTx } = order;
+      for (let i = 0; i < order.inscriptions.length; i++) {
+        const inscription = order.inscriptions[i];
+        await loopTilAddressReceivesMoney(
+          inscription.inscriptionAddress,
+          order.network,
+          true,
+        );
+        await waitSomeSeconds(2000);
+        const txid = await inscribe({
+          secret: order.secret,
+          network: order.network as any,
+          inscription,
+          txid: commitTx.txid,
+          vout: commitTx.outputs[i].vout,
+          amount: commitTx.outputs[i].amount,
+          toAddress: order.toAddress[0],
+          inscribeFee: order.inscriptionSize,
+        });
+        addTxidToInscription(order.orderId, i, txid);
+        changeStatus(orderId, 'inscribe_success');
+        changeInscriptionStatus(order.orderId, i, 'inscribe_success');
+        toast({
+          title: 'Success',
+          description: 'Inscribe Success',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+          position: 'top',
+        });
+        if (txid) {
+          changeStatus(orderId, 'inscribe_success');
+          onClose?.();
+          onFinished?.();
+        }
+      }
+    } catch (error: any) {
+      changeStatus(orderId, 'paid');
+      toast({
+        title: 'Error',
+        description: error.message || 'error',
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+        position: 'top',
+      });
+    }
+    setLoading(false);
   };
   const checkStatus = () => {
     if (order?.status === 'paid') {
+      setActiveStep(2);
+    } else if (order?.funding && order?.commitTx) {
       setActiveStep(2);
     }
   };
@@ -183,11 +305,14 @@ export const InscribingOrderModal = ({
                 <div className='flex justify-between mb-4'>
                   <div>Total Fee</div>
                   <div>
-                    <span>{order?.fee}</span> <span> sats</span>
+                    <span>{fee}</span> <span> sats</span>
                   </div>
                 </div>
                 <div className='flex justify-center'>
-                  <Button colorScheme='blue' onClick={payOrder}>
+                  <Button
+                    colorScheme='blue'
+                    isLoading={loading}
+                    onClick={payOrder}>
                     Pay with Wallet
                   </Button>
                 </div>
@@ -211,7 +336,8 @@ export const InscribingOrderModal = ({
                 <div className='flex justify-center mt-4'>
                   <Button
                     colorScheme='blue'
-                    isDisabled={!order?.txid || payStatus}
+                    isDisabled={payStatus}
+                    isLoading={loading}
                     onClick={startInscribe}>
                     Start Inscribing
                   </Button>
@@ -228,7 +354,10 @@ export const InscribingOrderModal = ({
                   </div>
                 </div>
                 <div className='flex justify-center mt-4'>
-                  <Button colorScheme='blue' onClick={inscribeHandler}>
+                  <Button
+                    colorScheme='blue'
+                    isLoading={loading}
+                    onClick={inscribeHandler}>
                     Inscribe
                   </Button>
                 </div>
@@ -236,16 +365,17 @@ export const InscribingOrderModal = ({
             )}
           </div>
           <Divider className='my-4' content='Files' />
-          <div className='mb-2'>
-            {order?.files?.map((item, index) => (
+          <VStack className='mb-2' spacing='10px'>
+            {order?.inscriptions?.map((item, index) => (
               <InscribeOrderItem
                 key={index}
                 label={index + 1}
                 status={order?.status}
                 value={item.text}
+                address={item.inscriptionAddress}
               />
             ))}
-          </div>
+          </VStack>
           {order?.createAt && (
             <div className='text-right text-sm text-gray-400'>
               Order created at {new Date(order?.createAt).toLocaleString()}

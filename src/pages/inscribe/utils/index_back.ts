@@ -105,86 +105,86 @@ export const satsToBitcoin = (sats) => {
   return string;
 };
 
-export const generateInscriptions = async ({
-  files,
-  feerate,
-  pubkey,
-  network = 'main',
-}: {
-  files: FileItem[];
-  feerate: number;
-  pubkey: any;
-  network: any;
-}) => {
-  const inscriptions: InscriptionItem[] = [];
-  let total_fee = 0;
+// export const generateInscriptions = async ({
+//   files,
+//   feerate,
+//   pubkey,
+//   network = 'main',
+// }: {
+//   files: FileItem[];
+//   feerate: number;
+//   pubkey: any;
+//   network: any;
+// }) => {
+//   const inscriptions: InscriptionItem[] = [];
+//   let total_fee = 0;
 
-  const ec = new TextEncoder();
-  for (let i = 0; i < files.length; i++) {
-    const hex = files[i].hex;
-    const data = hexToBytes(hex);
-    const mimetype = ec.encode(files[i].mimetype);
+//   const ec = new TextEncoder();
+//   for (let i = 0; i < files.length; i++) {
+//     const hex = files[i].hex;
+//     const data = hexToBytes(hex);
+//     const mimetype = ec.encode(files[i].mimetype);
 
-    const script = [
-      pubkey,
-      'OP_CHECKSIG',
-      'OP_0',
-      'OP_IF',
-      ec.encode('ord'),
-      '01',
-      mimetype,
-      'OP_0',
-      data,
-      'OP_ENDIF',
-    ];
+//     const script = [
+//       pubkey,
+//       'OP_CHECKSIG',
+//       'OP_0',
+//       'OP_IF',
+//       ec.encode('ord'),
+//       '01',
+//       mimetype,
+//       'OP_0',
+//       data,
+//       'OP_ENDIF',
+//     ];
 
-    const script_backup = [
-      '0x' + buf2hex(pubkey.buffer),
-      'OP_CHECKSIG',
-      'OP_0',
-      'OP_IF',
-      '0x' + buf2hex(ec.encode('ord')),
-      '01',
-      '0x' + buf2hex(mimetype),
-      'OP_0',
-      '0x' + buf2hex(data),
-      'OP_ENDIF',
-    ];
+//     const script_backup = [
+//       '0x' + buf2hex(pubkey.buffer),
+//       'OP_CHECKSIG',
+//       'OP_0',
+//       'OP_IF',
+//       '0x' + buf2hex(ec.encode('ord')),
+//       '01',
+//       '0x' + buf2hex(mimetype),
+//       'OP_0',
+//       '0x' + buf2hex(data),
+//       'OP_ENDIF',
+//     ];
 
-    const leaf = await Tap.tree.getLeaf(Script.encode(script));
-    const [tapkey, cblock] = await Tap.getPubKey(pubkey, { target: leaf });
-    console.log('network:', network);
-    const inscriptionAddress = Address.p2tr.encode(tapkey, network);
+//     const leaf = await Tap.tree.getLeaf(Script.encode(script));
+//     const [tapkey, cblock] = await Tap.getPubKey(pubkey, { target: leaf });
+//     console.log('network:', network);
+//     const inscriptionAddress = Address.p2tr.encode(tapkey, network);
 
-    console.log('Inscription address: ', inscriptionAddress);
-    console.log('Tapkey:', tapkey);
+//     console.log('Inscription address: ', inscriptionAddress);
+//     console.log('Tapkey:', tapkey);
 
-    let prefix = 160;
+//     let prefix = 160;
 
-    if (files[i].sha256 != '') {
-      prefix = feerate > 1 ? 546 : 700;
-    }
+//     if (files[i].sha256 != '') {
+//       prefix = feerate > 1 ? 546 : 700;
+//     }
 
-    const txsize = prefix + Math.floor(data.length / 4);
+//     const txsize = prefix + Math.floor(data.length / 4);
 
-    console.log('TXSIZE', txsize);
+//     console.log('TXSIZE', txsize);
 
-    const fee = feerate * txsize;
-    total_fee += fee;
+//     const fee = feerate * txsize;
+//     total_fee += fee;
 
-    inscriptions.push({
-      leaf: leaf,
-      tapkey: tapkey,
-      cblock: cblock,
-      inscriptionAddress: inscriptionAddress,
-      txsize: txsize,
-      fee: fee,
-      script: script_backup,
-      script_orig: script,
-    });
-  }
-  return inscriptions;
-};
+//     inscriptions.push({
+//       leaf: leaf,
+//       tapkey: tapkey,
+//       cblock: cblock,
+//       inscriptionAddress: inscriptionAddress,
+//       txsize: txsize,
+//       fee: fee,
+//       script: script_backup,
+//       script_orig: script,
+//     });
+//   }
+//   return inscriptions;
+// };
 export const calcInscriptionsTotalFee = ({
   files,
   feerate,

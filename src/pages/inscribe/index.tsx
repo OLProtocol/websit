@@ -135,10 +135,10 @@ export default function Inscribe() {
     await removeAt(index);
   };
   const onOrderClick = (item) => {
-    if (['pending', 'paid'].includes(item.status)) {
+    // if (['pending', 'paid'].includes(item.status)) {
       setOrderId(item.orderId);
       setModalShow(true);
-    }
+    // }
   };
   const onAddOrder = (item) => {
     setOrderId(item.orderId);
@@ -151,6 +151,9 @@ export default function Inscribe() {
   const onFinished = () => {
     clear();
   };
+  const onRemoveAll = () => {
+    clear();
+  }
   const clear = () => {
     clearList();
     resetText();
@@ -198,6 +201,7 @@ export default function Inscribe() {
           {step === 3 && (
             <InscribeStepThree
               onItemRemove={onItemRemove}
+              onRemoveAll={onRemoveAll}
               onAddOrder={onAddOrder}
               list={list}
               type='text'

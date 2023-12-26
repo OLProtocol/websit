@@ -19,9 +19,7 @@ import { v4 as uuidV4 } from 'uuid';
 import {
   generteFiles,
   generatePrivateKey,
-  generateInscribe,
-  inscribe,
-  loopTilAddressReceivesMoney,
+  generateInscriptions,
 } from '../utils';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
 import { OrderItemType, useOrderStore } from '@/store';
@@ -30,14 +28,15 @@ interface Brc20SetpOneProps {
   list: any[];
   type: InscribeType;
   onItemRemove?: (index: number) => void;
+  onRemoveAll?: () => void;
   onAddOrder?: (order: OrderItemType) => void;
 }
-console.log(window.mempoolJS);
 export const InscribeStepThree = ({
   list,
   type,
   onItemRemove,
   onAddOrder,
+  onRemoveAll,
 }: Brc20SetpOneProps) => {
   const toast = useToast();
   const [data, { set }] = useMap({
@@ -45,11 +44,7 @@ export const InscribeStepThree = ({
       'tb1pt9c60e43sxcvksr7arx9qvczj0w9sqjellk6xg9chw2d5pv7ax4sdy5r7n',
     toMultipleAddresses: '',
   });
-  const {
-    add: addOrder,
-    changeStatus,
-    addTxid,
-  } = useOrderStore((state) => state);
+  const { add: addOrder, changeStatus } = useOrderStore((state) => state);
   const [fundingData, { set: setFuningData }] = useMap<{
     seckey: any;
     pubkey: any;
@@ -57,7 +52,6 @@ export const InscribeStepThree = ({
     seckey: undefined,
     pubkey: undefined,
   });
-  const unisat = useUnisat();
   const { network } = useUnisatConnect();
   const [padding, setPadding] = useState(546);
   const [feeRate, setFeeRate] = useState(0);
@@ -65,12 +59,6 @@ export const InscribeStepThree = ({
     console.log('value', value);
     setFeeRate(value);
   };
-  const {
-    bitcoin: { transactions },
-  } = window.mempoolJS({
-    hostname: 'mempool.space',
-    network,
-  });
   const files = useMemo(() => {
     return generteFiles(list);
   }, [list]);
@@ -94,24 +82,21 @@ export const InscribeStepThree = ({
 
   const submit = async () => {
     const secret = generatePrivateKey();
-    const inscriptionAddress = generateInscribe(
+    const inscriptions = generateInscriptions({
       secret,
-      files[0].text,
-      network as any,
-    );
-    const fee = feeRate * 154 + baseNum;
-    console.log('fee', fee);
-    console.log('feeRate', feeRate);
+      files,
+      network,
+      feeRate,
+    });
     const orderId = uuidV4();
     const order: OrderItemType = {
       orderId,
       type,
-      files,
+      inscriptions,
       secret,
-      inscriptionAddress,
       toAddress: [data.toSingleAddress],
-      fee,
       feeRate,
+      network,
       inscriptionSize: baseNum,
       status: 'pending',
       createAt: Date.now().valueOf(),
@@ -122,8 +107,9 @@ export const InscribeStepThree = ({
 
   return (
     <div>
-      <div className='text-lg font-bold flex justify-between'>
-        {list.length} Items
+      <div className='text-lg font-bold flex justify-between mb-2'>
+        <span>{list.length} Items</span>
+        <Button size='sm' onClick={onRemoveAll}>Remove All</Button>
       </div>
       <div className='p-4 bg-gray-800 rounded-xl'>
         <VStack spacing='10px' className='w-full py-4'>
@@ -141,7 +127,7 @@ export const InscribeStepThree = ({
         <Tabs className='mb-2'>
           <TabList>
             <Tab>To Single Address</Tab>
-            <Tab>To Multiple Addresses</Tab>
+            {/* <Tab>To Multiple Addresses</Tab> */}
           </TabList>
         </Tabs>
         <div>

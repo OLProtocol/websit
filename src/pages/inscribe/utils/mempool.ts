@@ -1,4 +1,4 @@
-import mempoolJS from "@mempool/mempool.js";
+import mempoolJS from '@mempool/mempool.js';
 const getData = async (url) => {
   const response = await fetch(url);
   const data = await response.text();
@@ -48,7 +48,7 @@ async function addressOnceHadMoney(address, network, includeMempool) {
   }
   return false;
 }
-export const fetchChainFeeRate = async (network: "main" | "testnet") => {
+export const fetchChainFeeRate = async (network: 'main' | 'testnet') => {
   // const { bitcoin: { fees } } = mempoolJS({
   //   hostname: 'mempool.space',
   //   network,
@@ -57,9 +57,9 @@ export const fetchChainFeeRate = async (network: "main" | "testnet") => {
   // const data = await fees.getFeesRecommended();
   // return data;
   const url =
-    network === "testnet"
-      ? "https://mempool.space/testnet/api/v1/fees/recommended"
-      : "https://mempool.space/api/v1/fees/recommended";
+    network === 'testnet'
+      ? 'https://mempool.space/testnet/api/v1/fees/recommended'
+      : 'https://mempool.space/api/v1/fees/recommended';
   const resp = await fetch(url);
   const data = await resp.json();
   return data;
@@ -156,14 +156,19 @@ export const postData = async (url, data) => {
     method: 'POST',
     body: data,
   });
+  if (!response.ok) throw new Error(response.statusText)
   const res = await response.text();
+  console.log(res);
   return res;
-}
+};
 export const pushBTCpmt = async (rawtx, network) => {
   let txid;
 
   try {
-    txid = await postData('https://mempool.space/' + network + '/api/tx', rawtx);
+    txid = await postData(
+      'https://mempool.space/' + network + '/api/tx',
+      rawtx,
+    );
 
     if (
       (txid.toLowerCase().includes('rpc error') ||
@@ -177,10 +182,12 @@ export const pushBTCpmt = async (rawtx, network) => {
       }
     }
   } catch (e) {
+    console.error(e);
     if (network == 'main') {
       console.log('USING BLOCKSTREAM FOR PUSHING INSTEAD');
       txid = await postData('https://blockstream.info/api/tx', rawtx);
     }
+    throw e;
   }
 
   return txid;

@@ -4,7 +4,7 @@ import { LinkBox, LinkOverlay } from '@chakra-ui/react';
 
 export const Header = () => {
   return (
-    <header className='w-full h-16 bg-gray-300'>
+    <header className='w-full h-16 bg-gray-300 sticky top-0 z-10'>
       <div className='flex h-full items-center px-4'>
         <div className='flex-1 flex h-full items-center py-4'>
           <div className='mr-8'>Logo</div>

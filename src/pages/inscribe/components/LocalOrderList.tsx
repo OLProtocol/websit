@@ -10,6 +10,7 @@ import {
   TableCaption,
   TableContainer,
 } from '@chakra-ui/react';
+import { hideStr } from '@/lib/utils';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { inscribe } from '../utils';
 
@@ -36,7 +37,7 @@ export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
               onClick={() => {
                 onOrderClick?.(item);
               }}>
-              <Td>{item.orderId}</Td>
+              <Td>{hideStr(item.orderId, 10)}</Td>
               <Td>{item.status}</Td>
               <Td>{new Date(item.createAt).toLocaleString()}</Td>
             </Tr>
