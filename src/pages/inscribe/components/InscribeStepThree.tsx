@@ -39,9 +39,9 @@ export const InscribeStepThree = ({
   onRemoveAll,
 }: Brc20SetpOneProps) => {
   const toast = useToast();
+  const { network, currentAccount } = useUnisatConnect();
   const [data, { set }] = useMap({
-    toSingleAddress:
-      'tb1pt9c60e43sxcvksr7arx9qvczj0w9sqjellk6xg9chw2d5pv7ax4sdy5r7n',
+    toSingleAddress: currentAccount,
     toMultipleAddresses: '',
   });
   const { add: addOrder, changeStatus } = useOrderStore((state) => state);
@@ -52,7 +52,6 @@ export const InscribeStepThree = ({
     seckey: undefined,
     pubkey: undefined,
   });
-  const { network } = useUnisatConnect();
   const [padding, setPadding] = useState(546);
   const [feeRate, setFeeRate] = useState(0);
   const feeRateChange = (value: number) => {
@@ -109,7 +108,9 @@ export const InscribeStepThree = ({
     <div>
       <div className='text-lg font-bold flex justify-between mb-2'>
         <span>{list.length} Items</span>
-        <Button size='sm' onClick={onRemoveAll}>Remove All</Button>
+        <Button size='sm' onClick={onRemoveAll}>
+          Remove All
+        </Button>
       </div>
       <div className='p-4 bg-gray-800 rounded-xl'>
         <VStack spacing='10px' className='w-full py-4'>

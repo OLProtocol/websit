@@ -191,7 +191,7 @@ export default function Inscribe() {
               {type === 'brc-20' && (
                 <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
               )}
-              {type === 'brc-20' && (
+              {type === 'ord2' && (
                 <InscribeOrd2 onChange={brc20Change} onNext={brc20Next} />
               )}
             </>

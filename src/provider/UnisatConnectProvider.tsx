@@ -148,6 +148,7 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
     return unisatNetwork === 'livenet' ? 'main' : 'testnet';
   }, [unisatNetwork]);
   console.log('network', network);
+  console.log('currentAccount', currentAccount);
   return (
     <ConnectionContext.Provider
       value={{

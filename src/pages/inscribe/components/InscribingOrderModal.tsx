@@ -81,7 +81,7 @@ export const InscribingOrderModal = ({
     const { feeRate, inscriptionSize, inscriptions } = order;
     if (inscriptions.length === 1) {
       return (
-        (base_size + 34 * inscriptions.length + 10) * feeRate + inscriptionSize
+        inscriptions[0].txsize * feeRate + inscriptionSize
       );
     } else {
       let totalInscriptionFee = 0;
