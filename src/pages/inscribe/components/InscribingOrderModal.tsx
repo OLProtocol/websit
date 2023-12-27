@@ -80,7 +80,9 @@ export const InscribingOrderModal = ({
     const base_size = 157;
     const { feeRate, inscriptionSize, inscriptions } = order;
     if (inscriptions.length === 1) {
-      return feeRate * base_size + inscriptionSize;
+      return (
+        (base_size + 34 * inscriptions.length + 10) * feeRate + inscriptionSize
+      );
     } else {
       let totalInscriptionFee = 0;
       for (let i = 0; i < inscriptions.length; i++) {
@@ -115,7 +117,7 @@ export const InscribingOrderModal = ({
         );
         const commitTx = {
           txid,
-          inscription: [
+          outputs: [
             {
               vout: 0,
               amount: fee,
@@ -169,6 +171,7 @@ export const InscribingOrderModal = ({
         setActiveStep(2);
       }
     } catch (error: any) {
+      console.error(error);
       toast({
         title: 'Error',
         description: error.message || JSON.stringify(error),
@@ -204,6 +207,7 @@ export const InscribingOrderModal = ({
     try {
       console.log('order', order);
       const { commitTx } = order;
+      let finishedNum = 0;
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
         await loopTilAddressReceivesMoney(
@@ -233,13 +237,15 @@ export const InscribingOrderModal = ({
           isClosable: true,
           position: 'top',
         });
-        if (txid) {
-          changeStatus(orderId, 'inscribe_success');
-          onClose?.();
-          onFinished?.();
-        }
+        finishedNum +=1;
+      }
+      if (finishedNum === order.inscriptions.length) {
+        changeStatus(orderId, 'inscribe_success');
+        onClose?.();
+        onFinished?.();
       }
     } catch (error: any) {
+      console.log(error);
       changeStatus(orderId, 'paid');
       toast({
         title: 'Error',

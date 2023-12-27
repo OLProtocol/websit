@@ -1,6 +1,7 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { InscribeBrc20 } from './components/InscribeBrc20';
+import { InscribeOrd2 } from './components/InscribeOrd2';
 import { InscribeText } from './components/InscribeText';
 import { InscribeStepTwo } from './components/InscribeStepTwo';
 import { InscribeStepThree } from './components/InscribeStepThree';
@@ -11,7 +12,6 @@ import { OrderItemType } from '@/store';
 
 export default function Inscribe() {
   const [step, setStep] = useState(3);
-  const [type, setType] = useState<string>('text');
   const [tabIndex, setTabIndex] = useState(0);
   const [orderId, setOrderId] = useState<string>();
   const [modalShow, setModalShow] = useState(false);
@@ -127,10 +127,12 @@ export default function Inscribe() {
     if (i !== tabIndex) {
       setTabIndex(i);
       clearList();
-      setType(i === 0 ? 'text' : 'brc-20');
     }
   };
-
+  const type = useMemo(() => {
+    const typeMap = ['text', 'brc-20', 'ord2'];
+    return typeMap[tabIndex];
+  }, [tabIndex])
   const onItemRemove = async (index: number) => {
     await removeAt(index);
   };
@@ -166,7 +168,7 @@ export default function Inscribe() {
   }, [list]);
   return (
     <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
-      <h1 className='text-lg font-bold text-center mb-4'>Ord2 Inscribe</h1>
+      <h1 className='text-lg font-bold text-center mb-4'>Inscribe</h1>
       <div>
         <Tabs
           variant='soft-rounded'
@@ -176,7 +178,8 @@ export default function Inscribe() {
           colorScheme='green'>
           <TabList>
             <Tab>Text</Tab>
-            <Tab>brc-20</Tab>
+            <Tab>Brc-20</Tab>
+            <Tab>Ord2</Tab>
           </TabList>
         </Tabs>
         <div className=' min-h-[10rem] mx-auto bg-gray-50 p-8 rounded-lg mb-4'>
@@ -187,6 +190,9 @@ export default function Inscribe() {
               )}
               {type === 'brc-20' && (
                 <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
+              )}
+              {type === 'brc-20' && (
+                <InscribeOrd2 onChange={brc20Change} onNext={brc20Next} />
               )}
             </>
           )}
