@@ -18,7 +18,7 @@ export const InscribeRemoveItem = ({
           {label}
         </div>
       </div>
-      <div className='flex flex-1 text-sm items-center py-2'>{value}</div>
+      <div className='flex flex-1 text-sm items-center py-2 break-all'>{value}</div>
       <div className='flex items-center pr-2'>
         <span className='mr-2'>{clacTextSize(value)} B</span>
         <IconButton

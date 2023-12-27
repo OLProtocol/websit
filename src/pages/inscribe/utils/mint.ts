@@ -39,6 +39,12 @@ export const generteFiles = (list: any[]) => {
       file.content = value;
       file.hex = textToHex(value);
       file.sha256 = '';
+    } else if (type === 'ord2') {
+      file.mimetype = 'text/plain;charset=utf-8';
+      file.text = value;
+      file.content = value;
+      file.hex = textToHex(value);
+      file.sha256 = '';
     }
     return file;
   });

@@ -32,7 +32,10 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
     amount: 1,
     repeatMint: 1,
     limitPerMint: 1,
-    totalSupply: 21000000,
+    block: '',
+    reg: '',
+    des: '',
+    sat: '',
   });
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
@@ -41,8 +44,8 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
     const textSize = clacTextSize(data.tick);
     console.log('textSize', textSize);
     console.log(textSize < 4);
-    if (textSize < 4) {
-      setErrorText('Tick must be 4 byte long');
+    if (textSize < 3 || textSize == 4 || textSize > 32) {
+      setErrorText('Tick must be 3, 5-32 byte long');
       return;
     }
     setLoading(true);
@@ -62,24 +65,19 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
     // }
     setLoading(false);
   };
-  const fetchBrc20Info = async () => {
-    const res = await fetch(
-      `http://192.168.1.111:8001/v1/brc20/get_tickinfo/${data.tick}/info`,
-    );
-    const json = await res.json();
-    return json;
-  };
   useEffect(() => {
     onChange?.(data);
   }, [data]);
   return (
     <div>
       <div className='mb-2'>
-        <RadioGroup size='lg' onChange={(e) => set('type', e)} value={data.type}>
+        <RadioGroup
+          size='lg'
+          onChange={(e) => set('type', e)}
+          value={data.type}>
           <Stack direction='row' justify='center' spacing='20px'>
             <Radio value='mint'>Mint</Radio>
             <Radio value='deploy'>Deploy</Radio>
-            <Radio value='transfer'>Transfer</Radio>
           </Stack>
         </RadioGroup>
       </div>
@@ -92,7 +90,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
           <FormLabel>Tick</FormLabel>
           <Input
             type='text'
-            maxLength={4}
+            maxLength={32}
             placeholder='a characters like "abcd"'
             value={data.tick}
             onChange={(e) => set('tick', e.target.value)}
@@ -112,15 +110,25 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
 
         {data.type === 'deploy' && (
           <>
+            {/* <FormControl >
+              <FormLabel>Block</FormLabel>
+              <Input
+                type='text'
+                maxLength={32}
+                placeholder='a characters like "abcd"'
+                value={data.tick}
+                onChange={(e) => set('tick', e.target.value)}
+              />
+            </FormControl> */}
             <FormControl>
-              <FormLabel>Total Supply</FormLabel>
-              <NumberInput
-                value={data.totalSupply}
-                onChange={(_, e) => set('totalSupply', e)}
-                min={1}
-                max={30}>
-                <NumberInputField />
-              </NumberInput>
+              <FormLabel>Block</FormLabel>
+              <Input
+                type='text'
+                maxLength={32}
+                placeholder='like "10-100"'
+                value={data.block}
+                onChange={(e) => set('block', e.target.value)}
+              />
             </FormControl>
             <FormControl>
               <FormLabel>Limit Per Mint</FormLabel>
@@ -131,10 +139,29 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
                 <NumberInputField />
               </NumberInput>
             </FormControl>
+            <FormControl>
+              <FormLabel>Reg</FormLabel>
+              <Input
+                type='text'
+                maxLength={32}
+                placeholder='like "^[1-9][0-9]*0{n}$"'
+                value={data.reg}
+                onChange={(e) => set('reg', e.target.value)}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Description</FormLabel>
+              <Input
+                type='text'
+                maxLength={32}
+                value={data.des}
+                onChange={(e) => set('des', e.target.value)}
+              />
+            </FormControl>
           </>
         )}
-        {data.type === 'mint' && (
-          <FormControl>
+        {/* {data.type === 'mint' && (
+          <FormControl >
             <FormLabel>Repeat Mint</FormLabel>
             <Flex>
               <NumberInput
@@ -164,7 +191,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
               </Slider>
             </Flex>
           </FormControl>
-        )}
+        )} */}
       </div>
       <div className='w-60 mx-auto'>
         <Button

@@ -37,7 +37,7 @@ export const InscribeText = ({ onNext, onChange }: InscribeBrc20Props) => {
         </RadioGroup>
       </div>
       <div className='mb-2'>
-        <FormControl>
+        <FormControl >
           <Textarea
             resize='none'
             rows={5}

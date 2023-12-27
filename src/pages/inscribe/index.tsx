@@ -31,6 +31,17 @@ export default function Inscribe() {
     //   value: 'well4',
     // },
   ]);
+  const [ord2Data, { set: setOrd2Data }] = useMap({
+    type: 'mint',
+    tick: '',
+    amount: 1,
+    repeatMint: 1,
+    limitPerMint: 1,
+    block: 0,
+    reg: '',
+    des: '',
+    sat: ''
+  });
   const [brc20Data, { set: setBrc20 }] = useMap({
     type: 'mint',
     tick: '',
@@ -50,6 +61,17 @@ export default function Inscribe() {
     setBrc20('repeatMint', data.repeatMint);
     setBrc20('limitPerMint', data.limitPerMint);
     setBrc20('totalSupply', data.totalSupply);
+  };
+  const ord2Change = (data: any) => {
+    setOrd2Data('type', data.type);
+    setOrd2Data('tick', data.tick);
+    setOrd2Data('amount', data.amount);
+    setOrd2Data('repeatMint', data.repeatMint);
+    setOrd2Data('limitPerMint', data.limitPerMint);
+    setOrd2Data('block', data.block);
+    setOrd2Data('reg', data.reg);
+    setOrd2Data('des', data.des);
+    setOrd2Data('sat', data.sat);
   };
   const brc20Next = () => {
     const list: any = [];
@@ -87,6 +109,39 @@ export default function Inscribe() {
           op: 'transfer',
           tick: brc20Data.tick.toString(),
           amt: brc20Data.amount.toString(),
+        }),
+      });
+    }
+    setList(list);
+    setStep(2);
+  };
+  const ord2Next = () => {
+    const list: any = [];
+    if (ord2Data.type === 'mint') {
+      for (let i = 0; i < ord2Data.repeatMint; i++) {
+        list.push({
+          type: 'ord2',
+          name: `mint_${i}`,
+          value: JSON.stringify({
+            p: 'ord2',
+            op: 'mint',
+            tick: ord2Data.tick.toString(),
+            amt: ord2Data.amount.toString(),
+            sat: ord2Data.sat.toString(),
+          }),
+        });
+      }
+    } else if (ord2Data.type === 'deploy') {
+      list.push({
+        type: 'ord2',
+        name: 'deploy_0',
+        value: JSON.stringify({
+          p: 'ord2',
+          op: 'deploy',
+          tick: ord2Data.tick.toString(),
+          lim: ord2Data.limitPerMint.toString(),
+          reg: ord2Data.reg.toString(),
+          des: ord2Data.des.toString(),
         }),
       });
     }
@@ -192,7 +247,7 @@ export default function Inscribe() {
                 <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
               )}
               {type === 'ord2' && (
-                <InscribeOrd2 onChange={brc20Change} onNext={brc20Next} />
+                <InscribeOrd2 onChange={ord2Change} onNext={ord2Next} />
               )}
             </>
           )}

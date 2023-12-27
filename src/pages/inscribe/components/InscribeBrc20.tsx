@@ -88,7 +88,7 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
       )}
 
       <div className='mb-2'>
-        <FormControl>
+        <FormControl >
           <FormLabel>Tick</FormLabel>
           <Input
             type='text'
@@ -99,7 +99,7 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
           />
         </FormControl>
         {data.type !== 'deploy' && (
-          <FormControl>
+          <FormControl >
             <FormLabel>Amount</FormLabel>
             <NumberInput
               value={data.amount}
@@ -112,7 +112,7 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
 
         {data.type === 'deploy' && (
           <>
-            <FormControl>
+            <FormControl >
               <FormLabel>Total Supply</FormLabel>
               <NumberInput
                 value={data.totalSupply}
@@ -122,7 +122,7 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
                 <NumberInputField />
               </NumberInput>
             </FormControl>
-            <FormControl>
+            <FormControl >
               <FormLabel>Limit Per Mint</FormLabel>
               <NumberInput
                 value={data.limitPerMint}
@@ -134,7 +134,7 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
           </>
         )}
         {data.type === 'mint' && (
-          <FormControl>
+          <FormControl >
             <FormLabel>Repeat Mint</FormLabel>
             <Flex>
               <NumberInput

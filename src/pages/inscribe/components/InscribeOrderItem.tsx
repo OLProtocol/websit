@@ -16,10 +16,10 @@ export const InscribeOrderItem = ({ label, value, status, address }: InscribeChe
       </div>
       <div className='flex flex-1 items-center px-4 py-2  justify-between'>
         <div>
-          <div>{value}</div>
-          <div>{hideStr(address, 10)}</div>
+          <div className='break-all mb-1'>{value}</div>
+          <div className='text-gray-500'>{hideStr(address, 10)}</div>
         </div>
-        <span>{status}</span>
+        <span className='ml-3'>{status}</span>
       </div>
     </div>
   );
