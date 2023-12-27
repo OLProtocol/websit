@@ -29,7 +29,7 @@ export const generteFiles = (list: any[]) => {
     if (type === 'text') {
       const _value = value?.trim();
       file.mimetype = 'text/plain;charset=utf-8';
-      file.text = JSON.stringify(_value);
+      file.text = _value;
       file.content = _value;
       file.hex = textToHex(_value);
       file.sha256 = '';
