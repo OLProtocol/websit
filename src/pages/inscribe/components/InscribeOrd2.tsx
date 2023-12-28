@@ -16,6 +16,7 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Button,
+  Divider,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
@@ -32,10 +33,11 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
     amount: 1,
     repeatMint: 1,
     limitPerMint: 1,
-    block: '',
+    block_start: 0,
+    block_end: 0,
     reg: '',
     des: '',
-    sat: '',
+    sat: 0,
   });
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
@@ -70,7 +72,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
   }, [data]);
   return (
     <div>
-      <div className='mb-2'>
+      <div className='mb-4'>
         <RadioGroup
           size='lg'
           onChange={(e) => set('type', e)}
@@ -85,33 +87,13 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
         <div className='mb-2 text-md text-center text-red-500'>{errorText}</div>
       )}
 
-      <div className='mb-2'>
+      <div className='mb-4'>
         <FormControl>
-          <FormLabel>Tick</FormLabel>
-          <Input
-            type='text'
-            maxLength={32}
-            placeholder='a characters like "abcd"'
-            value={data.tick}
-            onChange={(e) => set('tick', e.target.value)}
-          />
-        </FormControl>
-        {data.type !== 'deploy' && (
-          <FormControl>
-            <FormLabel>Amount</FormLabel>
-            <NumberInput
-              value={data.amount}
-              onChange={(_, e) => set('amount', e)}
-              min={1}>
-              <NumberInputField />
-            </NumberInput>
-          </FormControl>
-        )}
-
-        {data.type === 'deploy' && (
-          <>
-            {/* <FormControl >
-              <FormLabel>Block</FormLabel>
+          <div className='flex items-center mb-4'>
+            <FormLabel className='w-40' marginBottom={0}>
+              Tick
+            </FormLabel>
+            <div className='flex-1'>
               <Input
                 type='text'
                 maxLength={32}
@@ -119,46 +101,126 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
                 value={data.tick}
                 onChange={(e) => set('tick', e.target.value)}
               />
-            </FormControl> */}
+            </div>
+          </div>
+        </FormControl>
+        {data.type !== 'deploy' && (
+          <FormControl>
+            <div className='flex items-center  mb-4'>
+              <FormLabel className='w-40' marginBottom={0}>
+                Amount
+              </FormLabel>
+              <div className='flex-1'>
+                <NumberInput
+                  value={data.amount}
+                  onChange={(_, e) => set('amount', e)}
+                  min={1}>
+                  <NumberInputField />
+                </NumberInput>
+              </div>
+            </div>
+          </FormControl>
+        )}
+
+        {data.type === 'deploy' && (
+          <>
             <FormControl>
-              <FormLabel>Block</FormLabel>
-              <Input
-                type='text'
-                maxLength={32}
-                placeholder='like "10-100"'
-                value={data.block}
-                onChange={(e) => set('block', e.target.value)}
-              />
+              <div className='flex items-center  mb-4'>
+                <FormLabel className='w-40' marginBottom={0}>
+                  Block
+                </FormLabel>
+                <div className='flex-1 flex items-center'>
+                  <NumberInput
+                    value={data.block_start}
+                    className='flex-1'
+                    placeholder='Block start'
+                    onChange={(_, e) => set('block_start', e)}
+                    min={1}>
+                    <NumberInputField />
+                  </NumberInput>
+                  <Divider mx='2' width='3rem' />
+                  <NumberInput
+                    value={data.block_end}
+                    className='flex-1'
+                    placeholder='Block End'
+                    onChange={(_, e) => set('block_end', e)}
+                    min={1}>
+                    <NumberInputField />
+                  </NumberInput>
+                  {/* <Input
+                    type='text'
+                    maxLength={32}
+                    placeholder='like "10-100"'
+                    value={data.block}
+                    onChange={(e) => set('block', e.target.value)}
+                  /> */}
+                </div>
+              </div>
             </FormControl>
             <FormControl>
-              <FormLabel>Limit Per Mint</FormLabel>
-              <NumberInput
-                value={data.limitPerMint}
-                onChange={(_, e) => set('limitPerMint', e)}
-                min={1}>
-                <NumberInputField />
-              </NumberInput>
+              <div className='flex items-center  mb-4'>
+                <FormLabel className='w-40' marginBottom={0}>
+                  Limit Per Mint
+                </FormLabel>
+                <div className='flex-1'>
+                  <NumberInput
+                    value={data.limitPerMint}
+                    onChange={(_, e) => set('limitPerMint', e)}
+                    min={1}>
+                    <NumberInputField />
+                  </NumberInput>
+                </div>
+              </div>
             </FormControl>
             <FormControl>
-              <FormLabel>Reg</FormLabel>
-              <Input
-                type='text'
-                maxLength={32}
-                placeholder='like "^[1-9][0-9]*0{n}$"'
-                value={data.reg}
-                onChange={(e) => set('reg', e.target.value)}
-              />
+              <div className='flex items-center  mb-4'>
+                <FormLabel className='w-40' marginBottom={0}>
+                  Reg
+                </FormLabel>
+                <div className='flex-1'>
+                  <Input
+                    type='text'
+                    maxLength={32}
+                    placeholder='like "^[1-9][0-9]*0{n}$"'
+                    value={data.reg}
+                    onChange={(e) => set('reg', e.target.value)}
+                  />
+                </div>
+              </div>
             </FormControl>
             <FormControl>
-              <FormLabel>Description</FormLabel>
-              <Input
-                type='text'
-                maxLength={32}
-                value={data.des}
-                onChange={(e) => set('des', e.target.value)}
-              />
+              <div className='flex items-center  mb-4'>
+                <FormLabel className='w-40' marginBottom={0}>
+                  Description
+                </FormLabel>
+                <div className='flex-1'>
+                  <Input
+                    type='text'
+                    maxLength={32}
+                    value={data.des}
+                    onChange={(e) => set('des', e.target.value)}
+                  />
+                </div>
+              </div>
             </FormControl>
           </>
+        )}
+        {data.type === 'mint' && (
+          <FormControl>
+            <div className='flex items-center  mb-4'>
+              <FormLabel className='w-40' marginBottom={0}>
+                Sat
+              </FormLabel>
+              <div className='flex-1'>
+                <NumberInput
+                  value={data.sat}
+                  onChange={(_, e) => set('sat', e)}
+                  min={1}>
+                  <NumberInputField />
+                </NumberInput>
+              </div>
+            </div>
+          </FormControl>
         )}
         {/* {data.type === 'mint' && (
           <FormControl >

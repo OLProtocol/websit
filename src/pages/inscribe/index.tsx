@@ -8,6 +8,7 @@ import { InscribeStepThree } from './components/InscribeStepThree';
 import { LocalOrderList } from './components/LocalOrderList';
 import { useMap, useList } from 'react-use';
 import { InscribingOrderModal } from './components/InscribingOrderModal';
+import { removeObjectEmptyValue } from './utils';
 import { OrderItemType } from '@/store';
 
 export default function Inscribe() {
@@ -37,10 +38,10 @@ export default function Inscribe() {
     amount: 1,
     repeatMint: 1,
     limitPerMint: 1,
-    block: 0,
+    block: '',
     reg: '',
     des: '',
-    sat: ''
+    sat: '',
   });
   const [brc20Data, { set: setBrc20 }] = useMap({
     type: 'mint',
@@ -63,15 +64,17 @@ export default function Inscribe() {
     setBrc20('totalSupply', data.totalSupply);
   };
   const ord2Change = (data: any) => {
+    console.log(data);
     setOrd2Data('type', data.type);
     setOrd2Data('tick', data.tick);
     setOrd2Data('amount', data.amount);
     setOrd2Data('repeatMint', data.repeatMint);
     setOrd2Data('limitPerMint', data.limitPerMint);
-    setOrd2Data('block', data.block);
+    setOrd2Data('block', `${data.block_start}-${data.block_end}`);
     setOrd2Data('reg', data.reg);
     setOrd2Data('des', data.des);
     setOrd2Data('sat', data.sat);
+    console.log(ord2Data)
   };
   const brc20Next = () => {
     const list: any = [];
@@ -122,27 +125,33 @@ export default function Inscribe() {
         list.push({
           type: 'ord2',
           name: `mint_${i}`,
-          value: JSON.stringify({
-            p: 'ord2',
-            op: 'mint',
-            tick: ord2Data.tick.toString(),
-            amt: ord2Data.amount.toString(),
-            sat: ord2Data.sat.toString(),
-          }),
+          value: JSON.stringify(
+            removeObjectEmptyValue({
+              p: 'ord2',
+              op: 'mint',
+              tick: ord2Data.tick.toString(),
+              amt: ord2Data.amount.toString(),
+              sat: ord2Data.sat.toString(),
+            }),
+          ),
         });
       }
     } else if (ord2Data.type === 'deploy') {
+      console.log(ord2Data);
       list.push({
         type: 'ord2',
         name: 'deploy_0',
-        value: JSON.stringify({
-          p: 'ord2',
-          op: 'deploy',
-          tick: ord2Data.tick.toString(),
-          lim: ord2Data.limitPerMint.toString(),
-          reg: ord2Data.reg.toString(),
-          des: ord2Data.des.toString(),
-        }),
+        value: JSON.stringify(
+          removeObjectEmptyValue({
+            p: 'ord2',
+            op: 'deploy',
+            tick: ord2Data.tick.toString(),
+            block: ord2Data.block.toString(),
+            lim: ord2Data.limitPerMint.toString(),
+            reg: ord2Data.reg.toString(),
+            des: ord2Data.des.toString(),
+          }),
+        ),
       });
     }
     setList(list);
@@ -187,14 +196,14 @@ export default function Inscribe() {
   const type = useMemo(() => {
     const typeMap = ['text', 'brc-20', 'ord2'];
     return typeMap[tabIndex];
-  }, [tabIndex])
+  }, [tabIndex]);
   const onItemRemove = async (index: number) => {
     await removeAt(index);
   };
   const onOrderClick = (item) => {
     // if (['pending', 'paid'].includes(item.status)) {
-      setOrderId(item.orderId);
-      setModalShow(true);
+    setOrderId(item.orderId);
+    setModalShow(true);
     // }
   };
   const onAddOrder = (item) => {
@@ -210,7 +219,7 @@ export default function Inscribe() {
   };
   const onRemoveAll = () => {
     clear();
-  }
+  };
   const clear = () => {
     clearList();
     resetText();

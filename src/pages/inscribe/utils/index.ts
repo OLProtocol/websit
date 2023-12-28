@@ -3,6 +3,24 @@ export * from './mint';
 // export * from './index_back';
 
 import { keys } from '@cmdcode/crypto-tools';
+
+export const removeObjectEmptyValue = (obj: any) => {
+  const _obj = { ...obj };
+  Object.keys(_obj).forEach((key) => {
+    if (
+      _obj[key] === '' ||
+      _obj[key] === undefined ||
+      _obj[key] === null ||
+      _obj[key] === 'null' ||
+      _obj[key] === 'undefined' ||
+      _obj[key] === 'NaN' ||
+      (isNaN(_obj[key]) && typeof _obj[key] === 'number')
+    ) {
+      delete _obj[key];
+    }
+  });
+  return _obj;
+};
 export const textToHex = (text: string) => {
   const encoder = new TextEncoder().encode(text);
   return [...new Uint8Array(encoder)]

@@ -74,8 +74,11 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
   }, [data]);
   return (
     <div>
-      <div className='mb-2'>
-        <RadioGroup size='lg' onChange={(e) => set('type', e)} value={data.type}>
+      <div className='mb-4'>
+        <RadioGroup
+          size='lg'
+          onChange={(e) => set('type', e)}
+          value={data.type}>
           <Stack direction='row' justify='center' spacing='20px'>
             <Radio value='mint'>Mint</Radio>
             <Radio value='deploy'>Deploy</Radio>
@@ -88,81 +91,111 @@ export const InscribeBrc20 = ({ onNext, onChange }: InscribeBrc20Props) => {
       )}
 
       <div className='mb-2'>
-        <FormControl >
-          <FormLabel>Tick</FormLabel>
-          <Input
-            type='text'
-            maxLength={4}
-            placeholder='a characters like "abcd"'
-            value={data.tick}
-            onChange={(e) => set('tick', e.target.value)}
-          />
+        <FormControl>
+          <div className='flex items-center mb-4'>
+            <FormLabel className='w-40' marginBottom={0}>
+              Tick
+            </FormLabel>
+            <div className='flex-1'>
+              <Input
+                type='text'
+                maxLength={4}
+                placeholder='a characters like "abcd"'
+                value={data.tick}
+                onChange={(e) => set('tick', e.target.value)}
+              />
+            </div>
+          </div>
         </FormControl>
         {data.type !== 'deploy' && (
-          <FormControl >
-            <FormLabel>Amount</FormLabel>
-            <NumberInput
-              value={data.amount}
-              onChange={(_, e) => set('amount', e)}
-              min={1}>
-              <NumberInputField />
-            </NumberInput>
+          <FormControl>
+            <div className='flex items-center mb-4'>
+              <FormLabel className='w-40' marginBottom={0}>
+                Amount
+              </FormLabel>
+              <div className='flex-1'>
+                <NumberInput
+                  value={data.amount}
+                  onChange={(_, e) => set('amount', e)}
+                  min={1}>
+                  <NumberInputField />
+                </NumberInput>
+              </div>
+            </div>
           </FormControl>
         )}
 
         {data.type === 'deploy' && (
           <>
-            <FormControl >
-              <FormLabel>Total Supply</FormLabel>
-              <NumberInput
-                value={data.totalSupply}
-                onChange={(_, e) => set('totalSupply', e)}
-                min={1}
-                max={30}>
-                <NumberInputField />
-              </NumberInput>
+            <FormControl>
+              <div className='flex items-center mb-4'>
+                <FormLabel className='w-40' marginBottom={0}>
+                  Total Supply
+                </FormLabel>
+                <div className='flex-1'>
+                  <NumberInput
+                    value={data.totalSupply}
+                    onChange={(_, e) => set('totalSupply', e)}
+                    min={1}
+                    max={30}>
+                    <NumberInputField />
+                  </NumberInput>
+                </div>
+              </div>
             </FormControl>
-            <FormControl >
-              <FormLabel>Limit Per Mint</FormLabel>
-              <NumberInput
-                value={data.limitPerMint}
-                onChange={(_, e) => set('limitPerMint', e)}
-                min={1}>
-                <NumberInputField />
-              </NumberInput>
+            <FormControl>
+              <div className='flex items-center mb-4'>
+                <FormLabel className='w-40' marginBottom={0}>
+                  Limit Per Mint
+                </FormLabel>
+                <div className='flex-1'>
+                  <NumberInput
+                    value={data.limitPerMint}
+                    onChange={(_, e) => set('limitPerMint', e)}
+                    min={1}>
+                    <NumberInputField />
+                  </NumberInput>
+                </div>
+              </div>
             </FormControl>
           </>
         )}
         {data.type === 'mint' && (
-          <FormControl >
-            <FormLabel>Repeat Mint</FormLabel>
-            <Flex>
-              <NumberInput
-                maxW='100px'
-                mr='2rem'
-                value={data.repeatMint}
-                onChange={(_, e) => set('repeatMint', e)}
-                min={1}
-                max={1000}>
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              <Slider
-                flex='1'
-                focusThumbOnChange={false}
-                value={data.repeatMint}
-                min={1}
-                max={1000}
-                onChange={(e) => set('repeatMint', e)}>
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb fontSize='sm' boxSize='16px' />
-              </Slider>
-            </Flex>
+          <FormControl>
+            <div className='flex items-center mb-4'>
+              <FormLabel className='w-40' marginBottom={0}>
+                Repeat Mint
+              </FormLabel>
+              <div className='flex-1'>
+                <Flex>
+                  <NumberInput
+                    maxW='100px'
+                    mr='2rem'
+                    value={data.repeatMint}
+                    onChange={(_, e) => set('repeatMint', e)}
+                    min={1}
+                    max={1000}>
+                    <NumberInputField />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                  <Slider
+                    flex='1'
+                    focusThumbOnChange={false}
+                    value={data.repeatMint}
+                    min={1}
+                    max={1000}
+                    onChange={(e) => set('repeatMint', e)}>
+                    <SliderTrack>
+                      <SliderFilledTrack />
+                    </SliderTrack>
+                    <SliderThumb fontSize='sm' boxSize='16px' />
+                  </Slider>
+                </Flex>
+              </div>
+            </div>
           </FormControl>
         )}
       </div>
