@@ -21,8 +21,8 @@ export const Header = () => {
           </LinkBox>
           <Divider orientation='vertical' className='mx-4' />
           <LinkBox>
-            <LinkOverlay href='/#/brc20'>
-              Brc-20
+            <LinkOverlay href='/#/ord2'>
+              Ord2
             </LinkOverlay>
           </LinkBox>
         </div>
