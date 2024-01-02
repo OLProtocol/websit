@@ -1,4 +1,5 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import { Button } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { InscribeBrc20 } from './components/InscribeBrc20';
 import { InscribeOrd2 } from './components/InscribeOrd2';
@@ -76,7 +77,7 @@ export default function Inscribe() {
     setOrd2Data('rarity', data.rarity);
     setOrd2Data('des', data.des);
     setOrd2Data('sat', data.sat);
-    console.log(ord2Data)
+    console.log(ord2Data);
   };
   const brc20Next = () => {
     const list: any = [];

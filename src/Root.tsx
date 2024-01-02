@@ -8,7 +8,7 @@ const { Header, Content, Footer, Sider } = Layout;
 export default function Root() {
   return (
     <Layout>
-      <Header>
+      <Header className='sticky top-0 z-10'>
         <NavHeader />
       </Header>
       <Content>
