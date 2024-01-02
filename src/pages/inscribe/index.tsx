@@ -42,6 +42,7 @@ export default function Inscribe() {
     reg: '',
     des: '',
     sat: '',
+    rarity: 'common',
   });
   const [brc20Data, { set: setBrc20 }] = useMap({
     type: 'mint',
@@ -72,6 +73,7 @@ export default function Inscribe() {
     setOrd2Data('limitPerMint', data.limitPerMint);
     setOrd2Data('block', `${data.block_start}-${data.block_end}`);
     setOrd2Data('reg', data.reg);
+    setOrd2Data('rarity', data.rarity);
     setOrd2Data('des', data.des);
     setOrd2Data('sat', data.sat);
     console.log(ord2Data)
@@ -149,6 +151,7 @@ export default function Inscribe() {
             block: ord2Data.block.toString(),
             lim: ord2Data.limitPerMint.toString(),
             reg: ord2Data.reg.toString(),
+            rarity: ord2Data.rarity.toString(),
             des: ord2Data.des.toString(),
           }),
         ),

@@ -15,6 +15,7 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  Select,
   Button,
   Divider,
 } from '@chakra-ui/react';
@@ -35,6 +36,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
     limitPerMint: 1,
     block_start: 0,
     block_end: 0,
+    rarity: 'common',
     reg: '',
     des: '',
     sat: 0,
@@ -97,7 +99,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
               <Input
                 type='text'
                 maxLength={32}
-                placeholder='a characters like "abcd"'
+                placeholder='3 or 5-32 letters'
                 value={data.tick}
                 onChange={(e) => set('tick', e.target.value)}
               />
@@ -175,7 +177,27 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-40' marginBottom={0}>
-                  Reg
+                  Rarity
+                </FormLabel>
+                <div className='flex-1'>
+                  <Select
+                    placeholder='Select option'
+                    value={data.rarity}
+                    onChange={(e) => set('rarity', e.target.value)}>
+                    <option value='common'>common</option>
+                    <option value='uncommon'>uncommon</option>
+                    <option value='rare'>rare</option>
+                    <option value='epic'>epic</option>
+                    <option value='legendary'>legendary</option>
+                    <option value='mythic'>mythic</option>
+                  </Select>
+                </div>
+              </div>
+            </FormControl>
+            <FormControl>
+              <div className='flex items-center  mb-4'>
+                <FormLabel className='w-40' marginBottom={0}>
+                  Regular Expression
                 </FormLabel>
                 <div className='flex-1'>
                   <Input
