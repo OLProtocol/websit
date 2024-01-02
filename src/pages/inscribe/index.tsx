@@ -44,6 +44,8 @@ export default function Inscribe() {
     des: '',
     sat: '',
     rarity: 'common',
+    rarityChecked: false,
+    regChecked: false,
   });
   const [brc20Data, { set: setBrc20 }] = useMap({
     type: 'mint',
@@ -77,7 +79,8 @@ export default function Inscribe() {
     setOrd2Data('rarity', data.rarity);
     setOrd2Data('des', data.des);
     setOrd2Data('sat', data.sat);
-    console.log(ord2Data);
+    setOrd2Data('rarityChecked', data.rarityChecked);
+    setOrd2Data('regChecked', data.regChecked);
   };
   const brc20Next = () => {
     const list: any = [];
@@ -151,8 +154,10 @@ export default function Inscribe() {
             tick: ord2Data.tick.toString(),
             block: ord2Data.block.toString(),
             lim: ord2Data.limitPerMint.toString(),
-            reg: ord2Data.reg.toString(),
-            rarity: ord2Data.rarity.toString(),
+            reg: ord2Data.regChecked ? ord2Data.reg.toString() : undefined,
+            rarity: ord2Data.rarityChecked
+              ? ord2Data.rarity.toString()
+              : undefined,
             des: ord2Data.des.toString(),
           }),
         ),

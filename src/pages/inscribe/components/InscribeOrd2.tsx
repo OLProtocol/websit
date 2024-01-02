@@ -19,6 +19,7 @@ import {
   Button,
   Divider,
 } from '@chakra-ui/react';
+import { Checkbox } from 'antd';
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
 import { clacTextSize } from '../utils';
@@ -38,6 +39,8 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
     block_end: 0,
     rarity: 'common',
     reg: '',
+    rarityChecked: false,
+    regChecked: false,
     des: '',
     sat: 0,
   });
@@ -68,6 +71,9 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
     //   }
     // }
     setLoading(false);
+  };
+  const onRarityChange = (e) => {
+    console.log(e.target.checked);
   };
   useEffect(() => {
     onChange?.(data);
@@ -179,18 +185,26 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
                 <FormLabel className='w-40' marginBottom={0}>
                   Rarity
                 </FormLabel>
-                <div className='flex-1'>
-                  <Select
-                    placeholder='Select option'
-                    value={data.rarity}
-                    onChange={(e) => set('rarity', e.target.value)}>
-                    <option value='common'>common</option>
-                    <option value='uncommon'>uncommon</option>
-                    <option value='rare'>rare</option>
-                    <option value='epic'>epic</option>
-                    <option value='legendary'>legendary</option>
-                    <option value='mythic'>mythic</option>
-                  </Select>
+                <div className='flex-1 flex items-center'>
+                  <Checkbox
+                    checked={data.rarityChecked}
+                    onChange={(e) =>
+                      set('rarityChecked', e.target.checked)
+                    }></Checkbox>
+                  <div className='ml-2 flex-1'>
+                    <Select
+                      disabled={!data.rarityChecked}
+                      placeholder='Select option'
+                      value={data.rarity}
+                      onChange={(e) => set('rarity', e.target.value)}>
+                      <option value='common'>common</option>
+                      <option value='uncommon'>uncommon</option>
+                      <option value='rare'>rare</option>
+                      <option value='epic'>epic</option>
+                      <option value='legendary'>legendary</option>
+                      <option value='mythic'>mythic</option>
+                    </Select>
+                  </div>
                 </div>
               </div>
             </FormControl>
@@ -199,14 +213,22 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
                 <FormLabel className='w-40' marginBottom={0}>
                   Regular Expression
                 </FormLabel>
-                <div className='flex-1'>
-                  <Input
-                    type='text'
-                    maxLength={32}
-                    placeholder='like "^[1-9][0-9]*0{n}$"'
-                    value={data.reg}
-                    onChange={(e) => set('reg', e.target.value)}
-                  />
+                <div className='flex-1 flex items-center'>
+                  <Checkbox
+                    checked={data.regChecked}
+                    onChange={(e) =>
+                      set('regChecked', e.target.checked)
+                    }></Checkbox>
+                  <div className='ml-2 flex-1'>
+                    <Input
+                      type='text'
+                      disabled={!data.regChecked}
+                      maxLength={32}
+                      placeholder='like "^[1-9][0-9]*0{n}$"'
+                      value={data.reg}
+                      onChange={(e) => set('reg', e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
             </FormControl>
