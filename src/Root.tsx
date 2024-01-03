@@ -7,7 +7,7 @@ const { Header, Content, Footer, Sider } = Layout;
 
 export default function Root() {
   return (
-    <Layout>
+    <Layout className='h-full'>
       <Header className='sticky top-0 z-10'>
         <NavHeader />
       </Header>

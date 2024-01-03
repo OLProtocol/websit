@@ -59,6 +59,9 @@ export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
     <Table
       columns={columns}
       dataSource={dataSource}
+      pagination={{
+        position: ['bottomCenter'],
+      }}
       onRow={(record) => {
         return {
           onClick: () => clickHandler(record), // 点击行

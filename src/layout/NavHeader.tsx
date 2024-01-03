@@ -31,7 +31,7 @@ export const NavHeader = () => {
     },
     {
       key: 'https://tinyverse-space.gitbook.io/ordinals-x-protocol/',
-      label: `Doc`,
+      label: `Docs`,
       value: 'https://tinyverse-space.gitbook.io/ordinals-x-protocol/',
       type: 'link',
     },

@@ -2,15 +2,13 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { router } from '@/router';
 import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { use } from 'i18next';
-import { useEffect } from 'react';
 import { UnisatConnectProvider } from '@/provider/UnisatConnectProvider';
 import { StyleProvider } from '@ant-design/cssinjs';
 
 function App() {
   return (
     <StyleProvider hashPriority='high'>
-      <main>
+      <main className='h-full'>
         <Toaster
           containerStyle={{ zIndex: 9999999, wordBreak: 'break-all' }}
           position='top-center'

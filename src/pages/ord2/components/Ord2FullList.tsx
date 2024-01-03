@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { Space, Table, Tag } from 'antd';
+import { Segmented, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useOrd2Status } from '@/api';
 import { useNavigate } from 'react-router-dom';
@@ -63,14 +63,19 @@ export const Ord2FullList = () => {
     [list],
   );
   return (
-    <div className='max-w-6xl rounded-3xl p-4 mx-auto'>
+    <div className='rounded-3xl p-4 mx-auto bg-gray-200'>
       <h2 className='mb-2 font-bold text-lg text-center'>
         The full list of ord2
       </h2>
-
+      <div className='flex mb-4 justify-center'>
+        <Segmented options={['All', 'In-Progress', 'Completed']} block className='w-80' />
+      </div>
       <Table
         columns={columns}
         dataSource={dataSource}
+        pagination={{
+          position: ['bottomCenter'],
+        }}
         onRow={(record) => {
           return {
             onClick: () => clickHandler(record), // 点击行

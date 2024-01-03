@@ -45,5 +45,13 @@ export const InfoHolders = () => {
     ],
     [],
   );
-  return <Table columns={columns} dataSource={dataSource} />;
+  return (
+    <Table
+      columns={columns}
+      dataSource={dataSource}
+      pagination={{
+        position: ['bottomCenter'],
+      }}
+    />
+  );
 };
