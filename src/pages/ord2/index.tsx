@@ -16,11 +16,12 @@ export default function Ord2Index() {
   const q = searchParams.get('q');
   const showAddress = useMemo(() => {
     return address ? true : false;
-  }, [q]);
+  }, [address]);
   const doSearch = () => {
     nav(`${ROUTE_PATH.ORD2_INDEX}?q=${address}`)
   };
   useEffect(() => {
+    console.log(q)
     if (q) {
       setAddress(q);
     }
