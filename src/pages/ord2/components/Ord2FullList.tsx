@@ -12,7 +12,7 @@ interface DataType {
 export const Ord2FullList = () => {
   const nav = useNavigate();
   const { data } = useOrd2Status({ start: 0, limit: 10 });
-  const list = useMemo(() => data?.detail?.[0] || [], [data]);
+  const list = useMemo(() => data?.detail || [], [data]);
   useEffect(() => {}, []);
   const clickHandler = (item) => {
     nav(`/ord2/${item.tick}`);
@@ -22,6 +22,11 @@ export const Ord2FullList = () => {
       title: 'Tick',
       dataIndex: 'tick',
       key: 'tick',
+    },
+    {
+      title: 'Deploy Time',
+      dataIndex: 'deploy_time',
+      key: 'deploy_time',
     },
     {
       title: 'Block',
@@ -40,13 +45,20 @@ export const Ord2FullList = () => {
         );
       },
     },
+    {
+      title: 'Holders',
+      dataIndex: 'holders',
+      key: 'holders',
+    },
   ];
   const dataSource: DataType[] = useMemo(
     () =>
       list.map((item) => ({
-        tick: item.tick,
-        block: `${item.block_start}-${item.block_end}`,
+        tick: item.ticker,
+        block: `${item.startBlock}-${item.endBlock}`,
         rarity: item.rarity,
+        holders: item.holdersCount,
+        deploy_time: new Date(item.deployBlocktime).toLocaleString(),
       })),
     [list],
   );

@@ -29,20 +29,29 @@ export default function Ord2Info() {
           </div>
           <div className='mb-2'>
             <p className='text-gray-400'>Block:</p>
-            <p className='indent-2'>{`${detail?.block_start}-${detail?.block_end}`}</p>
+            <p className='indent-2'>{`${detail?.startBlock}-${detail?.endBlock}`}</p>
+          </div>
+          <div className='mb-2'>
+            <p className='text-gray-400'>Deploy Time:</p>
+            <p className='indent-2'>{ new Date(detail?.deployBlocktime).toLocaleString()}</p>
           </div>
           <div className='mb-2'>
             <p className='text-gray-400'>Minted:</p>
-            <p className='indent-2'>{detail?.minted}</p>
+            <p className='indent-2'>{detail?.totalMinted}</p>
           </div>
           <div className='mb-2'>
             <p className='text-gray-400'>Limit per mint:</p>
-            <p className='indent-2'>{detail?.limit_per_mint}</p>
+            <p className='indent-2'>{detail?.limit}</p>
           </div>
           <div className=''>
             <p className='text-gray-400'>Rarity:</p>
             <p className='indent-2'>{detail?.rarity}</p>
           </div>
+          <div className=''>
+            <p className='text-gray-400'>holders:</p>
+            <p className='indent-2'>{detail?.holdersCount}</p>
+          </div>
+
         </div>
       </div>
       <div className='border-[1px] border-gray-200 rounded-xl'>
