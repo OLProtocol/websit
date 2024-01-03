@@ -19,9 +19,11 @@ import {
   Button,
   Divider,
 } from '@chakra-ui/react';
+import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
+import { fetchTipHeight } from '@/lib/utils';
 import { clacTextSize } from '../utils';
 
 interface InscribeOrd2Props {
@@ -29,12 +31,13 @@ interface InscribeOrd2Props {
   onChange?: (data: any) => void;
 }
 export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
+  const { network } = useUnisatConnect();
   const [data, { set }] = useMap({
     type: 'mint',
     tick: '',
     amount: 1,
     repeatMint: 1,
-    limitPerMint: 1,
+    limitPerMint: 10000,
     block_start: 0,
     block_end: 0,
     rarity: 'common',
@@ -72,9 +75,15 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
     // }
     setLoading(false);
   };
-  const onRarityChange = (e) => {
-    console.log(e.target.checked);
+  const getHeight = async () => {
+    const height = await fetchTipHeight(network as any);
+    console.log('height', height);
+    set('block_start', height);
+    set('block_end', height + 4320);
   };
+  useEffect(() => {
+    getHeight();
+  }, []);
   useEffect(() => {
     onChange?.(data);
   }, [data]);

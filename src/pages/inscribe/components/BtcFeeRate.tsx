@@ -21,9 +21,9 @@ interface BtcFeeRate {
 export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
   const [type, setType] = useState('');
   const [preValue, setPreValue] = useState(0);
-  const [customValue, setCustomValue] = useState(0);
-  const [economyValue, setEconomyValue] = useState(0);
-  const [normalValue, setNormalValue] = useState(0);
+  const [customValue, setCustomValue] = useState(1);
+  const [economyValue, setEconomyValue] = useState(1);
+  const [normalValue, setNormalValue] = useState(1);
   const [minFee, setMinFee] = useState(1);
   const [maxFee, setMaxFee] = useState(500);
   const { network } = useUnisatConnect();
@@ -35,13 +35,22 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
     }
   };
   const getRecommendFee = async () => {
-    const res = await fetchChainFeeRate(network as any)
-    setCustomValue(res.fastestFee);
-    setEconomyValue(res.hourFee);
-    setNormalValue(res.halfHourFee);
-    setMinFee(res.minimumFee);
-    setType('Normal');
-    onChange?.(res.halfHourFee);
+    try {
+      const res = await fetchChainFeeRate(network as any);
+      setCustomValue(res.fastestFee);
+      setEconomyValue(res.hourFee);
+      setNormalValue(res.halfHourFee);
+      setMinFee(res.minimumFee);
+      setType('Normal');
+      onChange?.(res.halfHourFee);
+    } catch (error) {
+      setCustomValue(network === 'testnet' ? 1 : 50);
+      setEconomyValue(network === 'testnet' ? 1 : 50);
+      setNormalValue(network === 'testnet' ? 1 : 50);
+      setMinFee(network === 'testnet' ? 1 : 50);
+      setType('Normal');
+      onChange?.(network === 'testnet' ? 1 : 50);
+    }
   };
   const list = useMemo(
     () => [

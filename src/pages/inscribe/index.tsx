@@ -38,7 +38,7 @@ export default function Inscribe() {
     tick: '',
     amount: 1,
     repeatMint: 1,
-    limitPerMint: 1,
+    limitPerMint: 10000,
     block: '',
     reg: '',
     des: '',
