@@ -11,3 +11,11 @@ export const hideStr = (
   }
   return '';
 };
+export const isRegExp = (str: string) => {
+  try {
+    new RegExp(str);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};

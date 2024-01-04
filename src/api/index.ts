@@ -1,4 +1,6 @@
 import useSWR from 'swr';
+import useSWRMutation from 'swr/mutation';
+import axios from 'axios';
 
 const fetcher = (args) =>
   fetch(args)
@@ -40,16 +42,24 @@ interface Ord2InfoParams {
   tick?: string;
 }
 export const useOrd2Info = ({ tick }: Ord2InfoParams) => {
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
     generateUrl(`v1/indexer/ord2/${tick}/info`),
     fetcher,
   );
   return {
     data,
+    trigger,
+    reset,
     error,
-    isLoading,
+    isLoading: isMutating,
   };
 };
+export const requstOrd2Info = async ({ tick }: Ord2InfoParams) => {
+  const { data } = await axios.get(
+    generateUrl(`v1/indexer/ord2/${tick}/info`),
+  );
+  return data;
+}
 interface Ord2SummaryParams {
   address?: string;
 }

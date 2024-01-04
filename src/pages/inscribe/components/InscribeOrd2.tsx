@@ -25,6 +25,7 @@ import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
 import { fetchTipHeight } from '@/lib/utils';
 import { clacTextSize } from '../utils';
+import { requstOrd2Info } from '@/api';
 
 interface InscribeOrd2Props {
   onNext?: () => void;
@@ -57,6 +58,19 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
     if (textSize < 3 || textSize == 4 || textSize > 32) {
       setErrorText('Tick must be 3, 5-32 byte long');
       return;
+    }
+    const info = await requstOrd2Info({ tick: data.tick });
+    console.log(info);
+    if (data.type === 'deploy') {
+      if (info.data) {
+        setErrorText(`${data.tick} has been deployed`);
+        return;
+      }
+    } else if (data.type === 'mint') {
+      if (!info.data) {
+        setErrorText(`${data.tick} has not been deployed`);
+        return;
+      }
     }
     setLoading(true);
     onNext?.();

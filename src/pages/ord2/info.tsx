@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useOrd2Info } from '@/api';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Segmented } from 'antd';
 import { InfoHolders } from './components/InfoHolders';
 export default function Ord2Info() {
@@ -11,7 +11,12 @@ export default function Ord2Info() {
       setTabIndex(i);
     }
   };
-  const { data: detail } = useOrd2Info({ tick });
+  const { data: detail, trigger } = useOrd2Info({ tick });
+  useEffect(() => {
+    if (tick) {
+      trigger();
+    }
+  }, [tick]);
   return (
     <div className='max-w-4xl mx-auto mt-8'>
       <div className='flex justify-between mb-4 items-center'>
@@ -33,7 +38,9 @@ export default function Ord2Info() {
           </div>
           <div className='mb-2'>
             <p className='text-gray-400'>Deploy Time:</p>
-            <p className='indent-2'>{ new Date(detail?.deployBlocktime).toLocaleString()}</p>
+            <p className='indent-2'>
+              {new Date(detail?.deployBlocktime).toLocaleString()}
+            </p>
           </div>
           <div className='mb-2'>
             <p className='text-gray-400'>Minted:</p>
@@ -51,12 +58,11 @@ export default function Ord2Info() {
             <p className='text-gray-400'>holders:</p>
             <p className='indent-2'>{detail?.holdersCount}</p>
           </div>
-
         </div>
       </div>
       <div className='border-[1px] border-gray-200 rounded-xl'>
         <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-14 items-center'>
-        <Segmented options={['Holder', 'Transfers']} block className='w-52'/>
+          <Segmented options={['Holder', 'Transfers']} block className='w-52' />
         </div>
         <div className='p-4'>
           <InfoHolders />
