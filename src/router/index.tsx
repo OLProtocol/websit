@@ -2,8 +2,8 @@ import { createHashRouter, RouteObject } from 'react-router-dom';
 import Root from '@/Root';
 import Home from '@/pages/home';
 import Inscribe from '@/pages/inscribe';
-import Ord2Index from '@/pages/ord2';
-import Ord2Info from '@/pages/ord2/info';
+import Ord2Index from '@/pages/ordx';
+import Ord2Info from '@/pages/ordx/info';
 
 const resolveHashPath = (path: string) => {
   return `/#${path}`;
@@ -12,8 +12,8 @@ const resolveHashPath = (path: string) => {
 export const ROUTE_PATH = {
   HOME: '/',
   INSCRIBE: '/inscribe',
-  ORD2_INDEX: '/ord2',
-  ORD2_INFO: '/ord2/:tick'
+  ORDX_INDEX: '/ordx',
+  ORDX_INFO: '/ordx/:tick'
 };
 const hashPath: any = {};
 Object.keys(ROUTE_PATH).forEach((k: any) => {
@@ -37,11 +37,11 @@ export const routes: RouteObject[] = [
         element: <Inscribe />,
       },
       {
-        path: ROUTE_PATH.ORD2_INDEX,
+        path: ROUTE_PATH.ORDX_INDEX,
         element: <Ord2Index />,
       },
       {
-        path: ROUTE_PATH.ORD2_INFO,
+        path: ROUTE_PATH.ORDX_INFO,
         element: <Ord2Info />,
       },
     ],

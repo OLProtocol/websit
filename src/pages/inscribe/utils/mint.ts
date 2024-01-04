@@ -39,7 +39,7 @@ export const generteFiles = (list: any[]) => {
       file.content = value;
       file.hex = textToHex(value);
       file.sha256 = '';
-    } else if (type === 'ord2') {
+    } else if (type === 'ordx') {
       file.mimetype = 'text/plain;charset=utf-8';
       file.text = value;
       file.content = value;

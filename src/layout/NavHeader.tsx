@@ -24,9 +24,9 @@ export const NavHeader = () => {
       type: 'route',
     },
     {
-      key: ROUTE_PATH.ORD2_INDEX,
-      label: `Ord2`,
-      value: ROUTE_PATH.ORD2_INDEX,
+      key: ROUTE_PATH.ORDX_INDEX,
+      label: `Ordx`,
+      value: ROUTE_PATH.ORDX_INDEX,
       type: 'route',
     },
     {
@@ -73,8 +73,8 @@ export const NavHeader = () => {
           </LinkBox>
           <Divider orientation='vertical' className='mx-4' />
           <LinkBox>
-            <LinkOverlay href='/#/ord2'>
-              Ord2
+            <LinkOverlay href='/#/ordx'>
+              Ordx
             </LinkOverlay>
           </LinkBox> */}
         </div>

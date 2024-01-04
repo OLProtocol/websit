@@ -22,9 +22,9 @@ import {
   Divider,
   VStack,
 } from '@chakra-ui/react';
-import { Tx } from '@cmdcode/tapscript';
 import { InscribeOrderItem } from './InscribeOrderItem';
 import { useUnisat, useUnisatConnect } from '@/lib/hooks/unisat';
+import { BusButton } from '@/components/BusButton';
 import { useOrderStore, OrderItemType } from '@/store';
 import {
   loopTilAddressReceivesMoney,
@@ -64,6 +64,7 @@ export const InscribingOrderModal = ({
     changeInscriptionStatus,
     setFunding,
   } = useOrderStore((state) => state);
+
   const unisat = useUnisat();
   const [payStatus, setPayStatus] = useState(false);
   const { activeStep, setActiveStep } = useSteps({
@@ -80,9 +81,7 @@ export const InscribingOrderModal = ({
     const base_size = 157;
     const { feeRate, inscriptionSize, inscriptions } = order;
     if (inscriptions.length === 1) {
-      return (
-        inscriptions[0].txsize * feeRate + inscriptionSize
-      );
+      return inscriptions[0].txsize * feeRate + inscriptionSize;
     } else {
       let totalInscriptionFee = 0;
       for (let i = 0; i < inscriptions.length; i++) {
@@ -237,7 +236,7 @@ export const InscribingOrderModal = ({
           isClosable: true,
           position: 'top',
         });
-        finishedNum +=1;
+        finishedNum += 1;
       }
       if (finishedNum === order.inscriptions.length) {
         changeStatus(orderId, 'inscribe_success');
@@ -259,10 +258,15 @@ export const InscribingOrderModal = ({
     setLoading(false);
   };
   const checkStatus = () => {
+    console.log(order);
     if (order?.status === 'paid') {
       setActiveStep(2);
-    } else if (order?.funding && order?.commitTx) {
+    }
+    if (order?.funding && order?.commitTx) {
       setActiveStep(2);
+    }
+    if (order?.status === 'inscribe_success') {
+      setActiveStep(3);
     }
   };
   useEffect(() => {
@@ -315,12 +319,14 @@ export const InscribingOrderModal = ({
                   </div>
                 </div>
                 <div className='flex justify-center'>
-                  <Button
-                    colorScheme='blue'
-                    isLoading={loading}
-                    onClick={payOrder}>
-                    Pay with Wallet
-                  </Button>
+                  <BusButton>
+                    <Button
+                      colorScheme='blue'
+                      isLoading={loading}
+                      onClick={payOrder}>
+                      Pay with Wallet
+                    </Button>
+                  </BusButton>
                 </div>
               </div>
             )}

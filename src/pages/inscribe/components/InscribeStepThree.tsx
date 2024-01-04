@@ -11,9 +11,8 @@ import {
 import { useMemo, useState, useEffect } from 'react';
 import { useMap, useList } from 'react-use';
 import { InscribeRemoveItem } from './InscribeRemoveItem';
-import { Tap, Script, Address, Tx, Signer } from '@cmdcode/tapscript';
 import { BtcFeeRate } from './BtcFeeRate';
-import { BtcFeeCalc } from './BtcFeeCalc';
+import { BusButton } from '@/components/BusButton';
 import { v4 as uuidV4 } from 'uuid';
 // import mempoolJS from '@mempool/mempool.js';
 import {
@@ -159,9 +158,11 @@ export const InscribeStepThree = ({
         </p>
       </div>
       <div className='w-60 mx-auto'>
-        <Button size='md' colorScheme='blue' width='100%' onClick={submit}>
-          Submit & Pay invoice
-        </Button>
+        <BusButton>
+          <Button size='md' colorScheme='blue' width='100%' onClick={submit}>
+            Submit & Pay invoice
+          </Button>
+        </BusButton>
       </div>
     </div>
   );

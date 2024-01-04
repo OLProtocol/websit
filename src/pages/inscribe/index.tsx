@@ -33,7 +33,7 @@ export default function Inscribe() {
     //   value: 'well4',
     // },
   ]);
-  const [ord2Data, { set: setOrd2Data }] = useMap({
+  const [ordxData, { set: setOrd2Data }] = useMap({
     type: 'mint',
     tick: '',
     amount: 1,
@@ -67,7 +67,7 @@ export default function Inscribe() {
     setBrc20('limitPerMint', data.limitPerMint);
     setBrc20('totalSupply', data.totalSupply);
   };
-  const ord2Change = (data: any) => {
+  const ordxChange = (data: any) => {
     console.log(data);
     setOrd2Data('type', data.type);
     setOrd2Data('tick', data.tick);
@@ -124,41 +124,41 @@ export default function Inscribe() {
     setList(list);
     setStep(2);
   };
-  const ord2Next = () => {
+  const ordxNext = () => {
     const list: any = [];
-    if (ord2Data.type === 'mint') {
-      for (let i = 0; i < ord2Data.repeatMint; i++) {
+    if (ordxData.type === 'mint') {
+      for (let i = 0; i < ordxData.repeatMint; i++) {
         list.push({
-          type: 'ord2',
+          type: 'ordx',
           name: `mint_${i}`,
           value: JSON.stringify(
             removeObjectEmptyValue({
-              p: 'ord2',
+              p: 'ordx',
               op: 'mint',
-              tick: ord2Data.tick.toString(),
-              amt: ord2Data.amount.toString(),
-              sat: ord2Data.sat.toString(),
+              tick: ordxData.tick.toString(),
+              amt: ordxData.amount.toString(),
+              sat: ordxData.sat.toString(),
             }),
           ),
         });
       }
-    } else if (ord2Data.type === 'deploy') {
-      console.log(ord2Data);
+    } else if (ordxData.type === 'deploy') {
+      console.log(ordxData);
       list.push({
-        type: 'ord2',
+        type: 'ordx',
         name: 'deploy_0',
         value: JSON.stringify(
           removeObjectEmptyValue({
-            p: 'ord2',
+            p: 'ordx',
             op: 'deploy',
-            tick: ord2Data.tick.toString(),
-            block: ord2Data.block.toString(),
-            lim: ord2Data.limitPerMint.toString(),
-            reg: ord2Data.regChecked ? ord2Data.reg.toString() : undefined,
-            rarity: ord2Data.rarityChecked
-              ? ord2Data.rarity.toString()
+            tick: ordxData.tick.toString(),
+            block: ordxData.block.toString(),
+            lim: ordxData.limitPerMint.toString(),
+            reg: ordxData.regChecked ? ordxData.reg.toString() : undefined,
+            rarity: ordxData.rarityChecked
+              ? ordxData.rarity.toString()
               : undefined,
-            des: ord2Data.des.toString(),
+            des: ordxData.des.toString(),
           }),
         ),
       });
@@ -203,7 +203,7 @@ export default function Inscribe() {
     }
   };
   const type = useMemo(() => {
-    const typeMap = ['text', 'brc-20', 'ord2'];
+    const typeMap = ['text', 'brc-20', 'ordx'];
     return typeMap[tabIndex];
   }, [tabIndex]);
   const onItemRemove = async (index: number) => {
@@ -252,7 +252,7 @@ export default function Inscribe() {
           <TabList>
             <Tab>Text</Tab>
             <Tab>Brc-20</Tab>
-            <Tab>Ord2</Tab>
+            <Tab>Ordx</Tab>
           </TabList>
         </Tabs>
         <div className=' min-h-[10rem] mx-auto bg-gray-50 p-8 rounded-lg mb-4'>
@@ -264,8 +264,8 @@ export default function Inscribe() {
               {type === 'brc-20' && (
                 <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
               )}
-              {type === 'ord2' && (
-                <InscribeOrd2 onChange={ord2Change} onNext={ord2Next} />
+              {type === 'ordx' && (
+                <InscribeOrd2 onChange={ordxChange} onNext={ordxNext} />
               )}
             </>
           )}

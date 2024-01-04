@@ -7,14 +7,6 @@ import {
   Input,
   NumberInput,
   NumberInputField,
-  Flex,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
   Select,
   Button,
   Divider,
@@ -59,19 +51,19 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
       setErrorText('Tick must be 3, 5-32 byte long');
       return;
     }
-    const info = await requstOrd2Info({ tick: data.tick });
-    console.log(info);
-    if (data.type === 'deploy') {
-      if (info.data) {
-        setErrorText(`${data.tick} has been deployed`);
-        return;
-      }
-    } else if (data.type === 'mint') {
-      if (!info.data) {
-        setErrorText(`${data.tick} has not been deployed`);
-        return;
-      }
-    }
+    // const info = await requstOrd2Info({ tick: data.tick });
+    // console.log(info);
+    // if (data.type === 'deploy') {
+    //   if (info.data) {
+    //     setErrorText(`${data.tick} has been deployed`);
+    //     return;
+    //   }
+    // } else if (data.type === 'mint') {
+    //   if (!info.data) {
+    //     setErrorText(`${data.tick} has not been deployed`);
+    //     return;
+    //   }
+    // }
     setLoading(true);
     onNext?.();
     // const info = await fetchBrc20Info();

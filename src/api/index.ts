@@ -22,13 +22,13 @@ interface Ord2ListStatusParams {
   complete?: string;
 }
 export const generateUrl = (url: string) => {
-  return `${VITE_API_HOST}/${url}`;
+  return `${VITE_API_HOST}/ordx/${url}`;
 };
 export const useOrd2Status = ({ start, limit }: Ord2ListStatusParams) => {
   console.log(start);
   console.log(limit);
   const { data, error, isLoading } = useSWR(
-    generateUrl('v1/indexer/ord2/status'),
+    generateUrl('v1/indexer/ordx/status'),
     fetcher,
   );
   return {
@@ -43,7 +43,7 @@ interface Ord2InfoParams {
 }
 export const useOrd2Info = ({ tick }: Ord2InfoParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    generateUrl(`v1/indexer/ord2/${tick}/info`),
+    generateUrl(`v1/indexer/ordx/${tick}/info`),
     fetcher,
   );
   return {
@@ -56,7 +56,7 @@ export const useOrd2Info = ({ tick }: Ord2InfoParams) => {
 };
 export const requstOrd2Info = async ({ tick }: Ord2InfoParams) => {
   const { data } = await axios.get(
-    generateUrl(`v1/indexer/ord2/${tick}/info`),
+    generateUrl(`v1/indexer/ordx/${tick}/info`),
   );
   return data;
 }
@@ -65,7 +65,7 @@ interface Ord2SummaryParams {
 }
 export const useOrd2Summary = ({ address }: Ord2SummaryParams) => {
   const { data, error, isLoading } = useSWR(
-    generateUrl(`v1/indexer/ord2/${address}/info`),
+    generateUrl(`v1/indexer/ordx/${address}/info`),
     fetcher,
   );
   return {

@@ -2,9 +2,9 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Input, Select, Space } from 'antd';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Ord2FullList } from './components/Ord2FullList';
-import { Ord2SummaryList } from './components/Ord2SummaryList';
-import { Ord2History } from './components/Ord2History';
+import { Ord2FullList } from './components/OrdxFullList';
+import { Ord2SummaryList } from './components/OrdxSummaryList';
+import { Ord2History } from './components/OrdxHistory';
 import { ROUTE_PATH } from '@/router';
 
 const { Search } = Input;
@@ -18,7 +18,7 @@ export default function Ord2Index() {
     return address ? true : false;
   }, [address]);
   const doSearch = () => {
-    nav(`${ROUTE_PATH.ORD2_INDEX}?q=${address}`)
+    nav(`${ROUTE_PATH.ORDX_INDEX}?q=${address}`)
   };
   useEffect(() => {
     console.log(q)
@@ -31,7 +31,7 @@ export default function Ord2Index() {
       <div className='w-[30rem] mx-auto pt-20 mb-4'>
         {!showAddress && (
           <h1 className='text-2xl text-orange-500 text-center mb-8'>
-            Check out brc-20 balance of the address.
+            Check out ordx balance of the address.
           </h1>
         )}
 

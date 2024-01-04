@@ -15,7 +15,7 @@ export const Ord2FullList = () => {
   const list = useMemo(() => data?.detail || [], [data]);
   useEffect(() => {}, []);
   const clickHandler = (item) => {
-    nav(`/ord2/${item.tick}`);
+    nav(`/ordx/${item.tick}`);
   };
   const columns: ColumnsType<DataType> = [
     {
@@ -65,7 +65,7 @@ export const Ord2FullList = () => {
   return (
     <div className='rounded-3xl p-4 mx-auto bg-gray-200'>
       <h2 className='mb-2 font-bold text-lg text-center'>
-        The full list of ord2
+        The full list of ordx
       </h2>
       <div className='flex mb-4 justify-center'>
         <Segmented options={['All', 'In-Progress', 'Completed']} block className='w-80' />

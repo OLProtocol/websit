@@ -1,6 +1,6 @@
 import { useOrd2Summary } from '@/api';
 import { useMemo } from 'react';
-import { Ord2Item } from './Ord2Item';
+import { Ord2Item } from './OrdxItem';
 interface Ord2SummaryListProps {
   address: string;
 }
