@@ -30,9 +30,9 @@ export const NavHeader = () => {
       type: 'route',
     },
     {
-      key: 'https://tinyverse-space.gitbook.io/ordinals-x-protocol/',
+      key: 'https://docs.tinyverse.space/',
       label: `Docs`,
-      value: 'https://tinyverse-space.gitbook.io/ordinals-x-protocol/',
+      value: 'https://docs.tinyverse.space/',
       type: 'link',
     },
   ];
