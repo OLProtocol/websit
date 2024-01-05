@@ -17,7 +17,6 @@ export const OrderList = ({ onOrderClick }: OrderListProps) => {
       tab: 'Local Order',
     },
   ];
-  console.log(activeTab);
   const onTabChange = (key: string) => {
     setActiveTab(key);
   };

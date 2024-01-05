@@ -1,5 +1,5 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-
+import { Radio } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { InscribeBrc20 } from './components/InscribeBrc20';
 import { InscribeOrd2 } from './components/InscribeOrd2';
@@ -13,7 +13,7 @@ import { OrderList } from './components/OrderList';
 
 export default function Inscribe() {
   const [step, setStep] = useState(3);
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tab, setTab] = useState('text');
   const [orderId, setOrderId] = useState<string>();
   const [modalShow, setModalShow] = useState(false);
   const [list, { set: setList, clear: clearList, removeAt }] = useList<any>([
@@ -195,16 +195,14 @@ export default function Inscribe() {
   const stepTwoBack = () => {
     setStep(1);
   };
-  const handleTabsChange = (i: number) => {
-    if (i !== tabIndex) {
-      setTabIndex(i);
+  const handleTabsChange = (e: any) => {
+    console.log(e.target.value);
+    const value = e.target.value;
+    if (tab !== value) {
+      setTab(value);
       clearList();
     }
   };
-  const type = useMemo(() => {
-    const typeMap = ['text', 'brc-20', 'ordx'];
-    return typeMap[tabIndex];
-  }, [tabIndex]);
   const onItemRemove = async (index: number) => {
     await removeAt(index);
   };
@@ -242,28 +240,27 @@ export default function Inscribe() {
     <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
       <h1 className='text-lg font-bold text-center mb-4'>Inscribe</h1>
       <div>
-        <Tabs
-          variant='soft-rounded'
-          index={tabIndex}
-          onChange={handleTabsChange}
-          className='mb-4'
-          colorScheme='green'>
-          <TabList>
-            <Tab>Text</Tab>
-            <Tab>Brc-20</Tab>
-            <Tab>Ordx</Tab>
-          </TabList>
-        </Tabs>
+        <div className='mb-4 flex justify-center'>
+          <Radio.Group
+            defaultValue='text'
+            size='large'
+            
+            onChange={handleTabsChange}>
+            <Radio.Button value='text'>Text</Radio.Button>
+            <Radio.Button value='brc-20'>Brc-20</Radio.Button>
+            <Radio.Button value='ordx'>Ordx</Radio.Button>
+          </Radio.Group>
+        </div>
         <div className=' min-h-[10rem] mx-auto bg-gray-50 p-8 rounded-lg mb-4'>
           {step === 1 && (
             <>
-              {type === 'text' && (
+              {tab === 'text' && (
                 <InscribeText onNext={textNext} onChange={textChange} />
               )}
-              {type === 'brc-20' && (
+              {tab === 'brc-20' && (
                 <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
               )}
-              {type === 'ordx' && (
+              {tab === 'ordx' && (
                 <InscribeOrd2 onChange={ordxChange} onNext={ordxNext} />
               )}
             </>

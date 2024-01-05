@@ -51,7 +51,10 @@ export const NavHeader = () => {
     <header className='h-full'>
       <div className='flex h-full items-center'>
         <div className='flex-1 flex h-full items-center'>
-          <div className='mr-8 text-white'>Logo</div>
+          <div className='mr-4 text-white items-center flex'>
+            <img src='/logo.jpg' alt='' className='h-8 mr-2' />
+            <span>OLD Protocol</span>
+          </div>
           <Menu
             onSelect={onMenuSelect}
             theme='dark'
