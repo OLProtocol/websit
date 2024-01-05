@@ -3,25 +3,12 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Button,
-  Step,
-  StepDescription,
-  StepIcon,
-  StepIndicator,
-  StepNumber,
-  StepSeparator,
-  StepStatus,
-  StepTitle,
-  Stepper,
-  useSteps,
-  Box,
   useToast,
-  Divider,
   VStack,
 } from '@chakra-ui/react';
+import { Card, Steps, Divider, Button } from 'antd';
 import { InscribeOrderItem } from './InscribeOrderItem';
 import { useUnisat, useUnisatConnect } from '@/lib/hooks/unisat';
 import { BusButton } from '@/components/BusButton';
@@ -35,6 +22,7 @@ import {
 } from '../utils';
 import { useEffect, useMemo, useState } from 'react';
 import { _0n } from '@cmdcode/crypto-utils/dist/const';
+import { hideStr } from '@/lib/utils';
 
 interface InscribingOrderMdaolProps {
   show: boolean;
@@ -53,6 +41,7 @@ export const InscribingOrderModal = ({
     { title: 'Payment' },
     { title: 'Payment Result' },
     { title: 'Start Inscribing' },
+    { title: 'Inscribe Result' },
   ];
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -67,10 +56,7 @@ export const InscribingOrderModal = ({
 
   const unisat = useUnisat();
   const [payStatus, setPayStatus] = useState(false);
-  const { activeStep, setActiveStep } = useSteps({
-    index: 1,
-    count: steps.length,
-  });
+  const [activeStep, setActiveStep] = useState(0);
   const order = useMemo(() => {
     return findOrder(orderId);
   }, [orderId]);
@@ -125,7 +111,7 @@ export const InscribingOrderModal = ({
         };
         setCommitTx(orderId, commitTx);
         changeStatus(orderId, 'paid');
-        setActiveStep(2);
+        setActiveStep(1);
         setTimeout(() => {
           startInscribe();
         }, 0);
@@ -156,7 +142,7 @@ export const InscribingOrderModal = ({
         });
         changeStatus(orderId, 'paid');
         setCommitTx(orderId, commitData);
-        setActiveStep(2);
+        setActiveStep(1);
         setTimeout(() => {
           startInscribe();
         }, 0);
@@ -187,9 +173,9 @@ export const InscribingOrderModal = ({
         true,
       );
     }
-    setActiveStep(3);
+    setActiveStep(2);
     setTimeout(() => {
-      inscribeHandler()
+      inscribeHandler();
     }, 0);
     setLoading(false);
   };
@@ -255,15 +241,35 @@ export const InscribingOrderModal = ({
   const checkStatus = () => {
     console.log(order);
     if (order?.status === 'paid') {
-      setActiveStep(2);
+      setActiveStep(1);
     }
     if (order?.funding && order?.commitTx) {
-      setActiveStep(2);
+      setActiveStep(1);
     }
     if (order?.status === 'inscribe_success') {
       setActiveStep(3);
     }
   };
+  const commitTxHref = useMemo(() => {
+    if (!order?.commitTx) {
+      return '';
+    }
+    const { txid } = order.commitTx;
+    return `https://mempool.space/testnet/tx/${txid}`;
+  }, [order?.commitTx]);
+  const fundingAddress = useMemo(() => {
+    if (!order?.secret) {
+      return '';
+    }
+    const { address } = getFundingAddress(order.secret, order.network);
+    return address;
+  }, [order?.secret, order?.network]);
+  const fundingAddressHref = useMemo(() => {
+    if (!fundingAddress) {
+      return '';
+    }
+    return `https://mempool.space/testnet/address/${fundingAddress}`;
+  }, [fundingAddress]);
   useEffect(() => {
     checkStatus();
   }, []);
@@ -278,27 +284,11 @@ export const InscribingOrderModal = ({
         <ModalCloseButton />
         <ModalBody>
           <div className='mb-4'>
-            <Stepper index={activeStep}>
-              {steps.map((step, index) => (
-                <Step key={index}>
-                  <StepIndicator>
-                    <StepStatus
-                      complete={<StepIcon />}
-                      incomplete={<StepNumber />}
-                      active={<StepNumber />}
-                    />
-                  </StepIndicator>
-                  <Box flexShrink='0'>
-                    <StepTitle>{step.title}</StepTitle>
-                  </Box>
-                  <StepSeparator />
-                </Step>
-              ))}
-            </Stepper>
+            <Steps current={activeStep} items={steps} />
           </div>
           <div>
             {/* step one */}
-            {activeStep === 1 && (
+            {activeStep === 0 && (
               <div>
                 <div className='flex justify-between'>
                   <div>Fee Rate</div>
@@ -316,8 +306,8 @@ export const InscribingOrderModal = ({
                 <div className='flex justify-center'>
                   <BusButton>
                     <Button
-                      colorScheme='blue'
-                      isLoading={loading}
+                      type='primary'
+                      loading={loading}
                       onClick={payOrder}>
                       Pay with Wallet
                     </Button>
@@ -326,7 +316,7 @@ export const InscribingOrderModal = ({
               </div>
             )}
             {/* step two */}
-            {activeStep === 2 && (
+            {activeStep === 1 && (
               <div>
                 <div className='text-center mb-2'>
                   <div className='text-2xl font-bold'>Payment Result</div>
@@ -342,9 +332,9 @@ export const InscribingOrderModal = ({
                 )}
                 <div className='flex justify-center mt-4'>
                   <Button
-                    colorScheme='blue'
-                    isDisabled={payStatus}
-                    isLoading={loading}
+                    type='primary'
+                    disabled={payStatus}
+                    loading={loading}
                     onClick={startInscribe}>
                     Start Inscribing
                   </Button>
@@ -352,7 +342,7 @@ export const InscribingOrderModal = ({
               </div>
             )}
             {/* step three */}
-            {activeStep === 3 && (
+            {activeStep === 2 && (
               <div>
                 <div className='text-center'>
                   <div className='text-2xl font-bold'>Inscribing</div>
@@ -362,16 +352,81 @@ export const InscribingOrderModal = ({
                 </div>
                 <div className='flex justify-center mt-4'>
                   <Button
-                    colorScheme='blue'
-                    isLoading={loading}
+                    type='primary'
+                    loading={loading}
                     onClick={inscribeHandler}>
                     Inscribe
                   </Button>
                 </div>
               </div>
             )}
+            {activeStep === 3 && (
+              <div>
+                <div className='text-center mb-4'>
+                  <div className='text-2xl font-bold'>Inscribe Result</div>
+                  <div className='text-sm text-gray-400'>
+                    Congratulations on your successful inscription.
+                  </div>
+                </div>
+                <div>
+                  {
+                    order?.inscriptions?.map((item, index) => (
+                      <div key={index} className='flex justify-between mb-4'>
+                        <div>Genesis Transaction {index + 1}</div>
+                        <a
+                          className='text-blue-500 underline'
+                          href={`https://mempool.space/testnet/tx/${item.txid}`}
+                          target='_blank'>
+                          {hideStr(item.txid, 10)}
+                        </a>
+                      </div>
+                    ))
+                  }
+                  {/* <div className='flex justify-between mb-4'>
+                    <div>Genesis Transaction</div>
+                    <a
+                      className='text-blue-500 underline'
+                      href={commitTxHref}
+                      target='_blank'>
+                      {hideStr(order?.commitTx?.txid, 10)}
+                    </a>
+                  </div> */}
+                </div>
+                <div className='flex justify-center mt-4'>
+                  <Button
+                    type='primary'
+                    loading={loading}
+                    size='large'
+                    onClick={closeHandler}>
+                    Close
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
-          <Divider className='my-4' content='Files' />
+          {activeStep > 1 && (
+            <>
+              <Divider children='Account' />
+              <Card title='Funding Account' size='small'>
+                <div className='flex justify-between items-center mb-4'>
+                  <div>Secret</div>
+                  <div className='text-sm text-gray-500 break-all ml-4'>
+                    {order?.secret}
+                  </div>
+                </div>
+                <div className='flex justify-between'>
+                  <div>Address</div>
+                  <a
+                    className='text-blue-500 underline ml-4'
+                    href={fundingAddressHref}
+                    target='_blank'>
+                    {hideStr(fundingAddress, 10)}
+                  </a>
+                </div>
+              </Card>
+            </>
+          )}
+          <Divider children='Files' />
           <VStack className='mb-2' spacing='10px'>
             {order?.inscriptions?.map((item, index) => (
               <InscribeOrderItem
@@ -379,7 +434,7 @@ export const InscribingOrderModal = ({
                 label={index + 1}
                 status={order?.status}
                 value={item.text}
-                address={item.inscriptionAddress}
+                address={order.toAddress[0]}
               />
             ))}
           </VStack>

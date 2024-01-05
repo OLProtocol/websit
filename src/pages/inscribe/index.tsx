@@ -1,16 +1,15 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import { Button } from 'antd';
+
 import { useEffect, useMemo, useState } from 'react';
 import { InscribeBrc20 } from './components/InscribeBrc20';
 import { InscribeOrd2 } from './components/InscribeOrd2';
 import { InscribeText } from './components/InscribeText';
 import { InscribeStepTwo } from './components/InscribeStepTwo';
 import { InscribeStepThree } from './components/InscribeStepThree';
-import { LocalOrderList } from './components/LocalOrderList';
 import { useMap, useList } from 'react-use';
 import { InscribingOrderModal } from './components/InscribingOrderModal';
 import { removeObjectEmptyValue } from './utils';
-import { OrderItemType } from '@/store';
+import { OrderList } from './components/OrderList';
 
 export default function Inscribe() {
   const [step, setStep] = useState(3);
@@ -288,14 +287,7 @@ export default function Inscribe() {
           )}
         </div>
         <div>
-          <Tabs className='mb-4' colorScheme='green'>
-            <TabList>
-              <Tab>Local Order</Tab>
-            </TabList>
-          </Tabs>
-          <div>
-            <LocalOrderList onOrderClick={onOrderClick} />
-          </div>
+          <OrderList onOrderClick={onOrderClick} />
         </div>
       </div>
       {orderId && (

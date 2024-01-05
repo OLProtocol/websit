@@ -1,6 +1,6 @@
 export * from './mempool';
 export const hideStr = (
-  str: string,
+  str?: string,
   num: number = 10,
   placeholder = '*****',
 ) => {
