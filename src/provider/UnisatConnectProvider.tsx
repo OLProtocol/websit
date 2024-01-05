@@ -123,9 +123,11 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
 
         // After switching the network, refresh the account details
         const accounts = await unisat.getAccounts();
+        
         if (accounts.length > 0) {
           setCurrentAccount(accounts[0]);
           const newBalance = await unisat.getBalance(accounts[0]);
+          console.log('newBalance', newBalance)
           setBalance(newBalance);
         } else {
           // Handle the case where no accounts are found after the network switch
@@ -147,6 +149,27 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
   const network = useMemo(() => {
     return unisatNetwork === 'livenet' ? 'main' : 'testnet';
   }, [unisatNetwork]);
+  useEffect(() => {
+    if (window.unisat) {
+      window.unisat.on('accountsChanged', async (accounts) => {
+        console.log('accounts', accounts)
+        if (accounts.length > 0) {
+          setIsConnected(true);
+          setCurrentAccount(accounts[0]);
+          const newBalance = await window.unisat.getBalance(accounts[0]);
+          console.log('newBalance', newBalance)
+          setBalance(newBalance);
+        } else {
+          setIsConnected(false);
+          setCurrentAccount('');
+          setBalance({ confirmed: 0, unconfirmed: 0, total: 0 });
+        }
+      });
+      window.unisat.on('networkChanged', (network) => {
+        setUnisatNetwork(network);
+      });
+    }
+  }, []);
   console.log('network', network);
   console.log('currentAccount', currentAccount);
   return (

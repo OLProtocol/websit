@@ -8,7 +8,7 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { Card, Steps, Divider, Button } from 'antd';
+import { Card, Steps, Divider, Button, Tag } from 'antd';
 import { InscribeOrderItem } from './InscribeOrderItem';
 import { useUnisat, useUnisatConnect } from '@/lib/hooks/unisat';
 import { BusButton } from '@/components/BusButton';
@@ -280,7 +280,10 @@ export const InscribingOrderModal = ({
     <Modal size='3xl' isOpen={show} onClose={closeHandler} isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Inscribing Order</ModalHeader>
+        <ModalHeader className='flex items-center'>
+          <span className='mr-2'>Inscribing Order</span>
+          <Tag color='error'>{order?.network}</Tag>
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <div className='mb-4'>
@@ -305,10 +308,7 @@ export const InscribingOrderModal = ({
                 </div>
                 <div className='flex justify-center'>
                   <BusButton>
-                    <Button
-                      type='primary'
-                      loading={loading}
-                      onClick={payOrder}>
+                    <Button type='primary' loading={loading} onClick={payOrder}>
                       Pay with Wallet
                     </Button>
                   </BusButton>
@@ -369,19 +369,17 @@ export const InscribingOrderModal = ({
                   </div>
                 </div>
                 <div>
-                  {
-                    order?.inscriptions?.map((item, index) => (
-                      <div key={index} className='flex justify-between mb-4'>
-                        <div>Genesis Transaction {index + 1}</div>
-                        <a
-                          className='text-blue-500 underline'
-                          href={`https://mempool.space/testnet/tx/${item.txid}`}
-                          target='_blank'>
-                          {hideStr(item.txid, 10)}
-                        </a>
-                      </div>
-                    ))
-                  }
+                  {order?.inscriptions?.map((item, index) => (
+                    <div key={index} className='flex justify-between mb-4'>
+                      <div>Genesis Transaction {index + 1}</div>
+                      <a
+                        className='text-blue-500 underline'
+                        href={`https://mempool.space/testnet/tx/${item.txid}`}
+                        target='_blank'>
+                        {hideStr(item.txid, 10)}
+                      </a>
+                    </div>
+                  ))}
                   {/* <div className='flex justify-between mb-4'>
                     <div>Genesis Transaction</div>
                     <a

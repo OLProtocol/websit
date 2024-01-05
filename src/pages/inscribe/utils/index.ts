@@ -21,6 +21,7 @@ export const removeObjectEmptyValue = (obj: any) => {
   });
   return _obj;
 };
+
 export const textToHex = (text: string) => {
   const encoder = new TextEncoder().encode(text);
   return [...new Uint8Array(encoder)]
