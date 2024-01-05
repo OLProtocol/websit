@@ -126,6 +126,9 @@ export const InscribingOrderModal = ({
         setCommitTx(orderId, commitTx);
         changeStatus(orderId, 'paid');
         setActiveStep(2);
+        setTimeout(() => {
+          startInscribe();
+        }, 0);
       } else {
         let funding = order.funding;
         if (!funding) {
@@ -168,6 +171,9 @@ export const InscribingOrderModal = ({
         changeStatus(orderId, 'paid');
         setCommitTx(orderId, commitData);
         setActiveStep(2);
+        setTimeout(() => {
+          startInscribe();
+        }, 0);
       }
     } catch (error: any) {
       console.error(error);
@@ -195,8 +201,11 @@ export const InscribingOrderModal = ({
         true,
       );
     }
-    setLoading(false);
     setActiveStep(3);
+    setTimeout(() => {
+      inscribeHandler()
+    }, 0);
+    setLoading(false);
   };
   const inscribeHandler = async () => {
     if (!(order && order.commitTx)) {

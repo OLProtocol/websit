@@ -44,6 +44,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
   const [loading, setLoading] = useState(false);
   const nextHandler = async () => {
     setErrorText('');
+    setLoading(true);
     const textSize = clacTextSize(data.tick);
     console.log('textSize', textSize);
     console.log(textSize < 4);
@@ -51,35 +52,25 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
       setErrorText('Tick must be 3, 5-32 byte long');
       return;
     }
-    // const info = await requstOrd2Info({ tick: data.tick });
-    // console.log(info);
-    // if (data.type === 'deploy') {
-    //   if (info.data) {
-    //     setErrorText(`${data.tick} has been deployed`);
-    //     return;
-    //   }
-    // } else if (data.type === 'mint') {
-    //   if (!info.data) {
-    //     setErrorText(`${data.tick} has not been deployed`);
-    //     return;
-    //   }
-    // }
-    setLoading(true);
-    onNext?.();
-    // const info = await fetchBrc20Info();
-
-    // if (info.error === 'no ticker info' && data.type === 'deploy') {
-    //   setErrorText(`${data.tick} has been deployed`);
-    //   return;
-    // }
-    // if (data.type === 'mint') {
-    //   console.log(data.type);
-    //   console.log(data.amount);
-    //   if (data.amount > (info.limit || 1000)) {
-    //     setErrorText(`Mint amount must be less than ${info.limit} Tick`);
-    //   }
-    // }
+    const info = await requstOrd2Info({ tick: data.tick });
     setLoading(false);
+    if (data.type === 'deploy') {
+      if (info.data) {
+        setErrorText(`${data.tick} has been deployed`);
+        return;
+      }
+    } else if (data.type === 'mint') {
+      if (!info.data) {
+        setErrorText(`${data.tick} has not been deployed`);
+        return;
+      }
+      if (data.amount > info.data.limit) {
+        setErrorText(`Mint amount must be less than ${info.data.limit}`);
+        return;
+      }
+    }
+    
+    onNext?.();
   };
   const getHeight = async () => {
     const height = await fetchTipHeight(network as any);
@@ -107,7 +98,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
         </RadioGroup>
       </div>
       {errorText && (
-        <div className='mb-2 text-md text-center text-red-500'>{errorText}</div>
+        <div className='mb-2 text-xl text-center text-red-500'>{errorText}</div>
       )}
 
       <div className='mb-4'>
