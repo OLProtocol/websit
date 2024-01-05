@@ -42,12 +42,11 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
   });
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
+  const [tickLoading, setTickLoading] = useState(false);
   const nextHandler = async () => {
     setErrorText('');
     setLoading(true);
     const textSize = clacTextSize(data.tick);
-    console.log('textSize', textSize);
-    console.log(textSize < 4);
     if (textSize < 3 || textSize == 4 || textSize > 32) {
       setErrorText('Tick must be 3, 5-32 byte long');
       return;
@@ -69,8 +68,32 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
         return;
       }
     }
-    
+
     onNext?.();
+  };
+  const onTickBlur = async () => {
+    setErrorText('');
+    const textSize = clacTextSize(data.tick);
+    if (textSize < 3 || textSize == 4 || textSize > 32) {
+      setErrorText('Tick must be 3, 5-32 byte long');
+      return;
+    }
+    if (data.type === 'mint') {
+      setTickLoading(true);
+      const info = await requstOrd2Info({ tick: data.tick });
+      setTickLoading(false);
+      if (!info.data) {
+        setErrorText(`${data.tick} has not been deployed`);
+        return;
+      } else {
+        console.log('info.data.limit', info.data.limit)
+        set('amount', Number(info.data.limit));
+      }
+      if (data.amount > info.data.limit) {
+        setErrorText(`Mint amount must be less than ${info.data.limit}`);
+        return;
+      }
+    }
   };
   const getHeight = async () => {
     const height = await fetchTipHeight(network as any);
@@ -110,6 +133,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
             <div className='flex-1'>
               <Input
                 type='text'
+                onBlur={onTickBlur}
                 maxLength={32}
                 placeholder='3 or 5-32 letters'
                 value={data.tick}
@@ -127,6 +151,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
               <div className='flex-1'>
                 <NumberInput
                   value={data.amount}
+                  isDisabled={tickLoading}
                   onChange={(_, e) => set('amount', e)}
                   min={1}>
                   <NumberInputField />
@@ -264,6 +289,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
               <div className='flex-1'>
                 <NumberInput
                   value={data.sat}
+                  isDisabled={tickLoading}
                   onChange={(_, e) => set('sat', e)}
                   min={1}>
                   <NumberInputField />

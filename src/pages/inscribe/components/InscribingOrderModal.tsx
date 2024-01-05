@@ -133,20 +133,6 @@ export const InscribingOrderModal = ({
         let funding = order.funding;
         if (!funding) {
           const fundingData = getFundingAddress(secret, network);
-          // let totalInscriptionFee = 0;
-          // for (let i = 0; i < inscriptions.length; i++) {
-          //   totalInscriptionFee +=
-          //     inscriptionSize + inscriptions[i].txsize * feeRate;
-          // }
-          // const fee =
-          //   base_size * feeRate +
-          //   totalInscriptionFee +
-          //   inscriptionSize * inscriptions.length;
-          // const total_fees =
-          //   totalInscriptionFee +
-          //   (69 + (inscriptions.length + 1) * 2 * 31 + 10) * feeRate +
-          //   base_size * inscriptions.length +
-          //   inscriptionSize * inscriptions.length;
           const txid = await unisat.sendBitcoin(fundingData.address, fee, {
             feeRate: feeRate,
           });
