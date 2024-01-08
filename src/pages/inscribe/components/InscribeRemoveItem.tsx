@@ -4,11 +4,13 @@ import { clacTextSize } from '../utils';
 interface InscribeCheckItemProps {
   label: string | number;
   value: string;
+  hex: string;
   onRemove?: () => void;
 }
 export const InscribeRemoveItem = ({
   label,
   value,
+  hex,
   onRemove,
 }: InscribeCheckItemProps) => {
   return (
@@ -20,7 +22,7 @@ export const InscribeRemoveItem = ({
       </div>
       <div className='flex flex-1 text-sm items-center py-2 break-all'>{value}</div>
       <div className='flex items-center pr-2'>
-        <span className='mr-2'>{clacTextSize(value)} B</span>
+        <span className='mr-2'>{clacTextSize(hex)} B</span>
         <IconButton
           onClick={onRemove}
           aria-label='remove item'

@@ -431,7 +431,7 @@ export const InscribingOrderModal = ({
                 key={index}
                 label={index + 1}
                 status={order?.status}
-                value={item.text}
+                value={item.file.show}
                 address={order.toAddress[0]}
               />
             ))}

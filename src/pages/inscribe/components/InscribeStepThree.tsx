@@ -58,7 +58,7 @@ export const InscribeStepThree = ({
     setFeeRate(value);
   };
   const files = useMemo(() => {
-    return generteFiles(list);
+    return list;
   }, [list]);
   const baseNum = useMemo(() => {
     if (['brc20', 'text'].includes(type)) {
@@ -115,10 +115,11 @@ export const InscribeStepThree = ({
         <VStack spacing='10px' className='w-full py-4'>
           {list.map((item, index) => (
             <InscribeRemoveItem
-              key={item.value}
+              key={index}
               onRemove={() => onItemRemove?.(index)}
               label={index + 1}
-              value={item.value}
+              hex={item.hex}
+              value={item.show}
             />
           ))}
         </VStack>

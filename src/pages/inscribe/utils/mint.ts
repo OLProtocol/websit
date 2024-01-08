@@ -1,13 +1,13 @@
 import { Address, Signer, Tap, Tx, Script } from '@cmdcode/tapscript';
 import { keys } from '@cmdcode/crypto-utils';
-import { textToHex } from './index';
+import { textToHex, encodeBase64, base64ToHex, hexToBytes, fileToSha256Hex } from './index';
 import { pushBTCpmt } from './mempool';
+import { encode } from 'punycode';
 interface FileItem {
   mimetype: string;
-  text: string;
+  show: string;
   name: string;
   hex: string;
-  content: string;
   sha256: string;
 }
 interface InscriptionItem {
@@ -15,39 +15,55 @@ interface InscriptionItem {
   leaf: any;
   tapkey: string;
   cblock: string;
-  text: string;
   inscriptionAddress: string;
   txsize: number;
   status: 'pending';
   txid: '';
+  file: FileItem;
 }
 
-export const generteFiles = (list: any[]) => {
-  const files: FileItem[] = list.map((item) => {
-    const { type, value } = item;
-    const file: any = {};
+export const generteFiles = async (list: any[]) => {
+  const files: any[] = [];
+  for (let i = 0; i < list.length; i++) {
+    const item = list[i];
+    const { type, value, name } = item;
+    const file: any = {
+      type,
+      name,
+    };
     if (type === 'text') {
       const _value = value?.trim();
       file.mimetype = 'text/plain;charset=utf-8';
-      file.text = _value;
-      file.content = _value;
+      file.show = _value;
       file.hex = textToHex(_value);
       file.sha256 = '';
     } else if (type === 'brc20') {
       file.mimetype = 'text/plain;charset=utf-8';
-      file.text = value;
-      file.content = value;
+      file.show = value;
       file.hex = textToHex(value);
       file.sha256 = '';
     } else if (type === 'ordx') {
       file.mimetype = 'text/plain;charset=utf-8';
-      file.text = value;
-      file.content = value;
+      file.show = value;
       file.hex = textToHex(value);
       file.sha256 = '';
+    } else if (type === 'file') { 
+      let mimetype = value.type?.trim();
+      if (mimetype.includes("text/plain")) {
+        mimetype += ";charset=utf-8";
+      }
+      const b64 = await encodeBase64(value) as string;
+      const base64 = b64.substring(b64.indexOf("base64,") + 7);
+      console.log("base64", base64)
+      const hex = base64ToHex(base64);
+      file.mimetype = mimetype;
+      file.show = name;
+      const sha256 = await fileToSha256Hex(value);
+      file.sha256 = sha256.replace('0x', '');
+      file.hex = hex;
     }
-    return file;
-  });
+    files.push(file);
+  }
   return files;
 };
 export const generateBrc20MintContent = (
@@ -79,42 +95,7 @@ export const getFundingAddress = (sescet: string, network: string) => {
 /*
 铭刻过程
 */
-export function generateInscribe(
-  secret: string,
-  text: string,
-  network: 'main' | 'testnet',
-): string {
-  const seckey = keys.get_seckey(secret);
-  const pubkey = keys.get_pubkey(seckey, true);
-  // Basic format of an 'inscription' script.
-  const ec = new TextEncoder();
-  const content = ec.encode(text);
-  const mimetype = ec.encode('text/plain;charset=utf-8');
 
-  const script = [
-    pubkey,
-    'OP_CHECKSIG',
-    'OP_0',
-    'OP_IF',
-    ec.encode('ord'),
-    '01',
-    mimetype,
-    'OP_0',
-    content,
-    'OP_ENDIF',
-  ];
-
-  // For tapscript spends, we need to convert this script into a 'tapleaf'.
-  const tapleaf = Tap.encodeScript(script);
-  // Generate a tapkey that includes our leaf script. Also, create a merlke proof
-  // (cblock) that targets our leaf and proves its inclusion in the tapkey.
-  const [tpubkey] = Tap.getPubKey(pubkey, { target: tapleaf });
-  console.log('tpubkey', tpubkey);
-  // A taproot address is simply the tweaked public key, encoded in bech32 format.
-  const address = Address.p2tr.fromPubKey(tpubkey, network);
-  console.log('Your address:', address);
-  return address;
-}
 /*
 铭刻过程
 */
@@ -135,7 +116,7 @@ export const generateInscriptions = ({
     const seckey = keys.get_seckey(secret);
     const pubkey = keys.get_pubkey(seckey, true);
     const ec = new TextEncoder();
-    const content = ec.encode(files[i].text);
+    const content = hexToBytes(files[i].hex);
     const mimetype = ec.encode(files[i].mimetype);
 
     const script = [
@@ -168,11 +149,11 @@ export const generateInscriptions = ({
 
     console.log('TXSIZE', txsize);
     inscriptions.push({
+      file: files[i],
       script: script,
       leaf: leaf,
       tapkey: tapkey,
       cblock: cblock,
-      text: files[i].content,
       inscriptionAddress: inscriptionAddress,
       txsize: txsize,
       status: 'pending',

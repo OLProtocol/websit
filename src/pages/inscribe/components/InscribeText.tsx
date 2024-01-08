@@ -9,11 +9,11 @@ import {
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
 
-interface InscribeBrc20Props {
+interface InscribeTextProps {
   onNext?: () => void;
   onChange?: (type: string, value: string) => void;
 }
-export const InscribeText = ({ onNext, onChange }: InscribeBrc20Props) => {
+export const InscribeText = ({ onNext, onChange }: InscribeTextProps) => {
   const [data, { set }] = useMap({
     type: 'single',
     text: '',

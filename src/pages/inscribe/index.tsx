@@ -4,16 +4,18 @@ import { useEffect, useMemo, useState } from 'react';
 import { InscribeBrc20 } from './components/InscribeBrc20';
 import { InscribeOrd2 } from './components/InscribeOrd2';
 import { InscribeText } from './components/InscribeText';
+import { InscribeFiles } from './components/InscribeFiles';
 import { InscribeStepTwo } from './components/InscribeStepTwo';
 import { InscribeStepThree } from './components/InscribeStepThree';
 import { useMap, useList } from 'react-use';
 import { InscribingOrderModal } from './components/InscribingOrderModal';
-import { removeObjectEmptyValue } from './utils';
+import { removeObjectEmptyValue, generteFiles } from './utils';
 import { OrderList } from './components/OrderList';
 
 export default function Inscribe() {
   const [step, setStep] = useState(3);
-  const [tab, setTab] = useState('text');
+  const [tab, setTab] = useState('files');
+  const [files, setFiles] = useState<any[]>([]);
   const [orderId, setOrderId] = useState<string>();
   const [modalShow, setModalShow] = useState(false);
   const [list, { set: setList, clear: clearList, removeAt }] = useList<any>([
@@ -81,7 +83,7 @@ export default function Inscribe() {
     setOrd2Data('rarityChecked', data.rarityChecked);
     setOrd2Data('regChecked', data.regChecked);
   };
-  const brc20Next = () => {
+  const brc20Next = async () => {
     const list: any = [];
     if (brc20Data.type === 'mint') {
       for (let i = 0; i < brc20Data.repeatMint; i++) {
@@ -120,10 +122,11 @@ export default function Inscribe() {
         }),
       });
     }
-    setList(list);
+    const _files = await generteFiles(list);
+    setList(_files);
     setStep(2);
   };
-  const ordxNext = () => {
+  const ordxNext = async () => {
     const list: any = [];
     if (ordxData.type === 'mint') {
       for (let i = 0; i < ordxData.repeatMint; i++) {
@@ -162,10 +165,11 @@ export default function Inscribe() {
         ),
       });
     }
-    setList(list);
+    const _files = await generteFiles(list);
+    setList(_files);
     setStep(2);
   };
-  const textNext = () => {
+  const textNext = async () => {
     const list: any = [];
     if (textData.type === 'single') {
       list.push({
@@ -181,13 +185,37 @@ export default function Inscribe() {
         });
       });
     }
-    console.log(list);
-    setList(list);
+    const _files = await generteFiles(list);
+    setList(_files);
     setStep(2);
   };
   const textChange = (type: string, value: string) => {
     setTextData('type', type);
     setTextData('text', value);
+  };
+  const filesChange = async (files: any[]) => {
+    const list = files.map((file) => ({
+      type: 'file',
+      name: file.name,
+      value: file,
+    }));
+    const _files = await generteFiles(list);
+    console.log(_files);
+    setList(_files);
+    setStep(3);
+  };
+  const filesNext = () => {
+    const list: any = [];
+    files.forEach((file) => {
+      list.push({
+        type: 'file',
+        name: file.name,
+        value: file,
+      });
+    });
+    console.log(list);
+    // setList(list);
+    // setStep(2);
   };
   const stepTwoNext = () => {
     setStep(3);
@@ -196,7 +224,6 @@ export default function Inscribe() {
     setStep(1);
   };
   const handleTabsChange = (e: any) => {
-    console.log(e.target.value);
     const value = e.target.value;
     if (tab !== value) {
       setTab(value);
@@ -242,10 +269,10 @@ export default function Inscribe() {
       <div>
         <div className='mb-4 flex justify-center'>
           <Radio.Group
-            defaultValue='text'
+            defaultValue='files'
             size='large'
-            
             onChange={handleTabsChange}>
+            <Radio.Button value='files'>Files</Radio.Button>
             <Radio.Button value='text'>Text</Radio.Button>
             <Radio.Button value='brc-20'>Brc-20</Radio.Button>
             <Radio.Button value='ordx'>Ordx</Radio.Button>
@@ -254,6 +281,9 @@ export default function Inscribe() {
         <div className=' min-h-[10rem] mx-auto bg-gray-50 p-8 rounded-lg mb-4'>
           {step === 1 && (
             <>
+              {tab === 'files' && (
+                <InscribeFiles onNext={filesNext} onChange={filesChange} />
+              )}
               {tab === 'text' && (
                 <InscribeText onNext={textNext} onChange={textChange} />
               )}
