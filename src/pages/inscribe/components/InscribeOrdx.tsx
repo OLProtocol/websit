@@ -29,8 +29,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     type: 'mint',
     tick: '',
     amount: 1,
+    limitPerMint: 10000,
     repeatMint: 1,
-    limitPerMint: 1,
     block_start: 0,
     block_end: 0,
     rarity: '',
@@ -46,10 +46,9 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const [tickLoading, setTickLoading] = useState(false);
   const nextHandler = async () => {
     setErrorText('');
-
     const textSize = clacTextSize(data.tick);
-    if (textSize < 3 || textSize == 4 || textSize > 32) {
-      setErrorText('Tick must be 3, 5-32 byte long');
+    if (textSize < 3 || textSize == 4 || textSize > 16) {
+      setErrorText('Tick must be 3, 5-16 byte long');
       return;
     }
     if (
@@ -104,6 +103,14 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         setErrorText(`Mint amount must be less than ${info.data.limit}`);
         return;
       }
+    }
+  };
+  const rarityChange = (value: string) => {
+    set('rarity', value);
+    if (value !== 'common' || !value) {
+      set('limitPerMint', 1);
+    } else {
+      set('limitPerMint', 10000);
     }
   };
   const getHeight = async () => {
@@ -177,21 +184,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-40' marginBottom={0}>
-                  Limit Per Mint
-                </FormLabel>
-                <div className='flex-1'>
-                  <NumberInput
-                    value={data.limitPerMint}
-                    onChange={(_, e) => set('limitPerMint', e)}
-                    min={1}>
-                    <NumberInputField />
-                  </NumberInput>
-                </div>
-              </div>
-            </FormControl>
-            <FormControl>
-              <div className='flex items-center  mb-4'>
-                <FormLabel className='w-40' marginBottom={0}>
                   Block
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
@@ -248,7 +240,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       disabled={!data.rarityChecked}
                       placeholder='Select option'
                       value={data.rarity}
-                      onChange={(e) => set('rarity', e.target.value)}>
+                      onChange={(e) => rarityChange(e.target.value)}>
                       <option value='common'>common</option>
                       <option value='uncommon'>uncommon</option>
                       <option value='rare'>rare</option>
@@ -281,6 +273,21 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       onChange={(e) => set('reg', e.target.value)}
                     />
                   </div>
+                </div>
+              </div>
+            </FormControl>
+            <FormControl>
+              <div className='flex items-center  mb-4'>
+                <FormLabel className='w-40' marginBottom={0}>
+                  Limit Per Mint
+                </FormLabel>
+                <div className='flex-1'>
+                  <NumberInput
+                    value={data.limitPerMint}
+                    onChange={(_, e) => set('limitPerMint', e)}
+                    min={1}>
+                    <NumberInputField />
+                  </NumberInput>
                 </div>
               </div>
             </FormControl>

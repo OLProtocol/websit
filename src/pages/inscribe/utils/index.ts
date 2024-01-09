@@ -115,8 +115,13 @@ export const satsToBitcoin = (sats) => {
   return string;
 };
 
-export const clacTextSize = (hex: string) => {
+export const clacHexSize = (hex: string) => {
   const data = hexToBytes(hex);
+  const txsize = data.length;
+  return txsize;
+};
+export const clacTextSize = (text: string) => {
+  const data = hexToBytes(textToHex(text));
   const txsize = data.length;
   return txsize;
 };
