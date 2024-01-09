@@ -19,22 +19,23 @@ import { fetchTipHeight } from '@/lib/utils';
 import { clacTextSize } from '../utils';
 import { requstOrd2Info } from '@/api';
 
-interface InscribeOrd2Props {
+interface InscribeOrdxProps {
   onNext?: () => void;
   onChange?: (data: any) => void;
 }
-export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
+export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const { network } = useUnisatConnect();
   const [data, { set }] = useMap({
     type: 'mint',
     tick: '',
     amount: 1,
     repeatMint: 1,
-    limitPerMint: 10000,
+    limitPerMint: 1,
     block_start: 0,
     block_end: 0,
-    rarity: 'common',
+    rarity: '',
     reg: '',
+    blockChecked: false,
     rarityChecked: false,
     regChecked: false,
     des: '',
@@ -45,12 +46,22 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
   const [tickLoading, setTickLoading] = useState(false);
   const nextHandler = async () => {
     setErrorText('');
-    setLoading(true);
+
     const textSize = clacTextSize(data.tick);
     if (textSize < 3 || textSize == 4 || textSize > 32) {
       setErrorText('Tick must be 3, 5-32 byte long');
       return;
     }
+    if (
+      data.type === 'deploy' &&
+      !data.blockChecked &&
+      !data.rarityChecked &&
+      !data.regChecked
+    ) {
+      setErrorText('Deploy must have Block or Rarity or Regular Expression');
+      return;
+    }
+    setLoading(true);
     const info = await requstOrd2Info({ tick: data.tick });
     setLoading(false);
     if (data.type === 'deploy') {
@@ -86,7 +97,7 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
         setErrorText(`${data.tick} has not been deployed`);
         return;
       } else {
-        console.log('info.data.limit', info.data.limit)
+        console.log('info.data.limit', info.data.limit);
         set('amount', Number(info.data.limit));
       }
       if (data.amount > info.data.limit) {
@@ -166,39 +177,6 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-40' marginBottom={0}>
-                  Block
-                </FormLabel>
-                <div className='flex-1 flex items-center'>
-                  <NumberInput
-                    value={data.block_start}
-                    className='flex-1'
-                    placeholder='Block start'
-                    onChange={(_, e) => set('block_start', e)}
-                    min={1}>
-                    <NumberInputField />
-                  </NumberInput>
-                  <Divider mx='2' width='3rem' />
-                  <NumberInput
-                    value={data.block_end}
-                    className='flex-1'
-                    placeholder='Block End'
-                    onChange={(_, e) => set('block_end', e)}
-                    min={1}>
-                    <NumberInputField />
-                  </NumberInput>
-                  {/* <Input
-                    type='text'
-                    maxLength={32}
-                    placeholder='like "10-100"'
-                    value={data.block}
-                    onChange={(e) => set('block', e.target.value)}
-                  /> */}
-                </div>
-              </div>
-            </FormControl>
-            <FormControl>
-              <div className='flex items-center  mb-4'>
-                <FormLabel className='w-40' marginBottom={0}>
                   Limit Per Mint
                 </FormLabel>
                 <div className='flex-1'>
@@ -211,6 +189,49 @@ export const InscribeOrd2 = ({ onNext, onChange }: InscribeOrd2Props) => {
                 </div>
               </div>
             </FormControl>
+            <FormControl>
+              <div className='flex items-center  mb-4'>
+                <FormLabel className='w-40' marginBottom={0}>
+                  Block
+                </FormLabel>
+                <div className='flex-1 flex items-center'>
+                  <Checkbox
+                    checked={data.blockChecked}
+                    onChange={(e) =>
+                      set('blockChecked', e.target.checked)
+                    }></Checkbox>
+                  <div className='ml-2 flex-1 flex items-center'>
+                    <NumberInput
+                      value={data.block_start}
+                      className='flex-1'
+                      isDisabled={!data.blockChecked}
+                      placeholder='Block start'
+                      onChange={(_, e) => set('block_start', e)}
+                      min={1}>
+                      <NumberInputField />
+                    </NumberInput>
+                    <Divider mx='2' width='3rem' />
+                    <NumberInput
+                      value={data.block_end}
+                      isDisabled={!data.blockChecked}
+                      className='flex-1'
+                      placeholder='Block End'
+                      onChange={(_, e) => set('block_end', e)}
+                      min={1}>
+                      <NumberInputField />
+                    </NumberInput>
+                    {/* <Input
+                    type='text'
+                    maxLength={32}
+                    placeholder='like "10-100"'
+                    value={data.block}
+                    onChange={(e) => set('block', e.target.value)}
+                  /> */}
+                  </div>
+                </div>
+              </div>
+            </FormControl>
+
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-40' marginBottom={0}>

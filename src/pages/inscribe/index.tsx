@@ -2,7 +2,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { Radio } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { InscribeBrc20 } from './components/InscribeBrc20';
-import { InscribeOrd2 } from './components/InscribeOrd2';
+import { InscribeOrdx } from './components/InscribeOrdx';
 import { InscribeText } from './components/InscribeText';
 import { InscribeFiles } from './components/InscribeFiles';
 import { InscribeStepTwo } from './components/InscribeStepTwo';
@@ -47,6 +47,7 @@ export default function Inscribe() {
     rarity: 'common',
     rarityChecked: false,
     regChecked: false,
+    blockChecked: false,
   });
   const [brc20Data, { set: setBrc20 }] = useMap({
     type: 'mint',
@@ -82,6 +83,7 @@ export default function Inscribe() {
     setOrd2Data('sat', data.sat);
     setOrd2Data('rarityChecked', data.rarityChecked);
     setOrd2Data('regChecked', data.regChecked);
+    setOrd2Data('blockChecked', data.blockChecked);
   };
   const brc20Next = async () => {
     const list: any = [];
@@ -154,7 +156,7 @@ export default function Inscribe() {
             p: 'ordx',
             op: 'deploy',
             tick: ordxData.tick.toString(),
-            block: ordxData.block.toString(),
+            block: ordxData.blockChecked ? ordxData.block.toString(): undefined,
             lim: ordxData.limitPerMint.toString(),
             reg: ordxData.regChecked ? ordxData.reg.toString() : undefined,
             rarity: ordxData.rarityChecked
@@ -291,7 +293,7 @@ export default function Inscribe() {
                 <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
               )}
               {tab === 'ordx' && (
-                <InscribeOrd2 onChange={ordxChange} onNext={ordxNext} />
+                <InscribeOrdx onChange={ordxChange} onNext={ordxNext} />
               )}
             </>
           )}
