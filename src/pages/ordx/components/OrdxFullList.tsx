@@ -14,6 +14,9 @@ export const Ord2FullList = () => {
   const { data } = useOrd2Status({ start: 0, limit: 10 });
   const list = useMemo(() => data?.detail || [], [data]);
   useEffect(() => {}, []);
+  const height = useMemo(() => {
+    return data.height;
+  }, [data]);
   const clickHandler = (item) => {
     nav(`/ordx/${item.tick}`);
   };
@@ -95,6 +98,14 @@ export const Ord2FullList = () => {
       width: 100,
       align: 'center',
     },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      fixed: 'right',
+      width: 100,
+      align: 'center',
+    },
   ];
   const dataSource: DataType[] = useMemo(
     () =>
@@ -108,6 +119,10 @@ export const Ord2FullList = () => {
         deployHeight: item.deployHeight,
         minted: item.totalMinted,
         limit: item.limit,
+        status:
+          item.startBlock && item.endBlock && height < item.endBlock
+            ? 'Minting'
+            : 'Completed',
         deploy_time: new Date(item.deployBlocktime).toLocaleString(),
       })),
     [list],

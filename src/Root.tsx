@@ -8,10 +8,10 @@ const { Header, Content, Footer, Sider } = Layout;
 export default function Root() {
   return (
     <Layout className='h-full'>
-      <Header className='sticky top-0 z-10'>
+      <Header className=''>
         <NavHeader />
       </Header>
-      <Content>
+      <Content className='overflow-y-auto'>
         <Outlet />
       </Content>
     </Layout>

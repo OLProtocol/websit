@@ -31,7 +31,7 @@ export default function Ord2Index() {
       <div className='w-[30rem] mx-auto pt-20 mb-4'>
         {!showAddress && (
           <h1 className='text-2xl text-orange-500 text-center mb-8'>
-            Check out ordx balance of the address.
+            Check out OrdX balance of the address.
           </h1>
         )}
 

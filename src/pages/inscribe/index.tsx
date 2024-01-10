@@ -282,8 +282,8 @@ export default function Inscribe() {
             onChange={handleTabsChange}>
             <Radio.Button value='files'>Files</Radio.Button>
             <Radio.Button value='text'>Text</Radio.Button>
-            <Radio.Button value='brc-20'>Brc-20</Radio.Button>
-            <Radio.Button value='ordx'>Ordx</Radio.Button>
+            {/* <Radio.Button value='brc-20'>Brc-20</Radio.Button> */}
+            <Radio.Button value='ordx'>OrdX</Radio.Button>
           </Radio.Group>
         </div>
         <div className=' min-h-[10rem] mx-auto bg-gray-50 p-8 rounded-lg mb-4'>
