@@ -39,7 +39,7 @@ export const Ord2FullList = () => {
       key: 'description',
       width: 200,
       align: 'center',
-      render: (t) => t || '-'
+      render: (t) => t || '-',
     },
     {
       title: 'Limit',
@@ -69,7 +69,7 @@ export const Ord2FullList = () => {
       key: 'reg',
       width: 200,
       align: 'center',
-      render: (t) => t || '-'
+      render: (t) => t || '-',
     },
     {
       title: 'Rarity',
@@ -78,19 +78,14 @@ export const Ord2FullList = () => {
       width: 100,
       align: 'center',
       render: (rarity) => {
-        return (
+        return rarity && rarity !== 'unknow' ? (
           <Tag color='green' key={rarity}>
             {rarity}
           </Tag>
+        ) : (
+          '-'
         );
       },
-    },
-    {
-      title: 'Max Supply',
-      dataIndex: 'holders',
-      key: 'supply',
-      width: 100,
-      align: 'center',
     },
     {
       title: 'Minted',
@@ -135,7 +130,7 @@ export const Ord2FullList = () => {
         pagination={{
           position: ['bottomCenter'],
         }}
-        scroll={{ x: 1450 }}
+        scroll={{ x: 1350 }}
         onRow={(record) => {
           return {
             onClick: () => clickHandler(record), // 点击行
