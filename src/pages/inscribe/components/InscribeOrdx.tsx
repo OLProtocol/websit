@@ -161,6 +161,13 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       data.mintRarity
     );
   }, [data.mintRarity]);
+  const buttonDisabled = useMemo(() => {
+    return (
+      !data.tick ||
+      (data.type === 'mint' && !tickLoading)
+    );
+  }
+  , [data, tickLoading]);
   useEffect(() => {
     getHeight();
   }, []);
@@ -405,7 +412,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         <Button
           size='large'
           loading={loading}
-          disabled={!data.tick || tickLoading || !!errorText}
+          disabled={buttonDisabled}
           type='primary'
           className='w-60'
           onClick={nextHandler}>
