@@ -165,7 +165,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     );
   }, [data.mintRarity]);
   const buttonDisabled = useMemo(() => {
-    return !data.tick || (data.type === 'mint' && !tickLoading);
+    return !data.tick || (data.type === 'mint' && tickLoading);
   }, [data, tickLoading]);
   useEffect(() => {
     getHeight();
