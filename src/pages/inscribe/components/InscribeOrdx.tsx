@@ -106,7 +106,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         setErrorText(`${data.tick} has not been deployed`);
         return;
       } else {
-        console.log('info.data.limit', info.data.limit);
         set('amount', Number(info.data.limit));
         set('mintRarity', info.data.rarity);
       }
@@ -279,7 +278,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       disabled={!data.rarityChecked}
                       placeholder='Select option'
                       value={data.rarity}
-                      onChange={(e) => set('rarity', e.target.value)}>
+                      onChange={(e) => rarityChange(e.target.value)}>
                       <option value='common'>common</option>
                       <option value='uncommon'>uncommon</option>
                       <option value='rare'>rare</option>
