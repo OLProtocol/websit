@@ -48,13 +48,17 @@ export const InscribeStepTwo = ({
         </span>
         .
       </div>
-      <VStack spacing='10px' className='w-full py-4'>
-        {
-          list.map((item, index) => (
-            <InscribeCheckItem key={index} label={index + 1} value={item.show} />
-          ))
-        }
-      </VStack>
+      <div className='max-h-[30rem] overflow-y-auto'>
+        <VStack spacing='10px' className='w-full py-4'>
+          {list.map((item, index) => (
+            <InscribeCheckItem
+              key={index}
+              label={index + 1}
+              value={item.show}
+            />
+          ))}
+        </VStack>
+      </div>
       <SimpleGrid columns={2} spacingX='20px'>
         <Button size='md' colorScheme='green' width='100%' onClick={onBack}>
           Back

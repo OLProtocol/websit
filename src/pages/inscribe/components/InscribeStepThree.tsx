@@ -113,7 +113,7 @@ export const InscribeStepThree = ({
           Remove All
         </Button>
       </div>
-      <div className='p-4 bg-gray-800 rounded-xl'>
+      <div className='max-h-[30rem] overflow-y-auto p-4 bg-gray-800 rounded-xl'>
         <VStack spacing='10px' className='w-full py-4'>
           {list.map((item, index) => (
             <InscribeRemoveItem
