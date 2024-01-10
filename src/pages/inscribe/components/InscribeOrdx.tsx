@@ -394,7 +394,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                     value={data.repeatMint}
                     onChange={(_, e) => set('repeatMint', e)}
                     min={1}
-                    max={1000}>
+                    max={100}>
                     <NumberInputField />
                     <NumberInputStepper>
                       <NumberIncrementStepper />
@@ -406,7 +406,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                     focusThumbOnChange={false}
                     value={data.repeatMint}
                     min={1}
-                    max={1000}
+                    max={100}
                     onChange={(e) => set('repeatMint', e)}>
                     <SliderTrack>
                       <SliderFilledTrack />
