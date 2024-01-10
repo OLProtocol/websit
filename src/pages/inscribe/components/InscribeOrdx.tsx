@@ -8,12 +8,12 @@ import {
   NumberInput,
   NumberInputField,
   Select,
-  Button,
   Divider,
 } from '@chakra-ui/react';
+import { Button } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMap } from 'react-use';
 import { fetchTipHeight } from '@/lib/utils';
 import { clacTextSize } from '../utils';
@@ -35,10 +35,11 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     block_end: 0,
     rarity: '',
     reg: '',
-    blockChecked: false,
+    blockChecked: true,
     rarityChecked: false,
     regChecked: false,
     des: '',
+    mintRarity: '',
     sat: 0,
   });
   const [errorText, setErrorText] = useState('');
@@ -92,12 +93,14 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       setTickLoading(true);
       const info = await requstOrd2Info({ tick: data.tick });
       setTickLoading(false);
+
       if (!info.data) {
         setErrorText(`${data.tick} has not been deployed`);
         return;
       } else {
         console.log('info.data.limit', info.data.limit);
         set('amount', Number(info.data.limit));
+        set('mintRarity', info.data.rarity);
       }
       if (data.amount > info.data.limit) {
         setErrorText(`Mint amount must be less than ${info.data.limit}`);
@@ -113,12 +116,32 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       set('limitPerMint', 10000);
     }
   };
+  const onBlockChecked = (e: any) => {
+    set('blockChecked', e.target.checked);
+    set('rarityChecked', !e.target.checked);
+    set('regChecked', !e.target.checked);
+  };
+  const onRarityChecked = (e: any) => {
+    set('rarityChecked', e.target.checked);
+    if (e.target.checked && !data.regChecked) {
+      set('blockChecked', true);
+    }
+  };
+  const onRegChecked = (e: any) => {
+    set('regChecked', e.target.checked);
+    if (e.target.checked && !data.rarityChecked) {
+      set('blockChecked', true);
+    }
+  };
   const getHeight = async () => {
     const height = await fetchTipHeight(network as any);
     console.log('height', height);
     set('block_start', height);
     set('block_end', height + 4320);
   };
+  const showSat = useMemo(() => {
+    return data.mintRarity !== 'common' && data.mintRarity !== 'unknow' && data.mintRarity;
+  }, [data.mintRarity]);
   useEffect(() => {
     getHeight();
   }, []);
@@ -189,9 +212,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <div className='flex-1 flex items-center'>
                   <Checkbox
                     checked={data.blockChecked}
-                    onChange={(e) =>
-                      set('blockChecked', e.target.checked)
-                    }></Checkbox>
+                    onChange={onBlockChecked}></Checkbox>
                   <div className='ml-2 flex-1 flex items-center'>
                     <NumberInput
                       value={data.block_start}
@@ -240,7 +261,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       disabled={!data.rarityChecked}
                       placeholder='Select option'
                       value={data.rarity}
-                      onChange={(e) => rarityChange(e.target.value)}>
+                      onChange={onRarityChecked}>
                       <option value='common'>common</option>
                       <option value='uncommon'>uncommon</option>
                       <option value='rare'>rare</option>
@@ -260,9 +281,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <div className='flex-1 flex items-center'>
                   <Checkbox
                     checked={data.regChecked}
-                    onChange={(e) =>
-                      set('regChecked', e.target.checked)
-                    }></Checkbox>
+                    onChange={onRegChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
                     <Input
                       type='text'
@@ -308,7 +327,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             </FormControl>
           </>
         )}
-        {data.type === 'mint' && (
+        {data.type === 'mint' && showSat && (
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-40' marginBottom={0}>
@@ -361,11 +380,11 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       </div>
       <div className='w-60 mx-auto'>
         <Button
-          size='md'
-          colorScheme='blue'
-          isLoading={loading}
-          isDisabled={!data.tick}
-          width='100%'
+          size='large'
+          loading={loading}
+          disabled={!data.tick || tickLoading || !!errorText}
+          type='primary'
+          className='w-60'
           onClick={nextHandler}>
           Next
         </Button>

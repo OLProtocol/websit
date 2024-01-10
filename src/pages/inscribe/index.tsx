@@ -44,7 +44,8 @@ export default function Inscribe() {
     reg: '',
     des: '',
     sat: '',
-    rarity: 'common',
+    rarity: '',
+    mintRarity: '',
     rarityChecked: false,
     regChecked: false,
     blockChecked: false,
@@ -140,7 +141,11 @@ export default function Inscribe() {
               op: 'mint',
               tick: ordxData.tick.toString(),
               amt: ordxData.amount.toString(),
-              sat: ordxData.sat.toString(),
+              sat:
+                ordxData.mintRarity !== 'common' && 
+                ordxData.mintRarity !== 'unknow' && !!ordxData.mintRarity
+                  ? ordxData.sat.toString()
+                  : undefined,
             }),
           ),
         });
@@ -155,7 +160,9 @@ export default function Inscribe() {
             p: 'ordx',
             op: 'deploy',
             tick: ordxData.tick.toString(),
-            block: ordxData.blockChecked ? ordxData.block.toString(): undefined,
+            block: ordxData.blockChecked
+              ? ordxData.block.toString()
+              : undefined,
             lim: ordxData.limitPerMint.toString(),
             reg: ordxData.regChecked ? ordxData.reg.toString() : undefined,
             rarity: ordxData.rarityChecked
