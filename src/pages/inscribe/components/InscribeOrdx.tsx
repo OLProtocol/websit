@@ -44,7 +44,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   });
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
-  const [tickLoading, setTickLoading] = useState(false);
+  const [tickLoading, setTickLoading] = useState(true);
   const nextHandler = async () => {
     setErrorText('');
     const textSize = clacTextSize(data.tick);
@@ -117,20 +117,28 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     }
   };
   const onBlockChecked = (e: any) => {
+    console.log(e);
     set('blockChecked', e.target.checked);
     set('rarityChecked', !e.target.checked);
     set('regChecked', !e.target.checked);
   };
   const onRarityChecked = (e: any) => {
+    console.log(e);
     set('rarityChecked', e.target.checked);
-    if (e.target.checked && !data.regChecked) {
-      set('blockChecked', true);
+    console.log('e.target.checked', e.target.checked);
+    if (e.target.checked) {
+      set('blockChecked', false);
+    } else {
+      set('blockChecked', !data.regChecked);
     }
   };
   const onRegChecked = (e: any) => {
+    console.log(e);
     set('regChecked', e.target.checked);
-    if (e.target.checked && !data.rarityChecked) {
-      set('blockChecked', true);
+    if (e.target.checked) {
+      set('blockChecked', false);
+    } else {
+      set('blockChecked', !data.rarityChecked);
     }
   };
   const getHeight = async () => {
@@ -140,7 +148,11 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     set('block_end', height + 4320);
   };
   const showSat = useMemo(() => {
-    return data.mintRarity !== 'common' && data.mintRarity !== 'unknow' && data.mintRarity;
+    return (
+      data.mintRarity !== 'common' &&
+      data.mintRarity !== 'unknow' &&
+      data.mintRarity
+    );
   }, [data.mintRarity]);
   useEffect(() => {
     getHeight();
@@ -253,15 +265,13 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <div className='flex-1 flex items-center'>
                   <Checkbox
                     checked={data.rarityChecked}
-                    onChange={(e) =>
-                      set('rarityChecked', e.target.checked)
-                    }></Checkbox>
+                    onChange={onRarityChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
                     <Select
                       disabled={!data.rarityChecked}
                       placeholder='Select option'
                       value={data.rarity}
-                      onChange={onRarityChecked}>
+                      onChange={(e) => set('rarity', e.target.value)}>
                       <option value='common'>common</option>
                       <option value='uncommon'>uncommon</option>
                       <option value='rare'>rare</option>
