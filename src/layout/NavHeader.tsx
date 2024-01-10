@@ -25,7 +25,7 @@ export const NavHeader = () => {
     },
     {
       key: ROUTE_PATH.ORDX_INDEX,
-      label: `OrdX`,
+      label: `Explorer`,
       value: ROUTE_PATH.ORDX_INDEX,
       type: 'route',
     },

@@ -18,7 +18,8 @@ import {
   SliderFilledTrack,
   SliderThumb,
 } from '@chakra-ui/react';
-import { Button } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Button, Tooltip } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
@@ -98,22 +99,27 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       return;
     }
     if (data.type === 'mint') {
-      setTickLoading(true);
-      const info = await requstOrd2Info({ tick: data.tick });
-      setTickLoading(false);
+      try {
+        setTickLoading(true);
+        const info = await requstOrd2Info({ tick: data.tick });
+        setTickLoading(false);
 
-      if (!info.data) {
-        setErrorText(`${data.tick} has not been deployed`);
-        return;
-      } else {
-        set('amount', Number(info.data.limit));
-        set('mintRarity', info.data.rarity);
-      }
-      if (data.amount > info.data.limit) {
-        setErrorText(`Mint amount must be less than ${info.data.limit}`);
-        return;
+        if (!info.data) {
+          setErrorText(`${data.tick} has not been deployed`);
+          return;
+        } else {
+          set('amount', Number(info.data.limit));
+          set('mintRarity', info.data.rarity);
+        }
+        if (data.amount > info.data.limit) {
+          setErrorText(`Mint amount must be less than ${info.data.limit}`);
+          return;
+        }
+      } catch (error) {
+        console.log('error', error);
       }
     }
+    setTickLoading(false);
   };
   const rarityChange = (value: string) => {
     set('rarity', value);
@@ -130,9 +136,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     set('regChecked', !e.target.checked);
   };
   const onRarityChecked = (e: any) => {
-    console.log(e);
     set('rarityChecked', e.target.checked);
-    console.log('e.target.checked', e.target.checked);
     if (e.target.checked) {
       set('blockChecked', false);
     } else {
@@ -140,7 +144,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     }
   };
   const onRegChecked = (e: any) => {
-    console.log(e);
     set('regChecked', e.target.checked);
     if (e.target.checked) {
       set('blockChecked', false);
@@ -162,12 +165,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     );
   }, [data.mintRarity]);
   const buttonDisabled = useMemo(() => {
-    return (
-      !data.tick ||
-      (data.type === 'mint' && !tickLoading)
-    );
-  }
-  , [data, tickLoading]);
+    return !data.tick || (data.type === 'mint' && !tickLoading);
+  }, [data, tickLoading]);
   useEffect(() => {
     getHeight();
   }, []);
@@ -194,7 +193,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       <div className='mb-4'>
         <FormControl>
           <div className='flex items-center mb-4'>
-            <FormLabel className='w-40' marginBottom={0}>
+            <FormLabel className='w-52' marginBottom={0}>
               Tick
             </FormLabel>
             <div className='flex-1'>
@@ -212,7 +211,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         {data.type !== 'deploy' && (
           <FormControl>
             <div className='flex items-center  mb-4'>
-              <FormLabel className='w-40' marginBottom={0}>
+              <FormLabel className='w-52' marginBottom={0}>
                 Amount
               </FormLabel>
               <div className='flex-1'>
@@ -232,7 +231,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           <>
             <FormControl>
               <div className='flex items-center  mb-4'>
-                <FormLabel className='w-40' marginBottom={0}>
+                <FormLabel className='w-52' marginBottom={0}>
                   Block
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
@@ -273,8 +272,14 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
 
             <FormControl>
               <div className='flex items-center  mb-4'>
-                <FormLabel className='w-40' marginBottom={0}>
+                <FormLabel className='w-52' marginBottom={0}>
                   Rarity
+                  <Tooltip title='Special sat attributes required for mint'>
+                    <span className='text-blue-500'>
+                      (sat
+                      <QuestionCircleOutlined />)
+                    </span>
+                  </Tooltip>
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
@@ -299,8 +304,14 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             </FormControl>
             <FormControl>
               <div className='flex items-center  mb-4'>
-                <FormLabel className='w-40' marginBottom={0}>
+                <FormLabel className='w-52' marginBottom={0}>
                   Regular Expression
+                  <Tooltip title='Special sat attributes required for mint'>
+                    <span className='text-blue-500'>
+                      (sat
+                      <QuestionCircleOutlined />)
+                    </span>
+                  </Tooltip>
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
@@ -321,7 +332,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             </FormControl>
             <FormControl>
               <div className='flex items-center  mb-4'>
-                <FormLabel className='w-40' marginBottom={0}>
+                <FormLabel className='w-52' marginBottom={0}>
                   Limit Per Mint
                 </FormLabel>
                 <div className='flex-1'>
@@ -336,7 +347,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             </FormControl>
             <FormControl>
               <div className='flex items-center  mb-4'>
-                <FormLabel className='w-40' marginBottom={0}>
+                <FormLabel className='w-52' marginBottom={0}>
                   Description
                 </FormLabel>
                 <div className='flex-1'>
@@ -354,7 +365,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         {data.type === 'mint' && showSat && (
           <FormControl>
             <div className='flex items-center  mb-4'>
-              <FormLabel className='w-40' marginBottom={0}>
+              <FormLabel className='w-52' marginBottom={0}>
                 Sat
               </FormLabel>
               <div className='flex-1'>
@@ -372,7 +383,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         {data.type === 'mint' && (
           <FormControl>
             <div className='flex items-center  mb-4'>
-              <FormLabel className='w-40' marginBottom={0}>
+              <FormLabel className='w-52' marginBottom={0}>
                 Repeat Mint
               </FormLabel>
               <div className='flex-1'>
