@@ -77,8 +77,6 @@ export const InscribingOrderModal = ({
         (base_size + 34 * inscriptions.length + 10) * feeRate +
         totalInscriptionFee;
       const fee = networkFee + inscriptionSize * inscriptions.length;
-
-      totalInscriptionFee;
       return fee;
     }
   }, [order]);

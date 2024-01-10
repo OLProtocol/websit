@@ -9,6 +9,14 @@ import {
   NumberInputField,
   Select,
   Divider,
+  Flex,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
 } from '@chakra-ui/react';
 import { Button } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
@@ -355,38 +363,44 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             </div>
           </FormControl>
         )}
-        {/* {data.type === 'mint' && (
-          <FormControl >
-            <FormLabel>Repeat Mint</FormLabel>
-            <Flex>
-              <NumberInput
-                maxW='100px'
-                mr='2rem'
-                value={data.repeatMint}
-                onChange={(_, e) => set('repeatMint', e)}
-                min={1}
-                max={1000}>
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              <Slider
-                flex='1'
-                focusThumbOnChange={false}
-                value={data.repeatMint}
-                min={1}
-                max={1000}
-                onChange={(e) => set('repeatMint', e)}>
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb fontSize='sm' boxSize='16px' />
-              </Slider>
-            </Flex>
+        {data.type === 'mint' && (
+          <FormControl>
+            <div className='flex items-center  mb-4'>
+              <FormLabel className='w-40' marginBottom={0}>
+                Repeat Mint
+              </FormLabel>
+              <div className='flex-1'>
+                <Flex>
+                  <NumberInput
+                    maxW='100px'
+                    mr='2rem'
+                    value={data.repeatMint}
+                    onChange={(_, e) => set('repeatMint', e)}
+                    min={1}
+                    max={1000}>
+                    <NumberInputField />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                  <Slider
+                    flex='1'
+                    focusThumbOnChange={false}
+                    value={data.repeatMint}
+                    min={1}
+                    max={1000}
+                    onChange={(e) => set('repeatMint', e)}>
+                    <SliderTrack>
+                      <SliderFilledTrack />
+                    </SliderTrack>
+                    <SliderThumb fontSize='sm' boxSize='16px' />
+                  </Slider>
+                </Flex>
+              </div>
+            </div>
           </FormControl>
-        )} */}
+        )}
       </div>
       <div className='w-60 mx-auto'>
         <Button
