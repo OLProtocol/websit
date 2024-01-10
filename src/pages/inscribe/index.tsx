@@ -10,11 +10,12 @@ import { InscribeStepThree } from './components/InscribeStepThree';
 import { useMap, useList } from 'react-use';
 import { InscribingOrderModal } from './components/InscribingOrderModal';
 import { removeObjectEmptyValue, generteFiles } from './utils';
+import { InscribeType } from '@/types';
 import { OrderList } from './components/OrderList';
 
 export default function Inscribe() {
   const [step, setStep] = useState(3);
-  const [tab, setTab] = useState('files');
+  const [tab, setTab] = useState<InscribeType>('files');
   const [files, setFiles] = useState<any[]>([]);
   const [orderId, setOrderId] = useState<string>();
   const [modalShow, setModalShow] = useState(false);
@@ -295,7 +296,7 @@ export default function Inscribe() {
               {tab === 'text' && (
                 <InscribeText onNext={textNext} onChange={textChange} />
               )}
-              {tab === 'brc-20' && (
+              {tab === 'brc20' && (
                 <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
               )}
               {tab === 'ordx' && (
@@ -306,7 +307,7 @@ export default function Inscribe() {
           {step === 2 && (
             <InscribeStepTwo
               list={list}
-              type='text'
+              type={tab}
               onBack={stepTwoBack}
               onNext={stepTwoNext}
             />
@@ -317,7 +318,7 @@ export default function Inscribe() {
               onRemoveAll={onRemoveAll}
               onAddOrder={onAddOrder}
               list={list}
-              type='text'
+              type={tab}
             />
           )}
         </div>

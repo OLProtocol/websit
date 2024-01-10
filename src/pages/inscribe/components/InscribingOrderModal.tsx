@@ -294,12 +294,19 @@ export const InscribingOrderModal = ({
             {activeStep === 0 && (
               <div>
                 <div className='flex justify-between'>
+                  <div>Inscription Size</div>
+                  <div>
+                    <span>{order?.inscriptionSize}</span> <span> sate</span>
+                  </div>
+                </div>
+                <Divider style={{margin: '10px 0'}} />
+                <div className='flex justify-between'>
                   <div>Fee Rate</div>
                   <div>
                     <span>{order?.feeRate}</span> <span> sate/vB</span>
                   </div>
                 </div>
-                <Divider className='my-2' />
+                <Divider style={{margin: '10px 0'}} />
                 <div className='flex justify-between mb-4'>
                   <div>Total Fee</div>
                   <div>

@@ -22,9 +22,10 @@ import {
 import { useState } from 'react';
 import { useMap } from 'react-use';
 import { InscribeCheckItem } from './InscribeCheckItem';
+import { InscribeType } from '@/types';
 interface Brc20SetpOneProps {
   list: any[];
-  type: 'text' | 'brc-20';
+  type: InscribeType;
   onNext?: () => void;
   onBack?: () => void;
 }

@@ -65,10 +65,12 @@ export const InscribeStepThree = ({
       return 546;
     } else if (type === 'brc100') {
       return 294;
+    } else if (type === 'ordx' && list?.[0]?.op === 'mint') {
+      return list?.[0]?.amt > 546 ? list?.[0]?.amt : 546;
     } else {
       return 546;
     }
-  }, [feeRate]);
+  }, [type, list]);
   useEffect(() => {
     const isBin = !!files[0]?.sha256;
     if (!isBin) {

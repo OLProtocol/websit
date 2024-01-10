@@ -1,6 +1,12 @@
 import { Address, Signer, Tap, Tx, Script } from '@cmdcode/tapscript';
 import { keys } from '@cmdcode/crypto-utils';
-import { textToHex, encodeBase64, base64ToHex, hexToBytes, fileToSha256Hex } from './index';
+import {
+  textToHex,
+  encodeBase64,
+  base64ToHex,
+  hexToBytes,
+  fileToSha256Hex,
+} from './index';
 import { pushBTCpmt } from './mempool';
 import { encode } from 'punycode';
 interface FileItem {
@@ -8,6 +14,8 @@ interface FileItem {
   show: string;
   name: string;
   hex: string;
+  amt?: number;
+  op?: string;
   sha256: string;
 }
 interface InscriptionItem {
@@ -47,14 +55,20 @@ export const generteFiles = async (list: any[]) => {
       file.show = value;
       file.hex = textToHex(value);
       file.sha256 = '';
-    } else if (type === 'file') { 
-      let mimetype = value.type?.trim();
-      if (mimetype.includes("text/plain")) {
-        mimetype += ";charset=utf-8";
+      try {
+        file.amt = Number(JSON.parse(value).amt);
+        file.op = JSON.parse(value).op;
+      } catch (error) {
+        console.log(error);
       }
-      const b64 = await encodeBase64(value) as string;
-      const base64 = b64.substring(b64.indexOf("base64,") + 7);
-      console.log("base64", base64)
+    } else if (type === 'file') {
+      let mimetype = value.type?.trim();
+      if (mimetype.includes('text/plain')) {
+        mimetype += ';charset=utf-8';
+      }
+      const b64 = (await encodeBase64(value)) as string;
+      const base64 = b64.substring(b64.indexOf('base64,') + 7);
+      console.log('base64', base64);
       const hex = base64ToHex(base64);
       file.mimetype = mimetype;
       file.show = name;

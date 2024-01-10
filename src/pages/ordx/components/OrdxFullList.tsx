@@ -15,7 +15,7 @@ export const Ord2FullList = () => {
   const list = useMemo(() => data?.detail || [], [data]);
   useEffect(() => {}, []);
   const height = useMemo(() => {
-    return data.height;
+    return data?.height;
   }, [data]);
   const clickHandler = (item) => {
     nav(`/ordx/${item.tick}`);
