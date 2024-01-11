@@ -14,13 +14,14 @@ import { InscribeRemoveItem } from './InscribeRemoveItem';
 import { BtcFeeRate } from './BtcFeeRate';
 import { BusButton } from '@/components/BusButton';
 import { v4 as uuidV4 } from 'uuid';
+import { FeeShow } from './FeeShow';
 // import mempoolJS from '@mempool/mempool.js';
 import {
   generteFiles,
   generatePrivateKey,
   generateInscriptions,
 } from '../utils';
-import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
+import { useUnisatConnect, useCalcFee } from '@/lib/hooks';
 import { OrderItemType, useOrderStore } from '@/store';
 import { InscribeType } from '@/types';
 interface Brc20SetpOneProps {
@@ -51,16 +52,16 @@ export const InscribeStepThree = ({
     seckey: undefined,
     pubkey: undefined,
   });
-  const [padding, setPadding] = useState(546);
-  const [feeRate, setFeeRate] = useState(0);
+  const [feeRate, setFeeRate] = useState(1);
   const feeRateChange = (value: number) => {
     console.log('value', value);
     setFeeRate(value);
   };
+
   const files = useMemo(() => {
     return list;
   }, [list]);
-  const baseNum = useMemo(() => {
+  const inscriptionSize = useMemo(() => {
     if (['brc20', 'text'].includes(type)) {
       return 546;
     } else if (type === 'brc100') {
@@ -71,15 +72,16 @@ export const InscribeStepThree = ({
       return 546;
     }
   }, [type, list]);
-  useEffect(() => {
-    const isBin = !!files[0]?.sha256;
-    if (!isBin) {
-      setPadding(546);
-    } else {
-      setPadding(1000);
-    }
-  }, [files]);
-
+  const clacFee = useCalcFee({ feeRate, inscriptionSize, files });
+  // useEffect(() => {
+  //   const isBin = !!files[0]?.sha256;
+  //   if (!isBin) {
+  //     setPadding(546);
+  //   } else {
+  //     setPadding(1000);
+  //   }
+  // }, [files]);
+  console.log('clacFee', clacFee);
   const submit = async () => {
     const secret = generatePrivateKey();
     const inscriptions = generateInscriptions({
@@ -94,18 +96,22 @@ export const InscribeStepThree = ({
       type,
       inscriptions,
       secret,
-      serviceFee: network === 'testnet' ? 500 : 1000,
+      fee: clacFee,
       toAddress: [data.toSingleAddress],
       feeRate,
       network,
-      inscriptionSize: baseNum,
+      inscriptionSize: inscriptionSize,
       status: 'pending',
       createAt: Date.now().valueOf(),
     };
     addOrder(order);
     onAddOrder?.(order);
   };
-
+  useEffect(() => {
+    if (currentAccount) {
+      set('toSingleAddress', currentAccount);
+    }
+  }, [currentAccount]);
   return (
     <div>
       <div className='text-lg font-bold flex justify-between mb-2'>
@@ -160,6 +166,14 @@ export const InscribeStepThree = ({
           Please note the inscribing transaction delivers the inscription to the
           receiving address directly.
         </p>
+      </div>
+      <div>
+        <FeeShow
+          inscriptionSize={inscriptionSize}
+          serviceFee={clacFee.serviceFee}
+          totalFee={clacFee.totalFee}
+          networkFee={clacFee.networkFee}
+        />
       </div>
       <div className='w-60 mx-auto'>
         <BusButton>

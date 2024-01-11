@@ -9,10 +9,14 @@ export interface OrderItemType {
   inscriptions: any[];
   secret: string;
   txid?: string;
-  serviceFee: number;
   inscriptionSize: number;
   toAddress: string[];
   network: string;
+  fee: {
+    serviceFee: number;
+    totalFee: number;
+    networkFee: number;
+  };
   funding?: {
     script: any;
     leaf: string;

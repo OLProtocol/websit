@@ -17,6 +17,7 @@ interface FileItem {
   amt?: number;
   op?: string;
   sha256: string;
+  txsize: number;
 }
 interface InscriptionItem {
   script: any;
@@ -76,6 +77,14 @@ export const generteFiles = async (list: any[]) => {
       file.sha256 = sha256.replace('0x', '');
       file.hex = hex;
     }
+    let prefix = 160;
+
+    if (file.sha256 != '') {
+      prefix = 546;
+    }
+    const contentBytes = hexToBytes(file.hex);
+    const txsize = prefix + Math.floor(contentBytes.length / 4);
+    file.txsize = txsize;
     files.push(file);
   }
   return files;

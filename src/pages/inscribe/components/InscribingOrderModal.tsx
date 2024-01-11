@@ -23,6 +23,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { _0n } from '@cmdcode/crypto-utils/dist/const';
 import { hideStr } from '@/lib/utils';
+import { FeeShow } from './FeeShow';
 
 interface InscribingOrderMdaolProps {
   show: boolean;
@@ -60,33 +61,6 @@ export const InscribingOrderModal = ({
   const order = useMemo(() => {
     return findOrder(orderId);
   }, [orderId]);
-  const fee = useMemo(() => {
-    if (!order) {
-      return 0;
-    }
-    const base_size = 157;
-    const { feeRate, inscriptionSize, inscriptions, serviceFee } = order;
-    console.log(serviceFee)
-    if (inscriptions?.length === 1) {
-      return inscriptions[0].txsize * feeRate + inscriptionSize + (serviceFee > 0
-        ? serviceFee + 50 * feeRate
-        : 0);
-    } else {
-      let totalInscriptionFee = 0;
-      for (let i = 0; i < inscriptions.length; i++) {
-        totalInscriptionFee += inscriptions[i].txsize * feeRate;
-      }
-      const networkFee =
-        (base_size + 34 * (inscriptions.length + (serviceFee > 0 ? 1 : 0)) + 10) *
-          feeRate +
-        totalInscriptionFee;
-      const fee =
-        networkFee + inscriptionSize * inscriptions.length + (serviceFee > 0
-          ? serviceFee
-          : 0);
-      return fee;
-    }
-  }, [order]);
   const payOrder = async () => {
     if (!order) {
       return;
@@ -94,13 +68,14 @@ export const InscribingOrderModal = ({
     setLoading(true);
 
     try {
-      const { inscriptions, feeRate, inscriptionSize, secret, network } = order;
+      const { inscriptions, feeRate, inscriptionSize, secret, network, fee } =
+        order;
       console.log('fee', fee);
       console.log('feeRate', feeRate);
       if (inscriptions.length === 1) {
         const txid = await unisat.sendBitcoin(
           inscriptions[0].inscriptionAddress,
-          fee,
+          fee.totalFee,
           {
             feeRate: feeRate,
           },
@@ -110,7 +85,7 @@ export const InscribingOrderModal = ({
           outputs: [
             {
               vout: 0,
-              amount: fee,
+              amount: fee.totalFee,
             },
           ],
         };
@@ -124,13 +99,17 @@ export const InscribingOrderModal = ({
         let funding = order.funding;
         if (!funding) {
           const fundingData = getFundingAddress(secret, network);
-          const txid = await unisat.sendBitcoin(fundingData.address, fee, {
-            feeRate: feeRate,
-          });
+          const txid = await unisat.sendBitcoin(
+            fundingData.address,
+            fee.totalFee,
+            {
+              feeRate: feeRate,
+            },
+          );
           funding = {
             txid,
             vout: 0,
-            amount: fee,
+            amount: fee.totalFee,
             ...fundingData,
           };
           setFunding(orderId, funding);
@@ -142,7 +121,7 @@ export const InscribingOrderModal = ({
           secret,
           network,
           funding,
-          serviceFee: order.serviceFee,
+          serviceFee: fee.serviceFee,
           inscriptionSize,
           feeRate,
         });
@@ -192,7 +171,7 @@ export const InscribingOrderModal = ({
     setLoading(true);
     try {
       console.log('order', order);
-      const { commitTx } = order;
+      const { commitTx, fee } = order;
       let finishedNum = 0;
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
@@ -207,7 +186,7 @@ export const InscribingOrderModal = ({
           network: order.network as any,
           inscription,
           txid: commitTx.txid,
-          serviceFee: order.inscriptions.length === 1 ? order.serviceFee : 0,
+          serviceFee: order.inscriptions.length === 1 ? fee.serviceFee : 0,
           vout: commitTx.outputs[i].vout,
           amount: commitTx.outputs[i].amount,
           toAddress: order.toAddress[0],
@@ -300,32 +279,6 @@ export const InscribingOrderModal = ({
             {/* step one */}
             {activeStep === 0 && (
               <div>
-                <div className='flex justify-between'>
-                  <div>Inscription Size</div>
-                  <div>
-                    <span>{order?.inscriptionSize}</span> <span> sate</span>
-                  </div>
-                </div>
-                <Divider style={{ margin: '10px 0' }} />
-                <div className='flex justify-between'>
-                  <div>Fee Rate</div>
-                  <div>
-                    <span>{order?.feeRate}</span> <span> sate/vB</span>
-                  </div>
-                </div>
-                <Divider style={{ margin: '10px 0' }} />
-                <div className='flex justify-between mb-2'>
-                  <div>Service Fee</div>
-                  <div>
-                    <span>{order?.serviceFee}</span> <span> sats</span>
-                  </div>
-                </div>
-                <div className='flex justify-between mb-4'>
-                  <div>Total Fee</div>
-                  <div>
-                    <span>{fee}</span> <span> sats</span>
-                  </div>
-                </div>
                 <div className='flex justify-center'>
                   <BusButton>
                     <Button type='primary' loading={loading} onClick={payOrder}>
@@ -400,15 +353,6 @@ export const InscribingOrderModal = ({
                       </a>
                     </div>
                   ))}
-                  {/* <div className='flex justify-between mb-4'>
-                    <div>Genesis Transaction</div>
-                    <a
-                      className='text-blue-500 underline'
-                      href={commitTxHref}
-                      target='_blank'>
-                      {hideStr(order?.commitTx?.txid, 10)}
-                    </a>
-                  </div> */}
                 </div>
                 <div className='flex justify-center mt-4'>
                   <Button
@@ -422,6 +366,13 @@ export const InscribingOrderModal = ({
               </div>
             )}
           </div>
+          <FeeShow
+            feeRate={order?.feeRate}
+            inscriptionSize={order?.inscriptionSize}
+            serviceFee={order?.fee.serviceFee}
+            totalFee={order?.fee.totalFee}
+            networkFee={order?.fee.networkFee}
+          />
           {activeStep > 1 && (
             <>
               <Divider children='Account' />
@@ -444,6 +395,7 @@ export const InscribingOrderModal = ({
               </Card>
             </>
           )}
+
           <Divider children='Files' />
           <VStack className='mb-2' spacing='10px'>
             {order?.inscriptions?.map((item, index) => (
