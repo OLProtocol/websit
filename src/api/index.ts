@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import axios from 'axios';
-
+import { fetchTipHeight, fetchChainFeeRate } from '@/lib/utils';
 const fetcher = (args) =>
   fetch(args)
     .then((res) => res.json())
@@ -55,14 +55,30 @@ export const useOrd2Info = ({ tick }: Ord2InfoParams) => {
   };
 };
 export const requstOrd2Info = async ({ tick }: Ord2InfoParams) => {
-  const { data } = await axios.get(
-    generateUrl(`v1/indexer/ordx/${tick}/info`),
-  );
+  const { data } = await axios.get(generateUrl(`v1/indexer/ordx/${tick}/info`));
   return data;
-}
+};
 interface Ord2SummaryParams {
   address?: string;
 }
+export const useBtcHeight = (network: 'testnet' | 'main') => {
+  const { data, error, isLoading } = useSWR(network, (n) => fetchTipHeight(n));
+  return {
+    data,
+    error,
+    isLoading,
+  };
+};
+export const useBtcFeeRate = (network: 'testnet' | 'main') => {
+  const { data, error, isLoading } = useSWR(network, (n) =>
+    fetchChainFeeRate(n),
+  );
+  return {
+    data,
+    error,
+    isLoading,
+  };
+};
 export const useOrd2Summary = ({ address }: Ord2SummaryParams) => {
   const { data, error, isLoading } = useSWR(
     generateUrl(`v1/indexer/ordx/${address}/info`),

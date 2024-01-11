@@ -14,12 +14,12 @@ import {
 import { useState, useMemo, useEffect } from 'react';
 import { BtcFeeRateItem } from './BtcFeeRateItem';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { fetchChainFeeRate } from '../utils';
+import { useBtcFeeRate } from '@/api';
 interface BtcFeeRate {
   onChange?: (value: number) => void;
 }
 export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
-  const [type, setType] = useState('');
+  const [type, setType] = useState('Normal');
   const [preValue, setPreValue] = useState(0);
   const [customValue, setCustomValue] = useState(1);
   const [economyValue, setEconomyValue] = useState(1);
@@ -34,23 +34,15 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
       onChange?.(value);
     }
   };
-  const getRecommendFee = async () => {
-    try {
-      const res = await fetchChainFeeRate(network as any);
-      setCustomValue(res.fastestFee);
-      setEconomyValue(res.hourFee);
-      setNormalValue(res.halfHourFee);
-      setMinFee(res.minimumFee);
-      setType('Normal');
-      onChange?.(res.halfHourFee);
-    } catch (error) {
-      setCustomValue(network === 'testnet' ? 1 : 50);
-      setEconomyValue(network === 'testnet' ? 1 : 50);
-      setNormalValue(network === 'testnet' ? 1 : 50);
-      setMinFee(network === 'testnet' ? 1 : 50);
-      setType('Normal');
-      onChange?.(network === 'testnet' ? 1 : 50);
-    }
+  const { data: feeRateData, error } = useBtcFeeRate(network as any);
+  const setRecommendFee = async () => {
+    const defaultFee = network === 'testnet' ? 1 : 50;
+    setCustomValue(feeRateData?.fastestFee || defaultFee);
+    setEconomyValue(feeRateData?.hourFee || defaultFee);
+    setNormalValue(feeRateData.halfHourFee || defaultFee);
+    setMinFee(feeRateData?.minimumFee || defaultFee);
+    onChange?.(feeRateData?.halfHourFee || defaultFee);
+    setType('Normal');
   };
   const list = useMemo(
     () => [
@@ -70,8 +62,8 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
     [economyValue, normalValue, customValue],
   );
   useEffect(() => {
-    getRecommendFee();
-  }, []);
+    setRecommendFee();
+  }, [feeRateData, error]);
   useEffect(() => {
     if (type === 'Custom') {
       onChange?.(customValue);

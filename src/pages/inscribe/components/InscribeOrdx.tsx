@@ -18,6 +18,7 @@ import {
   SliderFilledTrack,
   SliderThumb,
 } from '@chakra-ui/react';
+import { useLocation } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
@@ -26,13 +27,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMap } from 'react-use';
 import { fetchTipHeight } from '@/lib/utils';
 import { clacTextSize } from '../utils';
-import { requstOrd2Info } from '@/api';
+import { requstOrd2Info, useBtcHeight } from '@/api';
 
 interface InscribeOrdxProps {
   onNext?: () => void;
   onChange?: (data: any) => void;
 }
 export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
+  const { state } = useLocation();
   const { network } = useUnisatConnect();
   const [data, { set }] = useMap({
     type: 'mint',
@@ -51,9 +53,11 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     mintRarity: '',
     sat: 0,
   });
+  const { data: heightData } = useBtcHeight(network as any);
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
-  const [tickLoading, setTickLoading] = useState(true);
+  const [tickLoading, setTickLoading] = useState(false);
+  const [tickChecked, setTickChecked] = useState(false);
   const nextHandler = async () => {
     setErrorText('');
     const textSize = clacTextSize(data.tick);
@@ -71,6 +75,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       return;
     }
     setLoading(true);
+
     const info = await requstOrd2Info({ tick: data.tick });
     setLoading(false);
     if (data.type === 'deploy') {
@@ -101,9 +106,10 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     if (data.type === 'mint') {
       try {
         setTickLoading(true);
+        setTickChecked(false);
         const info = await requstOrd2Info({ tick: data.tick });
         setTickLoading(false);
-
+        setTickChecked(true);
         if (!info.data) {
           setErrorText(`${data.tick} has not been deployed`);
           return;
@@ -165,11 +171,24 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     );
   }, [data.mintRarity]);
   const buttonDisabled = useMemo(() => {
-    return !data.tick || (data.type === 'mint' && tickLoading);
-  }, [data, tickLoading]);
+    return !data.tick || (data.type === 'mint' && !tickChecked);
+  }, [data, tickChecked]);
   useEffect(() => {
-    getHeight();
-  }, []);
+    if (state?.type === 'ordx') {
+      const { item } = state;
+      set('type', 'mint');
+      set('tick', item.tick);
+      set('amount', item.limit);
+      set('mintRarity', item.rarity);
+      setTickChecked(true);
+    }
+  }, [state]);
+  useEffect(() => {
+    if (heightData) {
+      set('block_start', heightData);
+      set('block_end', heightData + 4320);
+    }
+  }, [heightData]);
   useEffect(() => {
     onChange?.(data);
   }, [data]);

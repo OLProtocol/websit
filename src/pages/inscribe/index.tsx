@@ -1,5 +1,5 @@
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { Radio } from 'antd';
+import { useLocation} from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { InscribeBrc20 } from './components/InscribeBrc20';
 import { InscribeOrdx } from './components/InscribeOrdx';
@@ -14,6 +14,8 @@ import { InscribeType } from '@/types';
 import { OrderList } from './components/OrderList';
 
 export default function Inscribe() {
+  const { state, ...rdes } = useLocation();
+  console.log(rdes);
   const [step, setStep] = useState(3);
   const [tab, setTab] = useState<InscribeType>('files');
   const [files, setFiles] = useState<any[]>([]);
@@ -143,8 +145,9 @@ export default function Inscribe() {
               tick: ordxData.tick.toString(),
               amt: ordxData.amount.toString(),
               sat:
-                ordxData.mintRarity !== 'common' && 
-                ordxData.mintRarity !== 'unknow' && !!ordxData.mintRarity
+                ordxData.mintRarity !== 'common' &&
+                ordxData.mintRarity !== 'unknow' &&
+                !!ordxData.mintRarity
                   ? ordxData.sat.toString()
                   : undefined,
             }),
@@ -235,6 +238,8 @@ export default function Inscribe() {
   const handleTabsChange = (e: any) => {
     const value = e.target.value;
     if (tab !== value) {
+      console.log(history);
+      history.replaceState(undefined, '');
       setTab(value);
       clearList();
     }
@@ -272,6 +277,11 @@ export default function Inscribe() {
       resetText();
     }
   }, [list]);
+  useEffect(() => {
+    if (state?.type) {
+      setTab(state.type);
+    }
+  }, [state]);
   return (
     <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
       <h1 className='text-lg font-bold text-center mb-4'>Inscribe</h1>
@@ -280,6 +290,7 @@ export default function Inscribe() {
           <Radio.Group
             defaultValue='files'
             size='large'
+            value={tab}
             onChange={handleTabsChange}>
             <Radio.Button value='files'>Files</Radio.Button>
             <Radio.Button value='text'>Text</Radio.Button>

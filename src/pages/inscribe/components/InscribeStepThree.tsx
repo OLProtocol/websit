@@ -94,6 +94,7 @@ export const InscribeStepThree = ({
       type,
       inscriptions,
       secret,
+      serviceFee: network === 'testnet' ? 500 : 1000,
       toAddress: [data.toSingleAddress],
       feeRate,
       network,

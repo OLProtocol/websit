@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { Segmented, Table, Tag } from 'antd';
+import { Segmented, Table, Tag, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useOrd2Status } from '@/api';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ interface DataType {
 
 export const Ord2FullList = () => {
   const nav = useNavigate();
-  const { data } = useOrd2Status({ start: 0, limit: 10 });
+  const { data, isLoading } = useOrd2Status({ start: 0, limit: 10 });
   const list = useMemo(() => data?.detail || [], [data]);
   useEffect(() => {}, []);
   const height = useMemo(() => {
@@ -19,6 +19,10 @@ export const Ord2FullList = () => {
   }, [data]);
   const clickHandler = (item) => {
     nav(`/ordx/${item.tick}`);
+  };
+  const toInscribe = (e: any, item: any) => {
+    e.stopPropagation();
+    nav('/inscribe', { state: { type: 'ordx', item } });
   };
   const columns: ColumnsType<DataType> = [
     {
@@ -105,6 +109,17 @@ export const Ord2FullList = () => {
       fixed: 'right',
       width: 100,
       align: 'center',
+      render: (status, record) => {
+        return status === 'Minting' ? (
+          <Button type='link' onClick={(e) => toInscribe(e, record)}>
+            {status}
+          </Button>
+        ) : (
+          <Tag color='blue' key={status}>
+            {status}
+          </Tag>
+        );
+      },
     },
   ];
   const dataSource: DataType[] = useMemo(
@@ -140,6 +155,7 @@ export const Ord2FullList = () => {
         />
       </div>
       <Table
+        loading={isLoading}
         columns={columns}
         dataSource={dataSource}
         pagination={{

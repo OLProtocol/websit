@@ -182,6 +182,7 @@ interface InscribeParams {
   vout: number;
   amount: number;
   inscribeFee: number;
+  serviceFee?: number;
   secret: any;
   toAddress: string;
   network: 'main' | 'testnet';
@@ -192,13 +193,31 @@ export const inscribe = async ({
   txid,
   vout,
   amount,
+  serviceFee,
   inscribeFee = 546,
   toAddress,
   secret,
 }: InscribeParams) => {
+  const { VITE_TESTNET_TIP_ADDRESS, VITE_MAIN_TIP_ADDRESS } = import.meta.env;
+  const tipAddress =
+    network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
   const seckey = keys.get_seckey(secret);
   const pubkey = keys.get_pubkey(seckey, true);
   const { script, cblock, tapkey, leaf } = inscription;
+  const outputs = [
+    {
+      // We are leaving behind 1000 sats as a fee to the miners.
+      value: inscribeFee,
+      // This is the new script that we are locking our funds to.
+      scriptPubKey: Address.toScriptPubKey(toAddress),
+    },
+  ];
+  if (serviceFee && tipAddress) {
+    outputs.push({
+      value: serviceFee,
+      scriptPubKey: Address.toScriptPubKey(tipAddress),
+    });
+  }
   const txdata = Tx.create({
     vin: [
       {
@@ -215,14 +234,7 @@ export const inscribe = async ({
         },
       },
     ],
-    vout: [
-      {
-        // We are leaving behind 1000 sats as a fee to the miners.
-        value: inscribeFee,
-        // This is the new script that we are locking our funds to.
-        scriptPubKey: Address.toScriptPubKey(toAddress),
-      },
-    ],
+    vout: outputs,
   });
   const sig = Signer.taproot.sign(seckey, txdata, 0, { extension: leaf });
 
@@ -241,10 +253,14 @@ export const pushCommitTx = async ({
   inscriptions,
   secret,
   network,
+  serviceFee,
   funding,
   inscriptionSize,
   feeRate,
 }: any) => {
+  const { VITE_TESTNET_TIP_ADDRESS, VITE_MAIN_TIP_ADDRESS } = import.meta.env;
+  const tipAddress =
+    network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
   const seckey = keys.get_seckey(secret);
   const pubkey = keys.get_pubkey(seckey, true);
   const outputs = inscriptions.map((item) => {
@@ -253,6 +269,12 @@ export const pushCommitTx = async ({
       scriptPubKey: ['OP_1', item.tapkey],
     };
   });
+  if (serviceFee && tipAddress) {
+    outputs.push({
+      value: serviceFee,
+      scriptPubKey: Address.toScriptPubKey(tipAddress),
+    });
+  }
   console.log('funcding amount', funding.amount);
   console.log('commit outputs', outputs);
   const commitTxData = Tx.create({

@@ -8,3 +8,19 @@ export const fetchTipHeight = async (network: 'main' | 'testnet') => {
   const data = await resp.json();
   return data;
 };
+export const fetchChainFeeRate = async (network: 'main' | 'testnet') => {
+  // const { bitcoin: { fees } } = mempoolJS({
+  //   hostname: 'mempool.space',
+  //   network,
+  // });
+
+  // const data = await fees.getFeesRecommended();
+  // return data;
+  const url =
+    network === 'testnet'
+      ? 'https://mempool.space/testnet/api/v1/fees/recommended'
+      : 'https://mempool.space/api/v1/fees/recommended';
+  const resp = await fetch(url);
+  const data = await resp.json();
+  return data;
+};

@@ -9,6 +9,7 @@ export interface OrderItemType {
   inscriptions: any[];
   secret: string;
   txid?: string;
+  serviceFee: number;
   inscriptionSize: number;
   toAddress: string[];
   network: string;

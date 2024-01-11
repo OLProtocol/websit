@@ -65,18 +65,25 @@ export const InscribingOrderModal = ({
       return 0;
     }
     const base_size = 157;
-    const { feeRate, inscriptionSize, inscriptions } = order;
+    const { feeRate, inscriptionSize, inscriptions, serviceFee } = order;
+    console.log(serviceFee)
     if (inscriptions?.length === 1) {
-      return inscriptions[0].txsize * feeRate + inscriptionSize;
+      return inscriptions[0].txsize * feeRate + inscriptionSize + (serviceFee > 0
+        ? serviceFee + 50 * feeRate
+        : 0);
     } else {
       let totalInscriptionFee = 0;
       for (let i = 0; i < inscriptions.length; i++) {
         totalInscriptionFee += inscriptions[i].txsize * feeRate;
       }
       const networkFee =
-        (base_size + 34 * inscriptions.length + 10) * feeRate +
+        (base_size + 34 * (inscriptions.length + (serviceFee > 0 ? 1 : 0)) + 10) *
+          feeRate +
         totalInscriptionFee;
-      const fee = networkFee + inscriptionSize * inscriptions.length;
+      const fee =
+        networkFee + inscriptionSize * inscriptions.length + (serviceFee > 0
+          ? serviceFee
+          : 0);
       return fee;
     }
   }, [order]);
@@ -135,6 +142,7 @@ export const InscribingOrderModal = ({
           secret,
           network,
           funding,
+          serviceFee: order.serviceFee,
           inscriptionSize,
           feeRate,
         });
@@ -199,6 +207,7 @@ export const InscribingOrderModal = ({
           network: order.network as any,
           inscription,
           txid: commitTx.txid,
+          serviceFee: order.inscriptions.length === 1 ? order.serviceFee : 0,
           vout: commitTx.outputs[i].vout,
           amount: commitTx.outputs[i].amount,
           toAddress: order.toAddress[0],
@@ -297,14 +306,20 @@ export const InscribingOrderModal = ({
                     <span>{order?.inscriptionSize}</span> <span> sate</span>
                   </div>
                 </div>
-                <Divider style={{margin: '10px 0'}} />
+                <Divider style={{ margin: '10px 0' }} />
                 <div className='flex justify-between'>
                   <div>Fee Rate</div>
                   <div>
                     <span>{order?.feeRate}</span> <span> sate/vB</span>
                   </div>
                 </div>
-                <Divider style={{margin: '10px 0'}} />
+                <Divider style={{ margin: '10px 0' }} />
+                <div className='flex justify-between mb-2'>
+                  <div>Service Fee</div>
+                  <div>
+                    <span>{order?.serviceFee}</span> <span> sats</span>
+                  </div>
+                </div>
                 <div className='flex justify-between mb-4'>
                   <div>Total Fee</div>
                   <div>
