@@ -6,11 +6,13 @@ import { Ord2FullList } from './components/OrdxFullList';
 import { Ord2SummaryList } from './components/OrdxSummaryList';
 import { Ord2History } from './components/OrdxHistory';
 import { ROUTE_PATH } from '@/router';
+import { use } from 'i18next';
 
 const { Search } = Input;
 
 export default function Ord2Index() {
   const nav = useNavigate();
+  const [search, setSearch] = useState('');
   const [address, setAddress] = useState('');
   const [searchParams] = useSearchParams();
   const q = searchParams.get('q');
@@ -18,14 +20,26 @@ export default function Ord2Index() {
     return address ? true : false;
   }, [address]);
   const doSearch = () => {
-    nav(`${ROUTE_PATH.ORDX_INDEX}?q=${address}`)
+    setAddress(search);
+    history.replaceState(null, '', `/#/ordx?q=${search}`);
+    // nav(`${ROUTE_PATH.ORDX_INDEX}?q=${search}`);
   };
   useEffect(() => {
-    console.log(q)
+    if (search === '') {
+      setAddress('');
+      history.replaceState(null, '', `/#/ordx`);
+      // nav(`${ROUTE_PATH.ORDX_INDEX}`);
+    }
+  }, [search]);
+  useEffect(() => {
     if (q) {
       setAddress(q);
+      setSearch(q);
     }
-  }, []);
+  }, [q]);
+  console.log('q', q)
+  console.log('showAddress', showAddress)
+  console.log('address', address)
   return (
     <div>
       <div className='w-[30rem] mx-auto pt-20 mb-4'>
@@ -40,8 +54,8 @@ export default function Ord2Index() {
             allowClear
             placeholder='Btc address'
             size='large'
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             onSearch={doSearch}
           />
         </div>
@@ -52,13 +66,13 @@ export default function Ord2Index() {
         )}
       </div>
       <div className='max-w-3xl mx-auto'>
-        {showAddress && q && (
+        {showAddress && (
           <>
             <div className='mb-4'>
-              <Ord2SummaryList address={q} />
+              <Ord2SummaryList address={address} />
             </div>
             <div className='mb-4'>
-              <Ord2History tick='BTC' address={q} />
+              <Ord2History tick='BTC' address={address} />
             </div>
           </>
         )}

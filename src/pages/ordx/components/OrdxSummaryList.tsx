@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { Ord2Item } from './OrdxItem';
+import { OrdXItem } from './OrdXItem';
 import { useOrdXSummary } from '@/api';
 interface Ord2SummaryListProps {
   address: string;
@@ -16,12 +16,10 @@ export const Ord2SummaryList = ({ address }: Ord2SummaryListProps) => {
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.map((item) => (
-        <Ord2Item
+        <OrdXItem
           item={{
             tick: item.ticker,
-            transferable: item.transferableBalance,
-            available: item.availableBalance,
-            balance: item.overallBalance,
+            balance: item.balance,
           }}
         />
       ))}

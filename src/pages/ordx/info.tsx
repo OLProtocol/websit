@@ -24,8 +24,8 @@ export default function Ord2Info() {
     return (detail?.startBlock &&
       detail?.endBlock &&
       heightData < detail.endBlock) ||
-      detail.rarity !== 'unknow' ||
-      detail.rarity !== 'common'
+      detail?.rarity !== 'unknow' ||
+      detail?.rarity !== 'common'
       ? 'Minting'
       : 'Completed';
   }, [detail, heightData]);

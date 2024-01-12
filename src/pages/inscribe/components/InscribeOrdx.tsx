@@ -400,7 +400,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             </div>
           </FormControl>
         )}
-        {data.type === 'mint' && (
+        {data.type === 'mint' && tickChecked && !showSat && (
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
