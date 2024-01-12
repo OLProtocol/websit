@@ -21,9 +21,11 @@ export default function Ord2Info() {
   const { data: heightData } = useBtcHeight(network as any);
   const { data: detail, trigger, isLoading } = useOrd2Info({ tick });
   const status = useMemo(() => {
-    return detail?.startBlock &&
+    return (detail?.startBlock &&
       detail?.endBlock &&
-      heightData < detail.endBlock
+      heightData < detail.endBlock) ||
+      detail.rarity !== 'unknow' ||
+      detail.rarity !== 'common'
       ? 'Minting'
       : 'Completed';
   }, [detail, heightData]);

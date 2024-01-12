@@ -143,7 +143,7 @@ export const Ord2FullList = () => {
         minted: item.totalMinted,
         limit: item.limit,
         status:
-          item.startBlock && item.endBlock && height < item.endBlock
+          (item.startBlock && item.endBlock && height < item.endBlock || item.rarity !== 'unknow' || item.rarity !== 'common')
             ? 'Minting'
             : 'Completed',
         deploy_time: new Date(item.deployBlocktime).toLocaleString(),

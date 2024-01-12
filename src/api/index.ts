@@ -54,6 +54,23 @@ export const useOrd2Info = ({ tick }: Ord2InfoParams) => {
     isLoading: isMutating,
   };
 };
+interface OrdXSummaryParams {
+  address?: string;
+}
+export const useOrdXSummary = ({ address }: OrdXSummaryParams) => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
+    generateUrl(`query-v4/address/${address}/ordx/summary
+    `),
+    fetcher,
+  );
+  return {
+    data,
+    trigger,
+    reset,
+    error,
+    isLoading: isMutating,
+  };
+};
 export const requstOrd2Info = async ({ tick }: Ord2InfoParams) => {
   const { data } = await axios.get(generateUrl(`v1/indexer/ordx/${tick}/info`));
   return data;
