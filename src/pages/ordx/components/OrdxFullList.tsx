@@ -95,6 +95,13 @@ export const Ord2FullList = () => {
       },
     },
     {
+      title: 'Holders',
+      dataIndex: 'holders',
+      key: 'holders',
+      width: 100,
+      align: 'center',
+    },
+    {
       title: 'Minted',
       dataIndex: 'minted',
       key: 'minted',
@@ -102,6 +109,7 @@ export const Ord2FullList = () => {
       width: 100,
       align: 'center',
     },
+
     {
       title: 'Status',
       dataIndex: 'status',
@@ -161,7 +169,7 @@ export const Ord2FullList = () => {
         pagination={{
           position: ['bottomCenter'],
         }}
-        scroll={{ x: 1350 }}
+        scroll={{ x: 1450 }}
         onRow={(record) => {
           return {
             onClick: () => clickHandler(record), // 点击行
