@@ -62,7 +62,7 @@ interface Ord2SummaryParams {
   address?: string;
 }
 export const useBtcHeight = (network: 'testnet' | 'main') => {
-  const { data, error, isLoading } = useSWR(network, (n) => fetchTipHeight(n));
+  const { data, error, isLoading } = useSWR(`height-${network}`, () => fetchTipHeight(network));
   return {
     data,
     error,
@@ -70,8 +70,8 @@ export const useBtcHeight = (network: 'testnet' | 'main') => {
   };
 };
 export const useBtcFeeRate = (network: 'testnet' | 'main') => {
-  const { data, error, isLoading } = useSWR(network, (n) =>
-    fetchChainFeeRate(n),
+  const { data, error, isLoading } = useSWR(`fee-${network}`, () =>
+    fetchChainFeeRate(network),
   );
   return {
     data,

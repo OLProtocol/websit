@@ -184,6 +184,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     }
   }, [state]);
   useEffect(() => {
+    console.log(heightData);
     if (heightData) {
       set('block_start', heightData);
       set('block_end', heightData + 4320);
