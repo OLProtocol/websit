@@ -169,7 +169,7 @@ export default function Inscribe() {
               : undefined,
             lim: ordxData.limitPerMint.toString(),
             reg: ordxData.regChecked ? ordxData.reg.toString() : undefined,
-            rarity: ordxData.rarityChecked
+            rar: ordxData.rarityChecked
               ? ordxData.rarity.toString()
               : undefined,
             des: ordxData.des.toString(),
