@@ -69,11 +69,15 @@ export default function Ord2Info() {
           <div className='p-4'>
             <div className='mb-2'>
               <p className='text-gray-400'>Description:</p>
-              <p className='indent-2'>{detail?.description}</p>
+              <p className='indent-2'>{detail?.description || '-'}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>Block:</p>
               <p className='indent-2'>{`${detail?.startBlock}-${detail?.endBlock}`}</p>
+            </div>
+            <div className='mb-2'>
+              <p className='text-gray-400'>Deploy Height:</p>
+              <p className='indent-2'>{detail?.deployHeight}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>Deploy Time:</p>
@@ -81,6 +85,7 @@ export default function Ord2Info() {
                 {new Date(detail?.deployBlocktime).toLocaleString()}
               </p>
             </div>
+
             <div className='mb-2'>
               <p className='text-gray-400'>Minted:</p>
               <p className='indent-2'>{detail?.totalMinted}</p>
@@ -92,6 +97,10 @@ export default function Ord2Info() {
             <div className=''>
               <p className='text-gray-400'>Rarity:</p>
               <p className='indent-2'>{detail?.rarity}</p>
+            </div>
+            <div className=''>
+              <p className='text-gray-400'>Regular Expression:</p>
+              <p className='indent-2'>{detail?.res || '-'}</p>
             </div>
             <div className=''>
               <p className='text-gray-400'>holders:</p>
