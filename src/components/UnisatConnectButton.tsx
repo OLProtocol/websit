@@ -34,7 +34,7 @@ export const UnisatConnectButton = () => {
       return;
     }
     await connectWallet();
-    await switchNetwork('testnet');
+    // await switchNetwork('testnet');
   };
   const items: MenuProps['items'] = [
     {
@@ -81,7 +81,7 @@ export const UnisatConnectButton = () => {
                 <span className='mr-2'>{balance.total} SAT</span>
                 <Tag color='error'>{network}</Tag>
               </div>
-              <Divider />
+              <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
                 <Button type='primary' onClick={disconnect}>
                   Disconnect
