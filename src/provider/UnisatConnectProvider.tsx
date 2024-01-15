@@ -5,6 +5,7 @@ import React, {
   ReactNode,
   useMemo,
 } from 'react';
+import { useInterval } from 'react-use';
 import { useToast } from '@chakra-ui/react';
 
 declare global {
@@ -51,39 +52,46 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
   const [currentAccount, setCurrentAccount] = useState('');
   const [unisatNetwork, setUnisatNetwork] = useState('testnet'); // Default network
   const toast = useToast();
-  useEffect(() => {
-    const checkUnisat = async () => {
-      const unisat = window.unisat;
-      if (unisat) {
-        setIsUnisatInstalled(true);
-        try {
-          // Check the current network
-          const currentNetwork = await unisat.getNetwork();
-          setUnisatNetwork(currentNetwork);
+  const checkUnisat = async () => {
+    const unisat = window.unisat;
+    setIsConnected(false);
+    setBalance({
+      confirmed: 0,
+      unconfirmed: 0,
+      total: 0,
+    });
+    if (unisat) {
+      setIsUnisatInstalled(true);
+      try {
+        // Check the current network
+        const currentNetwork = await unisat.getNetwork();
+        setUnisatNetwork(currentNetwork);
 
-          // Check for accounts and balance
-          const accounts = await unisat.getAccounts();
-          if (accounts.length > 0) {
-            setIsConnected(true);
-            setCurrentAccount(accounts[0]);
-            const balance = await unisat.getBalance(accounts[0]);
-            setBalance(balance);
-          }
-        } catch (error) {
-          console.error('Error checking Unisat status:', error);
-          toast({
-            title: 'Could not check Unisat status',
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
+        // Check for accounts and balance
+        const accounts = await unisat.getAccounts();
+        if (accounts.length > 0) {
+          setIsConnected(true);
+          setCurrentAccount(accounts[0]);
+          const balance = await unisat.getBalance(accounts[0]);
+          setBalance(balance);
         }
+      } catch (error) {
+        console.error('Error checking Unisat status:', error);
+        toast({
+          title: 'Could not check Unisat status',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
       }
-    };
-
+    }
+  };
+  useEffect(() => {
     checkUnisat();
   }, []);
-
+  useInterval(() => {
+    checkUnisat();
+  }, 30000);
   const connectWallet = async () => {
     const unisat = window.unisat;
     if (unisat) {
@@ -123,11 +131,11 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
 
         // After switching the network, refresh the account details
         const accounts = await unisat.getAccounts();
-        
+
         if (accounts.length > 0) {
           setCurrentAccount(accounts[0]);
           const newBalance = await unisat.getBalance(accounts[0]);
-          console.log('newBalance', newBalance)
+          console.log('newBalance', newBalance);
           setBalance(newBalance);
         } else {
           // Handle the case where no accounts are found after the network switch
@@ -152,12 +160,12 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
   useEffect(() => {
     if (window.unisat) {
       window.unisat.on('accountsChanged', async (accounts) => {
-        console.log('accounts', accounts)
+        console.log('accounts', accounts);
         if (accounts.length > 0) {
           setIsConnected(true);
           setCurrentAccount(accounts[0]);
           const newBalance = await window.unisat.getBalance(accounts[0]);
-          console.log('newBalance', newBalance)
+          console.log('newBalance', newBalance);
           setBalance(newBalance);
         } else {
           setIsConnected(false);
@@ -165,6 +173,7 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
           setBalance({ confirmed: 0, unconfirmed: 0, total: 0 });
         }
       });
+      console.log(window.unisat);
       window.unisat.on('networkChanged', (network) => {
         setUnisatNetwork(network);
       });
