@@ -36,12 +36,12 @@ export const InfoHolders = () => {
   ];
   const dataSource: DataType[] = useMemo(
     () => [
-      {
-        rank: '1',
-        address: '0x123456789',
-        percentage: 10,
-        value: 100,
-      },
+      // {
+      //   rank: '1',
+      //   address: '0x123456789',
+      //   percentage: 10,
+      //   value: 100,
+      // },
     ],
     [],
   );

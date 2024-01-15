@@ -26,7 +26,9 @@ import { Checkbox } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useMap } from 'react-use';
 import { fetchTipHeight } from '@/lib/utils';
+import { useBlockHeightTime } from '@/lib/hooks';
 import { clacTextSize } from '../utils';
+import { format } from 'date-fns';
 import { requstOrd2Info, useBtcHeight } from '@/api';
 
 interface InscribeOrdxProps {
@@ -173,6 +175,12 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const buttonDisabled = useMemo(() => {
     return !data.tick || (data.type === 'mint' && !tickChecked);
   }, [data, tickChecked]);
+  const time = useBlockHeightTime({
+    height: heightData,
+    start: data.block_start,
+    end: data.block_end,
+  });
+  console.log(time);
   useEffect(() => {
     if (state?.type === 'ordx') {
       const { item } = state;
@@ -250,7 +258,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         {data.type === 'deploy' && (
           <>
             <FormControl>
-              <div className='flex items-center  mb-4'>
+              <div className='flex items-center mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
                   Block
                 </FormLabel>
@@ -279,17 +287,16 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       min={1}>
                       <NumberInputField />
                     </NumberInput>
-                    {/* <Input
-                    type='text'
-                    maxLength={32}
-                    placeholder='like "10-100"'
-                    value={data.block}
-                    onChange={(e) => set('block', e.target.value)}
-                  /> */}
                   </div>
                 </div>
               </div>
             </FormControl>
+            {time.start && time.end && (
+              <div className='ml-60 mb-2 text-xs text-gray-600'>
+                The effective time of mint is approximately from 
+                {format(time.start, 'yyyy-MM-dd HH:mm')} to {format(time.end, 'yyyy-MM-dd HH:mm')}
+              </div>
+            )}
 
             <FormControl>
               <div className='flex items-center  mb-4'>

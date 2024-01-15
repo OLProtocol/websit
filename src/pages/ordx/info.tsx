@@ -98,7 +98,15 @@ export default function Ord2Info() {
             </div>
             <div className=''>
               <p className='text-gray-400'>Rarity:</p>
-              <p className='indent-2'>{detail?.rarity}</p>
+              <p className='indent-2'>
+                {detail?.rarity && detail?.rarity !== 'unknow' ? (
+                  <Tag color='green' key={detail?.rarity}>
+                    {detail?.rarity}
+                  </Tag>
+                ) : (
+                  '-'
+                )}
+              </p>
             </div>
             <div className=''>
               <p className='text-gray-400'>Regular Expression:</p>
@@ -112,11 +120,7 @@ export default function Ord2Info() {
         </div>
         <div className='border-[1px] border-gray-200 rounded-xl'>
           <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-14 items-center'>
-            <Segmented
-              options={['Holder', 'Transfers']}
-              block
-              className='w-52'
-            />
+            <Segmented options={['Holder']} block className='w-52' />
           </div>
           <div className='p-4'>
             <InfoHolders />
