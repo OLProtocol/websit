@@ -160,7 +160,7 @@ export const Ord2FullList = () => {
             : 'Completed',
         deploy_time: new Date(item.deployBlocktime).toLocaleString(),
       })),
-    [list],
+    [list, height],
   );
   return (
     <div className='rounded-3xl p-4 mx-auto bg-gray-200'>
