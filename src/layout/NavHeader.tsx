@@ -52,7 +52,7 @@ export const NavHeader = () => {
         <div className='flex-1 flex h-full items-center'>
           <div className='mr-4 text-white items-center flex'>
             <img src='/logo.jpg' alt='' className='h-8 mr-2' />
-            <span>OLD Protocol</span>
+            <span>{t('app')}</span>
           </div>
           <Menu
             onSelect={onMenuSelect}
