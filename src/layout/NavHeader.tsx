@@ -29,9 +29,9 @@ export const NavHeader = () => {
       type: 'route',
     },
     {
-      key: 'https://docs.ordinalslightning.xyz/',
+      key: 'https://docs.ordx.space/',
       label: t('nav.docs'),
-      value: 'https://docs.ordinalslightning.xyz/',
+      value: 'https://docs.ordx.space/',
       type: 'link',
     },
   ];

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Segmented, Table, Tag, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useOrd2Status } from '@/api';
@@ -14,9 +14,12 @@ interface DataType {
 export const Ord2FullList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
-  const { data, isLoading } = useOrd2Status({ start: 0, limit: 10 });
+  const [start, setStart] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const { data, isLoading } = useOrd2Status({ start, limit });
   const list = useMemo(() => data?.detail || [], [data]);
-  useEffect(() => {}, []);
+  const total = useMemo(() => data?.total || 10, [data]);
+
   const height = useMemo(() => {
     return data?.height;
   }, [data]);
@@ -133,6 +136,10 @@ export const Ord2FullList = () => {
       },
     },
   ];
+  const paginationChange = (page: number, pageSize: number) => {
+    setStart((page - 1) * pageSize);
+    console.log(page, pageSize);
+  };
   const dataSource: DataType[] = useMemo(
     () =>
       list.map((item) => ({
@@ -146,7 +153,9 @@ export const Ord2FullList = () => {
         minted: item.totalMinted,
         limit: item.limit,
         status:
-          (item.startBlock && item.endBlock && height < item.endBlock || item.rarity !== 'unknow' || item.rarity !== 'common')
+          (item.startBlock && item.endBlock && height < item.endBlock) ||
+          item.rarity !== 'unknow' ||
+          item.rarity !== 'common'
             ? 'Minting'
             : 'Completed',
         deploy_time: new Date(item.deployBlocktime).toLocaleString(),
@@ -171,6 +180,10 @@ export const Ord2FullList = () => {
         dataSource={dataSource}
         pagination={{
           position: ['bottomCenter'],
+          defaultPageSize: 10,
+          total: total,
+          onChange: paginationChange,
+          showSizeChanger: false,
         }}
         scroll={{ x: 1450 }}
         onRow={(record) => {

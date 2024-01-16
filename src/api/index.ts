@@ -28,7 +28,7 @@ export const useOrd2Status = ({ start, limit }: Ord2ListStatusParams) => {
   console.log(start);
   console.log(limit);
   const { data, error, isLoading } = useSWR(
-    generateUrl('v1/indexer/ordx/status'),
+    generateUrl(`v1/indexer/ordx/status?start=${start}&limit=${limit}`),
     fetcher,
   );
   return {
