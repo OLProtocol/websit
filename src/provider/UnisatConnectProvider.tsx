@@ -91,7 +91,7 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
   }, []);
   useInterval(() => {
     checkUnisat();
-  }, 30000);
+  }, 1000 * 60 * 30);
   const connectWallet = async () => {
     const unisat = window.unisat;
     if (unisat) {

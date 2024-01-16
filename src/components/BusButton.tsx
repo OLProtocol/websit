@@ -1,16 +1,14 @@
 import React, { useMemo } from 'react';
-import type { MenuProps } from 'antd';
-import { Button, Popover, Space, Divider, Tag } from 'antd';
-import { DownOutlined, UserOutlined } from '@ant-design/icons';
-import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
-import { Center, useToast } from '@chakra-ui/react';
-
-import { hideStr } from '@/lib/utils';
+import { Button } from 'antd';
+import { useUnisatConnect,  } from '@/lib/hooks/unisat';
+import { useToast } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 
 interface BusButtonProps {
   children?: React.ReactNode;
 }
 export const BusButton = ({ children }: BusButtonProps) => {
+  const { t } = useTranslation();
   const toast = useToast();
   const { connectWallet, isConnected, switchNetwork, isUnisatInstalled } =
     useUnisatConnect();
@@ -40,7 +38,7 @@ export const BusButton = ({ children }: BusButtonProps) => {
             type='primary'
             className='mx-auto'
             onClick={connect}>
-            Connect
+            {t('buttons.connect')}
           </Button>
         </div>
       )}

@@ -7,8 +7,10 @@ import { useBtcHeight } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Button, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Ord2Info() {
+  const { t } = useTranslation();
   const { tick } = useParams();
   const [tabIndex, setTabIndex] = useState(0);
   const nav = useNavigate();
@@ -55,49 +57,49 @@ export default function Ord2Info() {
           <span>
             {status === 'Minting' ? (
               <Button type='link' onClick={() => toInscribe()}>
-                {status}
+                {t('common.minting')}
               </Button>
             ) : (
               <Tag color='blue' key={status}>
-                {status}
+                {t('common.completed')}
               </Tag>
             )}
           </span>
         </div>
         <div className='border-[1px] border-gray-200 rounded-xl mb-4'>
           <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-10 items-center'>
-            <span> Overview</span>
+            <span> {t('common.overview')} </span>
           </div>
           <div className='p-4'>
             <div className='mb-2'>
-              <p className='text-gray-400'>Description:</p>
+              <p className='text-gray-400'>{t('common.description')}:</p>
               <p className='indent-2'>{detail?.description || '-'}</p>
             </div>
             <div className='mb-2'>
-              <p className='text-gray-400'>Block:</p>
+              <p className='text-gray-400'>{t('common.block')}:</p>
               <p className='indent-2'>{`${detail?.startBlock}-${detail?.endBlock}`}</p>
             </div>
             <div className='mb-2'>
-              <p className='text-gray-400'>Deploy Height:</p>
+              <p className='text-gray-400'>{t('common.deploy_height')}:</p>
               <p className='indent-2'>{detail?.deployHeight}</p>
             </div>
             <div className='mb-2'>
-              <p className='text-gray-400'>Deploy Time:</p>
+              <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
                 {new Date(detail?.deployBlocktime).toLocaleString()}
               </p>
             </div>
 
             <div className='mb-2'>
-              <p className='text-gray-400'>Minted:</p>
+              <p className='text-gray-400'>{t('common.minted')}:</p>
               <p className='indent-2'>{detail?.totalMinted}</p>
             </div>
             <div className='mb-2'>
-              <p className='text-gray-400'>Limit per mint:</p>
+              <p className='text-gray-400'>{t('common.limit_per_mint')}:</p>
               <p className='indent-2'>{detail?.limit}</p>
             </div>
             <div className=''>
-              <p className='text-gray-400'>Rarity:</p>
+              <p className='text-gray-400'>{t('common.rarity')}:</p>
               <p className='indent-2'>
                 {detail?.rarity && detail?.rarity !== 'unknow' ? (
                   <Tag color='green' key={detail?.rarity}>
@@ -109,18 +111,18 @@ export default function Ord2Info() {
               </p>
             </div>
             <div className=''>
-              <p className='text-gray-400'>Regular Expression:</p>
+              <p className='text-gray-400'>{t('common.reg')}:</p>
               <p className='indent-2'>{detail?.res || '-'}</p>
             </div>
             <div className=''>
-              <p className='text-gray-400'>holders:</p>
+              <p className='text-gray-400'>{t('common.holders')}:</p>
               <p className='indent-2'>{detail?.holdersCount}</p>
             </div>
           </div>
         </div>
         <div className='border-[1px] border-gray-200 rounded-xl'>
           <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-14 items-center'>
-            <Segmented options={['Holder']} block className='w-52' />
+            <Segmented options={[t('common.holders')]} block className='w-52' />
           </div>
           <div className='p-4'>
             <InfoHolders />

@@ -1,37 +1,36 @@
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Menu } from 'antd';
 import { UnisatConnectButton } from '@/components/UnisatConnectButton';
 import { useLocation, useNavigate } from 'react-router-dom';
-import type { MenuProps } from 'antd';
-import { LinkBox, LinkOverlay } from '@chakra-ui/react';
-import { useEffect } from 'react';
 import { ROUTE_PATH } from '@/router';
+import { useTranslation } from 'react-i18next';
 
 export const NavHeader = () => {
   const nav = useNavigate();
+  const { t } = useTranslation();
   const routerLocation = useLocation();
   const { pathname } = routerLocation;
   const items: any[] = [
     {
       key: ROUTE_PATH.HOME,
-      label: `Home`,
+      label: t('nav.home'),
       value: ROUTE_PATH.HOME,
       type: 'route',
     },
     {
       key: ROUTE_PATH.INSCRIBE,
-      label: `Inscribe`,
+      label: t('nav.inscribe'),
       value: ROUTE_PATH.INSCRIBE,
       type: 'route',
     },
     {
       key: ROUTE_PATH.ORDX_INDEX,
-      label: `Explorer`,
+      label: t('nav.explorer'),
       value: ROUTE_PATH.ORDX_INDEX,
       type: 'route',
     },
     {
       key: 'https://docs.ordinalslightning.xyz/',
-      label: `Docs`,
+      label: t('nav.docs'),
       value: 'https://docs.ordinalslightning.xyz/',
       type: 'link',
     },

@@ -16,14 +16,12 @@ import { BusButton } from '@/components/BusButton';
 import { v4 as uuidV4 } from 'uuid';
 import { FeeShow } from './FeeShow';
 // import mempoolJS from '@mempool/mempool.js';
-import {
-  generteFiles,
-  generatePrivateKey,
-  generateInscriptions,
-} from '../utils';
+import { generatePrivateKey, generateInscriptions } from '../utils';
 import { useUnisatConnect, useCalcFee } from '@/lib/hooks';
 import { OrderItemType, useOrderStore } from '@/store';
 import { InscribeType } from '@/types';
+import { useTranslation } from 'react-i18next';
+
 interface Brc20SetpOneProps {
   list: any[];
   type: InscribeType;
@@ -38,7 +36,7 @@ export const InscribeStepThree = ({
   onAddOrder,
   onRemoveAll,
 }: Brc20SetpOneProps) => {
-  const toast = useToast();
+  const { t } = useTranslation();
   const { network, currentAccount } = useUnisatConnect();
   const [data, { set }] = useMap({
     toSingleAddress: currentAccount,
@@ -115,9 +113,11 @@ export const InscribeStepThree = ({
   return (
     <div>
       <div className='text-lg font-bold flex justify-between mb-2'>
-        <span>{list.length} Items</span>
+        <span>
+          {list.length} {t('pages.inscribe.step_three.items')}
+        </span>
         <Button size='sm' onClick={onRemoveAll}>
-          Remove All
+          {t('buttons.remove_all')}
         </Button>
       </div>
       <div className='max-h-[30rem] overflow-y-auto p-4 bg-gray-800 rounded-xl'>
@@ -136,7 +136,7 @@ export const InscribeStepThree = ({
       <div className='mb-4'>
         <Tabs className='mb-2'>
           <TabList>
-            <Tab>To Single Address</Tab>
+            <Tab>{t('pages.inscribe.step_three.to_single')}</Tab>
             {/* <Tab>To Multiple Addresses</Tab> */}
           </TabList>
         </Tabs>
@@ -149,7 +149,7 @@ export const InscribeStepThree = ({
         </div>
       </div>
       <div className='mb-4'>
-        <div className='mb-3'>Select the network fee you want to pay:</div>
+        <div className='mb-3'>{t('pages.inscribe.step_three.select_fee')}</div>
         <BtcFeeRate onChange={feeRateChange} />
       </div>
       <div className='mb-4'>
@@ -162,10 +162,7 @@ export const InscribeStepThree = ({
         /> */}
       </div>
       <div className='mb-4'>
-        <p>
-          Please note the inscribing transaction delivers the inscription to the
-          receiving address directly.
-        </p>
+        <p>{t('pages.inscribe.step_three.address_hint')}</p>
       </div>
       <div>
         <FeeShow
@@ -178,7 +175,7 @@ export const InscribeStepThree = ({
       <div className='w-60 mx-auto'>
         <BusButton>
           <Button size='md' colorScheme='blue' width='100%' onClick={submit}>
-            Submit & Pay invoice
+            {t('buttons.submit_payment')}
           </Button>
         </BusButton>
       </div>

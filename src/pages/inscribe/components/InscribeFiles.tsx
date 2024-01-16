@@ -3,6 +3,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import { Button, Upload } from 'antd';
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
+import { useTranslation } from 'react-i18next';
 
 const { Dragger } = Upload;
 
@@ -12,6 +13,7 @@ interface InscribeFilesProps {
 }
 export const InscribeFiles = ({ onChange }: InscribeFilesProps) => {
   const [files, setFiles] = useState<any[]>([]);
+  const { t } = useTranslation();
   const [originFiles, setOriginFiles] = useState<any[]>([]);
   const filesChange: UploadProps['onChange'] = ({ file, fileList }) => {
     console.log(file, fileList);
@@ -19,30 +21,29 @@ export const InscribeFiles = ({ onChange }: InscribeFilesProps) => {
     onChange?.(originFiles);
     setOriginFiles(originFiles);
     setFiles([]);
-  }
+  };
   return (
     <div>
       <div className='mb-4 text-center'>
-        <p>Upload your files to begin</p>
+        <p>{t('pages.inscribe.files.upload_title')}</p>
       </div>
       <div className='mb-4'>
-        <Dragger multiple fileList={files} onChange={filesChange} showUploadList={false}>
+        <Dragger
+          multiple
+          fileList={files}
+          onChange={filesChange}
+          showUploadList={false}>
           <p className='ant-upload-drag-icon'>
             <InboxOutlined />
           </p>
           <p className='ant-upload-text'>
-            Drag and drop your files here, or click to select files
+          {t('pages.inscribe.files.upload_des_1')}
           </p>
           <p className='ant-upload-hint'>
-            .jpg, .webp, .png, .gif, .txt, .mp3, .mp4(h264) + more!
+          {t('pages.inscribe.files.upload_des_2')}
           </p>
         </Dragger>
       </div>
-      {/* <div className='w-full mx-auto'>
-        <Button type="primary" size='large' className='w-full'  disabled={!originFiles.length} onClick={onNext}>
-          Next
-        </Button>
-      </div> */}
     </div>
   );
 };

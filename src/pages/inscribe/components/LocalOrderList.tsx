@@ -1,11 +1,9 @@
 import { useMemo } from 'react';
 import { useOrderStore, OrderItemType } from '@/store';
-import { Space, Table, Tag } from 'antd';
+import { Table} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { hideStr } from '@/lib/utils';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { inscribe } from '../utils';
-import { render } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
 interface LocalOrderListProps {
   onOrderClick?: (item: OrderItemType) => void;
@@ -16,6 +14,7 @@ interface DataType {
   created: number;
 }
 export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
+  const { t } = useTranslation();
   const { list } = useOrderStore((state) => state);
   const clickHandler = ({ orderId }) => {
     const item = list.find((v) => v.orderId === orderId);
@@ -25,7 +24,7 @@ export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
   };
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Order Id',
+      title: t('pages.inscribe.order.id'),
       dataIndex: 'orderId',
       key: 'orderId',
       render: (_, { orderId }) => {
@@ -33,12 +32,12 @@ export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
       },
     },
     {
-      title: 'Status',
+      title: t('pages.inscribe.order.status'),
       dataIndex: 'status',
       key: 'status',
     },
     {
-      title: 'Create Date',
+      title: t('pages.inscribe.order.created'),
       dataIndex: 'created',
       key: 'created',
       render: (_, { created }) => {

@@ -8,12 +8,14 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
+import { useTranslation } from 'react-i18next';
 
 interface InscribeTextProps {
   onNext?: () => void;
   onChange?: (type: string, value: string) => void;
 }
 export const InscribeText = ({ onNext, onChange }: InscribeTextProps) => {
+  const { t } = useTranslation();
   const [data, { set }] = useMap({
     type: 'single',
     text: '',
@@ -25,14 +27,14 @@ export const InscribeText = ({ onNext, onChange }: InscribeTextProps) => {
   return (
     <div>
       <div className='mb-4 text-center'>
-        <p>If single, we will inscribe exactly what is there</p>
-        <p>If bulk, we will inscribe one for every new line.</p>
+        <p>{t('pages.inscribe.text.single_des')}</p>
+        <p>{t('pages.inscribe.text.bulk_des')}</p>
       </div>
       <div className='mb-4'>
         <RadioGroup onChange={(e) => set('type', e)} value={data.type}>
           <Stack direction='row' justify='center' spacing='40px'>
-            <Radio value='single'>Single</Radio>
-            <Radio value='bulk'>Bulk</Radio>
+            <Radio value='single'>{t('pages.inscribe.text.single')}</Radio>
+            <Radio value='bulk'>{t('pages.inscribe.text.bulk')}</Radio>
           </Stack>
         </RadioGroup>
       </div>
@@ -41,7 +43,7 @@ export const InscribeText = ({ onNext, onChange }: InscribeTextProps) => {
           <Textarea
             resize='none'
             rows={5}
-            placeholder='any text here'
+            placeholder={t('pages.inscribe.text.textarea_placeholder')}
             value={data.text}
             onChange={(e) => set('text', e.target.value)}
           />
@@ -49,7 +51,7 @@ export const InscribeText = ({ onNext, onChange }: InscribeTextProps) => {
       </div>
       <div className='w-full mx-auto'>
         <Button size='md' colorScheme='blue' isDisabled={!data.text} width='100%' onClick={onNext}>
-          Next
+          {t('buttons.next')}
         </Button>
       </div>
     </div>

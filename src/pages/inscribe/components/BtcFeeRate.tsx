@@ -15,10 +15,13 @@ import { useState, useMemo, useEffect } from 'react';
 import { BtcFeeRateItem } from './BtcFeeRateItem';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { useBtcFeeRate } from '@/api';
+import { useTranslation } from 'react-i18next';
+
 interface BtcFeeRate {
   onChange?: (value: number) => void;
 }
 export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
+  const { t } = useTranslation();
   const [type, setType] = useState('Normal');
   const [preValue, setPreValue] = useState(0);
   const [customValue, setCustomValue] = useState(1);
@@ -48,14 +51,17 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
     () => [
       {
         label: 'Economy',
+        name: t('common.economy'),
         value: economyValue,
       },
       {
         label: 'Normal',
+        name: t('common.normal'),
         value: normalValue,
       },
       {
         label: 'Custom',
+        name: t('common.custom'),
         value: customValue,
       },
     ],
@@ -78,7 +84,7 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
               type === item.label ? ' border-orange-400 ' : 'border-gray-500'
             }
             key={item.label}
-            label={item.label}
+            label={item.name}
             value={item.value}
             onClick={() => clickHandler(item.label, item.value)}
           />
@@ -86,8 +92,7 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
       </SimpleGrid>{' '}
       {economyValue > 100 && (
         <div className='text-sm text-orange-400 mb-2'>
-          The current Bitcoin network is highly congested. please be patient and
-          wait.
+          {t('pages.inscribe.fee.high_hint')}
         </div>
       )}
       {type === 'Custom' && (

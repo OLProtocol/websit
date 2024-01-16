@@ -7,11 +7,12 @@ import { Ord2SummaryList } from './components/OrdxSummaryList';
 import { Ord2History } from './components/OrdxHistory';
 import { ROUTE_PATH } from '@/router';
 import { use } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const { Search } = Input;
 
 export default function Ord2Index() {
-  const nav = useNavigate();
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [address, setAddress] = useState('');
   const [searchParams] = useSearchParams();
@@ -21,13 +22,13 @@ export default function Ord2Index() {
   }, [address]);
   const doSearch = () => {
     setAddress(search);
-    history.replaceState(null, '', `/#/ordx?q=${search}`);
+    history.replaceState(null, '', `/#/explorer?q=${search}`);
     // nav(`${ROUTE_PATH.ORDX_INDEX}?q=${search}`);
   };
   useEffect(() => {
     if (search === '') {
       setAddress('');
-      history.replaceState(null, '', `/#/ordx`);
+      history.replaceState(null, '', `/#/explorer`);
       // nav(`${ROUTE_PATH.ORDX_INDEX}`);
     }
   }, [search]);
@@ -37,15 +38,12 @@ export default function Ord2Index() {
       setSearch(q);
     }
   }, [q]);
-  console.log('q', q)
-  console.log('showAddress', showAddress)
-  console.log('address', address)
   return (
     <div>
       <div className='w-[30rem] mx-auto pt-20 mb-4'>
         {!showAddress && (
           <h1 className='text-2xl text-orange-500 text-center mb-8'>
-            Check out OrdX balance of the address.
+            {t('pages.explorer.subtitle')}
           </h1>
         )}
 
@@ -61,7 +59,7 @@ export default function Ord2Index() {
         </div>
         {!showAddress && (
           <div className='mb-12 text-sm text-center'>
-            Recognize all operations including DEPLOY, MINT and TRANSFER.
+            {t('pages.explorer.des')}
           </div>
         )}
       </div>

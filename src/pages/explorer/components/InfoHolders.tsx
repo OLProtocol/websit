@@ -1,8 +1,9 @@
 import { useEffect, useMemo } from 'react';
-import { Space, Table, Tag } from 'antd';
+import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useOrd2Status } from '@/api';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 interface DataType {
   rank: string;
   address: string;
@@ -11,25 +12,26 @@ interface DataType {
 }
 export const InfoHolders = () => {
   const nav = useNavigate();
+  const { t } = useTranslation();
   useEffect(() => {}, []);
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Rank',
+      title: t('common.rank'),
       dataIndex: 'rank',
       key: 'rank',
     },
     {
-      title: 'Address',
+      title: t('common.address'),
       dataIndex: 'address',
       key: 'address',
     },
     {
-      title: 'Percentage',
+      title: t('common.percentage'),
       dataIndex: 'percentage',
       key: 'percentage',
     },
     {
-      title: 'Value',
+      title: t('common.value'),
       dataIndex: 'value',
       key: 'value',
     },

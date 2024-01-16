@@ -1,0 +1,146 @@
+{
+  "app": "OLD Protocol",
+  "common": {
+    "tick": "Tick",
+    "amount": "Amount",
+    "mint": "Mint",
+    "deploy": "Deploy",
+    "block": "Block",
+    "rarity": "Rarity",
+    "deploy_time": "Deploy Time",
+    "deploy_height": "Deploy Height",
+    "reg": "Regular Expression",
+    "limit_per_mint": "Limit Per Mint",
+    "limit": "Limit",
+    "repeat_mint": "Repeat Mint",
+    "description": "Description",
+    "economy": "Economy",
+    "normal": "Normal",
+    "custom": "Custom",
+    "secret": "Secret",
+    "account": "Account",
+    "address": "Address",
+    "holder": "holder",
+    "holders": "holders",
+    "minted": "minted",
+    "minting": "Minting",
+    "completed": "Completed",
+    "status": "Status",
+    "overview": "Overview",
+    "rank": "Rank",
+    "percentage": "Percentage",
+    "value": "Value",
+    "select_option": "Select Option"
+  },
+  "nav": {
+    "home": "Home",
+    "inscribe": "inscribe",
+    "docs": "Docs",
+    "explorer": "Explorer"
+  },
+  "buttons": {
+    "submit": "Submit",
+    "submit_payment": "Submit & Pay invoice",
+    "back": "Back",
+    "next": "Next",
+    "clear_all": "Clear All",
+    "inscribe": "Inscribe",
+    "remove_all": "Remove All",
+    "pay_wallet": "Pay with Wallet",
+    "start_inscribe": "Start Inscribing",
+    "close": "Close",
+    "connect": "Connect",
+    "connectWallet": "Connect Wallet",
+    "disconnect": "Disconnect"
+  },
+  "pages": {
+    "home": {
+      "title": "Home"
+    },
+    "inscribe": {
+      "title": "Inscribe",
+      "files": {
+        "name": "Files",
+        "upload_title": "Upload your files to begin",
+        "upload_des_1": "Drag and drop your files here, or click to select files",
+        "upload_des_2": ".jpg, .webp, .png, .gif, .txt, .mp3, .mp4(h264) + more!"
+      },
+      "text": {
+        "name": "Text",
+        "single_des": "If single, we will inscribe exactly what is there",
+        "bulk_des": "If bulk, we will inscribe one for every new line.",
+        "single": "Single",
+        "bulk": "bulk",
+        "textarea_placeholder": "any text here"
+      },
+      "ordx": {
+        "name": "OrdX",
+        "tick_placeholder": "Tick must be 3, 5-32 byte long",
+        "reg_placeholder": "like \"^[1-9][0-9]*0{n}$\"",
+        "block_helper": "The effective time of mint is approximately from {{start}} to {{end}}.",
+        "error_1": "Tick must be 3, 5-16 byte long",
+        "error_2": "Deploy must have Block or Rarity or Regular Expression",
+        "error_3": "{{tick}} has been deployed",
+        "error_4": "{{tick}}  has not been deployed",
+        "error_5": "Mint amount must be less than {{limit}}",
+        "rarity_helper": "Special sat attributes required for mint."
+      },
+      "step_two": {
+        "title": "Please double check your text below before continuing:",
+        "des": "You are about to inscribe {{num}} {{type}}."
+      },
+      "step_three": {
+        "items": "Items",
+        "select_fee": "Select the network fee you want to pay:",
+        "address_hint": "Please note the inscribing transaction delivers the inscription to the receiving address directly.",
+        "to_single": "To Single Address"
+      },
+      "fee": {
+        "fee_rate": "Fee Rate",
+        "inscription_size": "Inscription Size",
+        "network_fee": "Network Fee",
+        "service_fee": "Service Fee",
+        "service_hint": "Minimum value {{max}}",
+        "high_hint": "The current Bitcoin network is highly congested. please be patient and wait.",
+        "total_fee": "Total Fee"
+      },
+      "order": {
+        "name": "Order List",
+        "local": "Local Order",
+        "id": "Order Id",
+        "status": "Status",
+        "created": "Create Date"
+      },
+      "pay": {
+        "title": "Inscribing Order",
+        "created_text": "Order created at",
+        "files": "Files",
+        "step_one": {
+          "name": "Payment"
+        },
+        "step_two": {
+          "name": "Payment Result",
+          "des": "Please wait for the payment to be confirmed."
+        },
+        "step_three": {
+          "name": "Start Inscribing",
+          "des": "Please wait for the inscription to be confirmed."
+        },
+        "step_four": {
+          "name": "Inscribe Result",
+          "des": "Congratulations on your successful inscription.",
+          "genesis_tx": "Genesis Transaction"
+        }
+      }
+    },
+    "docs": {
+      "title": "Docs"
+    },
+    "explorer": {
+      "title": "Explorer",
+      "subtitle": "Check out OrdX balance of the address.",
+      "des": "Recognize all operations including DEPLOY, MINT and TRANSFER.",
+      "list_title": "The full list of ordx"
+    }
+  }
+}

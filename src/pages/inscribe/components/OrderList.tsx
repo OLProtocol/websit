@@ -3,18 +3,20 @@ import { Card, Button } from 'antd';
 import { OrderItemType } from '@/store';
 import { LocalOrderList } from './LocalOrderList';
 import { useOrderStore } from '@/store';
+import { useTranslation } from 'react-i18next';
 
 interface OrderListProps {
   onOrderClick?: (item: OrderItemType) => void;
 }
 
 export const OrderList = ({ onOrderClick }: OrderListProps) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>('local');
   const { reset } = useOrderStore((state) => state);
   const orderTabList = [
     {
       key: 'local',
-      tab: 'Local Order',
+      tab: t('pages.inscribe.order.local'),
     },
   ];
   const onTabChange = (key: string) => {
@@ -26,10 +28,10 @@ export const OrderList = ({ onOrderClick }: OrderListProps) => {
   return (
     <Card
       style={{ width: '100%' }}
-      title='Order List'
+      title={t('pages.inscribe.order.name')}
       extra={
         <Button danger onClick={clearOrderList}>
-          Clear All
+          {t('buttons.clear_all')}
         </Button>
       }
       tabList={orderTabList}

@@ -6,8 +6,10 @@ import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
 import { Center, useToast } from '@chakra-ui/react';
 
 import { hideStr } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export const UnisatConnectButton = () => {
+  const { t } = useTranslation();
   const toast = useToast();
   const {
     currentAccount,
@@ -84,7 +86,7 @@ export const UnisatConnectButton = () => {
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
                 <Button type='primary' onClick={disconnect}>
-                  Disconnect
+                  {t('buttons.disconnect')}
                 </Button>
               </div>
             </div>
@@ -98,7 +100,7 @@ export const UnisatConnectButton = () => {
         </Popover>
       ) : (
         <Button size='large' type='primary' onClick={connect}>
-          Connect
+          {t('buttons.connect')}
         </Button>
       )}
     </>

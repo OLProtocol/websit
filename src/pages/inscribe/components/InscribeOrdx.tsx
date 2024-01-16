@@ -29,6 +29,7 @@ import { fetchTipHeight } from '@/lib/utils';
 import { useBlockHeightTime } from '@/lib/hooks';
 import { clacTextSize } from '../utils';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import { requstOrd2Info, useBtcHeight } from '@/api';
 
 interface InscribeOrdxProps {
@@ -36,6 +37,7 @@ interface InscribeOrdxProps {
   onChange?: (data: any) => void;
 }
 export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
+  const { t } = useTranslation();
   const { state } = useLocation();
   const { network } = useUnisatConnect();
   const [data, { set }] = useMap({
@@ -64,7 +66,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     setErrorText('');
     const textSize = clacTextSize(data.tick);
     if (textSize < 3 || textSize == 4 || textSize > 16) {
-      setErrorText('Tick must be 3, 5-16 byte long');
+      setErrorText(t('pages.inscribe.ordx.error_1'));
       return;
     }
     if (
@@ -73,7 +75,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       !data.rarityChecked &&
       !data.regChecked
     ) {
-      setErrorText('Deploy must have Block or Rarity or Regular Expression');
+      setErrorText(t('pages.inscribe.ordx.error_2'));
       return;
     }
     setLoading(true);
@@ -82,16 +84,16 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     setLoading(false);
     if (data.type === 'deploy') {
       if (info.data) {
-        setErrorText(`${data.tick} has been deployed`);
+        setErrorText(t('pages.inscribe.ordx.error_3', { tick: data.tick }));
         return;
       }
     } else if (data.type === 'mint') {
       if (!info.data) {
-        setErrorText(`${data.tick} has not been deployed`);
+        setErrorText(t('pages.inscribe.ordx.error_4', { tick: data.tick }));
         return;
       }
       if (data.amount > info.data.limit) {
-        setErrorText(`Mint amount must be less than ${info.data.limit}`);
+        setErrorText(t('pages.inscribe.ordx.error_5', { limit: info.data.limit }));
         return;
       }
     }
@@ -102,7 +104,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     setErrorText('');
     const textSize = clacTextSize(data.tick);
     if (textSize < 3 || textSize == 4 || textSize > 32) {
-      setErrorText('Tick must be 3, 5-32 byte long');
+      setErrorText(t('pages.inscribe.ordx.error_1'));
       return;
     }
     if (data.type === 'mint') {
@@ -113,14 +115,14 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         setTickLoading(false);
         setTickChecked(true);
         if (!info.data) {
-          setErrorText(`${data.tick} has not been deployed`);
+          setErrorText(t('pages.inscribe.ordx.error_3', { tick: data.tick }));
           return;
         } else {
           set('amount', Number(info.data.limit));
           set('mintRarity', info.data.rarity);
         }
         if (data.amount > info.data.limit) {
-          setErrorText(`Mint amount must be less than ${info.data.limit}`);
+          setErrorText(t('pages.inscribe.ordx.error_5', { limit: info.data.limit }));
           return;
         }
       } catch (error) {
@@ -138,7 +140,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     }
   };
   const onBlockChecked = (e: any) => {
-    console.log(e);
     set('blockChecked', e.target.checked);
     set('rarityChecked', !e.target.checked);
     set('regChecked', !e.target.checked);
@@ -209,8 +210,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           onChange={(e) => set('type', e)}
           value={data.type}>
           <Stack direction='row' justify='center' spacing='20px'>
-            <Radio value='mint'>Mint</Radio>
-            <Radio value='deploy'>Deploy</Radio>
+            <Radio value='mint'>{t('common.mint')}</Radio>
+            <Radio value='deploy'>{t('common.deploy')}</Radio>
           </Stack>
         </RadioGroup>
       </div>
@@ -222,14 +223,14 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         <FormControl>
           <div className='flex items-center mb-4'>
             <FormLabel className='w-52' marginBottom={0}>
-              Tick
+              {t('common.tick')}
             </FormLabel>
             <div className='flex-1'>
               <Input
                 type='text'
                 onBlur={onTickBlur}
                 maxLength={32}
-                placeholder='3 or 5-32 letters'
+                placeholder={t('pages.inscribe.ordx.tick_placeholder')}
                 value={data.tick}
                 onChange={(e) => set('tick', e.target.value)}
               />
@@ -240,7 +241,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
-                Amount
+                {t('common.amount')}
               </FormLabel>
               <div className='flex-1'>
                 <NumberInput
@@ -260,7 +261,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             <FormControl>
               <div className='flex items-center mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
-                  Block
+                  {t('common.block')}
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
@@ -293,16 +294,18 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             </FormControl>
             {time.start && time.end && (
               <div className='ml-60 mb-2 text-xs text-gray-600'>
-                The effective time of mint is approximately from 
-                {format(time.start, 'yyyy-MM-dd HH:mm')} to {format(time.end, 'yyyy-MM-dd HH:mm')}
+                {t('pages.inscribe.ordx.block_helper', {
+                  start: format(time.start, 'yyyy-MM-dd HH:mm'),
+                  end: format(time.end, 'yyyy-MM-dd HH:mm'),
+                })}
               </div>
             )}
 
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
-                  Rarity
-                  <Tooltip title='Special sat attributes required for mint'>
+                  {t('common.rarity')}
+                  <Tooltip title={t('pages.inscribe.ordx.rarity_helper')}>
                     <span className='text-blue-500'>
                       (sat
                       <QuestionCircleOutlined />)
@@ -317,7 +320,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                   <div className='ml-2 flex-1'>
                     <Select
                       disabled={!data.rarityChecked}
-                      placeholder='Select option'
+                      placeholder={t('common.select_option')}
                       value={data.rarity}
                       onChange={(e) => rarityChange(e.target.value)}>
                       <option value='common'>common</option>
@@ -334,8 +337,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
-                  Regular Expression
-                  <Tooltip title='Special sat attributes required for mint'>
+                  {t('common.reg')}
+                  <Tooltip title={t('pages.inscribe.ordx.rarity_helper')}>
                     <span className='text-blue-500'>
                       (sat
                       <QuestionCircleOutlined />)
@@ -363,7 +366,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
-                  Limit Per Mint
+                  {t('common.limit_per_mint')}
                 </FormLabel>
                 <div className='flex-1'>
                   <NumberInput
@@ -378,7 +381,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
-                  Description
+                  {t('common.description')}
                 </FormLabel>
                 <div className='flex-1'>
                   <Input
@@ -414,7 +417,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
-                Repeat Mint
+                {t('common.repeat_mint')}
               </FormLabel>
               <div className='flex-1'>
                 <Flex>
@@ -457,7 +460,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           type='primary'
           className='w-60'
           onClick={nextHandler}>
-          Next
+          {t('buttons.next')}
         </Button>
       </div>
     </div>

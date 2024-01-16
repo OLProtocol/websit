@@ -11,11 +11,12 @@ import { useMap, useList } from 'react-use';
 import { InscribingOrderModal } from './components/InscribingOrderModal';
 import { removeObjectEmptyValue, generteFiles } from './utils';
 import { InscribeType } from '@/types';
+import { useTranslation } from 'react-i18next';
 import { OrderList } from './components/OrderList';
 
 export default function Inscribe() {
-  const { state, ...rdes } = useLocation();
-  console.log(rdes);
+  const { state } = useLocation();
+  const { t } = useTranslation();
   const [step, setStep] = useState(3);
   const [tab, setTab] = useState<InscribeType>('files');
   const [files, setFiles] = useState<any[]>([]);
@@ -284,7 +285,7 @@ export default function Inscribe() {
   }, [state]);
   return (
     <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
-      <h1 className='text-lg font-bold text-center mb-4'>Inscribe</h1>
+      <h1 className='text-lg font-bold text-center mb-4'>{t('pages.inscribe.title')}</h1>
       <div>
         <div className='mb-4 flex justify-center'>
           <Radio.Group
@@ -292,10 +293,10 @@ export default function Inscribe() {
             size='large'
             value={tab}
             onChange={handleTabsChange}>
-            <Radio.Button value='files'>Files</Radio.Button>
-            <Radio.Button value='text'>Text</Radio.Button>
+            <Radio.Button value='files'>{t('pages.inscribe.files.name')}</Radio.Button>
+            <Radio.Button value='text'>{t('pages.inscribe.text.name')}</Radio.Button>
             {/* <Radio.Button value='brc-20'>Brc-20</Radio.Button> */}
-            <Radio.Button value='ordx'>OrdX</Radio.Button>
+            <Radio.Button value='ordx'>{t('pages.inscribe.ordx.name')}</Radio.Button>
           </Radio.Group>
         </div>
         <div className=' min-h-[10rem] mx-auto bg-gray-50 p-8 rounded-lg mb-4'>

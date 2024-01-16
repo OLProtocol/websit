@@ -3,8 +3,8 @@ import Root from '@/Root';
 import Home from '@/pages/home';
 import Test from '@/pages/test';
 import Inscribe from '@/pages/inscribe';
-import Ord2Index from '@/pages/ordx';
-import Ord2Info from '@/pages/ordx/info';
+import Ord2Index from '@/pages/explorer';
+import Ord2Info from '@/pages/explorer/info';
 
 const resolveHashPath = (path: string) => {
   return `/#${path}`;
@@ -14,8 +14,8 @@ export const ROUTE_PATH = {
   HOME: '/',
   TEST: '/test',
   INSCRIBE: '/inscribe',
-  ORDX_INDEX: '/ordx',
-  ORDX_INFO: '/ordx/:tick',
+  ORDX_INDEX: '/explorer',
+  ORDX_INFO: '/explorer/:tick',
 };
 const hashPath: any = {};
 Object.keys(ROUTE_PATH).forEach((k: any) => {

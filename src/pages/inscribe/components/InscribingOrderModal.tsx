@@ -24,6 +24,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { _0n } from '@cmdcode/crypto-utils/dist/const';
 import { hideStr } from '@/lib/utils';
 import { FeeShow } from './FeeShow';
+import { useTranslation } from 'react-i18next';
 
 interface InscribingOrderMdaolProps {
   show: boolean;
@@ -38,11 +39,12 @@ export const InscribingOrderModal = ({
   onClose,
   onFinished,
 }: InscribingOrderMdaolProps) => {
+  const { t } = useTranslation();
   const steps = [
-    { title: 'Payment' },
-    { title: 'Payment Result' },
-    { title: 'Start Inscribing' },
-    { title: 'Inscribe Result' },
+    { title: t('pages.inscribe.pay.step_one.name') },
+    { title: t('pages.inscribe.pay.step_two.name') },
+    { title: t('pages.inscribe.pay.step_three.name') },
+    { title: t('pages.inscribe.pay.step_four.name') },
   ];
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -70,8 +72,6 @@ export const InscribingOrderModal = ({
     try {
       const { inscriptions, feeRate, inscriptionSize, secret, network, fee } =
         order;
-      console.log('fee', fee);
-      console.log('feeRate', feeRate);
       if (inscriptions.length === 1) {
         const txid = await unisat.sendBitcoin(
           inscriptions[0].inscriptionAddress,
@@ -282,7 +282,7 @@ export const InscribingOrderModal = ({
                 <div className='flex justify-center'>
                   <BusButton>
                     <Button type='primary' loading={loading} onClick={payOrder}>
-                      Pay with Wallet
+                      {t('buttons.pay_wallet')}
                     </Button>
                   </BusButton>
                 </div>
@@ -292,9 +292,11 @@ export const InscribingOrderModal = ({
             {activeStep === 1 && (
               <div>
                 <div className='text-center mb-2'>
-                  <div className='text-2xl font-bold'>Payment Result</div>
+                  <div className='text-2xl font-bold'>
+                    {t('pages.inscribe.pay.step_two.name')}
+                  </div>
                   <div className='text-sm text-gray-400'>
-                    Please wait for the payment to be confirmed.
+                    {t('pages.inscribe.pay.step_two.des')}
                   </div>
                 </div>
                 {order?.txid && (
@@ -309,7 +311,7 @@ export const InscribingOrderModal = ({
                     disabled={payStatus}
                     loading={loading}
                     onClick={startInscribe}>
-                    Start Inscribing
+                    {t('buttons.start_inscribe')}
                   </Button>
                 </div>
               </div>
@@ -318,9 +320,11 @@ export const InscribingOrderModal = ({
             {activeStep === 2 && (
               <div>
                 <div className='text-center'>
-                  <div className='text-2xl font-bold'>Inscribing</div>
+                  <div className='text-2xl font-bold'>
+                    {t('pages.inscribe.pay.step_three.name')}
+                  </div>
                   <div className='text-sm text-gray-400'>
-                    Please wait for the inscription to be confirmed.
+                    {t('pages.inscribe.pay.step_three.des')}
                   </div>
                 </div>
                 <div className='flex justify-center mt-4'>
@@ -328,7 +332,7 @@ export const InscribingOrderModal = ({
                     type='primary'
                     loading={loading}
                     onClick={inscribeHandler}>
-                    Inscribe
+                    {t('buttons.inscribe')}
                   </Button>
                 </div>
               </div>
@@ -336,15 +340,20 @@ export const InscribingOrderModal = ({
             {activeStep === 3 && (
               <div>
                 <div className='text-center mb-4'>
-                  <div className='text-2xl font-bold'>Inscribe Result</div>
+                  <div className='text-2xl font-bold'>
+                    {t('pages.inscribe.pay.step_four.name')}
+                  </div>
                   <div className='text-sm text-gray-400'>
-                    Congratulations on your successful inscription.
+                    {t('pages.inscribe.pay.step_four.des')}
                   </div>
                 </div>
                 <div>
                   {order?.inscriptions?.map((item, index) => (
                     <div key={index} className='flex justify-between mb-4'>
-                      <div>Genesis Transaction {index + 1}</div>
+                      <div>
+                        {t('pages.inscribe.pay.step_four.genesis_tx')}{' '}
+                        {index + 1}
+                      </div>
                       <a
                         className='text-blue-500 underline'
                         href={`https://mempool.space/testnet/tx/${item.txid}`}
@@ -360,7 +369,7 @@ export const InscribingOrderModal = ({
                     loading={loading}
                     size='large'
                     onClick={closeHandler}>
-                    Close
+                    {t('buttons.close')}
                   </Button>
                 </div>
               </div>
@@ -375,16 +384,16 @@ export const InscribingOrderModal = ({
           />
           {activeStep > 1 && (
             <>
-              <Divider children='Account' />
+              <Divider children={t('common.account')} />
               <Card title='Funding Account' size='small'>
                 <div className='flex justify-between items-center mb-4'>
-                  <div>Secret</div>
+                  <div>{t('common.secret')}</div>
                   <div className='text-sm text-gray-500 break-all ml-4'>
                     {order?.secret}
                   </div>
                 </div>
                 <div className='flex justify-between'>
-                  <div>Address</div>
+                  <div>{t('common.address')}</div>
                   <a
                     className='text-blue-500 underline ml-4'
                     href={fundingAddressHref}
@@ -395,8 +404,7 @@ export const InscribingOrderModal = ({
               </Card>
             </>
           )}
-
-          <Divider children='Files' />
+          <Divider children={t('pages.inscribe.pay.files')} />
           <VStack className='mb-2' spacing='10px'>
             {order?.inscriptions?.map((item, index) => (
               <InscribeOrderItem
@@ -410,7 +418,8 @@ export const InscribingOrderModal = ({
           </VStack>
           {order?.createAt && (
             <div className='text-right text-sm text-gray-400'>
-              Order created at {new Date(order?.createAt).toLocaleString()}
+              {t('pages.inscribe.pay.created_text')}{' '}
+              {new Date(order?.createAt).toLocaleString()}
             </div>
           )}
         </ModalBody>

@@ -23,6 +23,8 @@ import { useState } from 'react';
 import { useMap } from 'react-use';
 import { InscribeCheckItem } from './InscribeCheckItem';
 import { InscribeType } from '@/types';
+import { useTranslation } from 'react-i18next';
+
 interface Brc20SetpOneProps {
   list: any[];
   type: InscribeType;
@@ -35,18 +37,19 @@ export const InscribeStepTwo = ({
   onNext,
   onBack,
 }: Brc20SetpOneProps) => {
-  const [data, { set }] = useMap();
+  const { t } = useTranslation();
   return (
     <div>
       <div className='text-lg font-bold text-center'>
-        Please double check your text below before continuing:
+        {t('pages.inscribe.step_two.title')}
       </div>
       <div className='text-md text-center text-gray-600'>
-        You are about to inscribe{' '}
         <span className='text-black'>
-          {list.length} {type}
+          {t('pages.inscribe.step_two.des', {
+            num: list.length,
+            type: type,
+          })}
         </span>
-        .
       </div>
       <div className='max-h-[30rem] overflow-y-auto'>
         <VStack spacing='10px' className='w-full py-4'>
@@ -61,10 +64,10 @@ export const InscribeStepTwo = ({
       </div>
       <SimpleGrid columns={2} spacingX='20px'>
         <Button size='md' colorScheme='green' width='100%' onClick={onBack}>
-          Back
+          {t('buttons.back')}
         </Button>
         <Button size='md' colorScheme='blue' width='100%' onClick={onNext}>
-          Next
+          {t('buttons.next')}
         </Button>
       </SimpleGrid>
     </div>

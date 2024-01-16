@@ -3,6 +3,8 @@ import { Segmented, Table, Tag, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useOrd2Status } from '@/api';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 interface DataType {
   tick: string;
   block: string;
@@ -10,6 +12,7 @@ interface DataType {
 }
 
 export const Ord2FullList = () => {
+  const { t } = useTranslation();
   const nav = useNavigate();
   const { data, isLoading } = useOrd2Status({ start: 0, limit: 10 });
   const list = useMemo(() => data?.detail || [], [data]);
@@ -18,7 +21,7 @@ export const Ord2FullList = () => {
     return data?.height;
   }, [data]);
   const clickHandler = (item) => {
-    nav(`/ordx/${item.tick}`);
+    nav(`/explorer/${item.tick}`);
   };
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
@@ -26,7 +29,7 @@ export const Ord2FullList = () => {
   };
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Tick',
+      title: t('common.tick'),
       dataIndex: 'tick',
       key: 'tick',
       fixed: 'left',
@@ -34,14 +37,14 @@ export const Ord2FullList = () => {
       align: 'center',
     },
     {
-      title: 'Deploy Time',
+      title: t('common.deploy_time'),
       dataIndex: 'deploy_time',
       key: 'deploy_time',
       width: 200,
       align: 'center',
     },
     {
-      title: 'Description',
+      title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
       width: 200,
@@ -49,21 +52,21 @@ export const Ord2FullList = () => {
       render: (t) => t || '-',
     },
     {
-      title: 'Limit',
+      title: t('common.limit'),
       dataIndex: 'limit',
       key: 'limit',
       width: 100,
       align: 'center',
     },
     {
-      title: 'Block',
+      title: t('common.block'),
       dataIndex: 'block',
       key: 'block',
       width: 200,
       align: 'center',
     },
     {
-      title: 'Deploy Height',
+      title: t('common.deploy_height'),
       dataIndex: 'deployHeight',
       key: 'deployHeight',
       width: 150,
@@ -71,7 +74,7 @@ export const Ord2FullList = () => {
     },
 
     {
-      title: 'Regular Expression',
+      title: t('common.reg'),
       dataIndex: 'reg',
       key: 'reg',
       width: 200,
@@ -79,7 +82,7 @@ export const Ord2FullList = () => {
       render: (t) => t || '-',
     },
     {
-      title: 'Rarity',
+      title: t('common.rarity'),
       dataIndex: 'rarity',
       key: 'rarity',
       width: 100,
@@ -95,14 +98,14 @@ export const Ord2FullList = () => {
       },
     },
     {
-      title: 'Holders',
+      title: t('common.holders'),
       dataIndex: 'holders',
       key: 'holders',
       width: 100,
       align: 'center',
     },
     {
-      title: 'Minted',
+      title: t('common.minted'),
       dataIndex: 'minted',
       key: 'minted',
       fixed: 'right',
@@ -111,7 +114,7 @@ export const Ord2FullList = () => {
     },
 
     {
-      title: 'Status',
+      title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
       fixed: 'right',
@@ -120,11 +123,11 @@ export const Ord2FullList = () => {
       render: (status, record) => {
         return status === 'Minting' ? (
           <Button type='link' onClick={(e) => toInscribe(e, record)}>
-            {status}
+            {t('common.minting')}
           </Button>
         ) : (
           <Tag color='blue' key={status}>
-            {status}
+            {t('common.completed')}
           </Tag>
         );
       },
@@ -153,15 +156,15 @@ export const Ord2FullList = () => {
   return (
     <div className='rounded-3xl p-4 mx-auto bg-gray-200'>
       <h2 className='mb-2 font-bold text-lg text-center'>
-        The full list of ordx
+        {t('pages.explorer.list_title')}
       </h2>
-      <div className='flex mb-4 justify-center'>
+      {/* <div className='flex mb-4 justify-center'>
         <Segmented
           options={['All', 'In-Progress', 'Completed']}
           block
           className='w-80'
         />
-      </div>
+      </div> */}
       <Table
         loading={isLoading}
         columns={columns}
