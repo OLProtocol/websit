@@ -7,7 +7,7 @@ import { InscribeText } from './components/InscribeText';
 import { InscribeFiles } from './components/InscribeFiles';
 import { InscribeStepTwo } from './components/InscribeStepTwo';
 import { InscribeStepThree } from './components/InscribeStepThree';
-import { useMap, useList } from 'react-use';
+import { useMap, useList, useTitle } from 'react-use';
 import { InscribingOrderModal } from './components/InscribingOrderModal';
 import { removeObjectEmptyValue, generteFiles } from './utils';
 import { InscribeType } from '@/types';

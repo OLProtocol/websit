@@ -6,7 +6,6 @@ interface Ord2SummaryListProps {
 }
 export const Ord2SummaryList = ({ address }: Ord2SummaryListProps) => {
   const { data, trigger } = useOrdXSummary({ address });
-  console.log(address);
   const list = useMemo(() => data?.detail || [], [data]);
   useEffect(() => {
     if (address) {
