@@ -106,7 +106,7 @@ export const getFundingAddress = (sescet: string, network: string) => {
   const script = [pubkey, 'OP_CHECKSIG'];
   const leaf = Tap.encodeScript(script);
   const [tapkey, cblock] = Tap.getPubKey(pubkey, { target: leaf });
-  const address = Address.p2tr.fromPubKey(tapkey, network);
+  const address = Address.p2tr.fromPubKey(tapkey, network as any);
   return {
     script,
     leaf,
