@@ -71,6 +71,18 @@ const data: ProtocolCompare[] = [
     ordx: "sat",
     brc20: "未定义",
     atomicals: "sat"
+  },
+  {
+    rowTitle: "拆分方案",
+    ordx: "不可拆分，受最小utxo限制，需要在Layer2中做拆分",
+    brc20: "无限可分",
+    atomicals: "使用ST操作符和Exp参数进行拆分（和其原子性原则有冲突）"
+  },
+  {
+    rowTitle: "烧毁可能性",
+    ordx: "sat不可烧毁，token也就无法烧毁",
+    brc20: "不可烧毁",
+    atomicals: "使用错误的钱包或者错误的使用方式容易导致token被烧毁"
   }
 ];
 

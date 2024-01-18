@@ -1,4 +1,4 @@
-import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from "@chakra-ui/react";
 import {
   useReactTable,
   flexRender,
@@ -22,7 +22,8 @@ export function ProtocolTable<Data extends object>({
   });
 
   return (
-    <Table style={{ backgroundColor: "black", color:"white", borderColor:"red" }}>
+    <TableContainer>
+    <Table style={{ backgroundColor: "black", color:"white" }} size={"md"}>
       <Thead>
         {table.getHeaderGroups().map((headerGroup) => (
           <Tr key={headerGroup.id}>
@@ -54,7 +55,7 @@ export function ProtocolTable<Data extends object>({
                     backgroundColor: cellIndex === 1 ? "#005aff" : "inherit", 
                     fontSize: cellIndex === 0 ? "18px" : "inherit", 
                     fontWeight: cellIndex === 0 ? "800" : "inherit",
-                    width: cellIndex === 0 ? "20%" : "inherit",
+                    width: cellIndex === 0 ? "10%" : "30%",
                   }}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </Td>
@@ -64,5 +65,6 @@ export function ProtocolTable<Data extends object>({
         ))}
       </Tbody>
     </Table>
+    </TableContainer>
   );
 }
