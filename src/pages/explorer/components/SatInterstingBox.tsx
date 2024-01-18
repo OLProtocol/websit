@@ -20,7 +20,7 @@ export const SatInterstingBox = ({ sats }: SatInterstingBoxProps) => {
       dataIndex: 'sat',
       key: 'sat',
       align: 'center',
-      render(value, record, index) {
+      render(_, record) {
         return <SatItem sat={record} />;
       },
     },
