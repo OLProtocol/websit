@@ -1,5 +1,6 @@
 export * from './unisat';
 export * from './useCalcFee';
+
 import { add } from 'date-fns';
 import { useMemo } from 'react';
 interface BlockHeightTime {
@@ -21,3 +22,29 @@ export const useBlockHeightTime = ({ height, start, end }: BlockHeightTime) => {
   }, [height, start, end]);
   return time;
 };
+
+export const useSatIcon = (type:  string) => {
+  const icon = useMemo(() => {
+    switch (type) {
+      case 'rare':
+        return '/images/sat/rare.svg';
+      case 'common':
+        return '/images/sat/common.svg';
+      case 'uncommon':
+        return '/images/sat/icon-uncommon.svg';
+      case 'legendary':
+        return '/images/sat/legendary.svg';
+      case 'mythical':
+        return '/images/sat/mythical.svg';
+      case 'palindromes_integer':
+        return '/images/sat/icon-dp.svg';
+      case 'palindromes_name':
+        return '/images/sat/icon-np.svg';
+      case 'pizza':
+        return '/images/sat/icon-pz.svg';
+      default:
+        return undefined;
+    }
+  }, [type]);
+  return icon;
+}

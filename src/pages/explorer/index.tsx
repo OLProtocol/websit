@@ -70,11 +70,11 @@ export default function Ord2Index() {
             <div className='mb-4'>
               <Ord2SummaryList address={address} />
             </div>
-            <div>
-              {/* <SatBox /> */}
+            <div className='mb-4'>
+              <SatBox />
             </div>
             <div className='mb-4'>
-              <Ord2History tick='BTC' address={address} />
+              {/* <Ord2History tick='BTC' address={address} /> */}
             </div>
           </>
         )}
