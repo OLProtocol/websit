@@ -71,7 +71,7 @@ export default function Ord2Index() {
               <Ord2SummaryList address={address} />
             </div>
             <div>
-              <SatBox />
+              {/* <SatBox /> */}
             </div>
             <div className='mb-4'>
               <Ord2History tick='BTC' address={address} />
