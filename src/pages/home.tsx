@@ -98,7 +98,7 @@ const columns = [
 export default function Home() {
   return (
     <div className="min-h-full bg-gray-900">
-      <div className='mx-auto pt-4' style={{ width: '80%' }}>
+      {/* <div className='mx-auto pt-4' style={{ width: '80%' }}>
         <div style={{ backgroundImage: `url(${HeadBgImg})`, backgroundSize: 'cover', height: '490px' }}>
           <div style={{textAlign: 'right', verticalAlign: 'bottom', paddingTop: '100px', paddingRight: '100px'}}>
           <span style={{ fontSize: '64px', color: '#fff' }}>一</span><span style={{ fontSize: '128px', color: '#fff', fontWeight: 'bold' }}>聪</span><span style={{ fontSize: '64px', color: '#fff' }}>一世界</span>
@@ -106,6 +106,11 @@ export default function Home() {
           <div style={{textAlign: 'right', verticalAlign: 'bottom', paddingRight: '100px'}}>
             <span style={{ fontSize: '32px', color: '#fff' }}>One sat, one universe.</span>
           </div>
+        </div>
+      </div> */}
+      <div className='mx-auto pt-4' style={{ width: '80%' }}>
+        <div>
+          <img src={HeadBgImg} className='w-full' style={{height: 'auto', maxWidth: '100%'}}/>
         </div>
       </div>
 
@@ -117,9 +122,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className='mx-auto pt-4'style={{ width: '80%', marginTop: '50px' }} >
+      <div className='mx-auto pt-4' style={{ width: '60%', marginTop: '50px' }}>
         <div style={{display: 'flex'}}>
-          <div style={{textAlign: 'left', verticalAlign: 'center', width: '70%', paddingTop: '50px', paddingLeft: '40px', lineHeight: '32px'}}>
+          <div style={{textAlign: 'left', verticalAlign: 'center', width: '70%', lineHeight: '32px'}}>
             <section style={{ fontSize: '64px', color: '#fff', paddingBottom: '64px' }}>东方之珠</section>
             <section style={{ fontSize: '16px', color: '#fff' }}>我们计划在2024年1月25日正式发布协议，并且部署第一个Token：Pearl。</section>
             <section style={{ fontSize: '16px', color: '#fff' }}>
@@ -127,64 +132,65 @@ export default function Home() {
               这是ordx协议的第一个token，也是一个meme币，仅供试验，没有价值，不要FOMO。
             </section>
             <section style={{ fontSize: '16px', color: '#fff', paddingTop: '32px' }}>
-              如果你的BTC很多，可以尝试下是不是可以从BTC中找出闪亮的宝石，只需要输入你的钱包地址，就可以看到结果。或者你认为那些类型的sat更有兼职，可以为这些sat部署特别的Token。
+              如果你的BTC很多，可以尝试下是不是可以从BTC中找出闪亮的宝石，只需要输入你的钱包地址，就可以看到结果。或者你认为那些类型的sat更有价值，可以为这些sat部署特别的Token。
             </section>
           </div>
-          <div style={{width: '30%'}}>
-            <img src={PearlImage} className='w-full' style={{height: 'auto', maxWidth: '100%'}} />
+          <div style={{width: '30%', paddingLeft: '100px'}}>
+            <img src={PearlImage}/>
           </div>
         </div>
       </div>
 
-      <div className='mx-auto pt-4'style={{ width: '80%', marginTop: '50px' }} >
+      <div className='mx-auto pt-4'style={{ width: '60%', marginTop: '50px' }} >
         <div style={{display: 'flex'}}>
           <div style={{width: '30%'}}>
-            <img src={JadeImage} className='w-full' style={{height: 'auto', maxWidth: '100%'}} />
+            <img src={JadeImage} style={{float:'right'}}/>
           </div>
-          <div style={{textAlign: 'left', verticalAlign: 'center', width: '70%', paddingTop: '100px', paddingLeft: '150px', lineHeight: '32px'}}>
+          <div style={{textAlign: 'right', verticalAlign: 'center', width: '70%', paddingTop: '50px', lineHeight: '32px'}}>
             <section style={{ fontSize: '64px', color: '#fff', paddingBottom: '64px' }}>矿工的翡翠</section>
             <section style={{ fontSize: '16px', color: '#fff' }}>每个区块的第一个sat才能mint成功，预计每个Token值1-10个btc。</section>
           </div>
         </div>
       </div>
 
-      <div className='mx-auto pt-4'style={{ width: '80%', marginTop: '50px' }} >
+      <div className='mx-auto pt-4'style={{ width: '60%', marginTop: '50px' }} >
         <div style={{display: 'flex'}}>
-          <div style={{textAlign: 'left', verticalAlign: 'center', width: '70%', paddingTop: '150px', paddingLeft: '40px', lineHeight: '32px'}}>
+          <div style={{textAlign: 'left', verticalAlign: 'center', width: '70%', paddingTop: '50px', lineHeight: '32px'}}>
             <section style={{ fontSize: '64px', color: '#fff', paddingBottom: '64px' }}>Domo的红宝石</section>
             <section style={{ fontSize: '16px', color: '#fff' }}>只有rare属性的sat才能mint成红宝石，最多只有3437个红宝石。目前只有不到400个，预计每个值100BTC。</section>
           </div>
-          <div style={{width: '30%'}}>
-            <img src={RubyImage} className='w-full' style={{height: 'auto', maxWidth: '100%'}} />
+          <div style={{width: '30%', paddingLeft: '100px'}}>
+            <img src={RubyImage}/>
           </div>
         </div>
       </div>
 
-      <div className='mx-auto pt-4'style={{ width: '80%', marginTop: '50px' }} >
+      <div className='mx-auto pt-4'style={{ width: '60%', marginTop: '50px' }} >
         <div style={{display: 'flex'}}>
           <div style={{width: '30%'}}>
-            <img src={SapphireImage} className='w-full' style={{height: 'auto', maxWidth: '100%'}} />
+            <img src={SapphireImage} style={{float:'right'}}/>
           </div>
-          <div style={{textAlign: 'left', verticalAlign: 'center', width: '70%', paddingTop: '150px', paddingLeft: '100px', lineHeight: '32px'}}>
+          <div style={{textAlign: 'right', verticalAlign: 'center', width: '70%', paddingTop: '50px', lineHeight: '32px'}}>
             <section style={{ fontSize: '64px', color: '#fff', paddingBottom: '64px' }}>Casey的蓝宝石</section>
-            <section style={{ fontSize: '16px', color: '#fff' }}>只有epic属性的sat才能mint成蓝宝石，最多只有32个蓝宝石。目前只有3个，御姐每个值10000BTC。</section>
+            <section style={{ fontSize: '16px', color: '#fff' }}>只有epic属性的sat才能mint成蓝宝石，最多只有32个蓝宝石。目前只有3个，预计每个值10000BTC。</section>
           </div>
         </div>
       </div>
 
-      <div className='mx-auto pt-4' style={{ width: '80%', marginTop: '50px' }} >
+      <div className='mx-auto pt-4' style={{ width: '60%', marginTop: '50px' }} >
         <div style={{display: 'flex'}}>
-          <div style={{textAlign: 'left', verticalAlign: 'center', width: '70%', paddingTop: '150px', paddingLeft: '40px', lineHeight: '32px'}}>
+          <div style={{textAlign: 'left', verticalAlign: 'center', width: '70%', lineHeight: '32px'}}>
             <section style={{ fontSize: '64px', color: '#fff', paddingBottom: '64px' }}>数字黄金</section>
-            <section style={{ fontSize: '16px', color: '#fff' }}>每个BTC的第一个sat才能mint成功，正则表达式的意思是该sat的序号的末尾是8个0。</section>
+            <section style={{ fontSize: '16px', color: '#fff' }}>每个BTC的第一个sat才能mint成功，正则表达式的意思是该sat序号的末尾是8个0。</section>
             <section style={{ fontSize: '16px', color: '#fff' }}>这意味着，每个token值1个BTC。</section>
           </div>
-          <div style={{width: '30%'}}>
-            <img src={GoldImage} className='w-full' style={{height: 'auto', maxWidth: '100%'}} />
+          <div style={{width: '30%', paddingLeft: '100px'}}>
+            {/* <img src={GoldImage} className='w-full' style={{height: 'auto', maxWidth: '100%'}} /> */}
+            <img src={GoldImage}/>
           </div>
         </div>
       </div>
-      <div className='max-w-4xl mx-auto pt-4'>
+      <div className='mx-auto pt-4'>
         <div className='rounded-2xl overflow-hidden'>
         </div>
       </div>
