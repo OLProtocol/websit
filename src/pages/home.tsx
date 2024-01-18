@@ -179,7 +179,7 @@ export default function Home() {
 
       <div className='mx-auto pt-4' style={{ width: '60%', marginTop: '50px' }} >
         <div style={{display: 'flex'}}>
-          <div style={{textAlign: 'left', verticalAlign: 'center', width: '70%', lineHeight: '32px'}}>
+          <div style={{textAlign: 'left', verticalAlign: 'center', width: '70%', paddingTop: '20px', lineHeight: '32px'}}>
             <section style={{ fontSize: '64px', color: '#fff', paddingBottom: '64px' }}>数字黄金</section>
             <section style={{ fontSize: '16px', color: '#fff' }}>每个BTC的第一个sat才能mint成功，正则表达式的意思是该sat序号的末尾是8个0。</section>
             <section style={{ fontSize: '16px', color: '#fff' }}>这意味着，每个token值1个BTC。</section>
@@ -190,8 +190,20 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className='mx-auto pt-4'>
-        <div className='rounded-2xl overflow-hidden'>
+      <div className='mx-auto pt-4' style={{ width: '100%', height: '100px', marginTop: '50px', backgroundColor: '#00152a' }}>
+        <div style={{display: 'flex'}}>
+          <div style={{color: 'white', textAlign: 'right', verticalAlign: 'center', width: '20%', paddingTop: '20px', lineHeight: '32px'}}>
+            <span>Copyright © 2024</span>
+          </div>
+          <div style={{width: '60%', paddingLeft: '100px', paddingTop: '30px'}}>
+            <a href="https://twitter.com/OrdX_Protocol" target="_blank" rel="noopener noreferrer" style={{ color: 'white', float: 'right'}}>
+              <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path d="M928 254.3c-30.6 13.2-63.9 22.7-98.2 26.4a170.1 170.1 0 0 0 75-94 336.64 336.64 0 0 1-108.2 41.2A170.1 170.1 0 0 0 672 174c-94.5 0-170.5 76.6-170.5 170.6 0 13.2 1.6 26.4 4.2 39.1-141.5-7.4-267.7-75-351.6-178.5a169.32 169.32 0 0 0-23.2 86.1c0 59.2 30.1 111.4 76 142.1a172 172 0 0 1-77.1-21.7v2.1c0 82.9 58.6 151.6 136.7 167.4a180.6 180.6 0 0 1-44.9 5.8c-11.1 0-21.6-1.1-32.2-2.6C211 652 273.9 701.1 348.8 702.7c-58.6 45.9-132 72.9-211.7 72.9-14.3 0-27.5-.5-41.2-2.1C171.5 822 261.2 850 357.8 850 671.4 850 843 590.2 843 364.7c0-7.4 0-14.8-.5-22.2 33.2-24.3 62.3-54.4 85.5-88.2z"></path>
+              </svg>
+            </a>
+          </div>
+          <div style={{textAlign: 'left', verticalAlign: 'center', width: '20%', paddingTop: '20px', lineHeight: '32px'}}>
+          </div>
         </div>
       </div>
 
