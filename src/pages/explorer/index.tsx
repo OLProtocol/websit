@@ -5,6 +5,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Ord2FullList } from './components/OrdxFullList';
 import { Ord2SummaryList } from './components/OrdxSummaryList';
 import { Ord2History } from './components/OrdxHistory';
+import { SatBox } from './components/SatBox';
 import { ROUTE_PATH } from '@/router';
 import { use } from 'i18next';
 import { useTranslation } from 'react-i18next';
@@ -13,8 +14,8 @@ const { Search } = Input;
 
 export default function Ord2Index() {
   const { t } = useTranslation();
-  const [search, setSearch] = useState('');
-  const [address, setAddress] = useState('');
+  const [search, setSearch] = useState('tb1prcc8rp5wn0y9vp434kchl3aag8r8hz699006ufvczwnneuqx0wdsfmvq4y');
+  const [address, setAddress] = useState('tb1prcc8rp5wn0y9vp434kchl3aag8r8hz699006ufvczwnneuqx0wdsfmvq4y');
   const [searchParams] = useSearchParams();
   const q = searchParams.get('q');
   const showAddress = useMemo(() => {
@@ -68,6 +69,9 @@ export default function Ord2Index() {
           <>
             <div className='mb-4'>
               <Ord2SummaryList address={address} />
+            </div>
+            <div>
+              <SatBox />
             </div>
             <div className='mb-4'>
               <Ord2History tick='BTC' address={address} />
