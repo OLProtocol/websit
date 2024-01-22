@@ -19,8 +19,9 @@ export default function Test() {
     const scriptPublicKey = Script.fmt.toAsm(
       Address.toScriptPubKey(address),
     )?.[0];
-    // const asmScript = Address.toScriptPubKey(currentAccount) as string[];
-    // const scriptPubKey = bitcoin.script.fromASM(asmScript.join(' '));
+    const asmScript = Address.toScriptPubKey(currentAccount) as string[];
+    const scriptPubKey = bitcoin.script.fromASM(asmScript.join(' '));
+    console.log(scriptPubKey);
     // const hexRepresentation = scriptPubKey.toString('hex');
     // console.log(hexRepresentation);
     return scriptPublicKey;
@@ -54,35 +55,56 @@ export default function Test() {
   const testHandler = async () => {
     const btcUtxos = await getBtcUtxos();
     console.log(btcUtxos);
-    const { psbt, toSignInputs } = await txHelpers.sendBTC({
-      btcUtxos: btcUtxos,
-      tos: [{ address: toAddress, satoshis: 600 }],
-      networkType: 1,
-      changeAddress: currentAccount,
-      feeRate: 2,
-      enableRBF: false,
-    });
+    console.log(Buffer.from(btcUtxos[0].scriptPk, 'hex'));
+    // const { psbt, toSignInputs } = await txHelpers.sendBTC({
+    //   btcUtxos: btcUtxos,
+    //   tos: [{ address: toAddress, satoshis: 600 }],
+    //   networkType: 1,
+    //   changeAddress: currentAccount,
+    //   feeRate: 2,
+    //   enableRBF: false,
+    // });
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    const psbthex = psbt.toHex();
-    console.log(psbt, toSignInputs);
-    console.log(psbthex);
+    const inputs = btcUtxos.map((v) => {
+      return {
+        hash: v.txid,
+        index: v.vout,
+        witnessUtxo: {
+          script: Buffer.from(v.scriptPk, 'hex'),
+          value: v.satoshis,
+        },
+      };
+    });
     const psbtNetwork = bitcoin.networks.testnet;
-    const _psbt = bitcoin.Psbt.fromHex(psbthex, {
+    const psbt = new bitcoin.Psbt({
       network: psbtNetwork,
     });
-    console.log(_psbt.toHex());
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    // psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = true;
-    const res = await unisat.signPsbt(psbthex, {
-      // toSignInputs,
-      autoFinalized: true,
+    inputs.forEach((input) => {
+      psbt.addInput(input);
     });
-    console.log(res);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    // psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
+    const total = inputs.reduce((acc, cur) => {
+      return acc + cur.witnessUtxo.value;
+    }, 0);
+    console.log(total);
+    psbt.addOutput({
+      address: toAddress,
+      value: 600,
+    });
+    const fee = 170;
+    const change = total - 600 - fee;
+    psbt.addOutput({
+      address: currentAccount,
+      value: change,
+    });
+    const signed = await unisat.signPsbt(psbt.toHex());
+    console.log(signed);
+    const pushedTxId = await unisat.pushPsbt(signed);
+    const signedToPsbt = bitcoin.Psbt.fromHex(signed, {
+      network: psbtNetwork,
+    });
+    const txHex = signedToPsbt.extractTransaction().toHex();
+    console.log(txHex);
   };
   return <Button onClick={testHandler}>Test</Button>;
 }

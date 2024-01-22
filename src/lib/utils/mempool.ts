@@ -24,3 +24,23 @@ export const fetchChainFeeRate = async (network: 'main' | 'testnet') => {
   const data = await resp.json();
   return data;
 };
+interface TxInfoParams {
+  txid: string;
+  network: 'main' | 'testnet';
+}
+export const fetchTxHex = async ({ network, txid}: TxInfoParams) => {
+  // const { bitcoin: { fees } } = mempoolJS({
+  //   hostname: 'mempool.space',
+  //   network,
+  // });
+
+  // const data = await fees.getFeesRecommended();
+  // return data;
+  const url =
+    network === 'testnet'
+      ? `https://mempool.space/testnet/api/tx/${txid}/hex`
+      : `https://mempool.space/api/tx/${txid}/hex`;
+  const resp = await fetch(url);
+  const data = await resp.json();
+  return data;
+};
