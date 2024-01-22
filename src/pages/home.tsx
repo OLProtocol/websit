@@ -25,12 +25,6 @@ const data: ProtocolCompare[] = [
     atomicals: "数字对象"
   },
   {
-    rowTitle: "资产类型",
-    ordx: "FT",
-    brc20: "FT",
-    atomicals: "NFT+FT"
-  },
-  {
     rowTitle: "铸造方法",
     ordx: "基于ord的信封，使用deploy和mint",
     brc20: "基于ord的信封，使用deploy、mint、tranfer",
@@ -47,18 +41,6 @@ const data: ProtocolCompare[] = [
     ordx: "通过索引服务ordx验证，理论上可以客户端验证",
     brc20: "通过索引服务brc-20验证，无法客户端验证",
     atomicals: "通过索引服务electrumx验证，理论上可以客户端验证"
-  },
-  {
-    rowTitle: "地址格式",
-    ordx: "P2TR",
-    brc20: "P2TR",
-    atomicals: "P2TR"
-  },
-  {
-    rowTitle: "原子swap",
-    ordx: "PBST",
-    brc20: "PBST",
-    atomicals: "PBST"
   },
   {
     rowTitle: "转移",
