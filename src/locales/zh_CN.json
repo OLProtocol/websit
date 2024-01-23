@@ -75,7 +75,7 @@
       },
       "ordx": {
         "name": "OrdX",
-        "tick_placeholder": "Tick必须是3、5-32字节长",
+        "tick_placeholder": "Tick必须是3、5-16字节长",
         "reg_placeholder": "如\"^[1-9][0-9]*0{n}$\"",
         "block_helper": "铸造的有效时间大致为{{start}}至{{end}}。",
         "error_1": "Tick必必须是3、5-16字节长",
