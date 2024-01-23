@@ -52,13 +52,13 @@ const data: ProtocolCompare[] = [
     rowTitle: "基本单位",
     ordx: "一份资产，一个sat，强绑定，不可变更",
     brc20: "未定义",
-    atomicals: "one token one sat，但可能会动态调整为0.1个token，根据EXP参数调整"
+    atomicals: "one token one sat，但会根据EXP参数调整比例"
   },
   {
     rowTitle: "拆分方案",
     ordx: "可拆分",
     brc20: "无限可分",
-    atomicals: "使用ST操作符和Exp参数进行拆分（和其原子性原则有冲突）"
+    atomicals: "使用ST操作符和EXP参数进行拆分（和其原子性原则有冲突）"
   },
   {
     rowTitle: "烧毁可能性",
