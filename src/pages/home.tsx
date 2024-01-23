@@ -120,7 +120,7 @@ export default function Home() {
             <section className='text-6xl pb-16 text-white'>东方之珠</section>
             <section className='text-base text-white'>我们计划在2024年1月25日正式发布协议，并且部署第一个Token：Pearl。</section>
             <section className='text-base text-white'>
-              大概在2024年2月1日前后开启mint，持续到2月10日左右结束（由区块高度828200-830000决定有效的mint时间）。
+              大概在2024年2月1日前后开启mint，持续到2月5日左右结束（由区块高度828200-828800决定有效的mint时间）。
               这是ordx协议的第一个token，也是一个meme币，仅供试验，没有价值，不要FOMO。
             </section>
             <section className='text-base text-white pt-8'>
