@@ -26,21 +26,21 @@ const data: ProtocolCompare[] = [
   },
   {
     rowTitle: "铸造方法",
-    ordx: "基于ord的信封，使用deploy和mint两个指令",
-    brc20: "基于ord的信封，使用deploy、mint、tranfer",
+    ordx: "基于ord的信封写入隔离见证区",
+    brc20: "基于ord的信封写入隔离见证区",
     atomicals: "使用\"atom\"进行承诺&揭露的信封"
   },
   {
     rowTitle: "索引",
-    ordx: "依赖ordx索引器跟踪序数系统和ticker",
+    ordx: "依赖ordx索引器",
     brc20: "依赖brc-20索引器",
-    atomicals: "依赖electrumx索引器跟踪序数和编号系统"
+    atomicals: "依赖electrumx索引器"
   },
   {
     rowTitle: "验证",
-    ordx: "通过索引服务ordx验证，理论上可以客户端验证",
-    brc20: "通过索引服务brc-20验证，无法客户端验证",
-    atomicals: "通过索引服务electrumx验证，理论上可以客户端验证"
+    ordx: "通过ordx索引器验证，可以客户端验证",
+    brc20: "通过brc-20索引器验证，无法客户端验证",
+    atomicals: "通过electrumx索引器验证，理论上可以客户端验证"
   },
   {
     rowTitle: "转移",
@@ -52,17 +52,17 @@ const data: ProtocolCompare[] = [
     rowTitle: "基本单位",
     ordx: "一份资产，一个sat，强绑定，不可变更",
     brc20: "未定义",
-    atomicals: "one token one sat，但会根据EXP参数调整比例"
+    atomicals: "期望one token one sat，但实际会根据EXP参数调整"
   },
   {
     rowTitle: "拆分方案",
-    ordx: "可拆分",
+    ordx: "可拆分，灵活使用utxo进行拆分",
     brc20: "无限可分",
     atomicals: "使用ST操作符和EXP参数进行拆分（和其原子性原则有冲突）"
   },
   {
     rowTitle: "烧毁可能性",
-    ordx: "sat不可烧毁，token也就无法烧毁",
+    ordx: "sat不可烧毁，资产也就无法烧毁",
     brc20: "不可烧毁",
     atomicals: "使用错误的钱包或者错误的使用方式容易导致token被烧毁"
   }
@@ -99,6 +99,14 @@ export default function Home() {
       </div>
 
       <div className='mx-auto pt-4 w-4/5 mt-6'>
+          <div className='text-2xl text-center align-middle text-white leading-loose'>
+            <section>OrdinalsX是一个增强的Ordinals协议（简称ordx协议），支持使用Ordinals协议发行Fungible Token。</section>
+            <section>一份资产，一个sat，永久绑定，不可变更。</section>
+            <section>转移sat时，资产也就跟着转移，不存在因为误操作导致资产烧毁的问题。</section>
+          </div>
+      </div>
+
+      <div className='mx-auto pt-4 w-4/5 mt-6'>
         <div className='rounded-2xl overflow-hidden'>
           <ChakraProvider>
             <ProtocolTable columns={columns} data={data} />
@@ -112,7 +120,7 @@ export default function Home() {
             <section className='text-6xl pb-16 text-white'>东方之珠</section>
             <section className='text-base text-white'>我们计划在2024年1月25日正式发布协议，并且部署第一个Token：Pearl。</section>
             <section className='text-base text-white'>
-              大概在2024年2月1日前后开启mint，持续到2月10日左右结束（由区块高度828200-830000决定有效的mint时间）。
+              大概在2024年2月1日前后开启mint，持续到2月5日左右结束（由区块高度828200-828800决定有效的mint时间）。
               这是ordx协议的第一个token，也是一个meme币，仅供试验，没有价值，不要FOMO。
             </section>
             <section className='text-base text-white pt-8'>
