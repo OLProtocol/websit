@@ -26,7 +26,7 @@ const data: ProtocolCompare[] = [
   },
   {
     rowTitle: "铸造方法",
-    ordx: "基于ord的信封，使用deploy和mint",
+    ordx: "基于ord的信封，使用deploy和mint两个指令",
     brc20: "基于ord的信封，使用deploy、mint、tranfer",
     atomicals: "使用\"atom\"进行承诺&揭露的信封"
   },
@@ -50,15 +50,15 @@ const data: ProtocolCompare[] = [
   },
   {
     rowTitle: "基本单位",
-    ordx: "sat",
+    ordx: "一份资产，一个sat，强绑定，不可变更",
     brc20: "未定义",
-    atomicals: "sat"
+    atomicals: "one token one sat，但会根据EXP参数调整比例"
   },
   {
     rowTitle: "拆分方案",
-    ordx: "不可拆分，受最小utxo限制，需要在Layer2中做拆分",
+    ordx: "可拆分",
     brc20: "无限可分",
-    atomicals: "使用ST操作符和Exp参数进行拆分（和其原子性原则有冲突）"
+    atomicals: "使用ST操作符和EXP参数进行拆分（和其原子性原则有冲突）"
   },
   {
     rowTitle: "烧毁可能性",
@@ -140,11 +140,11 @@ export default function Home() {
       <div className='mx-auto pt-4 w-4/5 mt-6'>
         <div className='flex'>
           <div className='w-4/6 pt-12 text-left align-middle leading-8'>
-            <section className='text-6xl pb-16 text-white'>Domo的红宝石</section>
-            <section className='text-base text-white'>只有rare属性的sat才能mint成红宝石，最多只有3437个红宝石。目前只有不到400个，预计每个值100BTC。</section>
+            <section className='text-6xl pb-16 text-white'>Domo的蓝宝石</section>
+            <section className='text-base text-white'>只有rare属性的sat才能mint成蓝宝石，最多只有3437个蓝宝石。目前只有不到400个，预计每个值100BTC。</section>
           </div>
           <div className='w-2/6'>
-            <img src={RubyImage}/>
+            <img src={SapphireImage}/>
           </div>
         </div>
       </div>
@@ -152,11 +152,11 @@ export default function Home() {
       <div className='mx-auto pt-4  w-4/5 mt-6'>
         <div className='flex'>
           <div className='w-2/6' >
-            <img src={SapphireImage} className='float-right'/>
+            <img src={RubyImage} className='float-right'/>
           </div>
           <div className='w-4/6 pt-12 text-right align-middle leading-8'>
-            <section className='text-6xl pb-16 text-white'>Casey的蓝宝石</section>
-            <section className='text-base text-white'>只有epic属性的sat才能mint成蓝宝石，最多只有32个蓝宝石。目前只有3个，预计每个值10000BTC。</section>
+            <section className='text-6xl pb-16 text-white'>Casey的红宝石</section>
+            <section className='text-base text-white'>只有epic属性的sat才能mint成红宝石，最多只有32个红宝石。目前只有3个，预计每个值10000BTC。</section>
           </div>
         </div>
       </div>
@@ -165,7 +165,7 @@ export default function Home() {
         <div className='flex'>
           <div className='w-4/6 pt-5 text-left align-middle leading-8'>
             <section className='text-6xl pb-16 text-white'>数字黄金</section>
-            <section className='text-base text-white'>每个BTC的第一个sat才能mint成功，正则表达式的意思是该sat序号的末尾是8个0。</section>
+            <section className='text-base text-white'>每个BTC的第一个sat才能mint成功，也就是该sat序号的末尾是8个0。</section>
             <section className='text-base text-white'>这意味着，每个token值1个BTC。</section>
           </div>
           <div className='w-2/6'>
