@@ -50,13 +50,13 @@ const data: ProtocolCompare[] = [
   },
   {
     rowTitle: "基本单位",
-    ordx: "one token one sat",
+    ordx: "一份资产，一个sat，强绑定，不可变更",
     brc20: "未定义",
     atomicals: "one token one sat，但可能会动态调整为0.1个token，根据EXP参数调整"
   },
   {
     rowTitle: "拆分方案",
-    ordx: "可拆分，灵活利用UTXO规则可以将一个包含546个Token的UTXO分成任意两个部分，重复进行这个操作",
+    ordx: "可拆分",
     brc20: "无限可分",
     atomicals: "使用ST操作符和Exp参数进行拆分（和其原子性原则有冲突）"
   },
