@@ -26,7 +26,7 @@ const data: ProtocolCompare[] = [
   },
   {
     rowTitle: "铸造方法",
-    ordx: "基于ord的信封，使用deploy和mint",
+    ordx: "基于ord的信封，使用deploy和mint两个指令",
     brc20: "基于ord的信封，使用deploy、mint、tranfer",
     atomicals: "使用\"atom\"进行承诺&揭露的信封"
   },
@@ -50,13 +50,13 @@ const data: ProtocolCompare[] = [
   },
   {
     rowTitle: "基本单位",
-    ordx: "sat",
+    ordx: "one token one sat",
     brc20: "未定义",
-    atomicals: "sat"
+    atomicals: "one token one sat，但可能会动态调整为0.1个token，根据EXP参数调整"
   },
   {
     rowTitle: "拆分方案",
-    ordx: "不可拆分，受最小utxo限制，需要在Layer2中做拆分",
+    ordx: "可拆分，灵活利用UTXO规则可以将一个包含546个Token的UTXO分成任意两个部分，重复进行这个操作",
     brc20: "无限可分",
     atomicals: "使用ST操作符和Exp参数进行拆分（和其原子性原则有冲突）"
   },
@@ -110,7 +110,7 @@ export default function Home() {
         <div className='flex'>
           <div className='w-4/6 text-2xl text-left align-middle'>
             <section className='text-6xl pb-16 text-white'>东方之珠</section>
-            <section className='text-base text-white'>我们计划在2024年1月25日正式发布协议，并且部署第一个Token：Pearl。</section>
+            <section className='text-base text-white'>我们计划在2024年1月25日正式发布协议，并且部署第一个Token：Pearls。</section>
             <section className='text-base text-white'>
               大概在2024年2月1日前后开启mint，持续到2月10日左右结束（由区块高度828200-830000决定有效的mint时间）。
               这是ordx协议的第一个token，也是一个meme币，仅供试验，没有价值，不要FOMO。
@@ -165,7 +165,7 @@ export default function Home() {
         <div className='flex'>
           <div className='w-4/6 pt-5 text-left align-middle leading-8'>
             <section className='text-6xl pb-16 text-white'>数字黄金</section>
-            <section className='text-base text-white'>每个BTC的第一个sat才能mint成功，正则表达式的意思是该sat序号的末尾是8个0。</section>
+            <section className='text-base text-white'>每个BTC的第一个sat才能mint成功，也就是该sat序号的末尾是8个0。</section>
             <section className='text-base text-white'>这意味着，每个token值1个BTC。</section>
           </div>
           <div className='w-2/6'>
