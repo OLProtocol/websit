@@ -110,7 +110,7 @@ export default function Home() {
         <div className='flex'>
           <div className='w-4/6 text-2xl text-left align-middle'>
             <section className='text-6xl pb-16 text-white'>东方之珠</section>
-            <section className='text-base text-white'>我们计划在2024年1月25日正式发布协议，并且部署第一个Token：Pearls。</section>
+            <section className='text-base text-white'>我们计划在2024年1月25日正式发布协议，并且部署第一个Token：Pearl。</section>
             <section className='text-base text-white'>
               大概在2024年2月1日前后开启mint，持续到2月10日左右结束（由区块高度828200-830000决定有效的mint时间）。
               这是ordx协议的第一个token，也是一个meme币，仅供试验，没有价值，不要FOMO。
@@ -140,11 +140,11 @@ export default function Home() {
       <div className='mx-auto pt-4 w-4/5 mt-6'>
         <div className='flex'>
           <div className='w-4/6 pt-12 text-left align-middle leading-8'>
-            <section className='text-6xl pb-16 text-white'>Domo的红宝石</section>
-            <section className='text-base text-white'>只有rare属性的sat才能mint成红宝石，最多只有3437个红宝石。目前只有不到400个，预计每个值100BTC。</section>
+            <section className='text-6xl pb-16 text-white'>Domo的蓝宝石</section>
+            <section className='text-base text-white'>只有rare属性的sat才能mint成蓝宝石，最多只有3437个蓝宝石。目前只有不到400个，预计每个值100BTC。</section>
           </div>
           <div className='w-2/6'>
-            <img src={RubyImage}/>
+            <img src={SapphireImage}/>
           </div>
         </div>
       </div>
@@ -152,11 +152,11 @@ export default function Home() {
       <div className='mx-auto pt-4  w-4/5 mt-6'>
         <div className='flex'>
           <div className='w-2/6' >
-            <img src={SapphireImage} className='float-right'/>
+            <img src={RubyImage} className='float-right'/>
           </div>
           <div className='w-4/6 pt-12 text-right align-middle leading-8'>
-            <section className='text-6xl pb-16 text-white'>Casey的蓝宝石</section>
-            <section className='text-base text-white'>只有epic属性的sat才能mint成蓝宝石，最多只有32个蓝宝石。目前只有3个，预计每个值10000BTC。</section>
+            <section className='text-6xl pb-16 text-white'>Casey的红宝石</section>
+            <section className='text-base text-white'>只有epic属性的sat才能mint成红宝石，最多只有32个红宝石。目前只有3个，预计每个值10000BTC。</section>
           </div>
         </div>
       </div>
