@@ -99,6 +99,14 @@ export default function Home() {
       </div>
 
       <div className='mx-auto pt-4 w-4/5 mt-6'>
+          <div className='text-2xl text-center align-middle text-white leading-loose'>
+            <section>OrdinalsX是一个增强的Ordinals协议（简称ordx协议），支持使用Ordinals协议发行Fungible Token。</section>
+            <section>一份资产，一个sat，永久绑定，不可变更。</section>
+            <section>转移sat时，资产也就跟着转移，不存在因为误操作导致资产烧毁的问题。</section>
+          </div>
+      </div>
+
+      <div className='mx-auto pt-4 w-4/5 mt-6'>
         <div className='rounded-2xl overflow-hidden'>
           <ChakraProvider>
             <ProtocolTable columns={columns} data={data} />
