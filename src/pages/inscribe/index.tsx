@@ -45,7 +45,8 @@ export default function Inscribe() {
     repeatMint: 1,
     limitPerMint: 10000,
     block: '',
-    reg: '',
+    cn: 0,
+    trz: 0,
     des: '',
     sat: '',
     rarity: '',
@@ -53,6 +54,8 @@ export default function Inscribe() {
     rarityChecked: false,
     regChecked: false,
     blockChecked: false,
+    cnChecked: false,
+    trzChecked: false,
   });
   const [brc20Data, { set: setBrc20 }] = useMap({
     type: 'mint',
@@ -81,12 +84,14 @@ export default function Inscribe() {
     setOrd2Data('repeatMint', data.repeatMint);
     setOrd2Data('limitPerMint', data.limitPerMint);
     setOrd2Data('block', `${data.block_start}-${data.block_end}`);
-    setOrd2Data('reg', data.reg);
+    setOrd2Data('cn', data.cn);
+    setOrd2Data('trz', data.trz);
     setOrd2Data('rarity', data.rarity);
     setOrd2Data('des', data.des);
     setOrd2Data('sat', data.sat);
     setOrd2Data('rarityChecked', data.rarityChecked);
-    setOrd2Data('regChecked', data.regChecked);
+    setOrd2Data('cnChecked', data.cnChecked);
+    setOrd2Data('trzChecked', data.trzChecked);
     setOrd2Data('blockChecked', data.blockChecked);
   };
   const brc20Next = async () => {
@@ -157,6 +162,19 @@ export default function Inscribe() {
       }
     } else if (ordxData.type === 'deploy') {
       console.log(ordxData);
+      let attr: any = {};
+      if (ordxData.cnChecked && ordxData.cn) {
+        attr.cn = ordxData.cn.toString();
+      }
+      if (ordxData.trzChecked && ordxData.trz) {
+        attr.trz = ordxData.trz.toString();
+      }
+      if (ordxData.rarityChecked && ordxData.rarity) {
+        attr.rarity = ordxData.rarity.toString();
+      }
+      if (Object.keys(attr).length === 0) {
+        attr = undefined;
+      }
       list.push({
         type: 'ordx',
         name: 'deploy_0',
@@ -169,10 +187,7 @@ export default function Inscribe() {
               ? ordxData.block.toString()
               : undefined,
             lim: ordxData.limitPerMint.toString(),
-            reg: ordxData.regChecked ? ordxData.reg.toString() : undefined,
-            rar: ordxData.rarityChecked
-              ? ordxData.rarity.toString()
-              : undefined,
+            attr,
             des: ordxData.des.toString(),
           }),
         ),

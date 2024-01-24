@@ -50,10 +50,12 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     block_start: 0,
     block_end: 0,
     rarity: '',
-    reg: '',
+    cn: 0,
+    trz: 0,
     blockChecked: true,
     rarityChecked: false,
-    regChecked: false,
+    cnChecked: false,
+    trzChecked: false,
     des: '',
     mintRarity: '',
     sat: 0,
@@ -85,7 +87,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       data.type === 'deploy' &&
       !data.blockChecked &&
       !data.rarityChecked &&
-      !data.regChecked
+      !data.cnChecked &&
+      !data.trzChecked
     ) {
       setErrorText(t('pages.inscribe.ordx.error_2'));
       return;
@@ -112,11 +115,10 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           return;
         }
       }
+      onNext?.();
     } catch (error) {
       setLoading(false);
     }
-
-    onNext?.();
   };
   const onTickBlur = async () => {
     setErrorText('');
@@ -166,22 +168,31 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const onBlockChecked = (e: any) => {
     set('blockChecked', e.target.checked);
     set('rarityChecked', !e.target.checked);
-    set('regChecked', !e.target.checked);
+    set('cnChecked', !e.target.checked);
+    set('trzChecked', !e.target.checked);
   };
   const onRarityChecked = (e: any) => {
     set('rarityChecked', e.target.checked);
     if (e.target.checked) {
       set('blockChecked', false);
     } else {
-      set('blockChecked', !data.regChecked);
+      set('blockChecked', !data.cnChecked && !data.trzChecked);
     }
   };
-  const onRegChecked = (e: any) => {
-    set('regChecked', e.target.checked);
+  const onCnChecked = (e: any) => {
+    set('cnChecked', e.target.checked);
     if (e.target.checked) {
       set('blockChecked', false);
     } else {
-      set('blockChecked', !data.rarityChecked);
+      set('blockChecked', !data.rarityChecked && !data.trzChecked);
+    }
+  };
+  const onTrzChecked = (e: any) => {
+    set('trzChecked', e.target.checked);
+    if (e.target.checked) {
+      set('blockChecked', false);
+    } else {
+      set('blockChecked', !data.rarityChecked && !data.cnChecked);
     }
   };
   const getHeight = async () => {
@@ -360,8 +371,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
-                  {t('common.reg')}
-                  <Tooltip title={t('pages.inscribe.ordx.rarity_helper')}>
+                  {t('common.cn')}
+                  <Tooltip title={t('pages.inscribe.ordx.cn_placeholder')}>
                     <span className='text-blue-500'>
                       (sat
                       <QuestionCircleOutlined />)
@@ -371,17 +382,46 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <div className='flex-1 flex items-center'>
                   <Checkbox
                     disabled
-                    checked={data.regChecked}
-                    onChange={onRegChecked}></Checkbox>
+                    checked={data.cnChecked}
+                    onChange={onCnChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
-                    <Input
-                      type='text'
-                      disabled={!data.regChecked}
-                      maxLength={32}
-                      placeholder='like "^[1-9][0-9]*0{n}$"'
-                      value={data.reg}
-                      onChange={(e) => set('reg', e.target.value)}
-                    />
+                    <NumberInput
+                      value={data.cn}
+                      isDisabled={!data.cnChecked}
+                      placeholder={t('pages.inscribe.ordx.cn_placeholder')}
+                      onChange={(_, e) => set('cn', isNaN(e) ? 0 : e)}
+                      min={0}>
+                      <NumberInputField />
+                    </NumberInput>
+                  </div>
+                </div>
+              </div>
+            </FormControl>
+            <FormControl>
+              <div className='flex items-center  mb-4'>
+                <FormLabel className='w-52' marginBottom={0}>
+                  {t('common.trz')}
+                  <Tooltip title={t('pages.inscribe.ordx.trz_placeholder')}>
+                    <span className='text-blue-500'>
+                      (sat
+                      <QuestionCircleOutlined />)
+                    </span>
+                  </Tooltip>
+                </FormLabel>
+                <div className='flex-1 flex items-center'>
+                  <Checkbox
+                    disabled
+                    checked={data.trzChecked}
+                    onChange={onTrzChecked}></Checkbox>
+                  <div className='ml-2 flex-1'>
+                    <NumberInput
+                      value={data.trz}
+                      placeholder={t('pages.inscribe.ordx.trz_placeholder')}
+                      isDisabled={!data.trzChecked}
+                      onChange={(_, e) => set('trz', isNaN(e) ? 0 : e)}
+                      min={0}>
+                      <NumberInputField />
+                    </NumberInput>
                   </div>
                 </div>
               </div>
