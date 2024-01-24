@@ -32,6 +32,9 @@
     "value": "Value",
     "select_option": "Select Option"
   },
+  "toast": {
+    "system_error": "System Error"
+  },
   "nav": {
     "home": "Home",
     "inscribe": "inscribe",

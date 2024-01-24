@@ -114,7 +114,10 @@ export const requstAvailableUtxos = async ({
   return data;
 };
 export const requstOrd2Info = async ({ tick }: Ord2InfoParams) => {
-  const { data } = await axios.get(generateUrl(`v1/indexer/ordx/${tick}/info`));
+  const { data } = await axios.get(
+    generateUrl(`v1/indexer/ordx/${tick}/info`),
+    { timeout: 10000 },
+  );
   return data;
 };
 

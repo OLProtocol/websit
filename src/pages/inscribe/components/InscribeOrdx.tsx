@@ -31,6 +31,7 @@ import { clacTextSize } from '../utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { requstOrd2Info, useBtcHeight } from '@/api';
+import toast from 'react-hot-toast';
 
 interface InscribeOrdxProps {
   onNext?: () => void;
@@ -62,6 +63,17 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const [loading, setLoading] = useState(false);
   const [tickLoading, setTickLoading] = useState(false);
   const [tickChecked, setTickChecked] = useState(false);
+  const checOrdXInfo = async (tick: string) => {
+    try {
+      const info = await requstOrd2Info({ tick });
+      console.log('info', info);
+      return info;
+    } catch (error) {
+      toast.error(t('toast.system_error'));
+      console.log('error', error);
+      throw error;
+    }
+  };
   const nextHandler = async () => {
     setErrorText('');
     const textSize = clacTextSize(data.tick);
@@ -80,28 +92,37 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     }
     setLoading(true);
 
-    const info = await requstOrd2Info({ tick: data.tick });
-    setLoading(false);
-    if (data.type === 'deploy') {
-      if (info.data) {
-        setErrorText(t('pages.inscribe.ordx.error_3', { tick: data.tick }));
-        return;
+    try {
+      const info = await checOrdXInfo(data.tick);
+      setLoading(false);
+      if (data.type === 'deploy') {
+        if (info.data) {
+          setErrorText(t('pages.inscribe.ordx.error_3', { tick: data.tick }));
+          return;
+        }
+      } else if (data.type === 'mint') {
+        if (!info.data) {
+          setErrorText(t('pages.inscribe.ordx.error_4', { tick: data.tick }));
+          return;
+        }
+        if (data.amount > info.data.limit) {
+          setErrorText(
+            t('pages.inscribe.ordx.error_5', { limit: info.data.limit }),
+          );
+          return;
+        }
       }
-    } else if (data.type === 'mint') {
-      if (!info.data) {
-        setErrorText(t('pages.inscribe.ordx.error_4', { tick: data.tick }));
-        return;
-      }
-      if (data.amount > info.data.limit) {
-        setErrorText(t('pages.inscribe.ordx.error_5', { limit: info.data.limit }));
-        return;
-      }
+    } catch (error) {
+      setLoading(false);
     }
 
     onNext?.();
   };
   const onTickBlur = async () => {
     setErrorText('');
+    if (data.tick === undefined || data.tick === '') {
+      return;
+    }
     const textSize = clacTextSize(data.tick);
     if (textSize < 3 || textSize == 4 || textSize > 32) {
       setErrorText(t('pages.inscribe.ordx.error_1'));
@@ -111,7 +132,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       try {
         setTickLoading(true);
         setTickChecked(false);
-        const info = await requstOrd2Info({ tick: data.tick });
+        const info = await checOrdXInfo(data.tick);
         setTickLoading(false);
         setTickChecked(true);
         if (!info.data) {
@@ -122,14 +143,17 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           set('mintRarity', info.data.rarity);
         }
         if (data.amount > info.data.limit) {
-          setErrorText(t('pages.inscribe.ordx.error_5', { limit: info.data.limit }));
+          setErrorText(
+            t('pages.inscribe.ordx.error_5', { limit: info.data.limit }),
+          );
           return;
         }
       } catch (error) {
+        setTickLoading(true);
+        setTickChecked(false);
         console.log('error', error);
       }
     }
-    setTickLoading(false);
   };
   const rarityChange = (value: string) => {
     set('rarity', value);
@@ -181,7 +205,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     start: data.block_start,
     end: data.block_end,
   });
-  console.log(time);
   useEffect(() => {
     if (state?.type === 'ordx') {
       const { item } = state;
@@ -247,7 +270,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <NumberInput
                   value={data.amount}
                   isDisabled={tickLoading}
-                  onChange={(_, e) => set('amount', e)}
+                  onChange={(_, e) => set('amount', isNaN(e) ? 0 : e)}
                   min={1}>
                   <NumberInputField />
                 </NumberInput>
@@ -274,7 +297,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       className='flex-1'
                       isDisabled={!data.blockChecked}
                       placeholder='Block start'
-                      onChange={(_, e) => set('block_start', e)}
+                      onChange={(_, e) => set('block_start', isNaN(e) ? 0 : e)}
                       min={1}>
                       <NumberInputField />
                     </NumberInput>
@@ -284,7 +307,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       isDisabled={!data.blockChecked}
                       className='flex-1'
                       placeholder='Block End'
-                      onChange={(_, e) => set('block_end', e)}
+                      onChange={(_, e) => set('block_end', isNaN(e) ? 0 : e)}
                       min={1}>
                       <NumberInputField />
                     </NumberInput>
@@ -295,8 +318,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             {time.start && time.end && (
               <div className='ml-60 mb-2 text-xs text-gray-600'>
                 {t('pages.inscribe.ordx.block_helper', {
-                  start: format(time.start, 'yyyy-MM-dd HH:mm'),
-                  end: format(time.end, 'yyyy-MM-dd HH:mm'),
+                  start: time.start,
+                  end: time.end,
                 })}
               </div>
             )}
@@ -371,7 +394,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <div className='flex-1'>
                   <NumberInput
                     value={data.limitPerMint}
-                    onChange={(_, e) => set('limitPerMint', e)}
+                    onChange={(_, e) => set('limitPerMint', isNaN(e) ? 0 : e)}
                     min={1}>
                     <NumberInputField />
                   </NumberInput>
@@ -425,7 +448,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                     maxW='100px'
                     mr='2rem'
                     value={data.repeatMint}
-                    onChange={(_, e) => set('repeatMint', e)}
+                    onChange={(_, e) => set('repeatMint', isNaN(e) ? 0 : e)}
                     min={1}
                     max={100}>
                     <NumberInputField />

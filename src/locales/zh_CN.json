@@ -32,6 +32,9 @@
     "value": "价值",
     "select_option": "选择选项"
   },
+  "toast": {
+    "system_error": "系统异常，请稍后再试。"
+  },
   "nav": {
     "home": "首页",
     "inscribe": "铭文",
