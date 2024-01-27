@@ -23,13 +23,22 @@ export default function Ord2Info() {
   const { data: heightData } = useBtcHeight(network as any);
   const { data: detail, trigger, isLoading } = useOrd2Info({ tick });
   const status = useMemo(() => {
-    return (detail?.startBlock &&
+    let _status;
+    if (detail?.rarity !== 'unknow' && detail?.rarity !== 'common') {
+      _status = 'Minting';
+    } else if (
+      detail?.startBlock &&
       detail?.endBlock &&
-      heightData < detail.endBlock) ||
-      detail?.rarity !== 'unknow' ||
-      detail?.rarity !== 'common'
-      ? 'Minting'
-      : 'Completed';
+      heightData < detail?.endBlock &&
+      heightData > detail?.startBlock
+    ) {
+      _status = 'Minting';
+    } else if (heightData < detail?.startBlock) {
+      _status = 'Pending';
+    } else {
+      _status = 'Completed';
+    }
+    return _status;
   }, [detail, heightData]);
   const toInscribe = () => {
     console.log(detail);
@@ -55,14 +64,16 @@ export default function Ord2Info() {
         <div className='flex justify-between mb-4 items-center'>
           <span className='text-orange-400 text-2xl '>{tick}</span>
           <span>
-            {status === 'Minting' ? (
-              <Button type='link' onClick={() => toInscribe()}>
+            {status === 'Pending' && (
+              <Tag color='orange'>{t('common.waiting')}</Tag>
+            )}
+            {status === 'Minting' && (
+              <Button type='link' onClick={toInscribe}>
                 {t('common.minting')}
               </Button>
-            ) : (
-              <Tag color='blue' key={status}>
-                {t('common.completed')}
-              </Tag>
+            )}
+            {status === 'Completed' && (
+              <Tag color='blue'>{t('common.completed')}</Tag>
             )}
           </span>
         </div>
@@ -111,8 +122,12 @@ export default function Ord2Info() {
               </p>
             </div>
             <div className=''>
-              <p className='text-gray-400'>{t('common.reg')}:</p>
-              <p className='indent-2'>{detail?.res || '-'}</p>
+              <p className='text-gray-400'>{t('common.trz')}:</p>
+              <p className='indent-2'>{detail?.trz || '-'}</p>
+            </div>
+            <div className=''>
+              <p className='text-gray-400'>{t('common.cn')}:</p>
+              <p className='indent-2'>{detail?.cn || '-'}</p>
             </div>
             <div className=''>
               <p className='text-gray-400'>{t('common.holders')}:</p>

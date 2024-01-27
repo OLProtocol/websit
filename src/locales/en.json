@@ -26,6 +26,7 @@
     "holders": "holders",
     "minted": "minted",
     "minting": "Minting",
+    "waiting": "Not Start",
     "completed": "Completed",
     "status": "Status",
     "overview": "Overview",
@@ -90,6 +91,9 @@
         "error_3": "{{tick}} has been deployed",
         "error_4": "{{tick}}  has not been deployed",
         "error_5": "Mint amount must be less than {{limit}}",
+        "error_6": "{{tick}} has not started mint yet",
+        "error_7": "{{tick}} has been minted",
+        "error_8": "{{tick}} contains special sat and cannot be cast",
         "rarity_helper": "Special sat attributes required for mint."
       },
       "step_two": {

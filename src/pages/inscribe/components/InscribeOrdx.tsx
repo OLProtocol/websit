@@ -122,7 +122,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   };
   const onTickBlur = async () => {
     setErrorText('');
-    if (data.tick === undefined || data.tick === '') {
+    if (data.tick                          === undefined || data.tick === '') {
       return;
     }
     const textSize = clacTextSize(data.tick);
@@ -138,9 +138,21 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         setTickLoading(false);
         setTickChecked(true);
         if (!info.data) {
-          setErrorText(t('pages.inscribe.ordx.error_3', { tick: data.tick }));
+          setErrorText(t('pages.inscribe.ordx.error_4', { tick: data.tick }));
           return;
         } else {
+          if (info.data.rarity !== 'unknow' || info.data.rarity !== 'common' || info.data.trz !== 0 || info.data.cn !== 0) {
+            setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
+            return;
+          }
+          if (heightData < info.data?.startBlock) {
+            setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
+            return;
+          }
+          if (heightData > info.data?.endBlock) {
+            setErrorText(t('pages.inscribe.ordx.error_7', { tick: data.tick }));
+            return;
+          }
           set('amount', Number(info.data.limit));
           set('mintRarity', info.data.rarity);
         }

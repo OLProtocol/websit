@@ -26,6 +26,7 @@
     "holders": "持有者",
     "minted": "已铸造",
     "minting": "铸造中",
+    "waiting": "未开始",
     "completed": "已完成",
     "status": "状态",
     "overview": "概览",
@@ -90,6 +91,9 @@
         "error_3": "{{tick}} 已被部署",
         "error_4": "{{tick}} 未被部署",
         "error_5": "铸造数量必须少于{{limit}}",
+        "error_6": "{{tick}} 还未开始铸造",
+        "error_7": "{{tick}} 已铸造完",
+        "error_8": "{{tick}} 含有特殊sat，无法铸造",
         "rarity_helper": "铸造需要特殊的 sat 属性。"
       },
       "step_two": {
@@ -99,12 +103,12 @@
       "step_three": {
         "items": "项目",
         "select_fee": "选择要支付的网络费用:",
-        "address_hint": "请注意，铭文交易会将题文直接发送到接收地址。",
+        "address_hint": "请注意，铭文交易会将铭文直接发送到接收地址。",
         "to_single": "至单个地址"
       },
       "fee": {
         "fee_rate": "费率",
-        "inscription_size": "题文大小",
+        "inscription_size": "铭文大小",
         "network_fee": "网络费用",
         "service_fee": "服务费",
         "service_hint": "最低值{{max}}",

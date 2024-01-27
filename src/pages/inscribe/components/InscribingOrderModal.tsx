@@ -18,6 +18,7 @@ import {
   inscribe,
   pushCommitTx,
   getFundingAddress,
+  getAddressBySescet,
   waitSomeSeconds,
 } from '../utils';
 import { useEffect, useMemo, useState } from 'react';
@@ -243,19 +244,20 @@ export const InscribingOrderModal = ({
     const { txid } = order.commitTx;
     return `https://mempool.space/testnet/tx/${txid}`;
   }, [order?.commitTx]);
-  const fundingAddress = useMemo(() => {
-    if (!order?.secret) {
-      return '';
-    }
-    const { address } = getFundingAddress(order.secret, order.network);
-    return address;
-  }, [order?.secret, order?.network]);
-  const fundingAddressHref = useMemo(() => {
-    if (!fundingAddress) {
-      return '';
-    }
-    return `https://mempool.space/testnet/address/${fundingAddress}`;
-  }, [fundingAddress]);
+  // const fundingAddress = useMemo(() => {
+  //   if (!order?.secret) {
+  //     return '';
+  //   }
+  //   const address  = getAddressBySescet(order.secret, order.network);
+  //   console.log(address);
+  //   return address;
+  // }, [order?.secret, order?.network]);
+  const fundingAddressHref = (address: string) => {
+
+    return `https://mempool.space${
+      order?.network === 'testnet' ? '/testnet' : ''
+    }/address/${address}`;
+  }
   useEffect(() => {
     checkStatus();
   }, []);
@@ -392,15 +394,18 @@ export const InscribingOrderModal = ({
                     {order?.secret}
                   </div>
                 </div>
-                <div className='flex justify-between'>
+                {
+                  order?.inscriptions?.map(item => <div className='flex justify-between'>
                   <div>{t('common.address')}</div>
-                  <a
-                    className='text-blue-500 underline ml-4'
-                    href={fundingAddressHref}
-                    target='_blank'>
-                    {hideStr(fundingAddress, 10)}
-                  </a>
-                </div>
+                    <a
+                      className='text-blue-500 underline ml-4'
+                      href={fundingAddressHref(item.inscriptionAddress)}
+                      target='_blank'>
+                      {hideStr(item.inscriptionAddress, 10)}
+                    </a>
+                </div>)
+                }
+                
               </Card>
             </>
           )}

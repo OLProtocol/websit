@@ -115,6 +115,11 @@ export const getFundingAddress = (sescet: string, network: string) => {
     address,
   };
 };
+export const getAddressBySescet = (sescet: string, network: string) => {
+  const seckey = keys.get_seckey(sescet);
+  const pubkey = keys.get_pubkey(seckey, true);
+  return Address.p2tr.fromPubKey(pubkey, network as any);
+};
 /*
 铭刻过程
 */

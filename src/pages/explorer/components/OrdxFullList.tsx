@@ -76,14 +76,7 @@ export const Ord2FullList = () => {
       align: 'center',
     },
 
-    {
-      title: t('common.reg'),
-      dataIndex: 'reg',
-      key: 'reg',
-      width: 200,
-      align: 'center',
-      render: (t) => t || '-',
-    },
+    
     {
       title: t('common.rarity'),
       dataIndex: 'rarity',
@@ -101,6 +94,22 @@ export const Ord2FullList = () => {
       },
     },
     {
+      title: t('common.trz'),
+      dataIndex: 'trz',
+      key: 'trz',
+      width: 200,
+      align: 'center',
+      render: (t) => t || '-',
+    },
+    {
+      title: t('common.cn'),
+      dataIndex: 'cn',
+      key: 'cn',
+      width: 200,
+      align: 'center',
+      render: (t) => t || '-',
+    },
+    {
       title: t('common.holders'),
       dataIndex: 'holders',
       key: 'holders',
@@ -115,7 +124,6 @@ export const Ord2FullList = () => {
       width: 100,
       align: 'center',
     },
-
     {
       title: t('common.status'),
       dataIndex: 'status',
@@ -124,15 +132,18 @@ export const Ord2FullList = () => {
       width: 100,
       align: 'center',
       render: (status, record) => {
-        return status === 'Minting' ? (
-          <Button type='link' onClick={(e) => toInscribe(e, record)}>
+        if (status === 'Pending') {
+          return <Tag color='orange' key={status}>
+            {t('common.waiting')}
+          </Tag>;
+        } else if (status === 'Minting') {
+          return <Button type='link' onClick={(e) => toInscribe(e, record)}>
             {t('common.minting')}
-          </Button>
-        ) : (
-          <Tag color='blue' key={status}>
-            {t('common.completed')}
-          </Tag>
-        );
+          </Button>;
+        }
+        return <Tag color='blue' key={status}>
+          {t('common.completed')}
+        </Tag>;
       },
     },
   ];
@@ -142,24 +153,33 @@ export const Ord2FullList = () => {
   };
   const dataSource: DataType[] = useMemo(
     () =>
-      list.map((item) => ({
-        tick: item.ticker,
-        block: `${item.startBlock}-${item.endBlock}`,
-        rarity: item.rarity,
-        description: item.description,
-        reg: item.reg,
-        holders: item.holdersCount,
-        deployHeight: item.deployHeight,
-        minted: item.totalMinted,
-        limit: item.limit,
-        status:
-          (item.startBlock && item.endBlock && height < item.endBlock) ||
-          item.rarity !== 'unknow' ||
-          item.rarity !== 'common'
-            ? 'Minting'
-            : 'Completed',
-        deploy_time: new Date(item.deployBlocktime).toLocaleString(),
-      })),
+      list.map((item) => {
+        let status;
+        console.log(item.startBlock && item.endBlock && height < item.endBlock && height > item.startBlock);
+        if (item.rarity !== 'unknow' && item.rarity !== 'common') {
+          status = 'Minting';
+        } else if (item.startBlock && item.endBlock && height < item.endBlock && height > item.startBlock) {
+          status = 'Minting';
+        } else if (height < item.startBlock) {
+          status = 'Pending';
+        } else {
+          status = 'Completed';
+        }
+        console.log(status)
+        return {
+          tick: item.ticker,
+          block: `${item.startBlock}-${item.endBlock}`,
+          rarity: item.rarity,
+          description: item.description,
+          reg: item.reg,
+          holders: item.holdersCount,
+          deployHeight: item.deployHeight,
+          minted: item.totalMinted,
+          limit: item.limit,
+          status,
+          deploy_time: new Date(item.deployBlocktime).toLocaleString(),
+        };
+      }),
     [list, height],
   );
   return (
