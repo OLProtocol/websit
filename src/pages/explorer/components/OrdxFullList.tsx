@@ -19,8 +19,8 @@ export const Ord2FullList = () => {
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
   const { data, isLoading } = useOrd2Status({ start, limit, network });
-  const list = useMemo(() => data?.detail || [], [data]);
-  const total = useMemo(() => data?.total || 10, [data]);
+  const list = useMemo(() => data?.data?.detail || [], [data]);
+  const total = useMemo(() => data?.data?.total || 10, [data]);
   console.log(data);
   const height = useMemo(() => {
     return data?.height;
@@ -53,7 +53,7 @@ export const Ord2FullList = () => {
       title: t('common.block'),
       dataIndex: 'block',
       key: 'block',
-      width: 100,
+      width: 130,
       align: 'center',
     },
     {
@@ -181,10 +181,11 @@ export const Ord2FullList = () => {
         } else {
           status = 'Completed';
         }
+        const special = item.rarity !== 'unknow' && item.rarity !== 'common';
         console.log(status);
         return {
           tick: item.ticker,
-          block: `${item.startBlock}-${item.endBlock}`,
+          block: !special ? `${item.startBlock}-${item.endBlock}`: '-',
           rarity: item.rarity,
           description: item.description,
           reg: item.reg,
@@ -221,7 +222,7 @@ export const Ord2FullList = () => {
           onChange: paginationChange,
           showSizeChanger: false,
         }}
-        scroll={{ x: 920 }}
+        scroll={{ x: 1300 }}
         onRow={(record) => {
           return {
             onClick: () => clickHandler(record), // 点击行

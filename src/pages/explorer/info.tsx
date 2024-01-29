@@ -21,7 +21,12 @@ export default function Ord2Info() {
     }
   };
   const { data: heightData } = useBtcHeight(network as any);
-  const { data: detail, trigger, isLoading } = useOrdxInfo({ tick, network });
+  const { data, trigger, isLoading } = useOrdxInfo({ tick, network });
+  const detail = useMemo(() => data?.data || {}, [data]);
+  const specialStatus = useMemo(
+    () => detail?.rarity !== 'unknow' && detail?.rarity !== 'common',
+    [detail],
+  );
   const status = useMemo(() => {
     let _status;
     if (detail?.rarity !== 'unknow' && detail?.rarity !== 'common') {
@@ -109,7 +114,11 @@ export default function Ord2Info() {
 
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.block')}:</p>
-              <p className='indent-2'>{`${detail?.startBlock}-${detail?.endBlock}`}</p>
+              <p className='indent-2'>
+                {specialStatus
+                  ? '-'
+                  : `${detail?.startBlock}-${detail?.endBlock}`}
+              </p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_height')}:</p>

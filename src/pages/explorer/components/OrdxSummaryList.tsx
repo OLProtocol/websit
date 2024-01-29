@@ -8,7 +8,7 @@ interface Ord2SummaryListProps {
 export const Ord2SummaryList = ({ address }: Ord2SummaryListProps) => {
   const { network} = useUnisatConnect();
   const { data, trigger } = useOrdxSummary({ address, network });
-  const list = useMemo(() => data?.detail || [], [data]);
+  const list = useMemo(() => data?.data?.detail || [], [data]);
   useEffect(() => {
     if (address) {
       trigger();

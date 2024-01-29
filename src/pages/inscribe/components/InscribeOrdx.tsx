@@ -231,6 +231,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   useEffect(() => {
     if (state?.type === 'ordx') {
       const { item } = state;
+      console.log(item)
       set('type', 'mint');
       set('tick', item.tick);
       set('amount', item.limit);
