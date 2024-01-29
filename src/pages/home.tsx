@@ -137,15 +137,15 @@ export default function Home() {
           <div className='w-4/6 text-2xl text-left align-middle'>
             <section className='text-6xl pb-16 text-white'>东方之珠</section>
             <section className='text-base text-white'>
-              我们计划在2024年1月25日正式发布协议，并且部署第一个Token：Pearl。(<span onClick={toMint} className='underline underline-offset-4 text-yellow-500'>去铸造</span>)
+              我们已经在2024年1月25日正式部署了协议的第一个Token：Pearl。(<span onClick={toMint} className='underline underline-offset-4 text-yellow-500 cursor-pointer'>去铸造</span>)
             </section>
             <section className='text-base text-white'>
-              大概在2024年2月1日前后开启mint，持续到2月5日左右结束（由区块高度828200-828800决定有效的mint时间）。
+              大概在2024年2月1日前后开启fair mint，持续到2月5日左右结束（由区块高度828200-828800决定有效的mint时间）。
               这是ordx协议的第一个token，也是一个meme币，仅供试验，没有价值，不要FOMO。
             </section>
-            <section className='text-base text-white'>
+            {/* <section className='text-base text-white'>
               如果你的BTC很多，可以尝试下是不是可以从BTC中找出闪亮的宝石，只需要输入你的钱包地址，就可以看到结果。或者你认为那些类型的sat更有价值，可以为这些sat部署特别的Token。
-            </section>
+            </section> */}
           </div>
           <div className='w-2/6'>
             <img src={PearlImage} />
