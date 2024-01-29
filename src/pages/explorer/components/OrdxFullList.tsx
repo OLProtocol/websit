@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 interface DataType {
   tick: string;
   block: string;
-  rarity: number;
+  rarity: string;
 }
 
 export const Ord2FullList = () => {
@@ -21,9 +21,8 @@ export const Ord2FullList = () => {
   const { data, isLoading } = useOrd2Status({ start, limit, network });
   const list = useMemo(() => data?.data?.detail || [], [data]);
   const total = useMemo(() => data?.data?.total || 10, [data]);
-  console.log(data);
   const height = useMemo(() => {
-    return data?.height;
+    return data?.data?.height;
   }, [data]);
   const clickHandler = (item) => {
     nav(`/explorer/${item.tick}`);
@@ -76,7 +75,17 @@ export const Ord2FullList = () => {
       key: 'attr',
       width: 100,
       align: 'center',
-      render: (t) => t || '-',
+      render: (_, record) => {
+        const { rarity } = record;
+        const special = rarity !== 'unknow' && rarity !== 'common';
+        return special ? (
+          <Tag color='green' key={rarity}>
+            {rarity}
+          </Tag>
+        ) : (
+          '-'
+        );
+      },
     },
     {
       title: t('common.holders'),
@@ -133,11 +142,7 @@ export const Ord2FullList = () => {
       align: 'center',
       render: (status, record) => {
         if (status === 'Pending') {
-          return (
-            <Tag color='orange' key={status}>
-              {t('common.waiting')}
-            </Tag>
-          );
+          return <Tag color='orange'>{t('common.waiting')}</Tag>;
         } else if (status === 'Minting') {
           return (
             <Button type='link' onClick={(e) => toInscribe(e, record)}>
@@ -146,7 +151,7 @@ export const Ord2FullList = () => {
           );
         }
         return (
-          <Tag color='blue' key={status}>
+          <Tag color='blue' className='mr-0'>
             {t('common.completed')}
           </Tag>
         );
@@ -161,12 +166,6 @@ export const Ord2FullList = () => {
     () =>
       list.map((item) => {
         let status;
-        console.log(
-          item.startBlock &&
-            item.endBlock &&
-            height < item.endBlock &&
-            height > item.startBlock,
-        );
         if (item.rarity !== 'unknow' && item.rarity !== 'common') {
           status = 'Minting';
         } else if (
@@ -182,10 +181,9 @@ export const Ord2FullList = () => {
           status = 'Completed';
         }
         const special = item.rarity !== 'unknow' && item.rarity !== 'common';
-        console.log(status);
         return {
           tick: item.ticker,
-          block: !special ? `${item.startBlock}-${item.endBlock}`: '-',
+          block: !special ? `${item.startBlock}-${item.endBlock}` : '-',
           rarity: item.rarity,
           description: item.description,
           reg: item.reg,
@@ -222,7 +220,7 @@ export const Ord2FullList = () => {
           onChange: paginationChange,
           showSizeChanger: false,
         }}
-        scroll={{ x: 1300 }}
+        scroll={{ x: 1250 }}
         onRow={(record) => {
           return {
             onClick: () => clickHandler(record), // 点击行

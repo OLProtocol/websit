@@ -161,7 +161,15 @@ export default function Ord2Info() {
             </div> */}
             <div className=''>
               <p className='text-gray-400'>{t('common.satAttr')}:</p>
-              <p className='indent-2'>{detail?.attr || '-'}</p>
+              <p className='indent-2'>
+                {specialStatus ? (
+                  <Tag color='green' key={detail?.rarity}>
+                    {detail?.rarity}
+                  </Tag>
+                ) : (
+                  '-'
+                )}
+              </p>
             </div>
             <div className=''>
               <p className='text-gray-400'>{t('common.genesisTx')}:</p>
