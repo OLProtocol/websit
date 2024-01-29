@@ -71,15 +71,6 @@ export const InscribeStepThree = ({
     }
   }, [type, list]);
   const clacFee = useCalcFee({ feeRate, inscriptionSize, files });
-  // useEffect(() => {
-  //   const isBin = !!files[0]?.sha256;
-  //   if (!isBin) {
-  //     setPadding(546);
-  //   } else {
-  //     setPadding(1000);
-  //   }
-  // }, [files]);
-  console.log('clacFee', clacFee);
   const submit = async () => {
     const secret = generatePrivateKey();
     const inscriptions = generateInscriptions({

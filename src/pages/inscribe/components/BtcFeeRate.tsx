@@ -23,19 +23,18 @@ interface BtcFeeRate {
 export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
   const { t } = useTranslation();
   const [type, setType] = useState('Normal');
-  const [preValue, setPreValue] = useState(0);
   const [customValue, setCustomValue] = useState(1);
   const [economyValue, setEconomyValue] = useState(1);
   const [normalValue, setNormalValue] = useState(1);
   const [minFee, setMinFee] = useState(1);
   const [maxFee, setMaxFee] = useState(500);
   const { network } = useUnisatConnect();
-  const clickHandler = (type: string, value: number) => {
-    setType(type);
-    setPreValue(value);
-    if (value !== preValue) {
-      onChange?.(value);
+  const clickHandler = (_type: string, value: number) => {
+    if (type === _type) {
+      return;
     }
+    setType(_type);
+    onChange?.(value);
   };
   const { data: feeRateData, error } = useBtcFeeRate(network as any);
   const setRecommendFee = async () => {

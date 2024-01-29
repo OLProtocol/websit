@@ -23,7 +23,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useMap } from 'react-use';
 import { fetchTipHeight } from '@/lib/utils';
 import { useBlockHeightTime } from '@/lib/hooks';
@@ -60,15 +60,19 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     mintRarity: '',
     sat: 0,
   });
+  const infoRef = useRef<any>({});
   const { data: heightData } = useBtcHeight(network as any);
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
   const [tickLoading, setTickLoading] = useState(false);
   const [tickChecked, setTickChecked] = useState(false);
-  const checOrdXInfo = async (tick: string) => {
+  const getOrdXInfo = async (tick: string) => {
     try {
+      // if (infoRef.current[tick]) {
+      //   return infoRef.current[tick];
+      // }
       const info = await getOrdxInfo({ tick, network });
-      console.log('info', info);
+      infoRef.current[tick] = info;
       return info;
     } catch (error) {
       toast.error(t('toast.system_error'));
@@ -78,96 +82,93 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   };
   const nextHandler = async () => {
     setErrorText('');
-    const textSize = clacTextSize(data.tick);
-    if (textSize < 3 || textSize == 4 || textSize > 16) {
-      setErrorText(t('pages.inscribe.ordx.error_1'));
+    const checkStatus = await checkTick();
+    if (!checkStatus) {
       return;
     }
-    if (
-      data.type === 'deploy' &&
-      !data.blockChecked &&
-      !data.rarityChecked &&
-      !data.cnChecked &&
-      !data.trzChecked
-    ) {
-      setErrorText(t('pages.inscribe.ordx.error_2'));
-      return;
-    }
-    setLoading(true);
-
-    try {
-      const info = await checOrdXInfo(data.tick);
-      setLoading(false);
-      if (data.type === 'deploy') {
-        if (info.data) {
-          setErrorText(t('pages.inscribe.ordx.error_3', { tick: data.tick }));
-          return;
-        }
-      } else if (data.type === 'mint') {
-        if (!info.data) {
-          setErrorText(t('pages.inscribe.ordx.error_4', { tick: data.tick }));
-          return;
-        }
-        if (data.amount > info.data.limit) {
-          setErrorText(
-            t('pages.inscribe.ordx.error_5', { limit: info.data.limit }),
-          );
-          return;
-        }
-      }
-      onNext?.();
-    } catch (error) {
-      setLoading(false);
-    }
+    onNext?.();
   };
-  const onTickBlur = async () => {
+  const checkTick = async (blur: boolean = false) => {
     setErrorText('');
-    if (data.tick                          === undefined || data.tick === '') {
-      return;
+    let checkStatus = true;
+    if (data.tick === undefined || data.tick === '') {
+      checkStatus = false;
+      return checkStatus;
     }
     const textSize = clacTextSize(data.tick);
     if (textSize < 3 || textSize == 4 || textSize > 32) {
+      checkStatus = false;
       setErrorText(t('pages.inscribe.ordx.error_1'));
-      return;
+      return checkStatus;
     }
-    if (data.type === 'mint') {
-      try {
-        setTickLoading(true);
-        setTickChecked(false);
-        const info = await checOrdXInfo(data.tick);
-        setTickLoading(false);
-        setTickChecked(true);
+    try {
+      setTickLoading(true);
+      setTickChecked(false);
+      const info = await getOrdXInfo(data.tick);
+      setTickLoading(false);
+      setTickChecked(true);
+
+      const { rarity, trz, cn, startBlock, endBlock, limit } = info.data || {};
+      const isSpecial = rarity !== 'unknow' && rarity !== 'common';
+      let status = 'Completed';
+      if (
+        startBlock &&
+        endBlock &&
+        heightData < endBlock &&
+        heightData > startBlock
+      ) {
+        status = 'Minting';
+      } else if (heightData < startBlock) {
+        status = 'Pending';
+      } else {
+        status = 'Completed';
+      }
+      if (data.type === 'mint') {
         if (!info.data) {
+          checkStatus = false;
           setErrorText(t('pages.inscribe.ordx.error_4', { tick: data.tick }));
-          return;
-        } else {
-          if (info.data.rarity !== 'unknow' || info.data.rarity !== 'common' || info.data.trz !== 0 || info.data.cn !== 0) {
-            setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
-            return;
-          }
-          if (heightData < info.data?.startBlock) {
-            setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
-            return;
-          }
-          if (heightData > info.data?.endBlock) {
-            setErrorText(t('pages.inscribe.ordx.error_7', { tick: data.tick }));
-            return;
-          }
-          set('amount', Number(info.data.limit));
-          set('mintRarity', info.data.rarity);
+          return checkStatus;
+        }
+        if (blur) {
+          set('amount', Number(limit));
+          set('mintRarity', rarity);
+        }
+        if (isSpecial) {
+          checkStatus = false;
+          setErrorText(t('pages.inscribe.ordx.error_8', { tick: data.tick }));
+          return checkStatus;
+        }
+        if (status === 'pending') {
+          checkStatus = false;
+          setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
+          return checkStatus;
+        }
+        if (status === 'Completed') {
+          checkStatus = false;
+          setErrorText(t('pages.inscribe.ordx.error_7', { tick: data.tick }));
+          return checkStatus;
         }
         if (data.amount > info.data.limit) {
+          checkStatus = false;
           setErrorText(
             t('pages.inscribe.ordx.error_5', { limit: info.data.limit }),
           );
-          return;
+          return checkStatus;
         }
-      } catch (error) {
-        setTickLoading(true);
-        setTickChecked(false);
-        console.log('error', error);
+      } else {
+        if (info.data) {
+          checkStatus = false;
+          setErrorText(t('pages.inscribe.ordx.error_3', { tick: data.tick }));
+          return checkStatus;
+        }
       }
+    } catch (error) {
+      setTickLoading(true);
+      setTickChecked(false);
+      console.log('error', error);
+      return checkStatus;
     }
+    return checkStatus;
   };
   const rarityChange = (value: string) => {
     set('rarity', value);
@@ -231,7 +232,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   useEffect(() => {
     if (state?.type === 'ordx') {
       const { item } = state;
-      console.log(item)
+      console.log(item);
       set('type', 'mint');
       set('tick', item.tick);
       set('amount', item.limit);
@@ -275,7 +276,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             <div className='flex-1'>
               <Input
                 type='text'
-                onBlur={onTickBlur}
+                onBlur={() => checkTick(true)}
                 maxLength={32}
                 placeholder={t('pages.inscribe.ordx.tick_placeholder')}
                 value={data.tick}
