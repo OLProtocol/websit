@@ -31,7 +31,10 @@
     "status": "Status",
     "overview": "Overview",
     "rank": "Rank",
+    "quantity": "Quantity",
     "percentage": "Percentage",
+    "satAttr": "Sat Attr",
+    "inscriptionId": "Inscription Id",
     "value": "Value",
     "select_option": "Select Option"
   },
@@ -57,6 +60,7 @@
     "close": "Close",
     "connect": "Connect",
     "connectWallet": "Connect Wallet",
+    "switchNetwork": "Switch Network",
     "disconnect": "Disconnect"
   },
   "pages": {

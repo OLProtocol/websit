@@ -53,6 +53,13 @@ export default function Ord2Info() {
       },
     });
   };
+  const ordinalLink = useMemo(() => {
+    if (network === 'testnet') {
+      return `https://testnet.ordinals.com/inscription/${detail?.inscriptionId}`;
+    } else {
+      return `https://ordinals.com/inscription/${detail?.inscriptionId}`;
+    }
+  }, [network, detail]);
   useEffect(() => {
     if (tick) {
       trigger();
@@ -83,9 +90,16 @@ export default function Ord2Info() {
           </div>
           <div className='p-4'>
             <div className='mb-2'>
+              <p className='text-gray-400'>{t('common.inscriptionId')}:</p>
+              <a href={ordinalLink} className='indent-2' target='_blank'>
+                {detail?.inscriptionId || '-'}
+              </a>
+            </div>
+            <div className='mb-2'>
               <p className='text-gray-400'>{t('common.description')}:</p>
               <p className='indent-2'>{detail?.description || '-'}</p>
             </div>
+
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.block')}:</p>
               <p className='indent-2'>{`${detail?.startBlock}-${detail?.endBlock}`}</p>
@@ -95,21 +109,25 @@ export default function Ord2Info() {
               <p className='indent-2'>{detail?.deployHeight}</p>
             </div>
             <div className='mb-2'>
+              <p className='text-gray-400'>{t('common.limit_per_mint')}:</p>
+              <p className='indent-2'>{detail?.limit}</p>
+            </div>
+            <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
                 {new Date(detail?.deployBlocktime).toLocaleString()}
               </p>
             </div>
-
+            <div className=''>
+              <p className='text-gray-400'>{t('common.holders')}:</p>
+              <p className='indent-2'>{detail?.holdersCount}</p>
+            </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.minted')}:</p>
               <p className='indent-2'>{detail?.totalMinted}</p>
             </div>
-            <div className='mb-2'>
-              <p className='text-gray-400'>{t('common.limit_per_mint')}:</p>
-              <p className='indent-2'>{detail?.limit}</p>
-            </div>
-            <div className=''>
+
+            {/* <div className=''>
               <p className='text-gray-400'>{t('common.rarity')}:</p>
               <p className='indent-2'>
                 {detail?.rarity && detail?.rarity !== 'unknow' ? (
@@ -124,14 +142,10 @@ export default function Ord2Info() {
             <div className=''>
               <p className='text-gray-400'>{t('common.trz')}:</p>
               <p className='indent-2'>{detail?.trz || '-'}</p>
-            </div>
+            </div> */}
             <div className=''>
-              <p className='text-gray-400'>{t('common.cn')}:</p>
-              <p className='indent-2'>{detail?.cn || '-'}</p>
-            </div>
-            <div className=''>
-              <p className='text-gray-400'>{t('common.holders')}:</p>
-              <p className='indent-2'>{detail?.holdersCount}</p>
+              <p className='text-gray-400'>{t('common.satAttr')}:</p>
+              <p className='indent-2'>{detail?.attr || '-'}</p>
             </div>
           </div>
         </div>

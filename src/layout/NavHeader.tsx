@@ -1,13 +1,15 @@
-import { Menu } from 'antd';
+import { Menu, Tag } from 'antd';
 import { UnisatConnectButton } from '@/components/UnisatConnectButton';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from '@/router';
 import { useTranslation } from 'react-i18next';
+import { useUnisatConnect } from '@/lib/hooks/unisat';
 
 export const NavHeader = () => {
   const nav = useNavigate();
   const { t } = useTranslation();
   const routerLocation = useLocation();
+  const { network } = useUnisatConnect();
   const { pathname } = routerLocation;
   const items: any[] = [
     {

@@ -40,26 +40,12 @@ export const Ord2FullList = () => {
       align: 'center',
     },
     {
-      title: t('common.deploy_time'),
-      dataIndex: 'deploy_time',
-      key: 'deploy_time',
-      width: 200,
-      align: 'center',
-    },
-    {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
       width: 200,
       align: 'center',
       render: (t) => t || '-',
-    },
-    {
-      title: t('common.limit'),
-      dataIndex: 'limit',
-      key: 'limit',
-      width: 100,
-      align: 'center',
     },
     {
       title: t('common.block'),
@@ -75,36 +61,17 @@ export const Ord2FullList = () => {
       width: 150,
       align: 'center',
     },
-
-    
     {
-      title: t('common.rarity'),
-      dataIndex: 'rarity',
-      key: 'rarity',
+      title: t('common.limit'),
+      dataIndex: 'limit',
+      key: 'limit',
       width: 100,
       align: 'center',
-      render: (rarity) => {
-        return rarity && rarity !== 'unknow' ? (
-          <Tag color='green' key={rarity}>
-            {rarity}
-          </Tag>
-        ) : (
-          '-'
-        );
-      },
     },
     {
-      title: t('common.trz'),
-      dataIndex: 'trz',
-      key: 'trz',
-      width: 200,
-      align: 'center',
-      render: (t) => t || '-',
-    },
-    {
-      title: t('common.cn'),
-      dataIndex: 'cn',
-      key: 'cn',
+      title: t('common.satAttr'),
+      dataIndex: 'attr',
+      key: 'attr',
       width: 200,
       align: 'center',
       render: (t) => t || '-',
@@ -120,30 +87,67 @@ export const Ord2FullList = () => {
       title: t('common.minted'),
       dataIndex: 'minted',
       key: 'minted',
-      fixed: 'right',
       width: 100,
       align: 'center',
     },
     {
+      title: t('common.deploy_time'),
+      dataIndex: 'deploy_time',
+      key: 'deploy_time',
+      width: 200,
+      align: 'center',
+    },
+
+    // {
+    //   title: t('common.rarity'),
+    //   dataIndex: 'rarity',
+    //   key: 'rarity',
+    //   width: 100,
+    //   align: 'center',
+    //   render: (rarity) => {
+    //     return rarity && rarity !== 'unknow' ? (
+    //       <Tag color='green' key={rarity}>
+    //         {rarity}
+    //       </Tag>
+    //     ) : (
+    //       '-'
+    //     );
+    //   },
+    // },
+    // {
+    //   title: t('common.trz'),
+    //   dataIndex: 'trz',
+    //   key: 'trz',
+    //   width: 200,
+    //   align: 'center',
+    //   render: (t) => t || '-',
+    // },
+
+    {
       title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
-      fixed: 'right',
       width: 100,
       align: 'center',
       render: (status, record) => {
         if (status === 'Pending') {
-          return <Tag color='orange' key={status}>
-            {t('common.waiting')}
-          </Tag>;
+          return (
+            <Tag color='orange' key={status}>
+              {t('common.waiting')}
+            </Tag>
+          );
         } else if (status === 'Minting') {
-          return <Button type='link' onClick={(e) => toInscribe(e, record)}>
-            {t('common.minting')}
-          </Button>;
+          return (
+            <Button type='link' onClick={(e) => toInscribe(e, record)}>
+              {t('common.minting')}
+            </Button>
+          );
         }
-        return <Tag color='blue' key={status}>
-          {t('common.completed')}
-        </Tag>;
+        return (
+          <Tag color='blue' key={status}>
+            {t('common.completed')}
+          </Tag>
+        );
       },
     },
   ];
@@ -155,17 +159,27 @@ export const Ord2FullList = () => {
     () =>
       list.map((item) => {
         let status;
-        console.log(item.startBlock && item.endBlock && height < item.endBlock && height > item.startBlock);
+        console.log(
+          item.startBlock &&
+            item.endBlock &&
+            height < item.endBlock &&
+            height > item.startBlock,
+        );
         if (item.rarity !== 'unknow' && item.rarity !== 'common') {
           status = 'Minting';
-        } else if (item.startBlock && item.endBlock && height < item.endBlock && height > item.startBlock) {
+        } else if (
+          item.startBlock &&
+          item.endBlock &&
+          height < item.endBlock &&
+          height > item.startBlock
+        ) {
           status = 'Minting';
         } else if (height < item.startBlock) {
           status = 'Pending';
         } else {
           status = 'Completed';
         }
-        console.log(status)
+        console.log(status);
         return {
           tick: item.ticker,
           block: `${item.startBlock}-${item.endBlock}`,

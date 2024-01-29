@@ -31,7 +31,10 @@
     "status": "状态",
     "overview": "概览",
     "rank": "排名",
+    "quantity": "数量",
     "percentage": "百分比",
+    "satAttr": "特殊聪属性",
+    "inscriptionId": "铭文 ID",
     "value": "价值",
     "select_option": "选择选项"
   },
@@ -57,6 +60,7 @@
     "close": "关闭",
     "connect": "连接",
     "connectWallet": "连接钱包",
+    "switchNetwork": "切换网络",
     "disconnect": "断开连接"
   },
   "pages": {

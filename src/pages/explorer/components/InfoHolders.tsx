@@ -31,7 +31,7 @@ export const InfoHolders = () => {
       key: 'percentage',
     },
     {
-      title: t('common.value'),
+      title: t('common.quantity'),
       dataIndex: 'value',
       key: 'value',
     },

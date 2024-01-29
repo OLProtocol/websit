@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Input, Select, Space } from 'antd';
+import { Button, Input, Empty } from 'antd';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Ord2FullList } from './components/OrdxFullList';
 import { Ord2SummaryList } from './components/OrdxSummaryList';
@@ -38,7 +38,7 @@ export default function Ord2Index() {
   }, [q]);
   return (
     <div>
-      <div className='w-[30rem] mx-auto pt-20 mb-4'>
+      <div className='w-[40rem] mx-auto pt-20 mb-4'>
         {!showAddress && (
           <h1 className='text-2xl text-orange-500 text-center mb-8'>
             {t('pages.explorer.subtitle')}
@@ -61,7 +61,7 @@ export default function Ord2Index() {
           </div>
         )}
       </div>
-      <div className='max-w-3xl mx-auto'>
+      <div className='max-w-7xl mx-auto'>
         {showAddress && (
           <>
             <div className='mb-4'>
@@ -71,7 +71,7 @@ export default function Ord2Index() {
               {/* <SatBox /> */}
             </div>
             <div className='mb-4'>
-              <Ord2History tick='BTC' address={address} />
+              {/* <Ord2History tick='BTC' address={address} /> */}
             </div>
           </>
         )}
