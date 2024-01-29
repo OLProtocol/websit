@@ -15,6 +15,7 @@ export const useCalcFee = ({
     const feeObj: any = {
       networkFee: 0,
       serviceFee: 0,
+      serviceText: '',
       totalFee: 0,
     };
     if (files?.length === 1) {
@@ -24,10 +25,9 @@ export const useCalcFee = ({
       }
       let totalFee = feeObj.networkFee + inscriptionSize;
       if (serviceStatus) {
-        feeObj.serviceFee = Math.max(
-          Number(VITE_TIP_MIN),
-          Math.ceil(totalFee * 0.1),
-        );
+        const oneFee = Math.max(Number(VITE_TIP_MIN), Math.ceil(inscriptionSize * 0.1));
+        feeObj.serviceFee = Math.ceil(oneFee * files.length);
+        feeObj.serviceText = `${oneFee} * ${files.length} = ${feeObj.serviceFee}`;
         totalFee += feeObj.serviceFee;
       }
       feeObj.totalFee = totalFee;
@@ -43,10 +43,9 @@ export const useCalcFee = ({
       let totalFee = networkFee + inscriptionSize * files.length;
       feeObj.networkFee = networkFee;
       if (serviceStatus) {
-        feeObj.serviceFee = Math.max(
-          Number(VITE_TIP_MIN),
-          Math.ceil(totalFee * 0.1),
-        );
+        const oneFee = Math.max(Number(VITE_TIP_MIN), Math.ceil(inscriptionSize * 0.1));
+        feeObj.serviceFee = Math.ceil(oneFee * files.length);
+        feeObj.serviceText = `${oneFee} X ${files.length} = ${feeObj.serviceFee}`;
         totalFee += feeObj.serviceFee;
       }
       feeObj.totalFee = totalFee;

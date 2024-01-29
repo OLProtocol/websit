@@ -381,6 +381,7 @@ export const InscribingOrderModal = ({
             feeRate={order?.feeRate}
             inscriptionSize={order?.inscriptionSize}
             serviceFee={order?.fee.serviceFee}
+            filesLength={order?.inscriptions.length}
             totalFee={order?.fee.totalFee}
             networkFee={order?.fee.networkFee}
           />
