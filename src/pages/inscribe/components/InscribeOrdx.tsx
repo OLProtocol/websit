@@ -30,7 +30,7 @@ import { useBlockHeightTime } from '@/lib/hooks';
 import { clacTextSize } from '../utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { requstOrd2Info, useBtcHeight } from '@/api';
+import { getOrdxInfo, useBtcHeight } from '@/api';
 import toast from 'react-hot-toast';
 
 interface InscribeOrdxProps {
@@ -67,7 +67,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const [tickChecked, setTickChecked] = useState(false);
   const checOrdXInfo = async (tick: string) => {
     try {
-      const info = await requstOrd2Info({ tick });
+      const info = await getOrdxInfo({ tick, network });
       console.log('info', info);
       return info;
     } catch (error) {

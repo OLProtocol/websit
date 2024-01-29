@@ -36,6 +36,7 @@
     "satAttr": "特殊聪属性",
     "inscriptionId": "铭文 ID",
     "value": "价值",
+    "genesisTx": "Tx",
     "select_option": "选择选项"
   },
   "toast": {

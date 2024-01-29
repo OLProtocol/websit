@@ -36,6 +36,7 @@
     "satAttr": "Sat Attr",
     "inscriptionId": "Inscription Id",
     "value": "Value",
+    "genesisTx": "Genesis transaction",
     "select_option": "Select Option"
   },
   "toast": {

@@ -1,7 +1,7 @@
 import { Button } from 'antd';
 import { Address, Script } from '@cmdcode/tapscript';
 import { buf2hex } from './inscribe/utils';
-import { requstAvailableUtxos } from '@/api';
+import { getAvailableUtxos } from '@/api';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import * as bitcoin from 'bitcoinjs-lib';
 import { UnspentOutput, txHelpers } from '@unisat/wallet-sdk';
@@ -26,9 +26,10 @@ export default function Test() {
     return scriptPublicKey;
   };
   const getBtcUtxos = async () => {
-    const data = await requstAvailableUtxos({
+    const data = await getAvailableUtxos({
       address: 'tb1prcc8rp5wn0y9vp434kchl3aag8r8hz699006ufvczwnneuqx0wdsfmvq4y',
       ticker: 'test3',
+      network: 'testnet',
     });
     const utxos = data?.data?.detail;
     const btcUtxos = utxos

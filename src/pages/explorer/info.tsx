@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useOrd2Info } from '@/api';
+import { useOrdxInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { Segmented } from 'antd';
 import { InfoHolders } from './components/InfoHolders';
@@ -21,7 +21,7 @@ export default function Ord2Info() {
     }
   };
   const { data: heightData } = useBtcHeight(network as any);
-  const { data: detail, trigger, isLoading } = useOrd2Info({ tick });
+  const { data: detail, trigger, isLoading } = useOrdxInfo({ tick, network });
   const status = useMemo(() => {
     let _status;
     if (detail?.rarity !== 'unknow' && detail?.rarity !== 'common') {
@@ -58,6 +58,13 @@ export default function Ord2Info() {
       return `https://testnet.ordinals.com/inscription/${detail?.inscriptionId}`;
     } else {
       return `https://ordinals.com/inscription/${detail?.inscriptionId}`;
+    }
+  }, [network, detail]);
+  const txLink = useMemo(() => {
+    if (network === 'testnet') {
+      return `https://mempool.space/testnet/tx/${detail?.txid}`;
+    } else {
+      return `https://mempool.space/tx/${detail?.txid}`;
     }
   }, [network, detail]);
   useEffect(() => {
@@ -146,6 +153,12 @@ export default function Ord2Info() {
             <div className=''>
               <p className='text-gray-400'>{t('common.satAttr')}:</p>
               <p className='indent-2'>{detail?.attr || '-'}</p>
+            </div>
+            <div className=''>
+              <p className='text-gray-400'>{t('common.genesisTx')}:</p>
+              <a href={txLink} className='indent-2' target='_blank'>
+                {detail?.txid || '-'}
+              </a>
             </div>
           </div>
         </div>

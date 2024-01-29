@@ -3,6 +3,7 @@ import { Segmented, Table, Tag, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useOrd2Status } from '@/api';
 import { useNavigate } from 'react-router-dom';
+import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { useTranslation } from 'react-i18next';
 
 interface DataType {
@@ -14,12 +15,13 @@ interface DataType {
 export const Ord2FullList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
+  const { network } = useUnisatConnect();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { data, isLoading } = useOrd2Status({ start, limit });
+  const { data, isLoading } = useOrd2Status({ start, limit, network });
   const list = useMemo(() => data?.detail || [], [data]);
   const total = useMemo(() => data?.total || 10, [data]);
-
+  console.log(data);
   const height = useMemo(() => {
     return data?.height;
   }, [data]);
@@ -43,7 +45,7 @@ export const Ord2FullList = () => {
       title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
-      width: 200,
+      width: 120,
       align: 'center',
       render: (t) => t || '-',
     },
@@ -51,28 +53,28 @@ export const Ord2FullList = () => {
       title: t('common.block'),
       dataIndex: 'block',
       key: 'block',
-      width: 200,
+      width: 100,
       align: 'center',
     },
     {
       title: t('common.deploy_height'),
       dataIndex: 'deployHeight',
       key: 'deployHeight',
-      width: 150,
+      width: 90,
       align: 'center',
     },
     {
       title: t('common.limit'),
       dataIndex: 'limit',
       key: 'limit',
-      width: 100,
+      width: 80,
       align: 'center',
     },
     {
       title: t('common.satAttr'),
       dataIndex: 'attr',
       key: 'attr',
-      width: 200,
+      width: 100,
       align: 'center',
       render: (t) => t || '-',
     },
@@ -80,21 +82,21 @@ export const Ord2FullList = () => {
       title: t('common.holders'),
       dataIndex: 'holders',
       key: 'holders',
-      width: 100,
+      width: 60,
       align: 'center',
     },
     {
       title: t('common.minted'),
       dataIndex: 'minted',
       key: 'minted',
-      width: 100,
+      width: 60,
       align: 'center',
     },
     {
       title: t('common.deploy_time'),
       dataIndex: 'deploy_time',
       key: 'deploy_time',
-      width: 200,
+      width: 140,
       align: 'center',
     },
 
@@ -127,7 +129,7 @@ export const Ord2FullList = () => {
       title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
-      width: 100,
+      width: 70,
       align: 'center',
       render: (status, record) => {
         if (status === 'Pending') {
@@ -219,7 +221,7 @@ export const Ord2FullList = () => {
           onChange: paginationChange,
           showSizeChanger: false,
         }}
-        scroll={{ x: 1450 }}
+        scroll={{ x: 920 }}
         onRow={(record) => {
           return {
             onClick: () => clickHandler(record), // 点击行
