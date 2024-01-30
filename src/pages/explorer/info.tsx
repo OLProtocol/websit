@@ -36,8 +36,8 @@ export default function Ord2Info() {
     } else if (
       detail?.startBlock &&
       detail?.endBlock &&
-      btcHeight < detail?.endBlock &&
-      btcHeight > detail?.startBlock
+      btcHeight <= detail?.endBlock &&
+      btcHeight >= detail?.startBlock
     ) {
       _status = 'Minting';
     } else if (btcHeight < detail?.startBlock) {

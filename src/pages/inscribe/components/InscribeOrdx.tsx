@@ -115,8 +115,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       if (
         startBlock &&
         endBlock &&
-        btcHeight < endBlock &&
-        btcHeight > startBlock
+        btcHeight <= endBlock &&
+        btcHeight >= startBlock
       ) {
         status = 'Minting';
       } else if (btcHeight < startBlock) {
