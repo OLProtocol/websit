@@ -19,6 +19,7 @@
     "economy": "经济",
     "normal": "普通",
     "custom": "自定义",
+    "balance": "余额",
     "secret": "密钥",
     "account": "账户",
     "address": "地址",
@@ -36,6 +37,7 @@
     "percentage": "百分比",
     "satAttr": "聪属性",
     "inscriptionId": "铭文 ID",
+    "txId": "交易 ID",
     "inscriptionNumber": "铭文序号",
     "value": "价值",
     "genesisTx": "交易 ID",
@@ -65,6 +67,7 @@
     "connect": "连接",
     "connectWallet": "连接钱包",
     "switchNetwork": "切换网络",
+    "view": "查看",
     "disconnect": "断开连接"
   },
   "pages": {

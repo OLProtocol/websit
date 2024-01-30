@@ -160,6 +160,7 @@ export const InscribingOrderModal = ({
       );
     }
     setActiveStep(2);
+    changeStatus(orderId, 'inscribe_wait');
     setTimeout(() => {
       inscribeHandler();
     }, 0);
@@ -232,6 +233,9 @@ export const InscribingOrderModal = ({
     }
     if (order?.funding && order?.commitTx) {
       setActiveStep(1);
+    }
+    if (order?.status === 'inscribe_wait') {
+      setActiveStep(2);
     }
     if (order?.status === 'inscribe_success') {
       setActiveStep(3);

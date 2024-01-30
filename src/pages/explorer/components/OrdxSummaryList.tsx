@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { OrdXItem } from './OrdXItem';
 import { useOrdxSummary } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks';
@@ -13,9 +13,10 @@ export const Ord2SummaryList = ({
 }: Ord2SummaryListProps) => {
   const { network } = useUnisatConnect();
   const { data, trigger } = useOrdxSummary({ address, network });
+  const [select, setSelect] = useState('');
   const list = useMemo(() => data?.data?.detail || [], [data]);
   const onClick = (item) => {
-    console.log(item)
+    setSelect(item.ticker);
     onChange?.(item.ticker);
   };
   useEffect(() => {
@@ -27,11 +28,12 @@ export const Ord2SummaryList = ({
     if (address) {
       trigger();
     }
-  }, [address ,network]);
+  }, [address, network]);
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.map((item) => (
         <OrdXItem
+          selected={select === item.ticker}
           onClick={() => {
             onClick(item);
           }}

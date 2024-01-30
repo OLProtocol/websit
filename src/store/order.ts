@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { InscribeType } from '@/types';
 
-type OrderStatus = 'pending' | 'paid' | 'inscribe_success' | 'inscribe_fail';
+type OrderStatus = 'pending' | 'paid'|  'inscribe_wait' |  'inscribe_success' | 'inscribe_fail';
 export interface OrderItemType {
   orderId: string;
   type: InscribeType;

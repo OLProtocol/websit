@@ -47,22 +47,23 @@ export const OrdxAddressHistory = ({ tick, address }: Ord2HistoryProps) => {
       },
     },
     {
-      title: t('common.inscriptionId'),
+      title: t('common.txId'),
       dataIndex: 'inscriptionId',
       key: 'inscriptionId',
       width: 100,
       align: 'center',
       render: (t) => {
+        const txid = t.replace(/i0$/m, '')
         const href =
           network === 'testnet'
-            ? `https://testnet.ordinals.com/inscription/${t}`
-            : `https://ordinals.com/inscription/${t}`;
+            ? `https://mempool.space/testnet/tx/${txid}`
+            : `https://mempool.space/tx/${t}`;
         return (
           <a
             className='text-blue-500 cursor-pointer'
             href={href}
             target='_blank'>
-            {hideStr(t)}
+            {hideStr(txid)}
           </a>
         );
       },
@@ -105,12 +106,12 @@ export const OrdxAddressHistory = ({ tick, address }: Ord2HistoryProps) => {
         <div className='rounded-2xl bg-gray-200 p-4'>
           <div className='mb-2'>
             <span className='text-orange-500'> {tick}</span>
-            <span className='text-gray-500'>, minted of </span>
+            <span className='text-gray-500'>, 铸造者： </span>
             <span>{address}</span>
           </div>
           <div className='flex items-center mb-2'>
             <Button className='mr-2' color='rgb(249 115 22)' onClick={toInfo}>
-              View {tick}
+              {t('buttons.view')} {tick}
             </Button>
           </div>
           {/* <Segmented

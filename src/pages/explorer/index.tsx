@@ -64,11 +64,11 @@ export default function Ord2Index() {
             onSearch={doSearch}
           />
         </div>
-        {!showAddress && (
+        {/* {!showAddress && (
           <div className='mb-12 text-sm text-center'>
             {t('pages.explorer.des')}
           </div>
-        )}
+        )} */}
       </div>
       <div className='max-w-7xl mx-auto px-4'>
         {showAddress && (

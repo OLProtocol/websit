@@ -19,6 +19,7 @@
     "economy": "Economy",
     "normal": "Normal",
     "custom": "Custom",
+    "balance": "Balance",
     "secret": "Secret",
     "account": "Account",
     "address": "Address",
@@ -36,6 +37,7 @@
     "percentage": "Percentage",
     "satAttr": "Sat Attr",
     "inscriptionId": "Inscription Id",
+    "txId": "Tx Id",
     "inscriptionNumber": "Inscription Number",
     "value": "Value",
     "genesisTx": "Genesis transaction",
@@ -65,6 +67,7 @@
     "connect": "Connect",
     "connectWallet": "Connect Wallet",
     "switchNetwork": "Switch Network",
+    "view": "View",
     "disconnect": "Disconnect"
   },
   "pages": {
