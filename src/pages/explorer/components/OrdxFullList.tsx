@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Segmented, Table, Tag, Button } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { useOrd2Status } from '@/api';
 import { useNavigate } from 'react-router-dom';
@@ -30,6 +31,17 @@ export const Ord2FullList = () => {
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
     nav('/inscribe', { state: { type: 'ordx', item } });
+  };
+  const SatTitle = () => {
+    return (
+      <a
+        className='flex items-center'
+        href='https://docs.ordx.space/ordinalsx/instruct#deploy'
+        target='_blank'>
+        <span className='mr-1'>{t('common.satAttr')}</span>
+        <QuestionCircleOutlined />
+      </a>
+    );
   };
   const columns: ColumnsType<DataType> = [
     {
@@ -70,7 +82,7 @@ export const Ord2FullList = () => {
       align: 'center',
     },
     {
-      title: t('common.satAttr'),
+      title: SatTitle,
       dataIndex: 'attr',
       key: 'attr',
       width: 100,

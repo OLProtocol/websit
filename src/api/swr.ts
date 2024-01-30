@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import * as requst from './request';
+import * as request from './request';
 import {
   Ord2ListStatusParams,
   Ord2InfoParams,
@@ -28,8 +28,7 @@ export const useOrd2Status = ({
 }: Ord2ListStatusParams) => {
   const { data, error, isLoading } = useSWR(
     `ord2-status-${start}-${limit}-${network}`,
-    () =>
-    requst.getOrdxStatusList({ start, limit, network }),
+    () => request.getOrdxStatusList({ start, limit, network }),
   );
   return {
     data,
@@ -39,9 +38,9 @@ export const useOrd2Status = ({
 };
 
 export const useOrdxInfo = ({ tick, network }: Ord2InfoParams) => {
-  const { data, error, isMutating, trigger, reset  } = useSWRMutation(
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ord2-info-${tick}-${network}`,
-    () => requst.getOrdxInfo({ tick, network }),
+    () => request.getOrdxInfo({ tick, network }),
   );
   return {
     data,
@@ -55,7 +54,7 @@ export const useOrdxInfo = ({ tick, network }: Ord2InfoParams) => {
 export const useOrdxSummary = ({ address, network }: OrdXSummaryParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ordx-summary-${address}`,
-    () => requst.getOrdxSummary({ address, network }),
+    () => request.getOrdxSummary({ address, network }),
   );
   return {
     data,
@@ -66,11 +65,19 @@ export const useOrdxSummary = ({ address, network }: OrdXSummaryParams) => {
   };
 };
 
-export const useOrdXHistory = ({ address, ticker, network }: OrdXHistoryParams) => {
+export const useOrdxAddressHistory = ({
+  address,
+  ticker,
+  network,
+  start,
+  limit,
+}: OrdXHistoryParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ordx-history-${address}-${ticker}`,
-    () => requst.getOrdxHistory({ address, ticker, network }),
-  );1
+    () =>
+      request.getOrdxAddressHistory({ start, limit, address, ticker, network }),
+  );
+  1;
   return {
     data,
     trigger,
@@ -79,10 +86,47 @@ export const useOrdXHistory = ({ address, ticker, network }: OrdXHistoryParams) 
     isLoading: isMutating,
   };
 };
-export const useAvailableUtxos = ({ address, ticker, network }: OrdXHistoryParams) => {
+export const useOrdxTickHolders = ({ tick, network }: Ord2InfoParams) => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
+    `ordx-history-${tick}-${network}`,
+    () => request.getOrdxTickHolders({ tick, network }),
+  );
+  1;
+  return {
+    data,
+    trigger,
+    reset,
+    error,
+    isLoading: isMutating,
+  };
+};
+export const useOrdxTickHistory = ({
+  start,
+  limit,
+  ticker,
+  network,
+}: OrdXHistoryParams) => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
+    `ordx-history-${ticker}`,
+    () => request.getOrdxTickHistory({ start, limit, ticker, network }),
+  );
+  1;
+  return {
+    data,
+    trigger,
+    reset,
+    error,
+    isLoading: isMutating,
+  };
+};
+export const useAvailableUtxos = ({
+  address,
+  ticker,
+  network,
+}: any) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ordx-history-${address}-${ticker}`,
-    () => requst.getAvailableUtxos({ address, ticker, network }),
+    () => request.getAvailableUtxos({ address, ticker, network }),
   );
   return {
     data,
@@ -92,10 +136,10 @@ export const useAvailableUtxos = ({ address, ticker, network }: OrdXHistoryParam
     isLoading: isMutating,
   };
 };
-
 
 export const useBtcHeight = (network: 'testnet' | 'main') => {
   const { data, error, isLoading } = useSWR(`height-${network}`, () =>
+    // request.getCurrentHeight({ network }),
     fetchTipHeight(network),
   );
   return {

@@ -1,6 +1,7 @@
-import { Radio } from 'antd';
-import { useLocation} from 'react-router-dom';
+import { Radio, Alert } from 'antd';
+import { useLocation } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
+import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { InscribeBrc20 } from './components/InscribeBrc20';
 import { InscribeOrdx } from './components/InscribeOrdx';
 import { InscribeText } from './components/InscribeText';
@@ -13,9 +14,11 @@ import { removeObjectEmptyValue, generteFiles } from './utils';
 import { InscribeType } from '@/types';
 import { useTranslation } from 'react-i18next';
 import { OrderList } from './components/OrderList';
+import { useGlobalStore } from '@/store';
 
 export default function Inscribe() {
   const { state } = useLocation();
+  const { btcHeight } = useGlobalStore((state) => state);
   const { t } = useTranslation();
   const [step, setStep] = useState(3);
   const [tab, setTab] = useState<InscribeType>('files');
@@ -299,68 +302,79 @@ export default function Inscribe() {
     }
   }, [state]);
   return (
-    <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
-      <h1 className='text-lg font-bold text-center mb-4'>{t('pages.inscribe.title')}</h1>
-      <div>
-        <div className='mb-4 flex justify-center'>
-          <Radio.Group
-            defaultValue='files'
-            size='large'
-            value={tab}
-            onChange={handleTabsChange}>
-            <Radio.Button value='files'>{t('pages.inscribe.files.name')}</Radio.Button>
-            <Radio.Button value='text'>{t('pages.inscribe.text.name')}</Radio.Button>
-            {/* <Radio.Button value='brc-20'>Brc-20</Radio.Button> */}
-            <Radio.Button value='ordx'>{t('pages.inscribe.ordx.name')}</Radio.Button>
-          </Radio.Group>
-        </div>
-        <div className=' min-h-[10rem] mx-auto bg-gray-50 p-8 rounded-lg mb-4'>
-          {step === 1 && (
-            <>
-              {tab === 'files' && (
-                <InscribeFiles onNext={filesNext} onChange={filesChange} />
-              )}
-              {tab === 'text' && (
-                <InscribeText onNext={textNext} onChange={textChange} />
-              )}
-              {tab === 'brc20' && (
-                <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
-              )}
-              {tab === 'ordx' && (
-                <InscribeOrdx onChange={ordxChange} onNext={ordxNext} />
-              )}
-            </>
-          )}
-          {step === 2 && (
-            <InscribeStepTwo
-              list={list}
-              type={tab}
-              onBack={stepTwoBack}
-              onNext={stepTwoNext}
-            />
-          )}
-          {step === 3 && (
-            <InscribeStepThree
-              onItemRemove={onItemRemove}
-              onRemoveAll={onRemoveAll}
-              onAddOrder={onAddOrder}
-              list={list}
-              type={tab}
-            />
-          )}
-        </div>
+    <>
+      <BtcHeightAlert/>
+      <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
+        <h1 className='text-lg font-bold text-center mb-4'>
+          {t('pages.inscribe.title')}
+        </h1>
         <div>
-          <OrderList onOrderClick={onOrderClick} />
+          <div className='mb-4 flex justify-center'>
+            <Radio.Group
+              defaultValue='files'
+              size='large'
+              value={tab}
+              onChange={handleTabsChange}>
+              <Radio.Button value='files'>
+                {t('pages.inscribe.files.name')}
+              </Radio.Button>
+              <Radio.Button value='text'>
+                {t('pages.inscribe.text.name')}
+              </Radio.Button>
+              {/* <Radio.Button value='brc-20'>Brc-20</Radio.Button> */}
+              <Radio.Button value='ordx'>
+                {t('pages.inscribe.ordx.name')}
+              </Radio.Button>
+            </Radio.Group>
+          </div>
+          <div className=' min-h-[10rem] mx-auto bg-gray-50 p-8 rounded-lg mb-4'>
+            {step === 1 && (
+              <>
+                {tab === 'files' && (
+                  <InscribeFiles onNext={filesNext} onChange={filesChange} />
+                )}
+                {tab === 'text' && (
+                  <InscribeText onNext={textNext} onChange={textChange} />
+                )}
+                {tab === 'brc20' && (
+                  <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
+                )}
+                {tab === 'ordx' && (
+                  <InscribeOrdx onChange={ordxChange} onNext={ordxNext} />
+                )}
+              </>
+            )}
+            {step === 2 && (
+              <InscribeStepTwo
+                list={list}
+                type={tab}
+                onBack={stepTwoBack}
+                onNext={stepTwoNext}
+              />
+            )}
+            {step === 3 && (
+              <InscribeStepThree
+                onItemRemove={onItemRemove}
+                onRemoveAll={onRemoveAll}
+                onAddOrder={onAddOrder}
+                list={list}
+                type={tab}
+              />
+            )}
+          </div>
+          <div>
+            <OrderList onOrderClick={onOrderClick} />
+          </div>
         </div>
+        {orderId && (
+          <InscribingOrderModal
+            show={modalShow}
+            orderId={orderId}
+            onFinished={onFinished}
+            onClose={onModalClose}
+          />
+        )}
       </div>
-      {orderId && (
-        <InscribingOrderModal
-          show={modalShow}
-          orderId={orderId}
-          onFinished={onFinished}
-          onClose={onModalClose}
-        />
-      )}
-    </div>
+    </>
   );
 }

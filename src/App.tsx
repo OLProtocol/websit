@@ -5,7 +5,9 @@ import { Toaster } from 'react-hot-toast';
 import { UnisatConnectProvider } from '@/provider/UnisatConnectProvider';
 import { StyleProvider } from '@ant-design/cssinjs';
 
+
 function App() {
+
   return (
     <StyleProvider hashPriority='high'>
       <main className='h-full'>

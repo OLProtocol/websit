@@ -26,6 +26,7 @@
     "holders": "holders",
     "minted": "minted",
     "minting": "Minting",
+    "minted_history": "Minted History",
     "waiting": "Not Start",
     "completed": "Completed",
     "status": "Status",
@@ -35,9 +36,11 @@
     "percentage": "Percentage",
     "satAttr": "Sat Attr",
     "inscriptionId": "Inscription Id",
+    "inscriptionNumber": "Inscription Number",
     "value": "Value",
     "genesisTx": "Genesis transaction",
-    "select_option": "Select Option"
+    "select_option": "Select Option",
+    "height_alert": "The current BTC height is "
   },
   "toast": {
     "system_error": "System Error"

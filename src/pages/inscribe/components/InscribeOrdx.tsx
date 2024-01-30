@@ -30,14 +30,16 @@ import { useBlockHeightTime } from '@/lib/hooks';
 import { clacTextSize } from '../utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { getOrdxInfo, useBtcHeight } from '@/api';
+import { getOrdxInfo } from '@/api';
 import toast from 'react-hot-toast';
+import { useGlobalStore } from '@/store';
 
 interface InscribeOrdxProps {
   onNext?: () => void;
   onChange?: (data: any) => void;
 }
 export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
+  const { btcHeight } = useGlobalStore(state => state);
   const { t } = useTranslation();
   const { state } = useLocation();
   const { network } = useUnisatConnect();
@@ -61,7 +63,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     sat: 0,
   });
   const infoRef = useRef<any>({});
-  const { data: heightData } = useBtcHeight(network as any);
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
   const [tickLoading, setTickLoading] = useState(false);
@@ -114,11 +115,11 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       if (
         startBlock &&
         endBlock &&
-        heightData < endBlock &&
-        heightData > startBlock
+        btcHeight < endBlock &&
+        btcHeight > startBlock
       ) {
         status = 'Minting';
-      } else if (heightData < startBlock) {
+      } else if (btcHeight < startBlock) {
         status = 'Pending';
       } else {
         status = 'Completed';
@@ -225,7 +226,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     return !data.tick || (data.type === 'mint' && !tickChecked);
   }, [data, tickChecked]);
   const time = useBlockHeightTime({
-    height: heightData,
+    height: btcHeight,
     start: data.block_start,
     end: data.block_end,
   });
@@ -241,12 +242,12 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     }
   }, [state]);
   useEffect(() => {
-    console.log(heightData);
-    if (heightData) {
-      set('block_start', heightData);
-      set('block_end', heightData + 4320);
+    console.log(btcHeight);
+    if (btcHeight) {
+      set('block_start', btcHeight);
+      set('block_end', btcHeight + 4320);
     }
-  }, [heightData]);
+  }, [btcHeight]);
   useEffect(() => {
     onChange?.(data);
   }, [data]);

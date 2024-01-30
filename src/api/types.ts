@@ -19,6 +19,8 @@ export interface OrdXHistoryParams {
   address?: string;
   ticker?: string;
   network: string;
+  start: number;
+  limit: number;
 }
 
 export interface OrdXHistoryDetailParams {

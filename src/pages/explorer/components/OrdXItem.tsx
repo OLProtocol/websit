@@ -3,10 +3,11 @@ interface Ord2ItemProps {
     tick: string;
     balance: string;
   };
+  onClick?: () => void;
 }
-export const OrdXItem = ({ item }: Ord2ItemProps) => {
+export const OrdXItem = ({ item, onClick }: Ord2ItemProps) => {
   return (
-    <div className='border-[1px] border-gray-200 rounded-lg overflow-hidden'>
+    <div className='border-[1px] border-gray-200 rounded-lg overflow-hidden' onClick={onClick}>
       <div className='h-10 flex justify-between px-2 items-center bg-gray-200'>
         <span className='text-orange-500'>{item.tick}</span>
       </div>

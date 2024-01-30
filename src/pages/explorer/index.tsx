@@ -1,32 +1,40 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Input, Empty } from 'antd';
+import { Alert, Input, Empty } from 'antd';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useGlobalStore } from '@/store';
+import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Ord2FullList } from './components/OrdxFullList';
 import { Ord2SummaryList } from './components/OrdxSummaryList';
-import { Ord2History } from './components/OrdxHistory';
+import { OrdxAddressHistory } from './components/OrdxAddressHistory';
 import { useTranslation } from 'react-i18next';
 
 const { Search } = Input;
 
 export default function Ord2Index() {
+  const { btcHeight } = useGlobalStore((state) => state);
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [address, setAddress] = useState('');
+  const [selectTick, setSelectTick] = useState('');
   const [searchParams] = useSearchParams();
   const q = searchParams.get('q');
   const showAddress = useMemo(() => {
     return address ? true : false;
   }, [address]);
   const doSearch = () => {
+    if (search === '') {
+      return;
+    }
     setAddress(search);
     history.replaceState(null, '', `/#/explorer?q=${search}`);
     // nav(`${ROUTE_PATH.ORDX_INDEX}?q=${search}`);
   };
   useEffect(() => {
     if (search === '') {
+      console.log(search);
       setAddress('');
-      history.replaceState(null, '', `/#/explorer`);
+      // history.replaceState(null, '', `/#/explorer`);
       // nav(`${ROUTE_PATH.ORDX_INDEX}`);
     }
   }, [search]);
@@ -38,7 +46,8 @@ export default function Ord2Index() {
   }, [q]);
   return (
     <div>
-      <div className='w-[40rem] mx-auto pt-20 mb-4'>
+      <BtcHeightAlert />
+      <div className='max-w-[40rem] mx-auto pt-20 mb-4'>
         {!showAddress && (
           <h1 className='text-2xl text-orange-500 text-center mb-8'>
             {t('pages.explorer.subtitle')}
@@ -61,17 +70,18 @@ export default function Ord2Index() {
           </div>
         )}
       </div>
-      <div className='max-w-7xl mx-auto'>
+      <div className='max-w-7xl mx-auto px-4'>
         {showAddress && (
           <>
             <div className='mb-4'>
-              <Ord2SummaryList address={address} />
+              <Ord2SummaryList
+                address={address}
+                onChange={(tick) => setSelectTick(tick)}
+              />
             </div>
-            <div>
-              {/* <SatBox /> */}
-            </div>
+            <div>{/* <SatBox /> */}</div>
             <div className='mb-4'>
-              {/* <Ord2History tick='BTC' address={address} /> */}
+              <OrdxAddressHistory tick={selectTick} address={address} />
             </div>
           </>
         )}

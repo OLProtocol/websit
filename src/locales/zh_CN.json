@@ -26,6 +26,7 @@
     "holders": "持有者",
     "minted": "已铸造",
     "minting": "铸造中",
+    "minted_history": "铸造历史",
     "waiting": "未开始",
     "completed": "已完成",
     "status": "状态",
@@ -33,11 +34,13 @@
     "rank": "排名",
     "quantity": "数量",
     "percentage": "百分比",
-    "satAttr": "特殊聪属性",
+    "satAttr": "聪属性",
     "inscriptionId": "铭文 ID",
+    "inscriptionNumber": "铭文序号",
     "value": "价值",
     "genesisTx": "交易 ID",
-    "select_option": "选择选项"
+    "select_option": "选择选项",
+    "height_alert": "当前 BTC 高度为 "
   },
   "toast": {
     "system_error": "系统异常，请稍后再试。"

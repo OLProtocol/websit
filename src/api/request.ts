@@ -9,7 +9,7 @@ import {
 export const generateUrl = (url: string, network?: string) => {
   return `${VITE_API_HOST}${
     network === 'testnet' ? '/testnet' : ''
-  }/ordx/${url}`;
+  }/${url}`;
 };
 const { VITE_API_HOST } = import.meta.env;
 export const responseParse = async (response) => {
@@ -51,14 +51,37 @@ export const getOrdxSummary = async ({
   );
   return data;
 };
+export const getOrdxTickHolders = async ({
+  tick,
+  network,
+}: Ord2InfoParams) => {
+  const { data } = await axios.get(
+    generateUrl(`v1/indexer/ordx/${tick}/holders`, network),
+  );
+  return data;
+};
 
-export const getOrdxHistory = async ({
+export const getOrdxAddressHistory = async ({
   address,
+  ticker,
+  network,
+  start,
+  limit,
+}: OrdXHistoryParams) => {
+  console.log('getOrdxAddressHistory', address, ticker, network )
+  const { data } = await axios.get(
+    generateUrl(`query-v4/address/${address}/ordx/${ticker}/history?start=${start}&limit=${limit}`, network),
+  );
+  return data;
+};
+export const getOrdxTickHistory = async ({
+  start,
+  limit,
   ticker,
   network,
 }: OrdXHistoryParams) => {
   const { data } = await axios.get(
-    generateUrl(`query-v4/address/${address}/ordx/${ticker}/summary`, network),
+    generateUrl(`query-v4/ordx/${ticker}/history?start=${start}&limit=${limit}`, network),
   );
   return data;
 };
@@ -83,10 +106,21 @@ export const getAvailableUtxos = async ({
   address,
   ticker,
   network,
-}: OrdXHistoryParams) => {
+}: any) => {
   const { data } = await axios.get(
     generateUrl(
       `query-v4/address/${address}/ordx/${ticker}/getAvailableUtxo`,
+      network,
+    ),
+  );
+  return data;
+};
+export const getCurrentHeight = async ({
+  network,
+}: OrdXHistoryParams) => {
+  const { data } = await axios.get(
+    generateUrl(
+      `v1/indexer/ordx/bestheight`,
       network,
     ),
   );
