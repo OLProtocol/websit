@@ -35,7 +35,7 @@ export const Ord2FullList = () => {
   const SatTitle = () => {
     return (
       <a
-        className='flex items-center'
+        className='flex items-center justify-center'
         href='https://docs.ordx.space/ordinalsx/instruct#deploy'
         target='_blank'>
         <span className='mr-1'>{t('common.satAttr')}</span>
@@ -67,13 +67,13 @@ export const Ord2FullList = () => {
       width: 130,
       align: 'center',
     },
-    {
-      title: t('common.deploy_height'),
-      dataIndex: 'deployHeight',
-      key: 'deployHeight',
-      width: 90,
-      align: 'center',
-    },
+    // {
+    //   title: t('common.deploy_height'),
+    //   dataIndex: 'deployHeight',
+    //   key: 'deployHeight',
+    //   width: 90,
+    //   align: 'center',
+    // },
     {
       title: t('common.limit'),
       dataIndex: 'limit',
@@ -113,13 +113,13 @@ export const Ord2FullList = () => {
       width: 60,
       align: 'center',
     },
-    {
-      title: t('common.deploy_time'),
-      dataIndex: 'deploy_time',
-      key: 'deploy_time',
-      width: 140,
-      align: 'center',
-    },
+    // {
+    //   title: t('common.deploy_time'),
+    //   dataIndex: 'deploy_time',
+    //   key: 'deploy_time',
+    //   width: 140,
+    //   align: 'center',
+    // },
 
     // {
     //   title: t('common.rarity'),
