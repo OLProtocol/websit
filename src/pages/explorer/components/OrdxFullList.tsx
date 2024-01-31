@@ -43,7 +43,15 @@ export const Ord2FullList = () => {
       </a>
     );
   };
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<any> = [
+    {
+      title: t('common.index'),
+      dataIndex: 'id',
+      key: 'id',
+      fixed: 'left',
+      width: 100,
+      align: 'center',
+    },
     {
       title: t('common.tick'),
       dataIndex: 'tick',
@@ -88,15 +96,22 @@ export const Ord2FullList = () => {
       width: 100,
       align: 'center',
       render: (_, record) => {
-        const { rarity } = record;
-        const special = rarity !== 'unknow' && rarity !== 'common';
-        return special ? (
-          <Tag color='green' key={rarity}>
-            {rarity}
-          </Tag>
-        ) : (
-          '-'
-        );
+        const { rarity, cn, trz } = record;
+        const attrArr: string[] = []
+        if (rarity !== 'unknow' && rarity !== 'common') {
+          attrArr.push(`rar=${rarity}`)
+        }
+        if (cn !== undefined) {
+          attrArr.push(`cn=${cn}`)
+        }
+        if (trz !== undefined) {
+          attrArr.push(`trz=${trz}`)
+        }
+        let attr = '-';
+        if (attrArr.length > 0) {
+          attr = attrArr.join(';')
+        }
+        return attr;
       },
     },
     {
@@ -194,6 +209,7 @@ export const Ord2FullList = () => {
         }
         const special = item.rarity !== 'unknow' && item.rarity !== 'common';
         return {
+          id: item.id,
           tick: item.ticker,
           block: !special ? `${item.startBlock}-${item.endBlock}` : '-',
           rarity: item.rarity,

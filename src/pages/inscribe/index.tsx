@@ -165,18 +165,19 @@ export default function Inscribe() {
       }
     } else if (ordxData.type === 'deploy') {
       console.log(ordxData);
-      let attr: any = {};
+      const attrArr: string[] = [];
+      if (ordxData.rarityChecked && ordxData.rarity) {
+        attrArr.push(`rar=${ordxData.rarity}`);
+      }
       if (ordxData.cnChecked && ordxData.cn) {
-        attr.cn = ordxData.cn.toString();
+        attrArr.push(`cn=${ordxData.cn}`);
       }
       if (ordxData.trzChecked && ordxData.trz) {
-        attr.trz = ordxData.trz.toString();
+        attrArr.push(`trz=${ordxData.trz}`);
       }
-      if (ordxData.rarityChecked && ordxData.rarity) {
-        attr.rarity = ordxData.rarity.toString();
-      }
-      if (Object.keys(attr).length === 0) {
-        attr = undefined;
+      let attr;
+      if (attrArr.length) {
+        attr = attrArr.join(';');
       }
       list.push({
         type: 'ordx',

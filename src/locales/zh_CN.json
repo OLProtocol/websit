@@ -2,6 +2,7 @@
   "app": "Ordinals X Protocol",
   "common": {
     "tick": "Tick",
+    "index": "序号",
     "amount": "数量",
     "mint": "铸造",
     "deploy": "部署",

@@ -2,6 +2,7 @@
   "app": "Ordinals X Protocol",
   "common": {
     "tick": "Tick",
+    "index": "Index",
     "amount": "Amount",
     "mint": "Mint",
     "deploy": "Deploy",

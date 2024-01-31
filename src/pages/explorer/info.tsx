@@ -25,10 +25,7 @@ export default function Ord2Info() {
   };
   const { data, trigger, isLoading } = useOrdxInfo({ tick, network });
   const detail = useMemo(() => data?.data || {}, [data]);
-  const specialStatus = useMemo(
-    () => detail?.rarity !== 'unknow' && detail?.rarity !== 'common',
-    [detail],
-  );
+
   const status = useMemo(() => {
     let _status;
     if (detail?.rarity !== 'unknow' && detail?.rarity !== 'common') {
@@ -60,6 +57,25 @@ export default function Ord2Info() {
       },
     });
   };
+  const attr = useMemo(() => {
+    const { rarity, cn, trz } = detail || {};
+    const attrArr: string[] = [];
+    if (rarity !== 'unknow' && rarity !== 'common') {
+      attrArr.push(`rar=${rarity}`);
+    }
+    if (cn !== undefined) {
+      attrArr.push(`cn=${cn}`);
+    }
+    if (trz !== undefined) {
+      attrArr.push(`trz=${trz}`);
+    }
+    let _attr;
+    if (attrArr.length > 0) {
+      _attr = attrArr.join(';');
+    }
+    return _attr;
+  }, [detail]);
+  const specialStatus = useMemo(() => !!attr, [attr]);
   const ordinalLink = useMemo(() => {
     if (network === 'testnet') {
       return `https://testnet.ordinals.com/inscription/${detail?.inscriptionId}`;
@@ -164,15 +180,7 @@ export default function Ord2Info() {
             </div> */}
             <div className=''>
               <p className='text-gray-400'>{t('common.satAttr')}:</p>
-              <p className='indent-2'>
-                {specialStatus ? (
-                  <Tag color='green' key={detail?.rarity}>
-                    {detail?.rarity}
-                  </Tag>
-                ) : (
-                  '-'
-                )}
-              </p>
+              <p className='indent-2'>{attr || '-'}</p>
             </div>
             <div className=''>
               <p className='text-gray-400'>{t('common.genesisTx')}:</p>
@@ -191,7 +199,7 @@ export default function Ord2Info() {
               className='w-52'
             />
           </div>
-          {tabText === t('common.holders') &&  tick && (
+          {tabText === t('common.holders') && tick && (
             <div className='p-4'>
               <InfoHolders tick={tick} />
             </div>
