@@ -48,16 +48,14 @@ export const Ord2FullList = () => {
       title: t('common.index'),
       dataIndex: 'id',
       key: 'id',
-      fixed: 'left',
-      width: 100,
+      width: 60,
       align: 'center',
     },
     {
       title: t('common.tick'),
       dataIndex: 'tick',
       key: 'tick',
-      fixed: 'left',
-      width: 100,
+      width: 80,
       align: 'center',
     },
     {
