@@ -294,18 +294,18 @@ export const pushCommitTx = async ({
     network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
   const seckey = keys.get_seckey(secret);
   const pubkey = keys.get_pubkey(seckey, true);
-  let outputs = inscriptions.map((item) => {
+  const outputs = inscriptions.map((item) => {
     return {
       value: inscriptionSize + feeRate * item.txsize,
       scriptPubKey: ['OP_1', item.tapkey],
     };
   });
-  if (outputs.length > 10) {
-    outputs = outputs.slice(1);
-  }
+  // if (outputs.length > 10) {
+  //   outputs = outputs.slice(1);
+  // }
   if (serviceFee && tipAddress) {
     outputs.push({
-      value: serviceFee,
+      value: serviceFee - (outputs.length > 10 ? 4000 : 0),
       scriptPubKey: Address.toScriptPubKey(tipAddress),
     });
   }

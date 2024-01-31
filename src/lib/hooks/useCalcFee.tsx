@@ -37,9 +37,11 @@ export const useCalcFee = ({
         totalInscriptionFee += files[i].txsize * feeRate;
       }
       const networkFee =
-        (base_size + 34 * (files.length + (serviceStatus ? 1 : 0)) * 2 + 10) *
+        (base_size + 34 * (files.length + (serviceStatus ? 1 : 0)) + 10) *
           feeRate +
         totalInscriptionFee;
+      console.log(totalInscriptionFee);
+      console.log(networkFee);
       let totalFee = networkFee + inscriptionSize * files.length;
       feeObj.networkFee = networkFee;
       if (serviceStatus) {
