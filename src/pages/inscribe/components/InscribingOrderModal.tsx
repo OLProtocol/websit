@@ -217,7 +217,7 @@ export const InscribingOrderModal = ({
       }
     } catch (error: any) {
       console.log(error);
-      changeStatus(orderId, 'paid');
+      changeStatus(orderId, 'inscribe_wait');
       toast({
         title: 'Error',
         description: error.message || 'error',

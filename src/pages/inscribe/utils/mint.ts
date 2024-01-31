@@ -7,8 +7,7 @@ import {
   hexToBytes,
   fileToSha256Hex,
 } from './index';
-import { pushBTCpmt } from './mempool';
-import { encode } from 'punycode';
+import { pushBTCpmt } from '@/api';
 interface FileItem {
   mimetype: string;
   show: string;
