@@ -119,27 +119,31 @@ export const InscribingOrderModal = ({
           setFunding(orderId, funding);
           changeStatus(orderId, 'paid');
         }
-        await pollGetTxStatus(fundingTxid, order.network);
-        // await loopTilAddressReceivesMoney(funding.address, order.network, true);
-        const commitData = await pushCommitTx({
-          inscriptions,
-          secret,
-          network,
-          funding,
-          serviceFee: fee.serviceFee,
-          inscriptionSize,
-          feeRate,
-        });
-        changeStatus(orderId, 'commit_success');
-        setCommitTx(orderId, commitData);
-        setActiveStep(1);
-        setTimeout(() => {
-          startInscribe();
-        }, 0);
+        try {
+          await pollGetTxStatus(fundingTxid, order.network);
+          // await loopTilAddressReceivesMoney(funding.address, order.network, true);
+
+          const commitData = await pushCommitTx({
+            inscriptions,
+            secret,
+            network,
+            funding,
+            serviceFee: fee.serviceFee,
+            inscriptionSize,
+            feeRate,
+          });
+          changeStatus(orderId, 'commit_success');
+          setCommitTx(orderId, commitData);
+          setActiveStep(1);
+          setTimeout(() => {
+            startInscribe();
+          }, 0);
+        } catch (error) {
+          changeStatus(orderId, 'commit_error');
+        }
       }
     } catch (error: any) {
       console.error(error);
-      changeStatus(orderId, 'paid_error');
       toast({
         title: 'Error',
         description: error.message || JSON.stringify(error),
@@ -233,7 +237,10 @@ export const InscribingOrderModal = ({
     if (order?.funding && order?.commitTx) {
       setActiveStep(1);
     }
-    if (order?.status === 'inscribe_wait' || order?.status === 'inscribe_fail') {
+    if (
+      order?.status === 'inscribe_wait' ||
+      order?.status === 'inscribe_fail'
+    ) {
       setActiveStep(2);
     }
     if (order?.status === 'inscribe_success') {

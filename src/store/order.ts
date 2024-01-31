@@ -139,7 +139,7 @@ export const useOrderStore = create<OrderState>()(
           const { list, saveLength } = get();
           const paidList = list.filter(
             (item) =>
-              item.status == 'inscribe_fail' || item.status == 'paid_error',
+              item.status == 'inscribe_fail' || item.status == 'commit_error',
           );
           if (paidList.length && saveLength !== paidList.length) {
             await savePaidOrder({ address, list: paidList, network });
