@@ -72,8 +72,6 @@ export const InscribeStepThree = ({
   }, [type, list]);
   const clacFee = useCalcFee({ feeRate, inscriptionSize, files });
   const submit = async () => {
-
-    return;
     const secret = generatePrivateKey();
     const inscriptions = generateInscriptions({
       secret,
@@ -90,6 +88,7 @@ export const InscribeStepThree = ({
       fee: clacFee,
       toAddress: [data.toSingleAddress],
       feeRate,
+      files,
       network,
       inscriptionSize: inscriptionSize,
       status: 'pending',

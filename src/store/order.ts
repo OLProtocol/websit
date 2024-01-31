@@ -12,6 +12,7 @@ export interface OrderItemType {
   inscriptionSize: number;
   toAddress: string[];
   network: string;
+  files: any[];
   fee: {
     serviceFee: number;
     totalFee: number;

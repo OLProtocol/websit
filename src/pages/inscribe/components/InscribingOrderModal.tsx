@@ -181,18 +181,14 @@ export const InscribingOrderModal = ({
       await pollGetTxStatus(commitTx.txid, order.network);
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
-        // await loopTilAddressReceivesMoney(
-        //   inscription.inscriptionAddress,
-        //   order.network,
-        //   true,
-        // );
-        console.log(order)
+
         await waitSomeSeconds(1000);
         if (!inscription.txid) {
           const txid = await inscribe({
             secret: order.secret,
             network: order.network as any,
             inscription,
+            file: inscription.file,
             txid: commitTx.txid,
             serviceFee: order.inscriptions.length === 1 ? fee.serviceFee : 0,
             vout: commitTx.outputs[i].vout,
