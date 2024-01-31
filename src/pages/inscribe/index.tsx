@@ -21,15 +21,13 @@ export default function Inscribe() {
   const { state } = useLocation();
   const toast = useToast();
   useEffect(() => {
-    if (state?.type) {
-      toast({
-        title: '网维护中',
-        status: 'warning',
-        position: 'top',
-        duration: 100000,
-        isClosable: true,
-      });
-    }
+    toast({
+      title: '网维护中',
+      status: 'warning',
+      position: 'top',
+      duration: 100000,
+      isClosable: true,
+    });
   }, []);
 
   const { btcHeight } = useGlobalStore((state) => state);
@@ -317,9 +315,9 @@ export default function Inscribe() {
     }
   }, [state]);
   return (
-    <div></div>
+    <div> 维护中</div>
     // <>
-    //   <BtcHeightAlert/>
+    //   <BtcHeightAlert />
     //   <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
     //     <h1 className='text-lg font-bold text-center mb-4'>
     //       {t('pages.inscribe.title')}
