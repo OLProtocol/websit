@@ -33,7 +33,7 @@ export const useGlobalStore = create<GlobalState>()(
         },
       }),
       {
-        name: 'global-store',
+        name: 'common-store',
       },
     ),
   ),
