@@ -176,7 +176,8 @@ export const InscribingOrderModal = ({
       console.log('order', order);
       const { commitTx, fee } = order;
       let finishedNum = 0;
-      await pollGetTxStatus(commitTx.txid, order.network);
+      const commitTxid = (commitTx.txid as any)?.data || commitTx.txid;
+      await pollGetTxStatus(commitTxid, order.network);
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
 
@@ -187,7 +188,7 @@ export const InscribingOrderModal = ({
             network: order.network as any,
             inscription,
             file: inscription.file,
-            txid: commitTx.txid,
+            txid: commitTxid,
             serviceFee: order.inscriptions.length === 1 ? fee.serviceFee : 0,
             vout: commitTx.outputs[i].vout,
             amount: commitTx.outputs[i].amount,
