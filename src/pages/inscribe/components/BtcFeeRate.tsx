@@ -41,7 +41,7 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
     const defaultFee = network === 'testnet' ? 1 : 50;
     setCustomValue(feeRateData?.fastestFee || defaultFee);
     setEconomyValue(feeRateData?.hourFee || defaultFee);
-    setNormalValue(feeRateData.halfHourFee || defaultFee);
+    setNormalValue(feeRateData?.halfHourFee || defaultFee);
     setMinFee(feeRateData?.minimumFee || defaultFee);
     onChange?.(feeRateData?.halfHourFee || defaultFee);
     setType('Normal');

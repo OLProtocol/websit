@@ -11,6 +11,7 @@ import {
 import { Card, Steps, Divider, Button, Tag } from 'antd';
 import { InscribeOrderItem } from './InscribeOrderItem';
 import { useUnisat, useUnisatConnect } from '@/lib/hooks/unisat';
+import { pollGetTxStatus } from '@/api';
 import { BusButton } from '@/components/BusButton';
 import { useOrderStore, OrderItemType } from '@/store';
 import {
@@ -98,9 +99,10 @@ export const InscribingOrderModal = ({
         }, 0);
       } else {
         let funding = order.funding;
+        let fundingTxid = funding?.txid || '';
         if (!funding) {
           const fundingData = getFundingAddress(secret, network);
-          const txid = await unisat.sendBitcoin(
+          fundingTxid = await unisat.sendBitcoin(
             fundingData.address,
             fee.totalFee,
             {
@@ -108,15 +110,15 @@ export const InscribingOrderModal = ({
             },
           );
           funding = {
-            txid,
+            txid: fundingTxid,
             vout: 0,
             amount: fee.totalFee,
             ...fundingData,
           };
           setFunding(orderId, funding);
         }
-
-        await loopTilAddressReceivesMoney(funding.address, order.network, true);
+        await pollGetTxStatus(fundingTxid, order.network);
+        // await loopTilAddressReceivesMoney(funding.address, order.network, true);
         const commitData = await pushCommitTx({
           inscriptions,
           secret,
@@ -152,13 +154,13 @@ export const InscribingOrderModal = ({
     }
     setLoading(true);
     setPayStatus(true);
-    if (order.inscriptions.length === 1) {
-      await loopTilAddressReceivesMoney(
-        order.inscriptions[0].inscriptionAddress,
-        order.network,
-        true,
-      );
-    }
+    // if (order.inscriptions.length === 1) {
+    //   await loopTilAddressReceivesMoney(
+    //     order.inscriptions[0].inscriptionAddress,
+    //     order.network,
+    //     true,
+    //   );
+    // }
     setActiveStep(2);
     changeStatus(orderId, 'inscribe_wait');
     setTimeout(() => {
@@ -166,6 +168,7 @@ export const InscribingOrderModal = ({
     }, 0);
     setLoading(false);
   };
+
   const inscribeHandler = async () => {
     if (!(order && order.commitTx)) {
       return;
@@ -175,14 +178,15 @@ export const InscribingOrderModal = ({
       console.log('order', order);
       const { commitTx, fee } = order;
       let finishedNum = 0;
+      await pollGetTxStatus(commitTx.txid, order.network);
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
-        await loopTilAddressReceivesMoney(
-          inscription.inscriptionAddress,
-          order.network,
-          true,
-        );
-        await waitSomeSeconds(2000);
+        // await loopTilAddressReceivesMoney(
+        //   inscription.inscriptionAddress,
+        //   order.network,
+        //   true,
+        // );
+        await waitSomeSeconds(1000);
         const txid = await inscribe({
           secret: order.secret,
           network: order.network as any,
@@ -257,11 +261,10 @@ export const InscribingOrderModal = ({
   //   return address;
   // }, [order?.secret, order?.network]);
   const fundingAddressHref = (address: string) => {
-
     return `https://mempool.space${
       order?.network === 'testnet' ? '/testnet' : ''
     }/address/${address}`;
-  }
+  };
   useEffect(() => {
     checkStatus();
   }, []);
@@ -399,18 +402,17 @@ export const InscribingOrderModal = ({
                     {order?.secret}
                   </div>
                 </div>
-                {
-                  order?.inscriptions?.map(item => <div className='flex justify-between'>
-                  <div>{t('common.address')}</div>
+                {order?.inscriptions?.map((item) => (
+                  <div className='flex justify-between'>
+                    <div>{t('common.address')}</div>
                     <a
                       className='text-blue-500 underline ml-4'
                       href={fundingAddressHref(item.inscriptionAddress)}
                       target='_blank'>
                       {hideStr(item.inscriptionAddress, 10)}
                     </a>
-                </div>)
-                }
-                
+                  </div>
+                ))}
               </Card>
             </>
           )}

@@ -30,3 +30,7 @@ export interface OrdXHistoryDetailParams {
   start?: number;
   limit?: number;
 }
+export interface TxStatusParams {
+  txid: string;
+  network: string;
+}
