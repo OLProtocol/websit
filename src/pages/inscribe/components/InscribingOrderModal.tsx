@@ -119,28 +119,6 @@ export const InscribingOrderModal = ({
           setFunding(orderId, funding);
           changeStatus(orderId, 'paid');
         }
-        try {
-          await pollGetTxStatus(fundingTxid, order.network);
-          // await loopTilAddressReceivesMoney(funding.address, order.network, true);
-
-          const commitData = await pushCommitTx({
-            inscriptions,
-            secret,
-            network,
-            funding,
-            serviceFee: fee.serviceFee,
-            inscriptionSize,
-            feeRate,
-          });
-          changeStatus(orderId, 'commit_success');
-          setCommitTx(orderId, commitData);
-          setActiveStep(1);
-          setTimeout(() => {
-            startInscribe();
-          }, 0);
-        } catch (error) {
-          changeStatus(orderId, 'commit_error');
-        }
       }
     } catch (error: any) {
       console.error(error);
@@ -159,14 +137,70 @@ export const InscribingOrderModal = ({
     if (!order || payStatus) {
       return;
     }
-    setLoading(true);
-    setPayStatus(true);
-    setActiveStep(2);
-    changeStatus(orderId, 'inscribe_wait');
-    setTimeout(() => {
-      inscribeHandler();
-    }, 0);
-    setLoading(false);
+    console.log(order);
+    const {
+      inscriptions,
+      funding,
+      feeRate,
+      inscriptionSize,
+      secret,
+      network,
+      fee,
+    } = order;
+    if (inscriptions.length !== 1 && funding) {
+      try {
+        await pollGetTxStatus(funding.txid, order.network);
+        // await loopTilAddressReceivesMoney(funding.address, order.network, true);
+        const fundingData = getFundingAddress(secret, network);
+        const _funding = {
+          ...funding,
+          ...fundingData,
+        };
+        const commitData = await pushCommitTx({
+          inscriptions,
+          secret,
+          network,
+          funding: _funding,
+          serviceFee: fee.serviceFee,
+          inscriptionSize,
+          feeRate,
+        });
+        changeStatus(orderId, 'commit_success');
+        setCommitTx(orderId, commitData);
+        setActiveStep(1);
+        setTimeout(() => {
+          startInscribe();
+        }, 0);
+        setLoading(true);
+        setPayStatus(true);
+        setActiveStep(2);
+        changeStatus(orderId, 'inscribe_wait');
+        setTimeout(() => {
+          inscribeHandler();
+        }, 0);
+        setLoading(false);
+      } catch (error: any) {
+        console.log(error);
+        changeStatus(orderId, 'commit_error');
+        toast({
+          title: 'Error',
+          description: error.message || JSON.stringify(error),
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+          position: 'top',
+        });
+      }
+    } else {
+      setLoading(true);
+      setPayStatus(true);
+      setActiveStep(2);
+      changeStatus(orderId, 'inscribe_wait');
+      setTimeout(() => {
+        inscribeHandler();
+      }, 0);
+      setLoading(false);
+    }
   };
 
   const inscribeHandler = async () => {
@@ -231,10 +265,13 @@ export const InscribingOrderModal = ({
   };
   const checkStatus = () => {
     console.log(order);
-    if (order?.status === 'paid' || order?.status === 'commit_success') {
+    if (order?.status === 'paid') {
       setActiveStep(1);
     }
-    if (order?.funding && order?.commitTx) {
+    if (
+      (order?.funding && order?.commitTx) ||
+      order?.status === 'commit_error'
+    ) {
       setActiveStep(1);
     }
     if (

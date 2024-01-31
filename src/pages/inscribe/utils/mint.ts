@@ -7,7 +7,7 @@ import {
   hexToBytes,
   fileToSha256Hex,
 } from './index';
-import { pushBTCpmt } from '@/api';
+import { pollPushBTCpmt } from '@/api';
 interface FileItem {
   mimetype: string;
   show: string;
@@ -276,7 +276,7 @@ export const inscribe = async ({
   console.log('isValid', isValid);
   console.log('Your txhex:', Tx.encode(txdata).hex);
   // const result = await window.unisat.pushTx({ rawtx: Tx.encode(txdata).hex });
-  const result = await pushBTCpmt(Tx.encode(txdata).hex, network);
+  const result = await pollPushBTCpmt(Tx.encode(txdata).hex, network);
   return result;
 };
 
@@ -332,7 +332,7 @@ export const pushCommitTx = async ({
   console.log('commit Tx isValid', isValid);
   const rawtx = Tx.encode(commitTxData).hex;
   console.log('Your Commit Tx txhex:', rawtx);
-  const txid = await pushBTCpmt(rawtx, network);
+  const txid = await pollPushBTCpmt(rawtx, network);
   const result = {
     txid,
     outputs: outputs.map((item, i) => {

@@ -22,3 +22,39 @@ export const pushBTCpmt = async (rawtx, network) => {
 
   return txid;
 };
+
+export async function pollPushBTCpmt(
+  rawtx,
+  network,
+  delay = 2000,
+  retryCount = 10,
+) {
+  try {
+    const result = await pushBTCpmt(rawtx, network);
+    if (result) {
+      return result;
+    } else if (retryCount > 0) {
+      console.log('pushBTCpmt returned no result, retrying...');
+      return new Promise((resolve) => {
+        setTimeout(
+          () => resolve(pollPushBTCpmt(rawtx, network, delay, retryCount - 1)),
+          delay,
+        );
+      });
+    } else {
+      throw new Error('Maximum retry attempts exceeded');
+    }
+  } catch (error) {
+    if (retryCount > 0) {
+      console.error('pushBTCpmt failed, retrying...');
+      return new Promise((resolve) => {
+        setTimeout(
+          () => resolve(pollPushBTCpmt(rawtx, network, delay, retryCount - 1)),
+          delay,
+        );
+      });
+    } else {
+      throw new Error('Maximum retry attempts exceeded');
+    }
+  }
+}
