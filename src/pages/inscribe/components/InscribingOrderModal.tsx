@@ -400,31 +400,33 @@ export const InscribingOrderModal = ({
                   {order?.secret}
                 </div>
               </div>
-              {order?.inscriptions?.map((item) => (
-                <div className='flex justify-between'>
-                  <div>{t('common.address')}</div>
-                  <a
-                    className='text-blue-500 underline ml-4'
-                    href={fundingAddressHref(item.inscriptionAddress)}
-                    target='_blank'>
-                    {hideStr(item.inscriptionAddress, 10)}
-                  </a>
-                </div>
-              ))}
+              <div className='flex justify-between'>
+                <div>{t('common.address')}</div>
+                <a
+                  className='text-blue-500 underline ml-4'
+                  href={fundingAddressHref(
+                    order?.inscriptions?.[0].inscriptionAddress,
+                  )}
+                  target='_blank'>
+                  {hideStr(order?.inscriptions?.[0].inscriptionAddress, 10)}
+                </a>
+              </div>
             </Card>
           </>
           <Divider children={t('pages.inscribe.pay.files')} />
-          <VStack className='mb-2' spacing='10px'>
-            {order?.inscriptions?.map((item, index) => (
-              <InscribeOrderItem
-                key={index}
-                label={index + 1}
-                status={order?.status}
-                value={item.file.show}
-                address={order.toAddress[0]}
-              />
-            ))}
-          </VStack>
+          <div className='max-h-[20rem] overflow-y-auto'>
+            <VStack className='mb-2' spacing='10px'>
+              {order?.inscriptions?.map((item, index) => (
+                <InscribeOrderItem
+                  key={index}
+                  label={index + 1}
+                  status={order?.status}
+                  value={item.file.show}
+                  address={order.toAddress[0]}
+                />
+              ))}
+            </VStack>
+          </div>
           {order?.createAt && (
             <div className='text-right text-sm text-gray-400'>
               {t('pages.inscribe.pay.created_text')}{' '}

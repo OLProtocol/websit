@@ -42,6 +42,7 @@ export const InscribeStepThree = ({
     toSingleAddress: currentAccount,
     toMultipleAddresses: '',
   });
+  const [loading, setLoading] = useState(false);
   const { add: addOrder, changeStatus } = useOrderStore((state) => state);
   const [fundingData, { set: setFuningData }] = useMap<{
     seckey: any;
@@ -72,6 +73,8 @@ export const InscribeStepThree = ({
   }, [type, list]);
   const clacFee = useCalcFee({ feeRate, inscriptionSize, files });
   const submit = async () => {
+    if (loading) return;
+    setLoading(true);
     const secret = generatePrivateKey();
     const inscriptions = generateInscriptions({
       secret,
@@ -96,6 +99,7 @@ export const InscribeStepThree = ({
     };
     addOrder(order);
     onAddOrder?.(order);
+    setLoading(false);
   };
   useEffect(() => {
     if (currentAccount) {
@@ -167,7 +171,7 @@ export const InscribeStepThree = ({
       </div>
       <div className='w-60 mx-auto'>
         <BusButton>
-          <Button size='md' disabled colorScheme='blue' width='100%' onClick={submit}>
+          <Button size='md' isLoading={loading} colorScheme='blue' width='100%' onClick={submit}>
             {t('buttons.submit_payment')}
           </Button>
         </BusButton>
