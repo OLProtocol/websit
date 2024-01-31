@@ -140,7 +140,7 @@ export default function Home() {
               我们已经在2024年1月25日正式部署了协议的第一个Token：Pearl。(<span onClick={toMint} className='underline underline-offset-4 text-yellow-500 cursor-pointer'>去铸造</span>)
             </section>
             <section className='text-base text-white'>
-              大概在2024年2月1日前后开启fair mint，持续到2月5日左右结束（由区块高度828200-828800决定有效的mint时间）。
+              大概在2024年1月31日中午开启fair mint，持续到2月5日左右结束（由区块高度828200-828800决定有效的mint时间）。
               这是ordx协议的第一个token，也是一个meme币，仅供试验，没有价值，不要FOMO。
             </section>
             {/* <section className='text-base text-white'>

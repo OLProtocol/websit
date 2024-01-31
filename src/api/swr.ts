@@ -141,6 +141,9 @@ export const useBtcHeight = (network: 'testnet' | 'main') => {
   const { data, error, isLoading } = useSWR(`height-${network}`, () =>
     // request.getCurrentHeight({ network }),
     fetchTipHeight(network),
+    {
+      refreshInterval: 1000 * 60 * 5,
+    }
   );
   return {
     data,
