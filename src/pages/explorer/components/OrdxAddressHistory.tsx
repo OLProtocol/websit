@@ -57,7 +57,7 @@ export const OrdxAddressHistory = ({ tick, address }: Ord2HistoryProps) => {
         const href =
           network === 'testnet'
             ? `https://mempool.space/testnet/tx/${txid}`
-            : `https://mempool.space/tx/${t}`;
+            : `https://mempool.space/tx/${txid}`;
         return (
           <a
             className='text-blue-500 cursor-pointer'
