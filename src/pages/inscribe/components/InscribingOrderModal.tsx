@@ -281,7 +281,14 @@ export const InscribingOrderModal = ({
       setActiveStep(2);
     }
     if (order?.status === 'inscribe_success') {
-      setActiveStep(3);
+      if (
+        order?.inscriptions?.length > 1 &&
+        order?.inscriptions?.some((v) => !v.txid)
+      ) {
+        setActiveStep(2);
+      } else {
+        setActiveStep(3);
+      }
     }
   };
   const commitTxHref = useMemo(() => {
