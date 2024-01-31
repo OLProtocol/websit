@@ -41,7 +41,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTE_PATH.INSCRIBE,
-        // element: <Inscribe />,
+        element: <Inscribe />,
       },
       {
         path: ROUTE_PATH.INSCRIBE_TEST,
