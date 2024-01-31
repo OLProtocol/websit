@@ -147,13 +147,22 @@ export const postData = async (url, data) => {
 };
 export const pushBTCpmt = async (rawtx, network) => {
   let txid;
-
-  if (network == 'main') {
-    console.log('USING BLOCKSTREAM FOR PUSHING INSTEAD');
-    txid = await postData('https://blockstream.info/api/tx', rawtx);
-  } else {
-    console.log('USING MEMPOOL FOR PUSHING INSTEAD');
-    txid = await postData('https://blockstream.info/testnet/api/tx', rawtx);
+  try {
+    if (network == 'main') {
+      console.log('USING BLOCKSTREAM FOR PUSHING INSTEAD');
+      txid = await postData('https://blockstream.info/api/tx', rawtx);
+      if (txid.indexOf('Transaction already in block chain') > -1) {
+        return true;
+      }
+    } else {
+      console.log('USING MEMPOOL FOR PUSHING INSTEAD');
+      txid = await postData('https://blockstream.info/testnet/api/tx', rawtx);
+      if (txid.indexOf('Transaction already in block chain') > -1) {
+        return true;
+      }
+    }
+  } catch (error) {
+    console.log(error);
   }
 
   return txid;
