@@ -187,18 +187,20 @@ export const InscribingOrderModal = ({
         //   true,
         // );
         await waitSomeSeconds(1000);
-        const txid = await inscribe({
-          secret: order.secret,
-          network: order.network as any,
-          inscription,
-          txid: commitTx.txid,
-          serviceFee: order.inscriptions.length === 1 ? fee.serviceFee : 0,
-          vout: commitTx.outputs[i].vout,
-          amount: commitTx.outputs[i].amount,
-          toAddress: order.toAddress[0],
-          inscribeFee: order.inscriptionSize,
-        });
-        addTxidToInscription(order.orderId, i, txid);
+        if (!inscription.txid) {
+          const txid = await inscribe({
+            secret: order.secret,
+            network: order.network as any,
+            inscription,
+            txid: commitTx.txid,
+            serviceFee: order.inscriptions.length === 1 ? fee.serviceFee : 0,
+            vout: commitTx.outputs[i].vout,
+            amount: commitTx.outputs[i].amount,
+            toAddress: order.toAddress[0],
+            inscribeFee: order.inscriptionSize,
+          });
+          addTxidToInscription(order.orderId, i, txid);
+        }
         changeStatus(orderId, 'inscribe_success');
         changeInscriptionStatus(order.orderId, i, 'inscribe_success');
         toast({
@@ -392,30 +394,28 @@ export const InscribingOrderModal = ({
             totalFee={order?.fee.totalFee}
             networkFee={order?.fee.networkFee}
           />
-          {activeStep > 1 && (
-            <>
-              <Divider children={t('common.account')} />
-              <Card title='Funding Account' size='small'>
-                <div className='flex justify-between items-center mb-4'>
-                  <div>{t('common.secret')}</div>
-                  <div className='text-sm text-gray-500 break-all ml-4'>
-                    {order?.secret}
-                  </div>
+          <>
+            <Divider children={t('common.account')} />
+            <Card title='Funding Account' size='small'>
+              <div className='flex justify-between items-center mb-4'>
+                <div>{t('common.secret')}</div>
+                <div className='text-sm text-gray-500 break-all ml-4'>
+                  {order?.secret}
                 </div>
-                {order?.inscriptions?.map((item) => (
-                  <div className='flex justify-between'>
-                    <div>{t('common.address')}</div>
-                    <a
-                      className='text-blue-500 underline ml-4'
-                      href={fundingAddressHref(item.inscriptionAddress)}
-                      target='_blank'>
-                      {hideStr(item.inscriptionAddress, 10)}
-                    </a>
-                  </div>
-                ))}
-              </Card>
-            </>
-          )}
+              </div>
+              {order?.inscriptions?.map((item) => (
+                <div className='flex justify-between'>
+                  <div>{t('common.address')}</div>
+                  <a
+                    className='text-blue-500 underline ml-4'
+                    href={fundingAddressHref(item.inscriptionAddress)}
+                    target='_blank'>
+                    {hideStr(item.inscriptionAddress, 10)}
+                  </a>
+                </div>
+              ))}
+            </Card>
+          </>
           <Divider children={t('pages.inscribe.pay.files')} />
           <VStack className='mb-2' spacing='10px'>
             {order?.inscriptions?.map((item, index) => (

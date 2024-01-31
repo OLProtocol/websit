@@ -140,7 +140,7 @@ export const postData = async (url, data) => {
     method: 'POST',
     body: data,
   });
-  if (!response.ok) throw new Error(response.statusText)
+  if (!response.ok) throw new Error(response.statusText);
   const res = await response.text();
   console.log(res);
   return res;
@@ -148,30 +148,12 @@ export const postData = async (url, data) => {
 export const pushBTCpmt = async (rawtx, network) => {
   let txid;
 
-  try {
-    txid = await postData(
-      'https://mempool.space/' + network + '/api/tx',
-      rawtx,
-    );
-
-    if (
-      (txid.toLowerCase().includes('rpc error') ||
-        txid.toLowerCase().includes('too many requests') ||
-        txid.toLowerCase().includes('bad request')) &&
-      !txid.includes('descendant')
-    ) {
-      if (network == 'main') {
-        console.log('USING BLOCKSTREAM FOR PUSHING INSTEAD');
-        txid = await postData('https://blockstream.info/api/tx', rawtx);
-      }
-    }
-  } catch (e) {
-    console.error(e);
-    if (network == 'main') {
-      console.log('USING BLOCKSTREAM FOR PUSHING INSTEAD');
-      txid = await postData('https://blockstream.info/api/tx', rawtx);
-    }
-    throw e;
+  if (network == 'main') {
+    console.log('USING BLOCKSTREAM FOR PUSHING INSTEAD');
+    txid = await postData('https://blockstream.info/api/tx', rawtx);
+  } else {
+    console.log('USING MEMPOOL FOR PUSHING INSTEAD');
+    txid = await postData('https://blockstream.info/testnet/api/tx', rawtx);
   }
 
   return txid;

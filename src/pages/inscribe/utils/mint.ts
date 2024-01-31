@@ -255,6 +255,7 @@ export const inscribe = async ({
   // Add the signature to our witness data for input 0, along with the script
   // and merkle proof (cblock) for the script.
   txdata.vin[0].witness = [sig, script, cblock];
+  console.log('Your txhex:', txdata);
   const isValid = Signer.taproot.verify(txdata, 0, { pubkey, throws: true });
   console.log('isValid', isValid);
   console.log('Your txhex:', Tx.encode(txdata).hex);
