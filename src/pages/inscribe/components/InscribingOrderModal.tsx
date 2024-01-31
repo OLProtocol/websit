@@ -186,6 +186,7 @@ export const InscribingOrderModal = ({
         //   order.network,
         //   true,
         // );
+        console.log(order)
         await waitSomeSeconds(1000);
         if (!inscription.txid) {
           const txid = await inscribe({

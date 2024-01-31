@@ -72,6 +72,8 @@ export const InscribeStepThree = ({
   }, [type, list]);
   const clacFee = useCalcFee({ feeRate, inscriptionSize, files });
   const submit = async () => {
+
+    return;
     const secret = generatePrivateKey();
     const inscriptions = generateInscriptions({
       secret,
@@ -166,7 +168,7 @@ export const InscribeStepThree = ({
       </div>
       <div className='w-60 mx-auto'>
         <BusButton>
-          <Button size='md' colorScheme='blue' width='100%' onClick={submit}>
+          <Button size='md' disabled colorScheme='blue' width='100%' onClick={submit}>
             {t('buttons.submit_payment')}
           </Button>
         </BusButton>
