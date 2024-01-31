@@ -15,11 +15,9 @@ import { pollGetTxStatus } from '@/api';
 import { BusButton } from '@/components/BusButton';
 import { useOrderStore, OrderItemType } from '@/store';
 import {
-  loopTilAddressReceivesMoney,
   inscribe,
   pushCommitTx,
   getFundingAddress,
-  getAddressBySescet,
   waitSomeSeconds,
 } from '../utils';
 import { useEffect, useMemo, useState } from 'react';
