@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useOrderStore, OrderItemType } from '@/store';
-import { Table} from 'antd';
+import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { useUnisatConnect } from '@/lib/hooks';
 
 interface LocalOrderListProps {
   onOrderClick?: (item: OrderItemType) => void;
@@ -15,7 +16,8 @@ interface DataType {
 }
 export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
   const { t } = useTranslation();
-  const { list } = useOrderStore((state) => state);
+  const { currentAccount, network } = useUnisatConnect();
+  const { list, savePaidOrder } = useOrderStore((state) => state);
   const clickHandler = ({ orderId }) => {
     const item = list.find((v) => v.orderId === orderId);
     if (item) {
@@ -45,6 +47,9 @@ export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
       },
     },
   ];
+  useEffect(() => {
+    savePaidOrder(currentAccount, network);
+  }, [list]);
   const dataSource: DataType[] = useMemo(
     () =>
       list.map((item) => ({

@@ -119,6 +119,17 @@ export const getCurrentHeight = async ({ network }: OrdXHistoryParams) => {
   );
   return data;
 };
+export const savePaidOrder = async ({ address, list, network }: any) => {
+  const key = `paidOrder-${address}`;
+  const { data } = await axios.post(
+    generateUrl(`v1/indexer/tx/putkv/${key}`, network),
+    {
+      key,
+      content: JSON.stringify(list),
+    },
+  );
+  return data;
+};
 export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
   const { data } = await axios.get(
     `https://blockstream.info/${

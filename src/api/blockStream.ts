@@ -9,7 +9,7 @@ export const pushBTCpmt = async (rawtx, network) => {
       }api/tx`,
       { data: rawtx, method: 'POST' },
     );
-    txid = result.data;
+    txid = result?.data;
   } catch (error: any) {
     if (
       error?.response?.data?.indexOf('Transaction already in block chain') > -1

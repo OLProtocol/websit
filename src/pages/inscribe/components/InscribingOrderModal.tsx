@@ -20,6 +20,7 @@ import {
   getFundingAddress,
   waitSomeSeconds,
 } from '../utils';
+import { savePaidOrder } from '@/api';
 import { useEffect, useMemo, useState } from 'react';
 import { _0n } from '@cmdcode/crypto-utils/dist/const';
 import { hideStr } from '@/lib/utils';
@@ -46,6 +47,7 @@ export const InscribingOrderModal = ({
     { title: t('pages.inscribe.pay.step_three.name') },
     { title: t('pages.inscribe.pay.step_four.name') },
   ];
+  const { currentAccount } = useUnisatConnect();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const {
@@ -55,6 +57,7 @@ export const InscribingOrderModal = ({
     findOrder,
     changeInscriptionStatus,
     setFunding,
+    savePaidOrder,
   } = useOrderStore((state) => state);
 
   const unisat = useUnisat();
@@ -114,6 +117,7 @@ export const InscribingOrderModal = ({
             ...fundingData,
           };
           setFunding(orderId, funding);
+          changeStatus(orderId, 'paid');
         }
         await pollGetTxStatus(fundingTxid, order.network);
         // await loopTilAddressReceivesMoney(funding.address, order.network, true);
@@ -126,7 +130,7 @@ export const InscribingOrderModal = ({
           inscriptionSize,
           feeRate,
         });
-        changeStatus(orderId, 'paid');
+        changeStatus(orderId, 'commit_success');
         setCommitTx(orderId, commitData);
         setActiveStep(1);
         setTimeout(() => {
@@ -135,6 +139,7 @@ export const InscribingOrderModal = ({
       }
     } catch (error: any) {
       console.error(error);
+      changeStatus(orderId, 'paid_error');
       toast({
         title: 'Error',
         description: error.message || JSON.stringify(error),
@@ -152,13 +157,6 @@ export const InscribingOrderModal = ({
     }
     setLoading(true);
     setPayStatus(true);
-    // if (order.inscriptions.length === 1) {
-    //   await loopTilAddressReceivesMoney(
-    //     order.inscriptions[0].inscriptionAddress,
-    //     order.network,
-    //     true,
-    //   );
-    // }
     setActiveStep(2);
     changeStatus(orderId, 'inscribe_wait');
     setTimeout(() => {
@@ -215,8 +213,7 @@ export const InscribingOrderModal = ({
         onFinished?.();
       }
     } catch (error: any) {
-      console.log(error);
-      changeStatus(orderId, 'inscribe_wait');
+      changeStatus(orderId, 'inscribe_fail');
       toast({
         title: 'Error',
         description: error.message || 'error',
@@ -230,13 +227,13 @@ export const InscribingOrderModal = ({
   };
   const checkStatus = () => {
     console.log(order);
-    if (order?.status === 'paid') {
+    if (order?.status === 'paid' || order?.status === 'commit_success') {
       setActiveStep(1);
     }
     if (order?.funding && order?.commitTx) {
       setActiveStep(1);
     }
-    if (order?.status === 'inscribe_wait') {
+    if (order?.status === 'inscribe_wait' || order?.status === 'inscribe_fail') {
       setActiveStep(2);
     }
     if (order?.status === 'inscribe_success') {

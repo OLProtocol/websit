@@ -1,8 +1,17 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { InscribeType } from '@/types';
+import { savePaidOrder } from '@/api';
 
-type OrderStatus = 'pending' | 'paid'|  'inscribe_wait' |  'inscribe_success' | 'inscribe_fail';
+type OrderStatus =
+  | 'pending'
+  | 'paid'
+  | 'paid_error'
+  | 'commit_success'
+  | 'commit_error'
+  | 'inscribe_wait'
+  | 'inscribe_success'
+  | 'inscribe_fail';
 export interface OrderItemType {
   orderId: string;
   type: InscribeType;
@@ -38,6 +47,7 @@ export interface OrderItemType {
 }
 interface OrderState {
   list: OrderItemType[];
+  saveLength: number;
   setList: (l: OrderItemType[]) => void;
   add: (item: OrderItemType) => void;
   addTxidToInscription: (orderId: string, index: number, txid: string) => void;
@@ -47,6 +57,7 @@ interface OrderState {
     status: OrderStatus,
   ) => void;
   changeStatus: (orderId: string, status: OrderStatus) => void;
+  savePaidOrder: (address: string, network: string) => void;
   setFunding: (orderId: string, funding: any) => void;
   setCommitTx: (orderId: string, tx: any) => void;
   findOrder: (orderId: string) => OrderItemType | undefined;
@@ -58,6 +69,7 @@ export const useOrderStore = create<OrderState>()(
     persist(
       (set, get) => ({
         list: [],
+        saveLength: 0,
         setList: (l) => {
           set({
             list: l,
@@ -123,6 +135,19 @@ export const useOrderStore = create<OrderState>()(
             list,
           });
         },
+        savePaidOrder: async (address, network) => {
+          const { list, saveLength } = get();
+          const paidList = list.filter(
+            (item) =>
+              item.status == 'inscribe_fail' || item.status == 'paid_error',
+          );
+          if (paidList.length && saveLength !== paidList.length) {
+            await savePaidOrder({ address, list: paidList, network });
+            set({
+              saveLength: paidList.length,
+            });
+          }
+        },
         findOrder: (orderId) => {
           const list = get().list;
           const order = list.find((item) => item.orderId === orderId);
@@ -131,6 +156,7 @@ export const useOrderStore = create<OrderState>()(
         reset: () => {
           set({
             list: [],
+            saveLength: 0,
           });
         },
       }),
