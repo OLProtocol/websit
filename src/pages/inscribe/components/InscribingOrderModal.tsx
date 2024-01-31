@@ -363,7 +363,9 @@ export const InscribingOrderModal = ({
                       </div>
                       <a
                         className='text-blue-500 underline'
-                        href={`https://mempool.space/testnet/tx/${item.txid}`}
+                        href={`https://mempool.space${
+                          order.network === 'testnet' ? '/testnet' : ''
+                        }/tx/${item.txid}`}
                         target='_blank'>
                         {hideStr(item.txid, 10)}
                       </a>
