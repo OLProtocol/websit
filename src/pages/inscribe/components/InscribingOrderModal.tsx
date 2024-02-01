@@ -8,7 +8,7 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { Card, Steps, Divider, Button, Tag } from 'antd';
+import { Card, Steps, Divider, Button, Tag, Progress } from 'antd';
 import { InscribeOrderItem } from './InscribeOrderItem';
 import { useUnisat, useUnisatConnect } from '@/lib/hooks/unisat';
 import { pollGetTxStatus } from '@/api';
@@ -234,7 +234,6 @@ export const InscribingOrderModal = ({
         changeInscriptionStatus(order.orderId, i, 'inscribe_success');
         finishedNum += 1;
       }
-      console.log(finishedNum);
       if (finishedNum === order.inscriptions.length) {
         changeStatus(orderId, 'inscribe_success');
         setActiveStep(3);
@@ -263,6 +262,13 @@ export const InscribingOrderModal = ({
     }
     setLoading(false);
   };
+  const progressPercent = useMemo(() => {
+    const successNum =
+      order?.inscriptions?.filter((v) => v.status === 'inscribe_success')
+        .length || 0;
+    const total = order?.inscriptions?.length || 0;
+    return Math.floor((successNum / total) * 100);
+  }, [order?.inscriptions]);
   const checkStatus = () => {
     console.log(order);
     if (order?.status === 'paid') {
@@ -287,26 +293,15 @@ export const InscribingOrderModal = ({
       ) {
         setActiveStep(2);
       } else {
-        setActiveStep(3);
+        setActiveStep(2);
       }
     }
   };
-  const commitTxHref = useMemo(() => {
-    if (!order?.commitTx) {
+
+  const fundingAddressHref = (address?: string) => {
+    if (!address) {
       return '';
     }
-    const { txid } = order.commitTx;
-    return `https://mempool.space/testnet/tx/${txid}`;
-  }, [order?.commitTx]);
-  // const fundingAddress = useMemo(() => {
-  //   if (!order?.secret) {
-  //     return '';
-  //   }
-  //   const address  = getAddressBySescet(order.secret, order.network);
-  //   console.log(address);
-  //   return address;
-  // }, [order?.secret, order?.network]);
-  const fundingAddressHref = (address: string) => {
     return `https://mempool.space${
       order?.network === 'testnet' ? '/testnet' : ''
     }/address/${address}`;
@@ -401,7 +396,7 @@ export const InscribingOrderModal = ({
                     {t('pages.inscribe.pay.step_four.des')}
                   </div>
                 </div>
-                <div>
+                <div className='max-h-[20rem] overflow-y-auto'>
                   {order?.inscriptions?.map((item, index) => (
                     <div key={index} className='flex justify-between mb-4'>
                       <div>
@@ -439,6 +434,15 @@ export const InscribingOrderModal = ({
             totalFee={order?.fee.totalFee}
             networkFee={order?.fee.networkFee}
           />
+          {activeStep > 1 && (
+            <>
+              <Divider children={'进度'} />
+              <div>
+                <Progress percent={progressPercent} status='active' />
+              </div>
+            </>
+          )}
+
           <>
             <Divider children={t('common.account')} />
             <Card title='Funding Account' size='small'>
@@ -450,14 +454,23 @@ export const InscribingOrderModal = ({
               </div>
               <div className='flex justify-between'>
                 <div>{t('common.address')}</div>
-                <a
-                  className='text-blue-500 underline ml-4'
-                  href={fundingAddressHref(
-                    order?.inscriptions?.[0].inscriptionAddress,
-                  )}
-                  target='_blank'>
-                  {hideStr(order?.inscriptions?.[0].inscriptionAddress, 10)}
-                </a>
+                {order?.inscriptions?.length === 1 ? (
+                  <a
+                    className='text-blue-500 underline ml-4'
+                    href={fundingAddressHref(
+                      order?.inscriptions?.[0].inscriptionAddress,
+                    )}
+                    target='_blank'>
+                    {hideStr(order?.inscriptions?.[0].inscriptionAddress, 10)}
+                  </a>
+                ) : (
+                  <a
+                    className='text-blue-500 underline ml-4'
+                    href={fundingAddressHref(order?.funding?.address)}
+                    target='_blank'>
+                    {hideStr(order?.funding?.address, 10)}
+                  </a>
+                )}
               </div>
             </Card>
           </>
