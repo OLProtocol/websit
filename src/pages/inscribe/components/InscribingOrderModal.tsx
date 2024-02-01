@@ -119,6 +119,7 @@ export const InscribingOrderModal = ({
           setFunding(orderId, funding);
           changeStatus(orderId, 'paid');
         }
+        setActiveStep(1);
       }
     } catch (error: any) {
       console.error(error);
@@ -167,7 +168,6 @@ export const InscribingOrderModal = ({
         });
         changeStatus(orderId, 'commit_success');
         setCommitTx(orderId, commitData);
-        setActiveStep(1);
         setTimeout(() => {
           startInscribe();
         }, 0);
@@ -217,7 +217,7 @@ export const InscribingOrderModal = ({
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
 
-        await waitSomeSeconds(1000);
+        await waitSomeSeconds(3000);
         if (!inscription.txid) {
           const txid = await inscribe({
             secret: order.secret,
@@ -235,6 +235,10 @@ export const InscribingOrderModal = ({
         }
         changeStatus(orderId, 'inscribe_success');
         changeInscriptionStatus(order.orderId, i, 'inscribe_success');
+        finishedNum += 1;
+      }
+      if (finishedNum === order.inscriptions.length) {
+        changeStatus(orderId, 'inscribe_success');
         toast({
           title: 'Success',
           description: 'Inscribe Success',
@@ -243,10 +247,6 @@ export const InscribingOrderModal = ({
           isClosable: true,
           position: 'top',
         });
-        finishedNum += 1;
-      }
-      if (finishedNum === order.inscriptions.length) {
-        changeStatus(orderId, 'inscribe_success');
         onClose?.();
         onFinished?.();
       }
