@@ -41,6 +41,7 @@ export const InscribingOrderModal = ({
   onFinished,
 }: InscribingOrderMdaolProps) => {
   const { t } = useTranslation();
+  const [successPercent, setSuccessPercent] = useState(0);
   const steps = [
     { title: t('pages.inscribe.pay.step_one.name') },
     { title: t('pages.inscribe.pay.step_two.name') },
@@ -94,6 +95,8 @@ export const InscribingOrderModal = ({
         };
         setCommitTx(orderId, commitTx);
         changeStatus(orderId, 'paid');
+        await waitSomeSeconds(1500);
+        setLoading(false);
         setActiveStep(1);
         setTimeout(() => {
           startInscribe();
@@ -120,11 +123,14 @@ export const InscribingOrderModal = ({
           changeStatus(orderId, 'paid');
         }
         setActiveStep(1);
+        await waitSomeSeconds(1500);
+        setLoading(false);
         setTimeout(() => {
           startInscribe();
         }, 0);
       }
     } catch (error: any) {
+      setLoading(false);
       console.error(error);
       toast({
         title: 'Error',
@@ -135,7 +141,6 @@ export const InscribingOrderModal = ({
         position: 'top',
       });
     }
-    setLoading(false);
   };
   const startInscribe = async () => {
     if (!order) {
@@ -175,8 +180,8 @@ export const InscribingOrderModal = ({
         setActiveStep(2);
         changeStatus(orderId, 'inscribe_wait');
         await waitSomeSeconds(1000);
-        inscribeHandler();
         setLoading(false);
+        inscribeHandler();
       } catch (error: any) {
         console.log(error);
         setLoading(false);
@@ -195,8 +200,8 @@ export const InscribingOrderModal = ({
       setActiveStep(2);
       changeStatus(orderId, 'inscribe_wait');
       await waitSomeSeconds(1000);
-      inscribeHandler();
       setLoading(false);
+      inscribeHandler();
     }
   };
 
@@ -204,8 +209,8 @@ export const InscribingOrderModal = ({
     if (!(order && order.commitTx)) {
       return;
     }
-    setLoading(true);
     try {
+      setLoading(true);
       console.log('order', order);
       const { commitTx, fee } = order;
       let finishedNum = 0;
@@ -233,6 +238,9 @@ export const InscribingOrderModal = ({
         changeStatus(orderId, 'inscribe_success');
         changeInscriptionStatus(order.orderId, i, 'inscribe_success');
         finishedNum += 1;
+        setSuccessPercent(
+          Math.floor((finishedNum / order.inscriptions.length) * 100),
+        );
       }
       if (finishedNum === order.inscriptions.length) {
         changeStatus(orderId, 'inscribe_success');
@@ -249,7 +257,9 @@ export const InscribingOrderModal = ({
       } else {
         changeStatus(orderId, 'inscribe_fail');
       }
+      setLoading(false);
     } catch (error: any) {
+      setLoading(false);
       changeStatus(orderId, 'inscribe_fail');
       toast({
         title: 'Error',
@@ -260,17 +270,15 @@ export const InscribingOrderModal = ({
         position: 'top',
       });
     }
-    setLoading(false);
   };
-  const progressPercent = useMemo(() => {
+  const clacSuccessPercent = () => {
     const successNum =
       order?.inscriptions?.filter((v) => v.status === 'inscribe_success')
         .length || 0;
     const total = order?.inscriptions?.length || 0;
-    return Math.floor((successNum / total) * 100);
-  }, [order?.inscriptions]);
+    setSuccessPercent(Math.floor((successNum / total) * 100));
+  };
   const checkStatus = () => {
-    console.log(order);
     if (order?.status === 'paid') {
       setActiveStep(1);
     }
@@ -280,6 +288,7 @@ export const InscribingOrderModal = ({
     ) {
       setActiveStep(1);
     }
+
     if (
       order?.status === 'inscribe_wait' ||
       order?.status === 'inscribe_fail'
@@ -293,7 +302,7 @@ export const InscribingOrderModal = ({
       ) {
         setActiveStep(2);
       } else {
-        setActiveStep(2);
+        setActiveStep(3);
       }
     }
   };
@@ -308,6 +317,7 @@ export const InscribingOrderModal = ({
   };
   useEffect(() => {
     checkStatus();
+    clacSuccessPercent();
   }, []);
   const closeHandler = () => {
     onClose?.();
@@ -438,7 +448,7 @@ export const InscribingOrderModal = ({
             <>
               <Divider children={'进度'} />
               <div>
-                <Progress percent={progressPercent} status='active' />
+                <Progress percent={successPercent} status='active' />
               </div>
             </>
           )}
