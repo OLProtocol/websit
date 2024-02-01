@@ -469,7 +469,7 @@ export const InscribingOrderModal = ({
                 <InscribeOrderItem
                   key={index}
                   label={index + 1}
-                  status={order?.status}
+                  status={item?.status}
                   value={item.file.show}
                   address={order.toAddress[0]}
                 />
