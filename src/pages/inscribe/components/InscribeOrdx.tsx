@@ -505,7 +505,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                     value={data.repeatMint}
                     onChange={(_, e) => set('repeatMint', isNaN(e) ? 0 : e)}
                     min={1}
-                    max={100}>
+                    max={20}>
                     <NumberInputField />
                     <NumberInputStepper>
                       <NumberIncrementStepper />
