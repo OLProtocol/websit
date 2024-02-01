@@ -305,7 +305,7 @@ export const pushCommitTx = async ({
   // }
   if (serviceFee && tipAddress) {
     outputs.push({
-      value: serviceFee - (outputs.length > 10 ? 4000 : 0),
+      value: serviceFee,
       scriptPubKey: Address.toScriptPubKey(tipAddress),
     });
   }

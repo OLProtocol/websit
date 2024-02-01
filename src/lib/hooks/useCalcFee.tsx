@@ -11,7 +11,7 @@ export const useCalcFee = ({
   const { VITE_TIP_STATUS, VITE_TIP_MIN = 1000 } = import.meta.env;
   const serviceStatus = VITE_TIP_STATUS === '1';
   const clacFee = useMemo(() => {
-    const base_size = 157;
+    const base_size = 180;
     const feeObj: any = {
       networkFee: 0,
       serviceFee: 0,
@@ -37,11 +37,9 @@ export const useCalcFee = ({
         totalInscriptionFee += files[i].txsize * feeRate;
       }
       const networkFee =
-        (base_size + 34 * (files.length + (serviceStatus ? 1 : 0)) + 10) *
-          feeRate +
+        (base_size + 34 * (files.length  + (serviceStatus ? 1 : 0)) + 10) *
+          feeRate + base_size * files.length +
         totalInscriptionFee;
-      console.log(totalInscriptionFee);
-      console.log(networkFee);
       let totalFee = networkFee + inscriptionSize * files.length;
       feeObj.networkFee = networkFee;
       if (serviceStatus) {
