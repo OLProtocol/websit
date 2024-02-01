@@ -228,9 +228,6 @@ export const InscribingOrderModal = ({
       await pollGetTxStatus(commitTxid, order.network);
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
-        if (i == 0) {
-          throw new Error("i can't be 0");
-        }
         await waitSomeSeconds(1500);
         if (!inscription.txid) {
           const txid = await inscribe({
