@@ -16,8 +16,7 @@ interface DataType {
 }
 export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
   const { t } = useTranslation();
-  const { currentAccount, network } = useUnisatConnect();
-  const { list, savePaidOrder } = useOrderStore((state) => state);
+  const { list } = useOrderStore((state) => state);
   const clickHandler = ({ orderId }) => {
     const item = list.find((v) => v.orderId === orderId);
     if (item) {
@@ -47,9 +46,9 @@ export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
       },
     },
   ];
-  useEffect(() => {
-    savePaidOrder(currentAccount, network);
-  }, [list]);
+  // useEffect(() => {
+  //   savePaidOrder(currentAccount, network);
+  // }, [list]);
   const dataSource: DataType[] = useMemo(
     () =>
       list.map((item) => ({

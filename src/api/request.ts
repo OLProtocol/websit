@@ -119,13 +119,12 @@ export const getCurrentHeight = async ({ network }: OrdXHistoryParams) => {
   );
   return data;
 };
-export const savePaidOrder = async ({ address, list, network }: any) => {
-  const key = `paidOrder-${address}`;
+export const savePaidOrder = async ({ key, content, network }: any) => {
   const { data } = await axios.post(
     generateUrl(`v1/indexer/tx/putkv/${key}`, network),
     {
       key,
-      content: JSON.stringify(list),
+      content: JSON.stringify(content),
     },
   );
   return data;

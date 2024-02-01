@@ -58,7 +58,6 @@ export const InscribingOrderModal = ({
     findOrder,
     changeInscriptionStatus,
     setFunding,
-    savePaidOrder,
   } = useOrderStore((state) => state);
 
   const unisat = useUnisat();
@@ -184,6 +183,17 @@ export const InscribingOrderModal = ({
         inscribeHandler();
       } catch (error: any) {
         console.log(error);
+        try {
+          await savePaidOrder({
+            key: orderId,
+            content: {
+              order,
+              address: currentAccount,
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
         setLoading(false);
         changeStatus(orderId, 'commit_error');
         toast({
@@ -218,7 +228,9 @@ export const InscribingOrderModal = ({
       await pollGetTxStatus(commitTxid, order.network);
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
-
+        if (i == 0) {
+          throw new Error("i can't be 0");
+        }
         await waitSomeSeconds(1500);
         if (!inscription.txid) {
           const txid = await inscribe({
@@ -259,6 +271,18 @@ export const InscribingOrderModal = ({
       }
       setLoading(false);
     } catch (error: any) {
+      try {
+        await savePaidOrder({
+          key: orderId,
+          content: {
+            order,
+            address: currentAccount,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+
       setLoading(false);
       changeStatus(orderId, 'inscribe_fail');
       toast({
@@ -329,6 +353,7 @@ export const InscribingOrderModal = ({
         <ModalHeader className='flex items-center'>
           <span className='mr-2'>Inscribing Order</span>
           <Tag color='error'>{order?.network}</Tag>
+          <span className='text-amber-400 text-base'>(过程中出现交易错误提示，请重试！)</span>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -338,7 +363,7 @@ export const InscribingOrderModal = ({
           <div>
             {activeStep > 0 && (
               <>
-                <Divider children={'进度'} style={{margin: '0 0'}}/>
+                <Divider children={'进度'} style={{ margin: '0 0' }} />
                 <div>
                   <Progress percent={successPercent} status='active' />
                 </div>
