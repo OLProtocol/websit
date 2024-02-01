@@ -6,7 +6,7 @@ export const useCalcFee = ({
   serviceStatus,
 }: {
   feeRate: number;
-  serviceStatus: boolean;
+  serviceStatus: number;
   inscriptionSize: number;
   files: any[];
 }) => {
@@ -16,7 +16,7 @@ export const useCalcFee = ({
     const feeObj: any = {
       networkFee: 0,
       serviceFee: 0,
-      serviceText: '',
+      serviceStatus,
       totalFee: 0,
     };
     if (files?.length === 1) {
@@ -31,7 +31,6 @@ export const useCalcFee = ({
           Math.ceil(inscriptionSize * 0.1),
         );
         feeObj.serviceFee = Math.ceil(oneFee * files.length);
-        feeObj.serviceText = `${oneFee} * ${files.length} = ${feeObj.serviceFee}`;
         totalFee += feeObj.serviceFee;
       }
       feeObj.totalFee = totalFee;
@@ -53,7 +52,6 @@ export const useCalcFee = ({
           Math.ceil(inscriptionSize * 0.1),
         );
         feeObj.serviceFee = Math.ceil(oneFee * files.length);
-        feeObj.serviceText = `${oneFee} X ${files.length} = ${feeObj.serviceFee}`;
         totalFee += feeObj.serviceFee;
       }
       feeObj.totalFee = totalFee;

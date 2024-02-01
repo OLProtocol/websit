@@ -1,5 +1,5 @@
 export * from './unisat';
-export * from './useCalcFee';
+export * from '../utils/useCalcFee';
 import { add, format } from 'date-fns';
 import { useMemo } from 'react';
 interface BlockHeightTime {

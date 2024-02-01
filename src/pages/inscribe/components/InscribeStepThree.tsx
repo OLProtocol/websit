@@ -66,6 +66,7 @@ export const InscribeStepThree = ({
     }
   }, [type, list]);
   const clacFee = useCalcFee({ feeRate, inscriptionSize, files, serviceStatus });
+  console.log(clacFee)
   const submit = async () => {
     if (loading) return;
     setLoading(true);
@@ -158,6 +159,7 @@ export const InscribeStepThree = ({
         <FeeShow
           inscriptionSize={inscriptionSize}
           serviceFee={clacFee.serviceFee}
+          serviceStatus={clacFee.serviceStatus}
           filesLength={files.length}
           totalFee={clacFee.totalFee}
           networkFee={clacFee.networkFee}

@@ -6,6 +6,7 @@ interface FeeShowProps {
   inscriptionSize?: number;
   feeRate?: number;
   serviceFee?: number;
+  serviceStatus?: number;
   totalFee?: number;
   networkFee?: number;
   filesLength?: number;
@@ -15,15 +16,26 @@ export const FeeShow = ({
   feeRate,
   serviceFee,
   totalFee,
+  serviceStatus,
   networkFee,
   filesLength,
 }: FeeShowProps) => {
+  console.log(serviceStatus);
   const { t } = useTranslation();
-  
+  const { VITE_TIP_HEIGHT } = import.meta.env;
   const serviceText = useMemo(() => {
-    const oneFee = inscriptionSize ? Math.max(Number(import.meta.env.VITE_TIP_MIN), Math.ceil(inscriptionSize * 0.1)) : 0;
-    return `${oneFee} x ${filesLength} = ${serviceFee}`
-  }, [inscriptionSize, serviceFee, filesLength]);
+    const oneFee = inscriptionSize
+      ? Math.max(
+          Number(import.meta.env.VITE_TIP_MIN),
+          Math.ceil(inscriptionSize * 0.1),
+        )
+      : 0;
+    let text = `${oneFee} x ${filesLength} = ${serviceFee}`;
+    if (serviceStatus != 1) {
+      text += `,  高度 ${VITE_TIP_HEIGHT}之前免费。`;
+    }
+    return text;
+  }, [inscriptionSize, serviceFee, filesLength, serviceStatus]);
   return (
     <div>
       {feeRate && (
@@ -40,7 +52,10 @@ export const FeeShow = ({
       <div className='flex justify-between mb-2'>
         <div>{t('pages.inscribe.fee.inscription_size')}</div>
         <div>
-          <span>{filesLength} x {inscriptionSize}</span> <span> sate</span>
+          <span>
+            {filesLength} x {inscriptionSize}
+          </span>{' '}
+          <span> sate</span>
         </div>
       </div>
       <div className='flex justify-between'>
@@ -53,13 +68,7 @@ export const FeeShow = ({
       <div className='flex justify-between mb-2'>
         <div>
           {t('pages.inscribe.fee.service_fee')}
-          {
-            !!serviceFee && (
-              <span className='text-blue-400'>
-                ({serviceText})
-              </span>
-            )
-          }
+          <span className='text-blue-400'>({serviceText})</span>
         </div>
         <div>
           <span>{serviceFee}</span> <span> sats</span>
