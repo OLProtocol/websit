@@ -24,7 +24,6 @@ export const BusButton = ({ children }: BusButtonProps) => {
       return;
     }
     await connectWallet();
-    await switchNetwork('testnet');
   };
 
   return (
