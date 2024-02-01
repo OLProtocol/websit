@@ -353,7 +353,6 @@ export const InscribingOrderModal = ({
         <ModalHeader className='flex items-center'>
           <span className='mr-2'>Inscribing Order</span>
           <Tag color='error'>{order?.network}</Tag>
-          <span className='text-amber-400 text-base'>(过程中出现交易错误提示，请重试！)</span>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -406,6 +405,9 @@ export const InscribingOrderModal = ({
                     {t('buttons.start_inscribe')}
                   </Button>
                 </div>
+                <div className='text-amber-400 text-base text-center'>
+                  (如果过程中出现错误提示，请点击按钮继续重试。)
+                </div>
               </div>
             )}
             {/* step three */}
@@ -426,6 +428,9 @@ export const InscribingOrderModal = ({
                     onClick={inscribeHandler}>
                     {t('buttons.inscribe')}
                   </Button>
+                </div>
+                <div className='text-amber-400 text-base text-center'>
+                  (如果过程中出现错误提示，请点击按钮继续重试。)
                 </div>
               </div>
             )}
