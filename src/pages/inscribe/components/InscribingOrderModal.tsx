@@ -336,6 +336,14 @@ export const InscribingOrderModal = ({
             <Steps current={activeStep} items={steps} />
           </div>
           <div>
+            {activeStep > 0 && (
+              <>
+                <Divider children={'进度'} style={{margin: '0 0'}}/>
+                <div>
+                  <Progress percent={successPercent} status='active' />
+                </div>
+              </>
+            )}
             {/* step one */}
             {activeStep === 0 && (
               <div>
@@ -444,14 +452,6 @@ export const InscribingOrderModal = ({
             totalFee={order?.fee.totalFee}
             networkFee={order?.fee.networkFee}
           />
-          {activeStep > 1 && (
-            <>
-              <Divider children={'进度'} />
-              <div>
-                <Progress percent={successPercent} status='active' />
-              </div>
-            </>
-          )}
 
           <>
             <Divider children={t('common.account')} />
