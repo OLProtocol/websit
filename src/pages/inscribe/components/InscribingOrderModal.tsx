@@ -119,6 +119,9 @@ export const InscribingOrderModal = ({
           setFunding(orderId, funding);
           changeStatus(orderId, 'paid');
         }
+        setTimeout(() => {
+          startInscribe();
+        }, 0);
         setActiveStep(1);
       }
     } catch (error: any) {
@@ -237,18 +240,13 @@ export const InscribingOrderModal = ({
         changeInscriptionStatus(order.orderId, i, 'inscribe_success');
         finishedNum += 1;
       }
+      console.log(finishedNum);
       if (finishedNum === order.inscriptions.length) {
         changeStatus(orderId, 'inscribe_success');
-        toast({
-          title: 'Success',
-          description: 'Inscribe Success',
-          status: 'success',
-          duration: 2000,
-          isClosable: true,
-          position: 'top',
-        });
-        onClose?.();
+        setActiveStep(3);
         onFinished?.();
+      } else {
+        changeStatus(orderId, 'inscribe_fail');
       }
     } catch (error: any) {
       changeStatus(orderId, 'inscribe_fail');
