@@ -29,11 +29,11 @@ export const OrderList = ({ onOrderClick }: OrderListProps) => {
     <Card
       style={{ width: '100%' }}
       title={t('pages.inscribe.order.name')}
-      extra={
-        <Button danger onClick={clearOrderList}>
-          {t('buttons.clear_all')}
-        </Button>
-      }
+      // extra={
+      //   <Button danger onClick={clearOrderList}>
+      //     {t('buttons.clear_all')}
+      //   </Button>
+      // }
       tabList={orderTabList}
       activeTabKey={activeTab}
       onTabChange={onTabChange}>

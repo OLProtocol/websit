@@ -7,8 +7,7 @@ import {
   hexToBytes,
   fileToSha256Hex,
 } from './index';
-import { pushBTCpmt } from './mempool';
-import { encode } from 'punycode';
+import { pollPushBTCpmt, pushBTCpmt } from '@/api';
 interface FileItem {
   mimetype: string;
   show: string;
@@ -115,6 +114,11 @@ export const getFundingAddress = (sescet: string, network: string) => {
     address,
   };
 };
+export const getAddressBySescet = (sescet: string, network: string) => {
+  const seckey = keys.get_seckey(sescet);
+  const pubkey = keys.get_pubkey(seckey, true);
+  return Address.p2tr.fromPubKey(pubkey, network as any);
+};
 /*
 铭刻过程
 */
@@ -190,6 +194,7 @@ interface InscribeParams {
   txid: string;
   vout: number;
   amount: number;
+  file: any;
   inscribeFee: number;
   serviceFee?: number;
   secret: any;
@@ -199,6 +204,7 @@ interface InscribeParams {
 export const inscribe = async ({
   inscription,
   network,
+  file,
   txid,
   vout,
   amount,
@@ -212,7 +218,7 @@ export const inscribe = async ({
     network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
   const seckey = keys.get_seckey(secret);
   const pubkey = keys.get_pubkey(seckey, true);
-  const { script, cblock, tapkey, leaf } = inscription;
+  const { cblock, tapkey, leaf } = inscription;
   const outputs = [
     {
       // We are leaving behind 1000 sats as a fee to the miners.
@@ -247,9 +253,25 @@ export const inscribe = async ({
   });
   const sig = Signer.taproot.sign(seckey, txdata, 0, { extension: leaf });
 
+  const ec = new TextEncoder();
+  const content = hexToBytes(file.hex);
+  const mimetype = ec.encode(file.mimetype);
+  const script = [
+    pubkey,
+    'OP_CHECKSIG',
+    'OP_0',
+    'OP_IF',
+    ec.encode('ord'),
+    '01',
+    mimetype,
+    'OP_0',
+    content,
+    'OP_ENDIF',
+  ];
   // Add the signature to our witness data for input 0, along with the script
   // and merkle proof (cblock) for the script.
   txdata.vin[0].witness = [sig, script, cblock];
+  console.log('Your txhex:', txdata);
   const isValid = Signer.taproot.verify(txdata, 0, { pubkey, throws: true });
   console.log('isValid', isValid);
   console.log('Your txhex:', Tx.encode(txdata).hex);
@@ -278,6 +300,9 @@ export const pushCommitTx = async ({
       scriptPubKey: ['OP_1', item.tapkey],
     };
   });
+  // if (outputs.length > 10) {
+  //   outputs = outputs.slice(1);
+  // }
   if (serviceFee && tipAddress) {
     outputs.push({
       value: serviceFee,

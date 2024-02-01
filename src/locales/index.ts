@@ -9,7 +9,6 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import enUS from './en.json';
 import zhCN from './zh_CN.json';
 
-console.log('enUS', JSON.stringify(enUS));
 const resources = {
   en: {
     translation: enUS,

@@ -9,13 +9,6 @@ export const fetchTipHeight = async (network: 'main' | 'testnet') => {
   return data;
 };
 export const fetchChainFeeRate = async (network: 'main' | 'testnet') => {
-  // const { bitcoin: { fees } } = mempoolJS({
-  //   hostname: 'mempool.space',
-  //   network,
-  // });
-
-  // const data = await fees.getFeesRecommended();
-  // return data;
   const url =
     network === 'testnet'
       ? 'https://mempool.space/testnet/api/v1/fees/recommended'

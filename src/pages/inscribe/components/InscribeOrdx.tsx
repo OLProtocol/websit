@@ -23,20 +23,23 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useMap } from 'react-use';
 import { fetchTipHeight } from '@/lib/utils';
 import { useBlockHeightTime } from '@/lib/hooks';
 import { clacTextSize } from '../utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { requstOrd2Info, useBtcHeight } from '@/api';
+import { getOrdxInfo } from '@/api';
+import toast from 'react-hot-toast';
+import { useGlobalStore } from '@/store';
 
 interface InscribeOrdxProps {
   onNext?: () => void;
   onChange?: (data: any) => void;
 }
 export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
+  const { btcHeight } = useGlobalStore(state => state);
   const { t } = useTranslation();
   const { state } = useLocation();
   const { network } = useUnisatConnect();
@@ -49,87 +52,124 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     block_start: 0,
     block_end: 0,
     rarity: '',
-    reg: '',
+    cn: 0,
+    trz: 0,
     blockChecked: true,
     rarityChecked: false,
-    regChecked: false,
+    cnChecked: false,
+    trzChecked: false,
     des: '',
     mintRarity: '',
     sat: 0,
   });
-  const { data: heightData } = useBtcHeight(network as any);
+  const infoRef = useRef<any>({});
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
   const [tickLoading, setTickLoading] = useState(false);
   const [tickChecked, setTickChecked] = useState(false);
+  const getOrdXInfo = async (tick: string) => {
+    try {
+      // if (infoRef.current[tick]) {
+      //   return infoRef.current[tick];
+      // }
+      const info = await getOrdxInfo({ tick, network });
+      infoRef.current[tick] = info;
+      return info;
+    } catch (error) {
+      toast.error(t('toast.system_error'));
+      console.log('error', error);
+      throw error;
+    }
+  };
   const nextHandler = async () => {
     setErrorText('');
-    const textSize = clacTextSize(data.tick);
-    if (textSize < 3 || textSize == 4 || textSize > 16) {
-      setErrorText(t('pages.inscribe.ordx.error_1'));
+    const checkStatus = await checkTick();
+    if (!checkStatus) {
       return;
     }
-    if (
-      data.type === 'deploy' &&
-      !data.blockChecked &&
-      !data.rarityChecked &&
-      !data.regChecked
-    ) {
-      setErrorText(t('pages.inscribe.ordx.error_2'));
-      return;
-    }
-    setLoading(true);
-
-    const info = await requstOrd2Info({ tick: data.tick });
-    setLoading(false);
-    if (data.type === 'deploy') {
-      if (info.data) {
-        setErrorText(t('pages.inscribe.ordx.error_3', { tick: data.tick }));
-        return;
-      }
-    } else if (data.type === 'mint') {
-      if (!info.data) {
-        setErrorText(t('pages.inscribe.ordx.error_4', { tick: data.tick }));
-        return;
-      }
-      if (data.amount > info.data.limit) {
-        setErrorText(t('pages.inscribe.ordx.error_5', { limit: info.data.limit }));
-        return;
-      }
-    }
-
     onNext?.();
   };
-  const onTickBlur = async () => {
+  const checkTick = async (blur: boolean = false) => {
     setErrorText('');
+    let checkStatus = true;
+    if (data.tick === undefined || data.tick === '') {
+      checkStatus = false;
+      return checkStatus;
+    }
     const textSize = clacTextSize(data.tick);
     if (textSize < 3 || textSize == 4 || textSize > 32) {
+      checkStatus = false;
       setErrorText(t('pages.inscribe.ordx.error_1'));
-      return;
+      return checkStatus;
     }
-    if (data.type === 'mint') {
-      try {
-        setTickLoading(true);
-        setTickChecked(false);
-        const info = await requstOrd2Info({ tick: data.tick });
-        setTickLoading(false);
-        setTickChecked(true);
+    try {
+      setTickLoading(true);
+      setTickChecked(false);
+      const info = await getOrdXInfo(data.tick);
+      setTickLoading(false);
+      setTickChecked(true);
+
+      const { rarity, trz, cn, startBlock, endBlock, limit } = info.data || {};
+      const isSpecial = rarity !== 'unknow' && rarity !== 'common';
+      let status = 'Completed';
+      if (
+        startBlock &&
+        endBlock &&
+        btcHeight <= endBlock &&
+        btcHeight >= startBlock
+      ) {
+        status = 'Minting';
+      } else if (btcHeight < startBlock) {
+        status = 'Pending';
+      } else {
+        status = 'Completed';
+      }
+      if (data.type === 'mint') {
         if (!info.data) {
-          setErrorText(t('pages.inscribe.ordx.error_3', { tick: data.tick }));
-          return;
-        } else {
-          set('amount', Number(info.data.limit));
-          set('mintRarity', info.data.rarity);
+          checkStatus = false;
+          setErrorText(t('pages.inscribe.ordx.error_4', { tick: data.tick }));
+          return checkStatus;
+        }
+        if (blur) {
+          set('amount', Number(limit));
+          set('mintRarity', rarity);
+        }
+        if (isSpecial) {
+          checkStatus = false;
+          setErrorText(t('pages.inscribe.ordx.error_8', { tick: data.tick }));
+          return checkStatus;
+        }
+        if (status === 'Pending') {
+          checkStatus = false;
+          setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
+          return checkStatus;
+        }
+        if (status === 'Completed') {
+          checkStatus = false;
+          setErrorText(t('pages.inscribe.ordx.error_7', { tick: data.tick }));
+          return checkStatus;
         }
         if (data.amount > info.data.limit) {
-          setErrorText(t('pages.inscribe.ordx.error_5', { limit: info.data.limit }));
-          return;
+          checkStatus = false;
+          setErrorText(
+            t('pages.inscribe.ordx.error_5', { limit: info.data.limit }),
+          );
+          return checkStatus;
         }
-      } catch (error) {
-        console.log('error', error);
+      } else {
+        if (info.data) {
+          checkStatus = false;
+          setErrorText(t('pages.inscribe.ordx.error_3', { tick: data.tick }));
+          return checkStatus;
+        }
       }
+    } catch (error) {
+      setTickLoading(true);
+      setTickChecked(false);
+      console.log('error', error);
+      return checkStatus;
     }
-    setTickLoading(false);
+    return checkStatus;
   };
   const rarityChange = (value: string) => {
     set('rarity', value);
@@ -142,22 +182,31 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const onBlockChecked = (e: any) => {
     set('blockChecked', e.target.checked);
     set('rarityChecked', !e.target.checked);
-    set('regChecked', !e.target.checked);
+    set('cnChecked', !e.target.checked);
+    set('trzChecked', !e.target.checked);
   };
   const onRarityChecked = (e: any) => {
     set('rarityChecked', e.target.checked);
     if (e.target.checked) {
       set('blockChecked', false);
     } else {
-      set('blockChecked', !data.regChecked);
+      set('blockChecked', !data.cnChecked && !data.trzChecked);
     }
   };
-  const onRegChecked = (e: any) => {
-    set('regChecked', e.target.checked);
+  const onCnChecked = (e: any) => {
+    set('cnChecked', e.target.checked);
     if (e.target.checked) {
       set('blockChecked', false);
     } else {
-      set('blockChecked', !data.rarityChecked);
+      set('blockChecked', !data.rarityChecked && !data.trzChecked);
+    }
+  };
+  const onTrzChecked = (e: any) => {
+    set('trzChecked', e.target.checked);
+    if (e.target.checked) {
+      set('blockChecked', false);
+    } else {
+      set('blockChecked', !data.rarityChecked && !data.cnChecked);
     }
   };
   const getHeight = async () => {
@@ -177,14 +226,14 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     return !data.tick || (data.type === 'mint' && !tickChecked);
   }, [data, tickChecked]);
   const time = useBlockHeightTime({
-    height: heightData,
+    height: btcHeight,
     start: data.block_start,
     end: data.block_end,
   });
-  console.log(time);
   useEffect(() => {
     if (state?.type === 'ordx') {
       const { item } = state;
+      console.log(item);
       set('type', 'mint');
       set('tick', item.tick);
       set('amount', item.limit);
@@ -193,12 +242,12 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     }
   }, [state]);
   useEffect(() => {
-    console.log(heightData);
-    if (heightData) {
-      set('block_start', heightData);
-      set('block_end', heightData + 4320);
+    console.log(btcHeight);
+    if (btcHeight) {
+      set('block_start', btcHeight);
+      set('block_end', btcHeight + 4320);
     }
-  }, [heightData]);
+  }, [btcHeight]);
   useEffect(() => {
     onChange?.(data);
   }, [data]);
@@ -228,7 +277,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             <div className='flex-1'>
               <Input
                 type='text'
-                onBlur={onTickBlur}
+                onBlur={() => checkTick(true)}
                 maxLength={32}
                 placeholder={t('pages.inscribe.ordx.tick_placeholder')}
                 value={data.tick}
@@ -247,7 +296,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <NumberInput
                   value={data.amount}
                   isDisabled={tickLoading}
-                  onChange={(_, e) => set('amount', e)}
+                  onChange={(_, e) => set('amount', isNaN(e) ? 0 : e)}
                   min={1}>
                   <NumberInputField />
                 </NumberInput>
@@ -274,7 +323,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       className='flex-1'
                       isDisabled={!data.blockChecked}
                       placeholder='Block start'
-                      onChange={(_, e) => set('block_start', e)}
+                      onChange={(_, e) => set('block_start', isNaN(e) ? 0 : e)}
                       min={1}>
                       <NumberInputField />
                     </NumberInput>
@@ -284,7 +333,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       isDisabled={!data.blockChecked}
                       className='flex-1'
                       placeholder='Block End'
-                      onChange={(_, e) => set('block_end', e)}
+                      onChange={(_, e) => set('block_end', isNaN(e) ? 0 : e)}
                       min={1}>
                       <NumberInputField />
                     </NumberInput>
@@ -295,8 +344,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             {time.start && time.end && (
               <div className='ml-60 mb-2 text-xs text-gray-600'>
                 {t('pages.inscribe.ordx.block_helper', {
-                  start: format(time.start, 'yyyy-MM-dd HH:mm'),
-                  end: format(time.end, 'yyyy-MM-dd HH:mm'),
+                  start: time.start,
+                  end: time.end,
                 })}
               </div>
             )}
@@ -337,8 +386,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
-                  {t('common.reg')}
-                  <Tooltip title={t('pages.inscribe.ordx.rarity_helper')}>
+                  {t('common.cn')}
+                  <Tooltip title={t('pages.inscribe.ordx.cn_placeholder')}>
                     <span className='text-blue-500'>
                       (sat
                       <QuestionCircleOutlined />)
@@ -348,17 +397,46 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <div className='flex-1 flex items-center'>
                   <Checkbox
                     disabled
-                    checked={data.regChecked}
-                    onChange={onRegChecked}></Checkbox>
+                    checked={data.cnChecked}
+                    onChange={onCnChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
-                    <Input
-                      type='text'
-                      disabled={!data.regChecked}
-                      maxLength={32}
-                      placeholder='like "^[1-9][0-9]*0{n}$"'
-                      value={data.reg}
-                      onChange={(e) => set('reg', e.target.value)}
-                    />
+                    <NumberInput
+                      value={data.cn}
+                      isDisabled={!data.cnChecked}
+                      placeholder={t('pages.inscribe.ordx.cn_placeholder')}
+                      onChange={(_, e) => set('cn', isNaN(e) ? 0 : e)}
+                      min={0}>
+                      <NumberInputField />
+                    </NumberInput>
+                  </div>
+                </div>
+              </div>
+            </FormControl>
+            <FormControl>
+              <div className='flex items-center  mb-4'>
+                <FormLabel className='w-52' marginBottom={0}>
+                  {t('common.trz')}
+                  <Tooltip title={t('pages.inscribe.ordx.trz_placeholder')}>
+                    <span className='text-blue-500'>
+                      (sat
+                      <QuestionCircleOutlined />)
+                    </span>
+                  </Tooltip>
+                </FormLabel>
+                <div className='flex-1 flex items-center'>
+                  <Checkbox
+                    disabled
+                    checked={data.trzChecked}
+                    onChange={onTrzChecked}></Checkbox>
+                  <div className='ml-2 flex-1'>
+                    <NumberInput
+                      value={data.trz}
+                      placeholder={t('pages.inscribe.ordx.trz_placeholder')}
+                      isDisabled={!data.trzChecked}
+                      onChange={(_, e) => set('trz', isNaN(e) ? 0 : e)}
+                      min={0}>
+                      <NumberInputField />
+                    </NumberInput>
                   </div>
                 </div>
               </div>
@@ -371,7 +449,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <div className='flex-1'>
                   <NumberInput
                     value={data.limitPerMint}
-                    onChange={(_, e) => set('limitPerMint', e)}
+                    onChange={(_, e) => set('limitPerMint', isNaN(e) ? 0 : e)}
                     min={1}>
                     <NumberInputField />
                   </NumberInput>
@@ -425,7 +503,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                     maxW='100px'
                     mr='2rem'
                     value={data.repeatMint}
-                    onChange={(_, e) => set('repeatMint', e)}
+                    onChange={(_, e) => set('repeatMint', isNaN(e) ? 0 : e)}
                     min={1}
                     max={100}>
                     <NumberInputField />

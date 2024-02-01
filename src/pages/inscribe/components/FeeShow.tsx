@@ -1,4 +1,5 @@
 import { Divider } from 'antd';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface FeeShowProps {
@@ -7,6 +8,7 @@ interface FeeShowProps {
   serviceFee?: number;
   totalFee?: number;
   networkFee?: number;
+  filesLength?: number;
 }
 export const FeeShow = ({
   inscriptionSize,
@@ -14,8 +16,14 @@ export const FeeShow = ({
   serviceFee,
   totalFee,
   networkFee,
+  filesLength,
 }: FeeShowProps) => {
   const { t } = useTranslation();
+  
+  const serviceText = useMemo(() => {
+    const oneFee = inscriptionSize ? Math.max(Number(import.meta.env.VITE_TIP_MIN), Math.ceil(inscriptionSize * 0.1)) : 0;
+    return `${oneFee} x ${filesLength} = ${serviceFee}`
+  }, [inscriptionSize, serviceFee, filesLength]);
   return (
     <div>
       {feeRate && (
@@ -32,7 +40,7 @@ export const FeeShow = ({
       <div className='flex justify-between mb-2'>
         <div>{t('pages.inscribe.fee.inscription_size')}</div>
         <div>
-          <span>{inscriptionSize}</span> <span> sate</span>
+          <span>{filesLength} x {inscriptionSize}</span> <span> sate</span>
         </div>
       </div>
       <div className='flex justify-between'>
@@ -46,7 +54,7 @@ export const FeeShow = ({
         <div>
           {t('pages.inscribe.fee.service_fee')}
           <span className='text-blue-400'>
-            (1%, {t('pages.inscribe.fee.service_hint', { max: 1000 })})
+            ({serviceText})
           </span>
         </div>
         <div>

@@ -11,15 +11,16 @@ import {
 import { Card, Steps, Divider, Button, Tag } from 'antd';
 import { InscribeOrderItem } from './InscribeOrderItem';
 import { useUnisat, useUnisatConnect } from '@/lib/hooks/unisat';
+import { pollGetTxStatus } from '@/api';
 import { BusButton } from '@/components/BusButton';
 import { useOrderStore, OrderItemType } from '@/store';
 import {
-  loopTilAddressReceivesMoney,
   inscribe,
   pushCommitTx,
   getFundingAddress,
   waitSomeSeconds,
 } from '../utils';
+import { savePaidOrder } from '@/api';
 import { useEffect, useMemo, useState } from 'react';
 import { _0n } from '@cmdcode/crypto-utils/dist/const';
 import { hideStr } from '@/lib/utils';
@@ -46,6 +47,7 @@ export const InscribingOrderModal = ({
     { title: t('pages.inscribe.pay.step_three.name') },
     { title: t('pages.inscribe.pay.step_four.name') },
   ];
+  const { currentAccount } = useUnisatConnect();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const {
@@ -55,6 +57,7 @@ export const InscribingOrderModal = ({
     findOrder,
     changeInscriptionStatus,
     setFunding,
+    savePaidOrder,
   } = useOrderStore((state) => state);
 
   const unisat = useUnisat();
@@ -97,9 +100,10 @@ export const InscribingOrderModal = ({
         }, 0);
       } else {
         let funding = order.funding;
+        let fundingTxid = funding?.txid || '';
         if (!funding) {
           const fundingData = getFundingAddress(secret, network);
-          const txid = await unisat.sendBitcoin(
+          fundingTxid = await unisat.sendBitcoin(
             fundingData.address,
             fee.totalFee,
             {
@@ -107,30 +111,14 @@ export const InscribingOrderModal = ({
             },
           );
           funding = {
-            txid,
+            txid: fundingTxid,
             vout: 0,
             amount: fee.totalFee,
             ...fundingData,
           };
           setFunding(orderId, funding);
+          changeStatus(orderId, 'paid');
         }
-
-        await loopTilAddressReceivesMoney(funding.address, order.network, true);
-        const commitData = await pushCommitTx({
-          inscriptions,
-          secret,
-          network,
-          funding,
-          serviceFee: fee.serviceFee,
-          inscriptionSize,
-          feeRate,
-        });
-        changeStatus(orderId, 'paid');
-        setCommitTx(orderId, commitData);
-        setActiveStep(1);
-        setTimeout(() => {
-          startInscribe();
-        }, 0);
       }
     } catch (error: any) {
       console.error(error);
@@ -149,21 +137,72 @@ export const InscribingOrderModal = ({
     if (!order || payStatus) {
       return;
     }
-    setLoading(true);
-    setPayStatus(true);
-    if (order.inscriptions.length === 1) {
-      await loopTilAddressReceivesMoney(
-        order.inscriptions[0].inscriptionAddress,
-        order.network,
-        true,
-      );
+    console.log(order);
+    const {
+      inscriptions,
+      funding,
+      feeRate,
+      inscriptionSize,
+      secret,
+      network,
+      fee,
+    } = order;
+    if (inscriptions.length !== 1 && funding) {
+      try {
+        await pollGetTxStatus(funding.txid, order.network);
+        // await loopTilAddressReceivesMoney(funding.address, order.network, true);
+        const fundingData = getFundingAddress(secret, network);
+        const _funding = {
+          ...funding,
+          ...fundingData,
+        };
+        const commitData = await pushCommitTx({
+          inscriptions,
+          secret,
+          network,
+          funding: _funding,
+          serviceFee: fee.serviceFee,
+          inscriptionSize,
+          feeRate,
+        });
+        changeStatus(orderId, 'commit_success');
+        setCommitTx(orderId, commitData);
+        setActiveStep(1);
+        setTimeout(() => {
+          startInscribe();
+        }, 0);
+        setLoading(true);
+        setPayStatus(true);
+        setActiveStep(2);
+        changeStatus(orderId, 'inscribe_wait');
+        setTimeout(() => {
+          inscribeHandler();
+        }, 0);
+        setLoading(false);
+      } catch (error: any) {
+        console.log(error);
+        changeStatus(orderId, 'commit_error');
+        toast({
+          title: 'Error',
+          description: error.message || JSON.stringify(error),
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+          position: 'top',
+        });
+      }
+    } else {
+      setLoading(true);
+      setPayStatus(true);
+      setActiveStep(2);
+      changeStatus(orderId, 'inscribe_wait');
+      setTimeout(() => {
+        inscribeHandler();
+      }, 0);
+      setLoading(false);
     }
-    setActiveStep(2);
-    setTimeout(() => {
-      inscribeHandler();
-    }, 0);
-    setLoading(false);
   };
+
   const inscribeHandler = async () => {
     if (!(order && order.commitTx)) {
       return;
@@ -173,26 +212,27 @@ export const InscribingOrderModal = ({
       console.log('order', order);
       const { commitTx, fee } = order;
       let finishedNum = 0;
+      const commitTxid = (commitTx.txid as any)?.data || commitTx.txid;
+      await pollGetTxStatus(commitTxid, order.network);
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
-        await loopTilAddressReceivesMoney(
-          inscription.inscriptionAddress,
-          order.network,
-          true,
-        );
-        await waitSomeSeconds(2000);
-        const txid = await inscribe({
-          secret: order.secret,
-          network: order.network as any,
-          inscription,
-          txid: commitTx.txid,
-          serviceFee: order.inscriptions.length === 1 ? fee.serviceFee : 0,
-          vout: commitTx.outputs[i].vout,
-          amount: commitTx.outputs[i].amount,
-          toAddress: order.toAddress[0],
-          inscribeFee: order.inscriptionSize,
-        });
-        addTxidToInscription(order.orderId, i, txid);
+
+        await waitSomeSeconds(1000);
+        if (!inscription.txid) {
+          const txid = await inscribe({
+            secret: order.secret,
+            network: order.network as any,
+            inscription,
+            file: inscription.file,
+            txid: commitTxid,
+            serviceFee: order.inscriptions.length === 1 ? fee.serviceFee : 0,
+            vout: commitTx.outputs[i].vout,
+            amount: commitTx.outputs[i].amount,
+            toAddress: order.toAddress[0],
+            inscribeFee: order.inscriptionSize,
+          });
+          addTxidToInscription(order.orderId, i, txid);
+        }
         changeStatus(orderId, 'inscribe_success');
         changeInscriptionStatus(order.orderId, i, 'inscribe_success');
         toast({
@@ -211,8 +251,7 @@ export const InscribingOrderModal = ({
         onFinished?.();
       }
     } catch (error: any) {
-      console.log(error);
-      changeStatus(orderId, 'paid');
+      changeStatus(orderId, 'inscribe_fail');
       toast({
         title: 'Error',
         description: error.message || 'error',
@@ -229,11 +268,27 @@ export const InscribingOrderModal = ({
     if (order?.status === 'paid') {
       setActiveStep(1);
     }
-    if (order?.funding && order?.commitTx) {
+    if (
+      (order?.funding && order?.commitTx) ||
+      order?.status === 'commit_error'
+    ) {
       setActiveStep(1);
     }
+    if (
+      order?.status === 'inscribe_wait' ||
+      order?.status === 'inscribe_fail'
+    ) {
+      setActiveStep(2);
+    }
     if (order?.status === 'inscribe_success') {
-      setActiveStep(3);
+      if (
+        order?.inscriptions?.length > 1 &&
+        order?.inscriptions?.some((v) => !v.txid)
+      ) {
+        setActiveStep(2);
+      } else {
+        setActiveStep(3);
+      }
     }
   };
   const commitTxHref = useMemo(() => {
@@ -243,19 +298,19 @@ export const InscribingOrderModal = ({
     const { txid } = order.commitTx;
     return `https://mempool.space/testnet/tx/${txid}`;
   }, [order?.commitTx]);
-  const fundingAddress = useMemo(() => {
-    if (!order?.secret) {
-      return '';
-    }
-    const { address } = getFundingAddress(order.secret, order.network);
-    return address;
-  }, [order?.secret, order?.network]);
-  const fundingAddressHref = useMemo(() => {
-    if (!fundingAddress) {
-      return '';
-    }
-    return `https://mempool.space/testnet/address/${fundingAddress}`;
-  }, [fundingAddress]);
+  // const fundingAddress = useMemo(() => {
+  //   if (!order?.secret) {
+  //     return '';
+  //   }
+  //   const address  = getAddressBySescet(order.secret, order.network);
+  //   console.log(address);
+  //   return address;
+  // }, [order?.secret, order?.network]);
+  const fundingAddressHref = (address: string) => {
+    return `https://mempool.space${
+      order?.network === 'testnet' ? '/testnet' : ''
+    }/address/${address}`;
+  };
   useEffect(() => {
     checkStatus();
   }, []);
@@ -356,7 +411,9 @@ export const InscribingOrderModal = ({
                       </div>
                       <a
                         className='text-blue-500 underline'
-                        href={`https://mempool.space/testnet/tx/${item.txid}`}
+                        href={`https://mempool.space${
+                          order.network === 'testnet' ? '/testnet' : ''
+                        }/tx/${item.txid}`}
                         target='_blank'>
                         {hideStr(item.txid, 10)}
                       </a>
@@ -379,43 +436,46 @@ export const InscribingOrderModal = ({
             feeRate={order?.feeRate}
             inscriptionSize={order?.inscriptionSize}
             serviceFee={order?.fee.serviceFee}
+            filesLength={order?.inscriptions.length}
             totalFee={order?.fee.totalFee}
             networkFee={order?.fee.networkFee}
           />
-          {activeStep > 1 && (
-            <>
-              <Divider children={t('common.account')} />
-              <Card title='Funding Account' size='small'>
-                <div className='flex justify-between items-center mb-4'>
-                  <div>{t('common.secret')}</div>
-                  <div className='text-sm text-gray-500 break-all ml-4'>
-                    {order?.secret}
-                  </div>
+          <>
+            <Divider children={t('common.account')} />
+            <Card title='Funding Account' size='small'>
+              <div className='flex justify-between items-center mb-4'>
+                <div>{t('common.secret')}</div>
+                <div className='text-sm text-gray-500 break-all ml-4'>
+                  {order?.secret}
                 </div>
-                <div className='flex justify-between'>
-                  <div>{t('common.address')}</div>
-                  <a
-                    className='text-blue-500 underline ml-4'
-                    href={fundingAddressHref}
-                    target='_blank'>
-                    {hideStr(fundingAddress, 10)}
-                  </a>
-                </div>
-              </Card>
-            </>
-          )}
+              </div>
+              <div className='flex justify-between'>
+                <div>{t('common.address')}</div>
+                <a
+                  className='text-blue-500 underline ml-4'
+                  href={fundingAddressHref(
+                    order?.inscriptions?.[0].inscriptionAddress,
+                  )}
+                  target='_blank'>
+                  {hideStr(order?.inscriptions?.[0].inscriptionAddress, 10)}
+                </a>
+              </div>
+            </Card>
+          </>
           <Divider children={t('pages.inscribe.pay.files')} />
-          <VStack className='mb-2' spacing='10px'>
-            {order?.inscriptions?.map((item, index) => (
-              <InscribeOrderItem
-                key={index}
-                label={index + 1}
-                status={order?.status}
-                value={item.file.show}
-                address={order.toAddress[0]}
-              />
-            ))}
-          </VStack>
+          <div className='max-h-[20rem] overflow-y-auto'>
+            <VStack className='mb-2' spacing='10px'>
+              {order?.inscriptions?.map((item, index) => (
+                <InscribeOrderItem
+                  key={index}
+                  label={index + 1}
+                  status={order?.status}
+                  value={item.file.show}
+                  address={order.toAddress[0]}
+                />
+              ))}
+            </VStack>
+          </div>
           {order?.createAt && (
             <div className='text-right text-sm text-gray-400'>
               {t('pages.inscribe.pay.created_text')}{' '}

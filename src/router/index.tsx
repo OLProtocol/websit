@@ -14,6 +14,7 @@ export const ROUTE_PATH = {
   HOME: '/',
   TEST: '/test',
   INSCRIBE: '/inscribe',
+  INSCRIBE_TEST: '/inscribe_test',
   ORDX_INDEX: '/explorer',
   ORDX_INFO: '/explorer/:tick',
 };
@@ -40,6 +41,10 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTE_PATH.INSCRIBE,
+        element: <Inscribe />,
+      },
+      {
+        path: ROUTE_PATH.INSCRIBE_TEST,
         element: <Inscribe />,
       },
       {

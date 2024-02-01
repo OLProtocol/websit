@@ -1,9 +1,15 @@
-export * from './mempool';
 export * from './mint';
 // export * from './index_back';
 
 import { keys } from '@cmdcode/crypto-tools';
 
+export const waitSomeSeconds = async (num: number) => {
+  return new Promise(function (resolve) {
+    setTimeout(function () {
+      resolve('');
+    }, num);
+  });
+};
 export const removeObjectEmptyValue = (obj: any) => {
   const _obj = { ...obj };
   Object.keys(_obj).forEach((key) => {
