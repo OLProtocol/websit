@@ -18,7 +18,7 @@ import { FeeShow } from './FeeShow';
 // import mempoolJS from '@mempool/mempool.js';
 import { generatePrivateKey, generateInscriptions } from '../utils';
 import { useUnisatConnect, useCalcFee } from '@/lib/hooks';
-import { OrderItemType, useOrderStore } from '@/store';
+import { OrderItemType, useGlobalStore, useOrderStore } from '@/store';
 import { InscribeType } from '@/types';
 import { useTranslation } from 'react-i18next';
 
@@ -44,13 +44,7 @@ export const InscribeStepThree = ({
   });
   const [loading, setLoading] = useState(false);
   const { add: addOrder, changeStatus } = useOrderStore((state) => state);
-  const [fundingData, { set: setFuningData }] = useMap<{
-    seckey: any;
-    pubkey: any;
-  }>({
-    seckey: undefined,
-    pubkey: undefined,
-  });
+  const { serviceStatus } = useGlobalStore((state) => state);
   const [feeRate, setFeeRate] = useState(1);
   const feeRateChange = (value: number) => {
     console.log('value', value);
@@ -71,7 +65,7 @@ export const InscribeStepThree = ({
       return 546;
     }
   }, [type, list]);
-  const clacFee = useCalcFee({ feeRate, inscriptionSize, files });
+  const clacFee = useCalcFee({ feeRate, inscriptionSize, files, serviceStatus });
   const submit = async () => {
     if (loading) return;
     setLoading(true);

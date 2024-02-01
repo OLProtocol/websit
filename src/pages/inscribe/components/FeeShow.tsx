@@ -53,9 +53,13 @@ export const FeeShow = ({
       <div className='flex justify-between mb-2'>
         <div>
           {t('pages.inscribe.fee.service_fee')}
-          <span className='text-blue-400'>
-            ({serviceText})
-          </span>
+          {
+            !!serviceFee && (
+              <span className='text-blue-400'>
+                ({serviceText})
+              </span>
+            )
+          }
         </div>
         <div>
           <span>{serviceFee}</span> <span> sats</span>

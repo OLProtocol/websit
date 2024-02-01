@@ -3,13 +3,14 @@ export const useCalcFee = ({
   feeRate,
   inscriptionSize,
   files,
+  serviceStatus,
 }: {
   feeRate: number;
+  serviceStatus: boolean;
   inscriptionSize: number;
   files: any[];
 }) => {
-  const { VITE_TIP_STATUS, VITE_TIP_MIN = 1000 } = import.meta.env;
-  const serviceStatus = VITE_TIP_STATUS === '1';
+  const { VITE_TIP_MIN = 1000 } = import.meta.env;
   const clacFee = useMemo(() => {
     const base_size = 180;
     const feeObj: any = {
@@ -25,7 +26,10 @@ export const useCalcFee = ({
       }
       let totalFee = feeObj.networkFee + inscriptionSize;
       if (serviceStatus) {
-        const oneFee = Math.max(Number(VITE_TIP_MIN), Math.ceil(inscriptionSize * 0.1));
+        const oneFee = Math.max(
+          Number(VITE_TIP_MIN),
+          Math.ceil(inscriptionSize * 0.1),
+        );
         feeObj.serviceFee = Math.ceil(oneFee * files.length);
         feeObj.serviceText = `${oneFee} * ${files.length} = ${feeObj.serviceFee}`;
         totalFee += feeObj.serviceFee;
@@ -37,13 +41,17 @@ export const useCalcFee = ({
         totalInscriptionFee += files[i].txsize * feeRate;
       }
       const networkFee =
-        (base_size + 34 * (files.length  + (serviceStatus ? 1 : 0)) + 10) *
-          feeRate + base_size * files.length +
+        (base_size + 34 * (files.length + (serviceStatus ? 1 : 0)) + 10) *
+          feeRate +
+        base_size * files.length +
         totalInscriptionFee;
       let totalFee = networkFee + inscriptionSize * files.length;
       feeObj.networkFee = networkFee;
       if (serviceStatus) {
-        const oneFee = Math.max(Number(VITE_TIP_MIN), Math.ceil(inscriptionSize * 0.1));
+        const oneFee = Math.max(
+          Number(VITE_TIP_MIN),
+          Math.ceil(inscriptionSize * 0.1),
+        );
         feeObj.serviceFee = Math.ceil(oneFee * files.length);
         feeObj.serviceText = `${oneFee} X ${files.length} = ${feeObj.serviceFee}`;
         totalFee += feeObj.serviceFee;

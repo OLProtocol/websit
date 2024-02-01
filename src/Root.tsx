@@ -11,8 +11,11 @@ export default function Root() {
   const { network } = useUnisatConnect();
   const { data: heightData } = useBtcHeight(network as any);
   const { setHeight } = useGlobalStore((state) => state);
+  const { VITE_TIP_STATUS, VITE_TIP_HEIGHT } = import.meta.env;
   useEffect(() => {
     if (heightData) {
+      const serviceStatus =
+        VITE_TIP_STATUS === '1' || heightData >= Number(VITE_TIP_HEIGHT);
       setHeight(heightData);
     }
   }, [heightData]);
