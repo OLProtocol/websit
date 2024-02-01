@@ -119,10 +119,10 @@ export const InscribingOrderModal = ({
           setFunding(orderId, funding);
           changeStatus(orderId, 'paid');
         }
+        setActiveStep(1);
         setTimeout(() => {
           startInscribe();
         }, 0);
-        setActiveStep(1);
       }
     } catch (error: any) {
       console.error(error);
@@ -138,7 +138,7 @@ export const InscribingOrderModal = ({
     setLoading(false);
   };
   const startInscribe = async () => {
-    if (!order || payStatus) {
+    if (!order) {
       return;
     }
     console.log(order);
@@ -151,6 +151,7 @@ export const InscribingOrderModal = ({
       network,
       fee,
     } = order;
+    setLoading(true);
     if (inscriptions.length !== 1 && funding) {
       try {
         await pollGetTxStatus(funding.txid, order.network);
@@ -171,19 +172,14 @@ export const InscribingOrderModal = ({
         });
         changeStatus(orderId, 'commit_success');
         setCommitTx(orderId, commitData);
-        setTimeout(() => {
-          startInscribe();
-        }, 0);
-        setLoading(true);
-        setPayStatus(true);
         setActiveStep(2);
         changeStatus(orderId, 'inscribe_wait');
-        setTimeout(() => {
-          inscribeHandler();
-        }, 0);
+        await waitSomeSeconds(1000);
+        inscribeHandler();
         setLoading(false);
       } catch (error: any) {
         console.log(error);
+        setLoading(false);
         changeStatus(orderId, 'commit_error');
         toast({
           title: 'Error',
@@ -196,12 +192,10 @@ export const InscribingOrderModal = ({
       }
     } else {
       setLoading(true);
-      setPayStatus(true);
       setActiveStep(2);
       changeStatus(orderId, 'inscribe_wait');
-      setTimeout(() => {
-        inscribeHandler();
-      }, 0);
+      await waitSomeSeconds(1000);
+      inscribeHandler();
       setLoading(false);
     }
   };
@@ -220,7 +214,7 @@ export const InscribingOrderModal = ({
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
 
-        await waitSomeSeconds(3000);
+        await waitSomeSeconds(1500);
         if (!inscription.txid) {
           const txid = await inscribe({
             secret: order.secret,
@@ -245,6 +239,14 @@ export const InscribingOrderModal = ({
         changeStatus(orderId, 'inscribe_success');
         setActiveStep(3);
         onFinished?.();
+        toast({
+          title: 'Success',
+          description: 'Inscribe Success',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+          position: 'top',
+        });
       } else {
         changeStatus(orderId, 'inscribe_fail');
       }
@@ -361,7 +363,6 @@ export const InscribingOrderModal = ({
                 <div className='flex justify-center mt-4'>
                   <Button
                     type='primary'
-                    disabled={payStatus}
                     loading={loading}
                     onClick={startInscribe}>
                     {t('buttons.start_inscribe')}
