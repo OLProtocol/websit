@@ -161,7 +161,7 @@
     },
     "explorer": {
       "title": "浏览器",
-      "subtitle": "查看地址的 OrdX 余额。",
+      "subtitle": "查看地址的 OrdX 余额",
       "des": "识别包括部署、铸造和转账在内的所有操作。",
       "list_title": "OrdX 的完整列表"
     }

@@ -49,9 +49,12 @@ export default function Ord2Index() {
       <BtcHeightAlert />
       <div className='max-w-[40rem] mx-auto pt-20 mb-4'>
         {!showAddress && (
-          <h1 className='text-2xl text-orange-500 text-center mb-8'>
-            {t('pages.explorer.subtitle')}
-          </h1>
+          <>
+            <h1 className='text-2xl text-orange-500 text-center mb-2'>
+              {t('pages.explorer.subtitle')}
+            </h1>
+            <h2 className='text-sm text-gray-500 text-center mb-6'>暂时不支持查看转移后的余额。</h2>
+          </>
         )}
 
         <div className='flex justify-center mb-12'>

@@ -57,6 +57,9 @@ export const Ord2FullList = () => {
       key: 'tick',
       width: 80,
       align: 'center',
+      render: (tick) => {
+        return <div className='cursor-pointer'>{tick}</div>;
+      }
     },
     {
       title: t('common.description'),
