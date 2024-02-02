@@ -28,10 +28,9 @@ export const calcTimeBetweenBlocks = async ({
     if (end < height) {
       endTime = await getTimeByHeight(end, network);
     } else {
-      const endDis = end - height > 0 ? end - height : 0;
-    const endTime = add(now, { minutes: endDis * 10 });
+      const endDis = end - height;
+      endTime = add(now, { minutes: endDis * 10 });
     }
-    
     return {
       start: format(startTime, 'yyyy-MM-dd HH:mm'),
       end: format(endTime, 'yyyy-MM-dd HH:mm'),

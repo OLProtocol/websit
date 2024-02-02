@@ -2,7 +2,7 @@ export * from './unisat';
 export * from '../utils/useCalcFee';
 import { add, format } from 'date-fns';
 import { useMemo } from 'react';
-import { getBlockStatus } from '@/api';
+import { calcTimeBetweenBlocks } from '@/lib/utils';
 interface BlockHeightTime {
   height: number;
   start: number;
