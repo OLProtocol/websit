@@ -2,6 +2,7 @@ export * from './unisat';
 export * from '../utils/useCalcFee';
 import { add, format } from 'date-fns';
 import { useMemo } from 'react';
+import { getBlockStatus } from '@/api';
 interface BlockHeightTime {
   height: number;
   start: number;
@@ -9,7 +10,6 @@ interface BlockHeightTime {
 }
 export const useBlockHeightTime = ({ height, start, end }: BlockHeightTime) => {
   const time = useMemo(() => {
-    console.log(height, start, end)
     try {
       const now = new Date();
       const startDis = start - height > 0 ? start - height : 0;

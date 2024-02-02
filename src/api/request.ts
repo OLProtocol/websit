@@ -142,6 +142,7 @@ export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
   return data;
 };
 
+
 export async function pollGetTxStatus(
   txid: string,
   network: string,
