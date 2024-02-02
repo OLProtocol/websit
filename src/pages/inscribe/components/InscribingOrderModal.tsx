@@ -483,12 +483,12 @@ export const InscribingOrderModal = ({
           <>
             <Divider children={t('common.account')} />
             <Card title='Funding Account' size='small'>
-              <div className='flex justify-between items-center mb-4'>
+              {/* <div className='flex justify-between items-center mb-4'>
                 <div>{t('common.secret')}</div>
                 <div className='text-sm text-gray-500 break-all ml-4'>
                   {order?.secret}
                 </div>
-              </div>
+              </div> */}
               <div className='flex justify-between'>
                 <div>{t('common.address')}</div>
                 {order?.inscriptions?.length === 1 ? (

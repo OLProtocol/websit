@@ -60,7 +60,7 @@ export const Ord2FullList = () => {
       align: 'center',
       render: (tick) => {
         return <div className='cursor-pointer'>{tick}</div>;
-      }
+      },
     },
     {
       title: t('common.description'),
@@ -76,9 +76,16 @@ export const Ord2FullList = () => {
       key: 'block',
       width: 130,
       align: 'center',
-      render: (_, record) => {
-        return <BlockAndTime startBlock={record.startBlock} endBlock={record.endBlock} />;
-      }
+      render: (block, record) => {
+        return block === '-' ? (
+          '-'
+        ) : (
+          <BlockAndTime
+            startBlock={record.startBlock}
+            endBlock={record.endBlock}
+          />
+        );
+      },
     },
     // {
     //   title: t('common.deploy_height'),
@@ -102,19 +109,19 @@ export const Ord2FullList = () => {
       align: 'center',
       render: (_, record) => {
         const { rarity, cn, trz } = record;
-        const attrArr: string[] = []
+        const attrArr: string[] = [];
         if (rarity !== 'unknow' && rarity !== 'common') {
-          attrArr.push(`rar=${rarity}`)
+          attrArr.push(`rar=${rarity}`);
         }
         if (cn !== undefined) {
-          attrArr.push(`cn=${cn}`)
+          attrArr.push(`cn=${cn}`);
         }
         if (trz !== undefined) {
-          attrArr.push(`trz=${trz}`)
+          attrArr.push(`trz=${trz}`);
         }
         let attr = '-';
         if (attrArr.length > 0) {
-          attr = attrArr.join(';')
+          attr = attrArr.join(';');
         }
         return attr;
       },
