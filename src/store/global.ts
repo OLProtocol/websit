@@ -3,10 +3,12 @@ import { devtools, persist } from 'zustand/middleware';
 
 interface GlobalState {
   loading: boolean;
+  appVersion: number;
   serviceStatus: number;
   btcHeight: number;
   setLoading: (loading: boolean) => void;
   setServiceStatus: (s: number) => void;
+  setAppVersion: (s: number) => void;
   setHeight: (height: number) => void;
   reset: () => void;
 }
@@ -17,6 +19,7 @@ export const useGlobalStore = create<GlobalState>()(
       (set) => ({
         loading: false,
         btcHeight: 0,
+        appVersion: 0,
         serviceStatus: 0,
         setLoading: (loading) => {
           set({
@@ -26,6 +29,11 @@ export const useGlobalStore = create<GlobalState>()(
         setServiceStatus: (s) => {
           set({
             serviceStatus: s,
+          });
+        },
+        setAppVersion: (s) => {
+          set({
+            appVersion: s,
           });
         },
         setHeight: (height) => {

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build && node ./updateVersion.js",
+    "build": " node ./updateVersion.js && tsc && vite build",
     "dbuild": "tsc && vite build --minify false",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"

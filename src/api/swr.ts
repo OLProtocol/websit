@@ -21,6 +21,20 @@ const fetcher = (args) =>
       }
     });
 
+export const useAppVersion = () => {
+  const { data, error, isLoading } = useSWR(
+    `app-version`,
+    () => request.getAppVersion(),
+    {
+      refreshInterval: 1000 * 60 * 2,
+    },
+  );
+  return {
+    data,
+    error,
+    isLoading,
+  };
+};
 export const useOrd2Status = ({
   start,
   limit,
@@ -119,11 +133,7 @@ export const useOrdxTickHistory = ({
     isLoading: isMutating,
   };
 };
-export const useAvailableUtxos = ({
-  address,
-  ticker,
-  network,
-}: any) => {
+export const useAvailableUtxos = ({ address, ticker, network }: any) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ordx-history-${address}-${ticker}`,
     () => request.getAvailableUtxos({ address, ticker, network }),
@@ -137,13 +147,14 @@ export const useAvailableUtxos = ({
   };
 };
 
-export const useBtcHeight = (network: 'testnet' | 'main') => {
-  const { data, error, isLoading } = useSWR(`height-${network}`, () =>
-    // request.getCurrentHeight({ network }),
-    fetchTipHeight(network),
+export const useBtcHeight = (network: string) => {
+  const { data, error, isLoading } = useSWR(
+    `height-${network}`,
+    () => request.getCurrentHeight({ network }),
+    // fetchTipHeight(network),
     {
       refreshInterval: 1000 * 60 * 5,
-    }
+    },
   );
   return {
     data,

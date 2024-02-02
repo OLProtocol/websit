@@ -113,7 +113,7 @@ export const getAvailableUtxos = async ({ address, ticker, network }: any) => {
   );
   return data;
 };
-export const getCurrentHeight = async ({ network }: OrdXHistoryParams) => {
+export const getCurrentHeight = async ({ network }: any) => {
   const { data } = await axios.get(
     generateUrl(`v1/indexer/ordx/bestheight`, network),
   );
@@ -129,6 +129,10 @@ export const savePaidOrder = async ({ key, content, network }: any) => {
   );
   return data;
 };
+export const getAppVersion = async () => {
+  const { data } = await axios.get(`/version.txt`);
+  return data;
+};
 export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
   const { data } = await axios.get(
     `https://blockstream.info/${
@@ -137,6 +141,7 @@ export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
   );
   return data;
 };
+
 export async function pollGetTxStatus(
   txid: string,
   network: string,

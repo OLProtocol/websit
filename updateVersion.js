@@ -4,6 +4,7 @@ const path = require('path');
 
 function updateVersion() {
   const filePath = path.join(__dirname, 'public', 'version.txt');
+  const assetFilePath = path.join(__dirname, 'src/assets', 'version.txt');
   
   // 读取version.txt文件中的数字
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -23,6 +24,13 @@ function updateVersion() {
       }
       
       console.log('版本号已更新:', version);
+    });
+    fs.writeFile(assetFilePath, version.toString(), 'utf8', (err) => {
+      if (err) {
+        console.error('写入文件失败:', err);
+        return;
+      }
+      
     });
   });
 }

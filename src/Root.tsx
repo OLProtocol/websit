@@ -4,23 +4,28 @@ import { Alert, Layout, Menu, theme } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 const { Header, Content, Footer, Sider } = Layout;
 import { useGlobalStore } from './store';
-import { useBtcHeight } from '@/api';
+import { UpdateVersionModal } from './components/UpdateVersionModal';
+import { useBtcHeight, useAppVersion } from '@/api';
 import { useEffect } from 'react';
 
 export default function Root() {
+
   const { network } = useUnisatConnect();
   const { data: heightData } = useBtcHeight(network as any);
-  const { setHeight, setServiceStatus } = useGlobalStore((state) => state);
+ 
+  const { setHeight, setServiceStatus, setAppVersion } = useGlobalStore((state) => state);
   const { VITE_TIP_STATUS, VITE_TIP_HEIGHT } = import.meta.env;
   useEffect(() => {
-    if (heightData) {
+    const height = heightData?.data?.height;
+    if (height) {
       const serviceStatus = heightData >= Number(VITE_TIP_HEIGHT);
       setServiceStatus(serviceStatus ? 1 : 0);
-      setHeight(heightData);
+      setHeight(height);
     }
   }, [heightData]);
   return (
     <Layout className='h-full'>
+      <UpdateVersionModal />
       <Header className=''>
         <NavHeader />
       </Header>
