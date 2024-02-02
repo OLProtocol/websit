@@ -517,7 +517,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                     focusThumbOnChange={false}
                     value={data.repeatMint}
                     min={1}
-                    max={20}
+                    max={10}
                     onChange={(e) => set('repeatMint', e)}>
                     <SliderTrack>
                       <SliderFilledTrack />
