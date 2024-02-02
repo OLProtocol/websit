@@ -14,8 +14,8 @@ export const useBlockHeightTime = ({ height, start, end }: BlockHeightTime) => {
       const now = new Date();
       const startDis = start - height > 0 ? start - height : 0;
       const endDis = end - height > 0 ? end - height : 0;
-      const startTime = add(now, { minutes: startDis * 10 });
-      const endTime = add(now, { minutes: endDis * 10 });
+      const startTime = add(now, { minutes: startDis * 9 });
+      const endTime = add(now, { minutes: endDis * 9 });
       return {
         start: format(startTime, 'yyyy-MM-dd HH:mm'),
         end: format(endTime, 'yyyy-MM-dd HH:mm'),

@@ -14,16 +14,24 @@ export const calcTimeBetweenBlocks = async ({
   network,
 }: any) => {
   try {
-    const now = new Date();
-    let startTimte = now;
+    const now = +new Date();
+    let startTime: any = now;
+    let endTime: any = now;
 
     if (start < height) {
-      startTimte = await getTimeByHeight(start, network);
+      startTime = await getTimeByHeight(start, network);
+    } else {
+      const startDis = start - height;
+      startTime = add(now, { minutes: startDis * 10 });
     }
-    const startDis = start - height > 0 ? start - height : 0;
-    const endDis = end - height > 0 ? end - height : 0;
-    const startTime = add(now, { minutes: startDis * 10 });
+
+    if (end < height) {
+      endTime = await getTimeByHeight(end, network);
+    } else {
+      const endDis = end - height > 0 ? end - height : 0;
     const endTime = add(now, { minutes: endDis * 10 });
+    }
+    
     return {
       start: format(startTime, 'yyyy-MM-dd HH:mm'),
       end: format(endTime, 'yyyy-MM-dd HH:mm'),
