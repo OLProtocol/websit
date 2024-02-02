@@ -3,6 +3,7 @@ import { Segmented, Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { useOrd2Status } from '@/api';
+import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { useTranslation } from 'react-i18next';
@@ -75,6 +76,9 @@ export const Ord2FullList = () => {
       key: 'block',
       width: 130,
       align: 'center',
+      render: (_, record) => {
+        return <BlockAndTime startBlock={record.startBlock} endBlock={record.endBlock} />;
+      }
     },
     // {
     //   title: t('common.deploy_height'),
@@ -213,6 +217,8 @@ export const Ord2FullList = () => {
           id: item.id,
           tick: item.ticker,
           block: !special ? `${item.startBlock}-${item.endBlock}` : '-',
+          startBlock: item.startBlock,
+          endBlock: item.endBlock,
           rarity: item.rarity,
           description: item.description,
           reg: item.reg,

@@ -25,8 +25,7 @@ import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { useMap } from 'react-use';
-import { fetchTipHeight } from '@/lib/utils';
-import { useBlockHeightTime } from '@/lib/hooks';
+import { fetchTipHeight, calcTimeBetweenBlocks} from '@/lib/utils';
 import { clacTextSize } from '../utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -39,10 +38,11 @@ interface InscribeOrdxProps {
   onChange?: (data: any) => void;
 }
 export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
-  const { btcHeight } = useGlobalStore(state => state);
+  const { btcHeight } = useGlobalStore((state) => state);
   const { t } = useTranslation();
   const { state } = useLocation();
   const { network } = useUnisatConnect();
+  const [time, setTime] = useState({ start: undefined, end: undefined } as any);
   const [data, { set }] = useMap({
     type: 'mint',
     tick: '',
@@ -225,11 +225,21 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const buttonDisabled = useMemo(() => {
     return !data.tick || (data.type === 'mint' && !tickChecked);
   }, [data, tickChecked]);
-  const time = useBlockHeightTime({
-    height: btcHeight,
-    start: data.block_start,
-    end: data.block_end,
-  });
+  // const time = useBlockHeightTime({
+  //   height: btcHeight,
+  //   start: data.block_start,
+  //   end: data.block_end,
+  //   network,
+  // });
+  const onBlockBLur = async () => {
+    const res = await calcTimeBetweenBlocks({
+      height: btcHeight,
+      start: data.block_start,
+      end: data.block_end,
+      network,
+    });
+    setTime(res);
+  }
   useEffect(() => {
     if (state?.type === 'ordx') {
       const { item } = state;
@@ -321,6 +331,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                     <NumberInput
                       value={data.block_start}
                       className='flex-1'
+                      onBlur={onBlockBLur}
                       isDisabled={!data.blockChecked}
                       placeholder='Block start'
                       onChange={(_, e) => set('block_start', isNaN(e) ? 0 : e)}
@@ -332,6 +343,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       value={data.block_end}
                       isDisabled={!data.blockChecked}
                       className='flex-1'
+                      onBlur={onBlockBLur}
                       placeholder='Block End'
                       onChange={(_, e) => set('block_end', isNaN(e) ? 0 : e)}
                       min={1}>

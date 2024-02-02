@@ -77,6 +77,7 @@ export const getBlockStatus = async ({ height, network }: any) => {
           network === 'testnet' ? 'testnet/' : ''
         }api/block/${hash}`,
       );
+      console.log(data)
       return data;
     }
   } catch (error) {

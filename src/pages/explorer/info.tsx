@@ -3,6 +3,7 @@ import { useOrdxInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { Segmented } from 'antd';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
+import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
 import { OrdxTickHistory } from './components/OrdxTickHistory';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
@@ -133,11 +134,22 @@ export default function Ord2Info() {
 
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.block')}:</p>
-              <p className='indent-2'>
-                {specialStatus
+              <div className='indent-2 flex'>
+                {/* {specialStatus
                   ? '-'
-                  : `${detail?.startBlock}-${detail?.endBlock}`}
-              </p>
+                  : <BlockAndTime startBlock={detail?}/>} */}
+                {specialStatus && '-'}
+                {!!(
+                  !specialStatus &&
+                  detail?.startBlock &&
+                  detail?.endBlock
+                ) && (
+                  <BlockAndTime
+                    startBlock={detail.startBlock}
+                    endBlock={detail.endBlock}
+                  />
+                )}
+              </div>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_height')}:</p>
