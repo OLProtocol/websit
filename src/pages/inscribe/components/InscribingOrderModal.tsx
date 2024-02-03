@@ -229,7 +229,7 @@ export const InscribingOrderModal = ({
       for (let i = 0; i < order.inscriptions.length; i++) {
         const inscription = order.inscriptions[i];
         await waitSomeSeconds(1500);
-        if (!inscription.txid) {
+        // if (!inscription.txid) {
           const txid = await inscribe({
             secret: order.secret,
             network: order.network as any,
@@ -243,7 +243,7 @@ export const InscribingOrderModal = ({
             inscribeFee: order.inscriptionSize,
           });
           addTxidToInscription(order.orderId, i, txid);
-        }
+        // }
         changeStatus(orderId, 'inscribe_success');
         changeInscriptionStatus(order.orderId, i, 'inscribe_success');
         finishedNum += 1;
@@ -323,7 +323,7 @@ export const InscribingOrderModal = ({
       ) {
         setActiveStep(2);
       } else {
-        setActiveStep(3);
+        setActiveStep(2);
       }
     }
   };
