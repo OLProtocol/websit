@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import * as blockStream from './blockStream';
 import useSWRMutation from 'swr/mutation';
 import * as request from './request';
 import {
@@ -150,8 +151,7 @@ export const useAvailableUtxos = ({ address, ticker, network }: any) => {
 export const useBtcHeight = (network: string) => {
   const { data, error, isLoading } = useSWR(
     `height-${network}`,
-    () => request.getCurrentHeight({ network }),
-    // fetchTipHeight(network),
+    () => blockStream.getTipBlockHeight({ network }),
     {
       refreshInterval: 1000 * 60 * 5,
     },

@@ -25,7 +25,7 @@ import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { useMap } from 'react-use';
-import { fetchTipHeight, calcTimeBetweenBlocks} from '@/lib/utils';
+import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
 import { clacTextSize } from '../utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -68,19 +68,24 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const [tickLoading, setTickLoading] = useState(false);
   const [tickChecked, setTickChecked] = useState(false);
   const getOrdXInfo = async (tick: string) => {
+    // If there is no data in localStorage, fetch it
     try {
-      // if (infoRef.current[tick]) {
-      //   return infoRef.current[tick];
-      // }
+      const key = `${network}_${tick}`;
+      const cachedData = localStorage.getItem(key);
+      if (cachedData) {
+        return JSON.parse(cachedData);
+      }
       const info = await getOrdxInfo({ tick, network });
-      infoRef.current[tick] = info;
+      if (info) {
+        localStorage.setItem(key, JSON.stringify(info));
+      }
       return info;
     } catch (error) {
       toast.error(t('toast.system_error'));
-      console.log('error', error);
+      console.error('Failed to fetch ordXInfo:', error);
       throw error;
     }
-  };
+  }
   const nextHandler = async () => {
     setErrorText('');
     const checkStatus = await checkTick();
@@ -96,8 +101,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       checkStatus = false;
       return checkStatus;
     }
-    
-    console.log(data.repeatMint)
+
+    console.log(data.repeatMint);
     const textSize = clacTextSize(data.tick);
     if (textSize < 3 || textSize == 4 || textSize > 32) {
       checkStatus = false;
@@ -241,7 +246,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       network,
     });
     setTime(res);
-  }
+  };
   useEffect(() => {
     if (state?.type === 'ordx') {
       const { item } = state;
@@ -517,7 +522,9 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                     maxW='100px'
                     mr='2rem'
                     value={data.repeatMint}
-                    onChange={(_, e) => set('repeatMint', isNaN(e) ? 0 : Math.min(e, 10))}
+                    onChange={(_, e) =>
+                      set('repeatMint', isNaN(e) ? 0 : Math.min(e, 10))
+                    }
                     min={1}
                     max={10}>
                     <NumberInputField />

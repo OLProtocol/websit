@@ -344,7 +344,7 @@ export const InscribingOrderModal = ({
     onClose?.();
   };
   return (
-    <Modal size='3xl' isOpen={show} onClose={closeHandler} isCentered>
+    <Modal closeOnEsc={false} closeOnOverlayClick={false} size='3xl' isOpen={show} onClose={closeHandler} isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader className='flex items-center'>
