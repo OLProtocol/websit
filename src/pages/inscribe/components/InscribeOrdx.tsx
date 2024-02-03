@@ -96,6 +96,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       checkStatus = false;
       return checkStatus;
     }
+    
+    console.log(data.repeatMint)
     const textSize = clacTextSize(data.tick);
     if (textSize < 3 || textSize == 4 || textSize > 32) {
       checkStatus = false;
@@ -515,7 +517,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                     maxW='100px'
                     mr='2rem'
                     value={data.repeatMint}
-                    onChange={(_, e) => set('repeatMint', isNaN(e) ? 0 : e)}
+                    onChange={(_, e) => set('repeatMint', isNaN(e) ? 0 : Math.min(e, 10))}
                     min={1}
                     max={10}>
                     <NumberInputField />

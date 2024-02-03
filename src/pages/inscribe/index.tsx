@@ -93,6 +93,7 @@ export default function Inscribe() {
     setBrc20('totalSupply', data.totalSupply);
   };
   const ordxChange = (data: any) => {
+    console.log(data);
     setOrd2Data('type', data.type);
     setOrd2Data('tick', data.tick);
     setOrd2Data('amount', data.amount);
