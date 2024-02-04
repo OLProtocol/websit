@@ -32,7 +32,7 @@ export const FeeShow = ({
       : 0;
     let text = `${oneFee} x ${filesLength} = ${serviceFee}`;
     if (serviceStatus != 1) {
-      text += `,  高度 ${VITE_TIP_HEIGHT}之前免费。`;
+      text += `,  推广期免费。`;
     }
     return text;
   }, [inscriptionSize, serviceFee, filesLength, serviceStatus]);
