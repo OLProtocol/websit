@@ -28,7 +28,9 @@
     "holders": "holders",
     "minted": "minted",
     "minting": "Minting",
-    "minted_history": "Minted Amount",
+    "minted_total": "Minted Amount",
+    "minted_history": "Minted History",
+    "minted_history_data_file": "Minted History Data File",
     "waiting": "Not Start",
     "completed": "Completed",
     "status": "Status",
@@ -77,8 +79,9 @@
     },
     "inscribe_check": {
       "title": "Verify",
-      "success_result": "Congratulations, this is a real pearl!",
-      "failed_result": "Sorry, the pearl was not found.",
+      "result": "Result",
+      "success_result": "Congratulations, {{inscribeId}} is a real pearl!",
+      "failed_result": "Sorry, {{inscribeId}} is not a pearl.",
       "search_placeholder": "Inscription Number"
     },
     "inscribe": {

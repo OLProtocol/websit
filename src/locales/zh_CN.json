@@ -28,7 +28,9 @@
     "holders": "持有者",
     "minted": "已铸造",
     "minting": "铸造中",
-    "minted_history": "铸造总量",
+    "minted_total": "铸造总量",
+    "minted_history": "铸造历史",
+    "minted_history_data_file": "铸造历史数据文件",
     "waiting": "未开始",
     "completed": "已完成",
     "status": "状态",
@@ -77,8 +79,9 @@
     },
     "inscribe_check": {
       "title": "验证",
-      "success_result": "恭喜你，这是真的珍珠！",
-      "failed_result": "很遗憾，没有找到珍珠。",
+      "result": "验证结果",
+      "success_result": "恭喜你，{{inscribeId}} 是真的珍珠！",
+      "failed_result": "很遗憾，{{inscribeId}} 不是珍珠。",
       "search_placeholder": "铭文序号"
     },
     "inscribe": {
