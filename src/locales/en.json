@@ -75,6 +75,12 @@
     "home": {
       "title": "Home"
     },
+    "inscribe_check": {
+      "title": "Verify",
+      "success_result": "Congratulations, this is a real pearl!",
+      "failed_result": "Sorry, the pearl was not found.",
+      "search_placeholder": "Inscription Number"
+    },
     "inscribe": {
       "title": "Inscribe",
       "files": {

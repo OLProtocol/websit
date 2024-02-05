@@ -75,6 +75,12 @@
     "home": {
       "title": "首页"
     },
+    "inscribe_check": {
+      "title": "验证",
+      "success_result": "恭喜你，这是真的珍珠！",
+      "failed_result": "很遗憾，没有找到珍珠。",
+      "search_placeholder": "铭文序号"
+    },
     "inscribe": {
       "title": "铭文",
       "files": {

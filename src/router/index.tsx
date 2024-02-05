@@ -5,6 +5,7 @@ import Test from '@/pages/test';
 import Inscribe from '@/pages/inscribe';
 import Ord2Index from '@/pages/explorer';
 import Ord2Info from '@/pages/explorer/info';
+import InscribeCheck from '@/pages/inscribe_check';
 
 const resolveHashPath = (path: string) => {
   return `/#${path}`;
@@ -17,6 +18,7 @@ export const ROUTE_PATH = {
   INSCRIBE_TEST: '/inscribe_test',
   ORDX_INDEX: '/explorer',
   ORDX_INFO: '/explorer/:tick',
+  INSCRIBE_CHECK: '/inscribe_check',
 };
 const hashPath: any = {};
 Object.keys(ROUTE_PATH).forEach((k: any) => {
@@ -54,6 +56,10 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.ORDX_INFO,
         element: <Ord2Info />,
+      },
+      {
+        path: ROUTE_PATH.INSCRIBE_CHECK,
+        element: <InscribeCheck />,
       },
     ],
   },

@@ -129,6 +129,12 @@ export const savePaidOrder = async ({ key, content, network }: any) => {
   );
   return data;
 };
+export const getMintInfo = async ({ inscribId }: any) => {
+  const { data } = await axios.get(
+    generateUrl(`v1/indexer/inscription/${inscribId}/mintinfo`, inscribId),
+  );
+  return data;
+};
 export const getAppVersion = async () => {
   const { data } = await axios.get(`/version.txt`);
   return data;
