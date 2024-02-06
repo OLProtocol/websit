@@ -173,7 +173,6 @@ export default function Ord2Info() {
               <p className='text-gray-400'>{t('common.minted_total')}:</p>
               <p className='indent-2'>
                 {detail?.totalMinted}
-                (<a href='https://gateway.pinata.cloud/ipfs/QmWwNrzrKVYyaEFCVrJEWC2pqsDSmVSkBmaYvmBoToAC3c' target='_blank'>{t('common.minted_history_data_file')}</a>)
               </p>
             </div>
 
