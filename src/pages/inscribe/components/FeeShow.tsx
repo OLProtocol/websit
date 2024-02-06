@@ -43,7 +43,7 @@ export const FeeShow = ({
           <div className='flex justify-between'>
             <div>{t('pages.inscribe.fee.fee_rate')}</div>
             <div>
-              <span>{feeRate}</span> <span> sate/vB</span>
+              <span>{feeRate}</span> <span> sats/vB</span>
             </div>
           </div>
           <Divider style={{ margin: '10px 0' }} />
@@ -55,7 +55,7 @@ export const FeeShow = ({
           <span>
             {filesLength} x {inscriptionSize}
           </span>{' '}
-          <span> sate</span>
+          <span> sats</span>
         </div>
       </div>
       <div className='flex justify-between'>
