@@ -71,7 +71,8 @@
     "connectWallet": "Connect Wallet",
     "switchNetwork": "Switch Network",
     "view": "View",
-    "disconnect": "Disconnect"
+    "disconnect": "Disconnect",
+    "select_lang": "Select Language"
   },
   "pages": {
     "home": {

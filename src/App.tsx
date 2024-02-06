@@ -11,13 +11,9 @@ import { useEffect } from 'react';
 function App() {
   const { t, i18n } = useTranslation();
 
-  function changeLanguage(lang) {
-    i18n.changeLanguage(lang);
-  }
-
   useEffect(() => {
     const defaultLanguage = i18n.language;
-    // changeLanguage(defaultLanguage);
+    i18n.changeLanguage(defaultLanguage);
   }, [i18n.language]);
   
   return (

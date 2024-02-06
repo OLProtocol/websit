@@ -111,7 +111,7 @@ export const UnisatConnectButton = () => {
           </Button>
         </Popover>
       ) : (
-        <Button size='large' type='primary' onClick={connect}>
+        <Button size='large' type='primary' onClick={connect} className='mt-5'>
           {t('buttons.connect')}
         </Button>
       )}

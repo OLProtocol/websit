@@ -71,7 +71,8 @@
     "connectWallet": "连接钱包",
     "switchNetwork": "切换网络",
     "view": "查看",
-    "disconnect": "断开连接"
+    "disconnect": "断开连接",
+    "select_lang": "选择语言"
   },
   "pages": {
     "home": {
