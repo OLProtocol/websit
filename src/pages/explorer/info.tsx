@@ -173,6 +173,12 @@ export default function Ord2Info() {
               <p className='text-gray-400'>{t('common.minted_total')}:</p>
               <p className='indent-2'>
                 {detail?.totalMinted}
+                {tick === 'Pearl'&& (
+                <><span>(</span><a href='https://gateway.pinata.cloud/ipfs/QmWwNrzrKVYyaEFCVrJEWC2pqsDSmVSkBmaYvmBoToAC3c' target='_blank'>{t('common.minted_history_data_file')}</a><span>)</span></>
+                )}
+                {tick === '龙'&& (
+                <><span>(</span><a href='https://gateway.pinata.cloud/ipfs/QmSM1y5evXoadcXNh4prKp31zgcV6bqxfPjkp9sRjyiszk' target='_blank'>{t('common.minted_history_data_file')}</a><span>)</span></>
+                )}
               </p>
             </div>
 

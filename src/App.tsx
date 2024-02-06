@@ -4,10 +4,22 @@ import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { UnisatConnectProvider } from '@/provider/UnisatConnectProvider';
 import { StyleProvider } from '@ant-design/cssinjs';
+import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 
 function App() {
+  const { t, i18n } = useTranslation();
 
+  function changeLanguage(lang) {
+    i18n.changeLanguage(lang);
+  }
+
+  useEffect(() => {
+    const defaultLanguage = i18n.language;
+    // changeLanguage(defaultLanguage);
+  }, [i18n.language]);
+  
   return (
     <StyleProvider hashPriority='high'>
       <main className='h-full'>
