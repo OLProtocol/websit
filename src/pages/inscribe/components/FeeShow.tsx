@@ -32,7 +32,7 @@ export const FeeShow = ({
       : 0;
     let text = `${oneFee} x ${filesLength} = ${serviceFee}`;
     if (serviceStatus != 1) {
-      text += `,  推广期免费。`;
+      text += `, ` + t('pages.inscribe.fee.no_fee');
     }
     return text;
   }, [inscriptionSize, serviceFee, filesLength, serviceStatus]);

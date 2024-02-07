@@ -45,7 +45,8 @@
     "value": "价值",
     "genesisTx": "交易 ID",
     "select_option": "选择选项",
-    "height_alert": "当前 BTC 高度为 "
+    "height_alert": "当前 BTC 高度为 ",
+    "founder": "铸造者"
   },
   "toast": {
     "system_error": "系统异常，请稍后再试。"
@@ -183,14 +184,16 @@
         "service_fee": "服务费",
         "service_hint": "最低值{{max}}",
         "high_hint": "当前比特币网络拥堵，请耐心等待。",
-        "total_fee": "总费用"
+        "total_fee": "总费用",
+        "no_fee": "推广期免费。"
       },
       "order": {
         "name": "订单列表",
         "local": "本地订单",
         "id": "订单编号",
         "status": "状态",
-        "created": "创建日期"
+        "created": "创建日期",
+        "continue": "(如果过程中出现错误提示，请点击按钮继续重试。)"
       },
       "pay": {
         "title": "铭文订单",
@@ -221,7 +224,8 @@
       "title": "浏览器",
       "subtitle": "查看地址的 OrdX 余额",
       "des": "识别包括部署、铸造和转账在内的所有操作。",
-      "list_title": "OrdX 的完整列表"
+      "list_title": "OrdX 的完整列表",
+      "not_support": "暂时不支持查看转移后的余额。"
     }
   }
 }

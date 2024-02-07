@@ -106,7 +106,7 @@ export const OrdxAddressHistory = ({ tick, address }: Ord2HistoryProps) => {
         <div className='rounded-2xl bg-gray-200 p-4'>
           <div className='mb-2'>
             <span className='text-orange-500'> {tick}</span>
-            <span className='text-gray-500'>, 铸造者： </span>
+            <span className='text-gray-500'>, {t('common.founder')}: </span>
             <span>{address}</span>
           </div>
           <div className='flex items-center mb-2'>

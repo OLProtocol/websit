@@ -45,7 +45,8 @@
     "value": "Value",
     "genesisTx": "Genesis transaction",
     "select_option": "Select Option",
-    "height_alert": "The current BTC height is "
+    "height_alert": "The current BTC height is ",
+    "founder": "Founder"
   },
   "toast": {
     "system_error": "System Error"
@@ -183,14 +184,16 @@
         "service_fee": "Service Fee",
         "service_hint": "Minimum value {{max}}",
         "high_hint": "The current Bitcoin network is highly congested. please be patient and wait.",
-        "total_fee": "Total Fee"
+        "total_fee": "Total Fee",
+        "no_fee": "推广期免费。"
       },
       "order": {
         "name": "Order List",
         "local": "Local Order",
         "id": "Order Id",
         "status": "Status",
-        "created": "Create Date"
+        "created": "Create Date",
+        "continue": "(如果过程中出现错误提示，请点击按钮继续重试。)"
       },
       "pay": {
         "title": "Inscribing Order",
@@ -221,7 +224,8 @@
       "title": "Explorer",
       "subtitle": "Check out OrdX balance of the address.",
       "des": "Recognize all operations including DEPLOY, MINT and TRANSFER.",
-      "list_title": "The full list of ordx"
+      "list_title": "The full list of ordx",
+      "not_support": "暂时不支持查看转移后的余额。"
     }
   }
 }

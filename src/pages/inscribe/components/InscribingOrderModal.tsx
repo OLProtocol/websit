@@ -403,7 +403,7 @@ export const InscribingOrderModal = ({
                   </Button>
                 </div>
                 <div className='text-amber-400 text-base text-center'>
-                  (如果过程中出现错误提示，请点击按钮继续重试。)
+                  t('pages.inscribe.order.continue')
                 </div>
               </div>
             )}
@@ -427,7 +427,7 @@ export const InscribingOrderModal = ({
                   </Button>
                 </div>
                 <div className='text-amber-400 text-base text-center'>
-                  (如果过程中出现错误提示，请点击按钮继续重试。)
+                  t('pages.inscribe.order.continue')
                 </div>
               </div>
             )}
