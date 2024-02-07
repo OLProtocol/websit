@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChakraProvider, background } from '@chakra-ui/react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { ProtocolTable } from './inscribe/components/ProtocolCompare';
+import { t } from 'i18next';
 
 type ProtocolCompare = {
   rowTitle: string;
@@ -19,52 +20,52 @@ type ProtocolCompare = {
 
 const data: ProtocolCompare[] = [
   {
-    rowTitle: '价值主张',
-    ordx: '数字珍宝',
-    brc20: '-',
-    atomicals: '数字对象',
+    rowTitle: t('pages.home.tb_row01_col01'),
+    ordx: t('pages.home.tb_row01_col02'),
+    brc20: t('pages.home.tb_row01_col03'),
+    atomicals: t('pages.home.tb_row01_col04'),
   },
   {
-    rowTitle: '铸造方法',
-    ordx: '基于ord的信封写入隔离见证区',
-    brc20: '基于ord的信封写入隔离见证区',
-    atomicals: '使用"atom"进行承诺&揭露的信封',
+    rowTitle: t('pages.home.tb_row02_col01'),
+    ordx: t('pages.home.tb_row02_col02'),
+    brc20: t('pages.home.tb_row02_col03'),
+    atomicals: t('pages.home.tb_row02_col04'),
   },
   {
-    rowTitle: '索引',
-    ordx: '依赖ordx索引器',
-    brc20: '依赖brc-20索引器',
-    atomicals: '依赖electrumx索引器',
+    rowTitle: t('pages.home.tb_row03_col01'),
+    ordx: t('pages.home.tb_row03_col02'),
+    brc20: t('pages.home.tb_row03_col03'),
+    atomicals: t('pages.home.tb_row03_col04'),
   },
   {
-    rowTitle: '验证',
-    ordx: '通过ordx索引器验证，可以客户端验证',
-    brc20: '通过brc-20索引器验证，无法客户端验证',
-    atomicals: '通过electrumx索引器验证，理论上可以客户端验证',
+    rowTitle: t('pages.home.tb_row04_col01'),
+    ordx: t('pages.home.tb_row04_col02'),
+    brc20: t('pages.home.tb_row04_col03'),
+    atomicals: t('pages.home.tb_row04_col04'),
   },
   {
-    rowTitle: '转移',
-    ordx: '直接转移',
-    brc20: '先铭刻，再转移',
-    atomicals: '直接转移',
+    rowTitle: t('pages.home.tb_row05_col01'),
+    ordx: t('pages.home.tb_row05_col02'),
+    brc20: t('pages.home.tb_row05_col03'),
+    atomicals: t('pages.home.tb_row05_col04'),
   },
   {
-    rowTitle: '基本单位',
-    ordx: '一份资产，一个sat，强绑定，不可变更',
-    brc20: '未定义',
-    atomicals: '期望one token one sat，但实际会根据EXP参数调整',
+    rowTitle: t('pages.home.tb_row06_col01'),
+    ordx: t('pages.home.tb_row06_col02'),
+    brc20: t('pages.home.tb_row06_col03'),
+    atomicals: t('pages.home.tb_row06_col04'),
   },
   {
-    rowTitle: '拆分方案',
-    ordx: '可拆分，灵活使用utxo进行拆分',
-    brc20: '无限可分',
-    atomicals: '使用ST操作符和EXP参数进行拆分（和其原子性原则有冲突）',
+    rowTitle: t('pages.home.tb_row07_col01'),
+    ordx: t('pages.home.tb_row07_col02'),
+    brc20: t('pages.home.tb_row07_col03'),
+    atomicals: t('pages.home.tb_row07_col04'),
   },
   {
-    rowTitle: '烧毁可能性',
-    ordx: 'sat不可烧毁，资产也就无法烧毁',
-    brc20: '不可烧毁',
-    atomicals: '使用错误的钱包或者错误的使用方式容易导致token被烧毁',
+    rowTitle: t('pages.home.tb_row08_col01'),
+    ordx: t('pages.home.tb_row08_col02'),
+    brc20: t('pages.home.tb_row08_col03'),
+    atomicals: t('pages.home.tb_row08_col04'),
   },
 ];
 
@@ -117,14 +118,9 @@ export default function Home() {
 
       <div className='mx-auto pt-4 w-4/5 mt-6'>
         <div className='text-2xl text-center align-middle text-white leading-loose'>
-          <section>
-            OrdinalsX是一个增强的Ordinals协议（简称ordx协议），支持使用Ordinals协议发行Fungible
-            Token。
-          </section>
-          <section>一份资产，一个sat，永久绑定，不可变更。</section>
-          <section>
-            转移sat时，资产也就跟着转移，不存在因为误操作导致资产烧毁的问题。
-          </section>
+          <section>{t('pages.home.summary_01')}</section>
+          <section>{t('pages.home.summary_02')}</section>
+          <section>{t('pages.home.summary_03')}</section>
         </div>
       </div>
 
@@ -139,17 +135,13 @@ export default function Home() {
       <div className='mx-auto pt-4 w-4/5 mt-6'>
         <div className='flex'>
           <div className='w-4/6 text-2xl text-left align-middle'>
-            <section className='text-6xl pb-16 text-white'>东方之珠</section>
+            <section className='text-6xl pb-16 text-white'>{t('pages.home.pearl_01')}</section>
             <section className='text-base text-white'>
-              我们已经在2024年1月25日正式部署了协议的第一个Token：Pearl。(<span onClick={toVerify} className='underline underline-offset-4 text-yellow-500 cursor-pointer'>去验真伪</span>)
+              {t('pages.home.pearl_02')}(<span onClick={toVerify} className='underline underline-offset-4 text-yellow-500 cursor-pointer'>{t('pages.home.pearl_03')}</span>)
             </section>
             <section className='text-base text-white'>
-              Pearl已经完成了铸造，铸造高度828200-828800，历时四天，有效铸造的铭文序号为59088177-59800871，总计15528次有效铸造，由社区657人公平铸造。
-              因为市面上有许多假的Pearl，请大家交易前，在这里验证下铭文序号对应的资产是否是Pearl，避免上当受骗。
+              {t('pages.home.pearl_04')}
             </section>
-            {/* <section className='text-base text-white'>
-              如果你的BTC很多，可以尝试下是不是可以从BTC中找出闪亮的宝石，只需要输入你的钱包地址，就可以看到结果。或者你认为那些类型的sat更有价值，可以为这些sat部署特别的Token。
-            </section> */}
           </div>
           <div className='w-2/6'>
             <img src={PearlImage} />
@@ -163,9 +155,9 @@ export default function Home() {
             <img src={JadeImage} className='float-right' />
           </div>
           <div className='w-4/6 pt-12 text-right align-middle leading-8'>
-            <section className='text-6xl pb-16 text-white'>矿工的翡翠</section>
+            <section className='text-6xl pb-16 text-white'>{t('pages.home.jade_01')}</section>
             <section className='text-base text-white'>
-              每个区块的第一个sat才能mint成功，预计每个Token值1-10个btc。
+              {t('pages.home.jade_02')}
             </section>
           </div>
         </div>
@@ -175,10 +167,10 @@ export default function Home() {
         <div className='flex'>
           <div className='w-4/6 pt-12 text-left align-middle leading-8'>
             <section className='text-6xl pb-16 text-white'>
-              Domo的蓝宝石
+              {t('pages.home.sapphire_01')}
             </section>
             <section className='text-base text-white'>
-              只有rare属性的sat才能mint成蓝宝石，最多只有3437个蓝宝石。目前只有不到400个，预计每个值100BTC。
+              {t('pages.home.sapphire_02')}
             </section>
           </div>
           <div className='w-2/6'>
@@ -194,10 +186,10 @@ export default function Home() {
           </div>
           <div className='w-4/6 pt-12 text-right align-middle leading-8'>
             <section className='text-6xl pb-16 text-white'>
-              Casey的红宝石
+              {t('pages.home.ruby_01')}
             </section>
             <section className='text-base text-white'>
-              只有epic属性的sat才能mint成红宝石，最多只有32个红宝石。目前只有3个，预计每个值10000BTC。
+              {t('pages.home.ruby_02')}
             </section>
           </div>
         </div>
@@ -206,12 +198,12 @@ export default function Home() {
       <div className='mx-auto pt-4 w-4/5 mt-6'>
         <div className='flex'>
           <div className='w-4/6 pt-5 text-left align-middle leading-8'>
-            <section className='text-6xl pb-16 text-white'>数字黄金</section>
+            <section className='text-6xl pb-16 text-white'>{t('pages.home.gold_01')}</section>
             <section className='text-base text-white'>
-              每个BTC的第一个sat才能mint成功，也就是该sat序号的末尾是8个0。
+              {t('pages.home.gold_02')}
             </section>
             <section className='text-base text-white'>
-              这意味着，每个token值1个BTC。
+              {t('pages.home.gold_03')}
             </section>
           </div>
           <div className='w-2/6'>
