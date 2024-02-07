@@ -39,6 +39,11 @@ export const NavHeader = () => {
     },
   ];
 
+  const options = [
+    { value: 'en', label: 'EN' },
+    { value: 'ZH', label: 'zh' }
+  ]
+
   const onMenuSelect = (item: any) => {
     const { key } = item;
     const { value, type } = items.find((i) => i.key === key) || {};
@@ -90,11 +95,12 @@ export const NavHeader = () => {
           </LinkBox> */}
         </div>
         <div className='flex justify-center h-full'>
-          <UnisatConnectButton/>&nbsp;
-          <Select placeholder={t('buttons.select_lang')} className='text-white mt-5' onChange={(e) => changeLanguage(e.target.value)}>
-            <option value='zh'>中文</option>
-            <option value='en'>English</option>
+          <Select defaultValue={i18n.language} className='text-white mt-5' bg='#1677ff' borderColor="#1677ff" color="white" onChange={(e) => changeLanguage(e.target.value)}>
+            <option value='zh'>ZH</option>
+            <option value='en'>EN</option>
           </Select>
+          &nbsp;
+          <UnisatConnectButton/>
         </div>
       </div>
     </header>
