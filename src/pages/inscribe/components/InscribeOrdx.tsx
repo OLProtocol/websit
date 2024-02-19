@@ -331,7 +331,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
-                    disabled
                     checked={data.blockChecked}
                     onChange={onBlockChecked}></Checkbox>
                   <div className='ml-2 flex-1 flex items-center'>
@@ -382,7 +381,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
-                    disabled
                     checked={data.rarityChecked}
                     onChange={onRarityChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
@@ -415,7 +413,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
-                    disabled
                     checked={data.cnChecked}
                     onChange={onCnChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
@@ -444,7 +441,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
-                    disabled
                     checked={data.trzChecked}
                     onChange={onTrzChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
