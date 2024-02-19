@@ -4,9 +4,8 @@ import JadeImage from '@/assets/images/jade.png';
 import RubyImage from '@/assets/images/ruby.png';
 import SapphireImage from '@/assets/images/sapphire.png';
 import GoldImage from '@/assets/images/gold.png';
-
 import { useNavigate } from 'react-router-dom';
-import { ChakraProvider, background } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { ProtocolTable } from './inscribe/components/ProtocolCompare';
 import { t } from 'i18next';
