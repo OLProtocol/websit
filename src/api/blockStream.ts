@@ -78,14 +78,12 @@ export const getTipBlockHeight = async ({ network }: any) => {
 export const getBlockStatus = async ({ height, network }: any) => {
   try {
     const hash = await getBlockHash({ height, network });
-    console.log(hash);
     if (hash) {
       const { data } = await axios.get(
         `https://blockstream.info/${
           network === 'testnet' ? 'testnet/' : ''
         }api/block/${hash}`,
       );
-      console.log(data);
       return data;
     }
   } catch (error) {

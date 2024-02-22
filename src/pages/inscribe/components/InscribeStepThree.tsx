@@ -118,7 +118,7 @@ export const InscribeStepThree = ({
               key={index}
               onRemove={() => onItemRemove?.(index)}
               label={index + 1}
-              hex={item.hex}
+              hex={item.fileHex ? item.hex + item.fileHex : item.hex }
               value={item.show}
             />
           ))}

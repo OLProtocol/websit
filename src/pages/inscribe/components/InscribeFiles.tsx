@@ -2,7 +2,6 @@ import type { UploadProps } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { Button, Upload } from 'antd';
 import { useEffect, useState } from 'react';
-import { useMap } from 'react-use';
 import { useTranslation } from 'react-i18next';
 
 const { Dragger } = Upload;

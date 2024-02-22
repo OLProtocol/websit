@@ -66,6 +66,9 @@ export default function Inscribe() {
     sat: '',
     rarity: '',
     mintRarity: '',
+    file: '',
+    fileName: '',
+    fileType: '',
     rarityChecked: false,
     regChecked: false,
     blockChecked: false,
@@ -93,10 +96,12 @@ export default function Inscribe() {
     setBrc20('totalSupply', data.totalSupply);
   };
   const ordxChange = (data: any) => {
-    console.log(data);
     setOrd2Data('type', data.type);
     setOrd2Data('tick', data.tick);
     setOrd2Data('amount', data.amount);
+    setOrd2Data('file', data.file);
+    setOrd2Data('fileName', data.fileName);
+    setOrd2Data('fileType', data.fileType);
     setOrd2Data('repeatMint', data.repeatMint);
     setOrd2Data('limitPerMint', data.limitPerMint);
     setOrd2Data('block', `${data.block_start}-${data.block_end}`);
@@ -160,7 +165,7 @@ export default function Inscribe() {
         list.push({
           type: 'ordx',
           name: `mint_${i}`,
-          value: JSON.stringify(
+          value: [JSON.stringify(
             removeObjectEmptyValue({
               p: 'ordx',
               op: 'mint',
@@ -173,7 +178,7 @@ export default function Inscribe() {
                   ? ordxData.sat.toString()
                   : undefined,
             }),
-          ),
+          )],
         });
       }
     } else if (ordxData.type === 'deploy') {
@@ -192,22 +197,31 @@ export default function Inscribe() {
       if (attrArr.length) {
         attr = attrArr.join(';');
       }
+      const value: any[] = [JSON.stringify(
+        removeObjectEmptyValue({
+          p: 'ordx',
+          op: 'deploy',
+          tick: ordxData.tick.toString(),
+          block: ordxData.blockChecked
+            ? ordxData.block.toString()
+            : undefined,
+          lim: ordxData.limitPerMint.toString(),
+          attr,
+          des: ordxData.des.toString(),
+        }),
+      )];
+      if (ordxData.file) {
+        value.push({
+          type: 'file',
+          name: ordxData.fileName,
+          value: ordxData.file,
+          mimeType: ordxData.fileType,
+        })
+      }
       list.push({
         type: 'ordx',
         name: 'deploy_0',
-        value: JSON.stringify(
-          removeObjectEmptyValue({
-            p: 'ordx',
-            op: 'deploy',
-            tick: ordxData.tick.toString(),
-            block: ordxData.blockChecked
-              ? ordxData.block.toString()
-              : undefined,
-            lim: ordxData.limitPerMint.toString(),
-            attr,
-            des: ordxData.des.toString(),
-          }),
-        ),
+        value,
       });
     }
     const _files = await generteFiles(list);

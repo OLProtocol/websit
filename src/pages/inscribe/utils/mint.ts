@@ -15,7 +15,11 @@ interface FileItem {
   hex: string;
   amt?: number;
   op?: string;
+  type: string;
   sha256: string;
+  fileHex: string;
+  fileName: string;
+  fileMimeType: string;
   txsize: number;
 }
 interface InscriptionItem {
@@ -52,8 +56,15 @@ export const generteFiles = async (list: any[]) => {
       file.sha256 = '';
     } else if (type === 'ordx') {
       file.mimetype = 'text/plain;charset=utf-8';
-      file.show = value;
+      file.show = value[0];
+
       file.hex = textToHex(value);
+      if (value.length > 1) {
+        file.fileHex = value[1]?.value;
+        file.fileMimeType = value[1]?.mimeType;
+        file.fileName = value[1]?.name;
+        file.show += `;${value[1]?.name}`;
+      }
       file.sha256 = '';
       try {
         file.amt = Number(JSON.parse(value).amt);
@@ -82,7 +93,11 @@ export const generteFiles = async (list: any[]) => {
       prefix = 546;
     }
     const contentBytes = hexToBytes(file.hex);
-    const txsize = prefix + Math.floor(contentBytes.length / 4);
+    const contentFileBytes = hexToBytes(file.fileHex);
+    const txsize =
+      prefix +
+      Math.floor(contentBytes.length / 4) +
+      Math.floor(contentFileBytes.length / 4);
     file.txsize = txsize;
     files.push(file);
   }
@@ -145,19 +160,43 @@ export const generateInscriptions = ({
     const ec = new TextEncoder();
     const content = hexToBytes(files[i].hex);
     const mimetype = ec.encode(files[i].mimetype);
+    let script: any;
+    if (files[i].type === 'ordx' && files[i].fileHex) {
+      const fileContent = hexToBytes(files[i].fileHex);
+      const fileMimeType = ec.encode(files[i].fileMimeType);
+      script = [
+        pubkey,
+        'OP_CHECKSIG',
+        'OP_0',
+        'OP_IF',
+        ec.encode('ord'),
+        '01',
+        fileMimeType,
+        'OP_0',
+        fileContent,
+        // 'OP_7',
+        // ec.encode('ordx'),
+        '01',
+        mimetype,
+        'OP_0',
+        content,
+        'OP_ENDIF',
+      ];
+    } else {
+      script = [
+        pubkey,
+        'OP_CHECKSIG',
+        'OP_0',
+        'OP_IF',
+        ec.encode('ord'),
+        '01',
+        mimetype,
+        'OP_0',
+        content,
+        'OP_ENDIF',
+      ];
+    }
 
-    const script = [
-      pubkey,
-      'OP_CHECKSIG',
-      'OP_0',
-      'OP_IF',
-      ec.encode('ord'),
-      '01',
-      mimetype,
-      'OP_0',
-      content,
-      'OP_ENDIF',
-    ];
     const leaf = Tap.encodeScript(script);
     const [tapkey, cblock] = Tap.getPubKey(pubkey, { target: leaf });
     const inscriptionAddress = Address.p2tr.fromPubKey(tapkey, network);
@@ -256,18 +295,42 @@ export const inscribe = async ({
   const ec = new TextEncoder();
   const content = hexToBytes(file.hex);
   const mimetype = ec.encode(file.mimetype);
-  const script = [
-    pubkey,
-    'OP_CHECKSIG',
-    'OP_0',
-    'OP_IF',
-    ec.encode('ord'),
-    '01',
-    mimetype,
-    'OP_0',
-    content,
-    'OP_ENDIF',
-  ];
+  let script: any;
+  if (file.type === 'ordx' && file.fileHex) {
+    const fileContent = hexToBytes(file.fileHex);
+    const fileMimeType = ec.encode(file.fileMimeType);
+    script = [
+      pubkey,
+      'OP_CHECKSIG',
+      'OP_0',
+      'OP_IF',
+      ec.encode('ord'),
+      '01',
+      fileMimeType,
+      'OP_0',
+      fileContent,
+      // 'OP_7',
+      // ec.encode('ordx'),
+      '01',
+      mimetype,
+      'OP_0',
+      content,
+      'OP_ENDIF',
+    ];
+  } else {
+    script = [
+      pubkey,
+      'OP_CHECKSIG',
+      'OP_0',
+      'OP_IF',
+      ec.encode('ord'),
+      '01',
+      mimetype,
+      'OP_0',
+      content,
+      'OP_ENDIF',
+    ];
+  }
   // Add the signature to our witness data for input 0, along with the script
   // and merkle proof (cblock) for the script.
   txdata.vin[0].witness = [sig, script, cblock];

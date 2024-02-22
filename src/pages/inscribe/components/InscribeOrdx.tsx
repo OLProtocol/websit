@@ -18,20 +18,24 @@ import {
   SliderFilledTrack,
   SliderThumb,
 } from '@chakra-ui/react';
+import type { UploadProps } from 'antd';
+import { InboxOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Tooltip } from 'antd';
+import { Button, Tooltip, Upload } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { useMap } from 'react-use';
 import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
-import { clacTextSize } from '../utils';
+import { clacTextSize, encodeBase64, base64ToHex } from '../utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { getOrdxInfo } from '@/api';
 import toast from 'react-hot-toast';
 import { useGlobalStore } from '@/store';
+
+const { Dragger } = Upload;
 
 interface InscribeOrdxProps {
   onNext?: () => void;
@@ -54,6 +58,9 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     rarity: '',
     cn: 0,
     trz: 0,
+    file: '',
+    fileName: '',
+    fileType: '',
     blockChecked: true,
     rarityChecked: false,
     cnChecked: false,
@@ -62,11 +69,35 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     mintRarity: '',
     sat: 0,
   });
-  const infoRef = useRef<any>({});
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
   const [tickLoading, setTickLoading] = useState(false);
   const [tickChecked, setTickChecked] = useState(false);
+  const [files, setFiles] = useState<any[]>([]);
+  const [originFiles, setOriginFiles] = useState<any[]>([]);
+  const filesChange: UploadProps['onChange'] = async ({ fileList }) => {
+    const originFiles = fileList.map((f) => f.originFileObj);
+    // onChange?.(originFiles);
+    console.log(12313)
+    const file = originFiles[0];
+    if (file) {
+      const b64 = (await encodeBase64(file as any)) as string;
+      const base64 = b64.substring(b64.indexOf('base64,') + 7);
+      const hex = base64ToHex(base64);
+      set('file', hex);
+      set('fileName', file.name);
+      if (file.type) {
+        set('fileType', file.type);
+      }
+      setOriginFiles(originFiles);
+      setFiles([]);
+    }
+  };
+  const onFilesRemove = async () => {
+    set('file', '');
+    set('fileName', '');
+    set('fileType', '');
+  }
   const getOrdXInfo = async (tick: string) => {
     // If there is no data in localStorage, fetch it
     try {
@@ -85,7 +116,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       console.error('Failed to fetch ordXInfo:', error);
       throw error;
     }
-  }
+  };
   const nextHandler = async () => {
     setErrorText('');
     const checkStatus = await checkTick();
@@ -506,6 +537,32 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             </div>
           </FormControl>
         )}
+        <FormControl>
+          <div className='flex items-center  mb-4'>
+            <FormLabel className='w-52' marginBottom={0}>
+              Sat
+            </FormLabel>
+            <div className='flex-1'>
+              <Dragger
+                accept='image/*'
+                maxCount={1}
+                onRemove={onFilesRemove}
+                listType='picture'
+                beforeUpload={() => false}
+                onChange={filesChange}>
+                <p className='ant-upload-drag-icon'>
+                  <InboxOutlined />
+                </p>
+                <p className='ant-upload-text'>
+                  {t('pages.inscribe.files.upload_des_1')}
+                </p>
+                <p className='ant-upload-hint'>
+                  {t('pages.inscribe.files.upload_des_2')}
+                </p>
+              </Dragger>
+            </div>
+          </div>
+        </FormControl>
         {data.type === 'mint' && tickChecked && !showSat && (
           <FormControl>
             <div className='flex items-center  mb-4'>
