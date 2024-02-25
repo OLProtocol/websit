@@ -78,9 +78,9 @@
   "pages": {
     "home": {
       "title": "首页",
-      "summary_01": "Ordinals X是一个增强的Ordinals协议（简称ordx协议），支持使用Ordinals协议发行Fungible Token。",
-      "summary_02": "一份资产，一个sat，永久绑定，不可变更。",
-      "summary_03": "转移sat时，资产也就跟着转移，不存在因为误操作导致资产烧毁的问题。",
+      "summary_01": "Ordinals X协议（简称ordx协议），是一个“聪本位”的Fungible Token发行协议，基于Ordinals协议，对聪编号和铭刻，一币一聪，永久绑定，不可销毁。",
+      "summary_02": "ordx协议是世界上第一个突破UTXO模型，进入到更底层的层次，通过精确定位和操作BTC的基本单位“聪”，这赋予了ordx协议无穷的威力，解决诸如制造垃圾、拆分困难，容易烧毁等等问题。",
+      "summary_03": "ordx资产将随着聪自由流动到整个BTC网络，不论在一层二层还是n层。因为聪就是BTC，而聪携带永久绑定的ordx资产。",
       "pearl_01": "东方之珠",
       "pearl_02": "我们已经在2024年1月25日正式部署了协议的第一个Token：Pearl。",
       "pearl_03": "去验真伪",
