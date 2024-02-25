@@ -78,9 +78,9 @@
   "pages": {
     "home": {
       "title": "Home",
-      "summary_01": "Ordinals X is an enhanced Ordinals protocol (ordx protocol for short) that supports the issuance of Fungible Token using the Ordinals protocol.",
-      "summary_02": "An asset, a sat, is permanently bound and cannot be changed.",
-      "summary_03": "When the sat is transferred, the assets are also transferred, and there is no problem of assets being burned due to misoperation.",
+      "summary_01": "The Ordinals X protocol (ordx protocol) is a \"Satoshi Standard\" Fungible Token issuance protocol based on the Ordinals protocol. It involves numbering and inscribing sats, one token one satoshi, creating a permanent binding and cannot be destroyed.",
+      "summary_02": "The ordx protocol is the world's first breakthrough in the UTXO model, delving into a deeper layer by precisely locating and manipulating the fundamental unit of BTC, Satoshi. This empowers the ordx protocol with immense power, addressing issues such as spam creation, difficulty in splitting, and vulnerability to burning.",
+      "summary_03": "The ordx assets will freely flow throughout the entire BTC network, whether on the first layer, second layer, or any other layer. This is because Satoshi is BTC, and Satoshi carries permanently bound ordx assets.",
       "pearl_01": "The Oriental Pearl",
       "pearl_02": "We have officially deployed the first Token of the protocol: Pearl on January 25, 2024.",
       "pearl_03": "Go to Verify",
