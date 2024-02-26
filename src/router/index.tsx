@@ -6,6 +6,8 @@ import Inscribe from '@/pages/inscribe';
 import Ord2Index from '@/pages/explorer';
 import Ord2Info from '@/pages/explorer/info';
 import InscribeCheck from '@/pages/inscribe_check';
+import Tools from '@/pages/tools';
+import MARKET_INDEX from '@/pages/market';
 
 const resolveHashPath = (path: string) => {
   return `/#${path}`;
@@ -19,6 +21,8 @@ export const ROUTE_PATH = {
   ORDX_INDEX: '/explorer',
   ORDX_INFO: '/explorer/:tick',
   INSCRIBE_CHECK: '/inscribe_check',
+  TOOLS: '/tools',
+  MARKET_INDEX: '/market',
 };
 const hashPath: any = {};
 Object.keys(ROUTE_PATH).forEach((k: any) => {
@@ -60,6 +64,14 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.INSCRIBE_CHECK,
         element: <InscribeCheck />,
+      },
+      {
+        path: ROUTE_PATH.TOOLS,
+        element: <Tools />,
+      },
+      {
+        path: ROUTE_PATH.MARKET_INDEX,
+        element: <Tools />,
       },
     ],
   },

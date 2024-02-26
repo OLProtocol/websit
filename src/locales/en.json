@@ -55,6 +55,8 @@
     "home": "Home",
     "inscribe": "Inscribe",
     "docs": "Docs",
+    "tools": "Tools",
+    "market": "Market",
     "explorer": "Explorer"
   },
   "buttons": {
@@ -78,9 +80,9 @@
   "pages": {
     "home": {
       "title": "Home",
-      "summary_01": "Ordinals X is an enhanced Ordinals protocol (ordx protocol for short) that supports the issuance of Fungible Token using the Ordinals protocol.",
-      "summary_02": "An asset, a sat, is permanently bound and cannot be changed.",
-      "summary_03": "When the sat is transferred, the assets are also transferred, and there is no problem of assets being burned due to misoperation.",
+      "summary_01": "The Ordinals X protocol (ordx protocol) is a \"Satoshi Standard\" Fungible Token issuance protocol based on the Ordinals protocol. It involves numbering and inscribing sats, one token one satoshi, creating a permanent binding and cannot be destroyed.",
+      "summary_02": "The ordx protocol is the world's first protocol to break through the UTXO model and delve into a deeper layer. By precisely locating and manipulating BTC's fundamental unit, \"Satoshi\", the ordx protocol gains immense power, addressing issues such as spam creation, difficulty in splitting, and vulnerability to destruction.",
+      "summary_03": "The ordx assets will freely flow throughout the entire BTC network, whether on the first layer or second layer. This is because Satoshi is BTC, and Satoshi carries permanently bound ordx assets.",
       "pearl_01": "The Oriental Pearl",
       "pearl_02": "We have officially deployed the first Token of the protocol: Pearl on January 25, 2024.",
       "pearl_03": "Go to Verify",
@@ -117,11 +119,11 @@
       "tb_row06_col01": "Unit",
       "tb_row06_col02": "One asset, one sat, strongly bound and unchangeable",
       "tb_row06_col03": "undefined",
-      "tb_row06_col04": "Expected that one token one sat, but will be adjusted according to the EXP parameter.",
+      "tb_row06_col04": "One token one sat",
       "tb_row07_col01": "Split",
-      "tb_row07_col02": "Can be split to 1 sat, flexibly use utxo for splitting",
+      "tb_row07_col02": "flexibly use utxo for splitting",
       "tb_row07_col03": "almost infinitely divisible",
-      "tb_row07_col04": "Split using ST operator and EXP parameter (conflicts with its atomicity principle)",
+      "tb_row07_col04": "Split in AVM",
       "tb_row08_col01": "Possibility of burning",
       "tb_row08_col02": "Sat cannot be burned, and ordx assets cannot be burned.",
       "tb_row08_col03": "cannot be burned.",

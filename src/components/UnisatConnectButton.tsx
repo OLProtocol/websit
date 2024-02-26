@@ -103,7 +103,7 @@ export const UnisatConnectButton = () => {
               </div>
             </div>
           }>
-          <Button shape='round' size='large' className='mt-5'>
+          <Button shape='round' size='large'>
             <Space>
               {hideAccount}
               <DownOutlined />
@@ -111,7 +111,7 @@ export const UnisatConnectButton = () => {
           </Button>
         </Popover>
       ) : (
-        <Button size='large' type='primary' onClick={connect} className='mt-5'>
+        <Button size='large' type='primary' onClick={connect}>
           {t('buttons.connect')}
         </Button>
       )}

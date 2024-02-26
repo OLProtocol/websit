@@ -32,6 +32,18 @@ export const NavHeader = () => {
       type: 'route',
     },
     {
+      key: ROUTE_PATH.TOOLS,
+      label: t('nav.tools'),
+      value: ROUTE_PATH.TOOLS,
+      type: 'route',
+    },
+    {
+      key: ROUTE_PATH.MARKET_INDEX,
+      label: t('nav.market'),
+      value: ROUTE_PATH.MARKET_INDEX,
+      type: 'route',
+    },
+    {
       key: 'https://docs.ordx.space/',
       label: t('nav.docs'),
       value: 'https://docs.ordx.space/',
@@ -41,8 +53,8 @@ export const NavHeader = () => {
 
   const options = [
     { value: 'en', label: 'EN' },
-    { value: 'ZH', label: 'zh' }
-  ]
+    { value: 'ZH', label: 'zh' },
+  ];
 
   const onMenuSelect = (item: any) => {
     const { key } = item;
@@ -94,13 +106,20 @@ export const NavHeader = () => {
             </LinkOverlay>
           </LinkBox> */}
         </div>
-        <div className='flex justify-center h-full'>
-          <Select defaultValue={i18n.language} className='text-white mt-5' bg='#1677ff' borderColor="#1677ff" color="white" onChange={(e) => changeLanguage(e.target.value)}>
+        <div className='flex justify-center h-full items-center'>
+          <Select
+            defaultValue={i18n.language}
+            className='text-white'
+            bg='#1677ff'
+            borderColor='#1677ff'
+            color='white'
+            onChange={(e) => changeLanguage(e.target.value)}>
             <option value='zh'>ZH</option>
             <option value='en'>EN</option>
           </Select>
-          &nbsp;
-          <UnisatConnectButton/>
+          <div className='ml-4'>
+            <UnisatConnectButton />
+          </div>
         </div>
       </div>
     </header>

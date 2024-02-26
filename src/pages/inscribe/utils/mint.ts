@@ -58,7 +58,7 @@ export const generteFiles = async (list: any[]) => {
       file.mimetype = 'text/plain;charset=utf-8';
       file.show = value[0];
 
-      file.hex = textToHex(value);
+      file.hex = textToHex(value[0]);
       if (value.length > 1) {
         file.fileHex = value[1]?.value;
         file.fileMimeType = value[1]?.mimeType;
@@ -174,8 +174,8 @@ export const generateInscriptions = ({
         fileMimeType,
         'OP_0',
         fileContent,
-        // 'OP_7',
-        // ec.encode('ordx'),
+        '07',
+        ec.encode('ordx'),
         '01',
         mimetype,
         'OP_0',
@@ -309,8 +309,8 @@ export const inscribe = async ({
       fileMimeType,
       'OP_0',
       fileContent,
-      // 'OP_7',
-      // ec.encode('ordx'),
+      '07',
+      ec.encode('ordx'),
       '01',
       mimetype,
       'OP_0',
