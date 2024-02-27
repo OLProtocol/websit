@@ -3,10 +3,10 @@ import { getMintInfo } from '@/api';
 import { useUnisat } from '@/lib/hooks';
 import { ItemList } from './components/ItemList';
 
-export default function InscribeCheck() {
+export default function AccountIndex() {
   const { network, address } = useUnisat();
   return (
-    <div className='max-w-lg mx-auto p-2'>
+    <div className='max-w-3xl mx-auto p-2'>
       <Tabs
         defaultActiveKey='1'
         size='large'
@@ -14,7 +14,7 @@ export default function InscribeCheck() {
           {
             label: 'My Items',
             key: '1',
-            // children: () => <ItemList />,
+            children: <ItemList />,
           },
           {
             label: 'Rare Sats',
