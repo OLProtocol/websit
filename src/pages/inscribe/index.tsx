@@ -11,7 +11,7 @@ import { InscribeStepTwo } from './components/InscribeStepTwo';
 import { InscribeStepThree } from './components/InscribeStepThree';
 import { useMap, useList } from 'react-use';
 import { InscribingOrderModal } from './components/InscribingOrderModal';
-import { removeObjectEmptyValue, generteFiles } from './utils';
+import { removeObjectEmptyValue, generteFiles, hexString } from './utils';
 import { InscribeType } from '@/types';
 import { useTranslation } from 'react-i18next';
 import { OrderList } from './components/OrderList';
@@ -29,7 +29,7 @@ export default function Inscribe() {
   //     isClosable: true,
   //   });
   // }, []);
-
+  console.log('hexstring:'+ hexString('6f7264'));
   const { btcHeight } = useGlobalStore((state) => state);
   const { t } = useTranslation();
   const [step, setStep] = useState(3);
@@ -165,6 +165,7 @@ export default function Inscribe() {
         list.push({
           type: 'ordx',
           name: `mint_${i}`,
+          ordxType: 'mint',
           value: [JSON.stringify(
             removeObjectEmptyValue({
               p: 'ordx',
@@ -178,11 +179,16 @@ export default function Inscribe() {
                   ? ordxData.sat.toString()
                   : undefined,
             }),
-          )],
+          ), {
+            type: 'file',
+            name: 'test.png',
+            // value: '<script src="/content/73e77779d84bb049fbf3a9542100a693282d11f010cedd3ec403cbaab29c098di0"></script>',
+            value: '<html><img src="/content/2e05e8f64955ecf31e2ba411af16cbb3d47cb225f2cd45039955c96282612006i0" width="100%"/></html>',
+            mimeType: 'text/html;charset=utf-8',
+          }],
         });
       }
     } else if (ordxData.type === 'deploy') {
-      console.log(ordxData);
       const attrArr: string[] = [];
       if (ordxData.rarityChecked && ordxData.rarity) {
         attrArr.push(`rar=${ordxData.rarity}`);
@@ -221,6 +227,7 @@ export default function Inscribe() {
       list.push({
         type: 'ordx',
         name: 'deploy_0',
+        ordxType: 'deploy',
         value,
       });
     }

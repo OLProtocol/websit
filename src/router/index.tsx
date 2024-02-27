@@ -7,7 +7,8 @@ import Ord2Index from '@/pages/explorer';
 import Ord2Info from '@/pages/explorer/info';
 import InscribeCheck from '@/pages/inscribe_check';
 import Tools from '@/pages/tools';
-import MARKET_INDEX from '@/pages/market';
+import MarketIndex from '@/pages/market';
+import AccountIndex from '@/pages/account';
 
 const resolveHashPath = (path: string) => {
   return `/#${path}`;
@@ -23,6 +24,7 @@ export const ROUTE_PATH = {
   INSCRIBE_CHECK: '/inscribe_check',
   TOOLS: '/tools',
   MARKET_INDEX: '/market',
+  ACCOUNT_INDEX: '/account',
 };
 const hashPath: any = {};
 Object.keys(ROUTE_PATH).forEach((k: any) => {
@@ -71,7 +73,11 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTE_PATH.MARKET_INDEX,
-        element: <Tools />,
+        element: <MarketIndex />,
+      },
+      {
+        path: ROUTE_PATH.ACCOUNT_INDEX,
+        element: <AccountIndex />,
       },
     ],
   },

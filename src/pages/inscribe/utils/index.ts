@@ -62,7 +62,7 @@ export const fileToArrayBuffer = (file) => {
     reader.readAsArrayBuffer(file);
   });
 };
-const hexString = (buffer) => {
+export const hexString = (buffer) => {
   const byteArray = new Uint8Array(buffer);
   const hexCodes = [...byteArray].map((value) => {
     return value.toString(16).padStart(2, '0');

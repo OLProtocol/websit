@@ -1,4 +1,6 @@
 import { Address, Signer, Tap, Tx, Script } from '@cmdcode/tapscript';
+import * as cbor from 'cbor-web';
+console.log('cbor', cbor);
 import { keys } from '@cmdcode/crypto-utils';
 import {
   textToHex,
@@ -12,6 +14,7 @@ interface FileItem {
   mimetype: string;
   show: string;
   name: string;
+  originValue: string;
   hex: string;
   amt?: number;
   op?: string;
@@ -21,6 +24,10 @@ interface FileItem {
   fileName: string;
   fileMimeType: string;
   txsize: number;
+  ordxType?: string;
+  parent?: string;
+  parentHex?: string;
+  parentMimeType?: string;
 }
 interface InscriptionItem {
   script: any;
@@ -38,10 +45,12 @@ export const generteFiles = async (list: any[]) => {
   const files: any[] = [];
   for (let i = 0; i < list.length; i++) {
     const item = list[i];
-    const { type, value, name } = item;
+    const { type, value, name, ordxType } = item;
     const file: any = {
       type,
       name,
+      originValue: value,
+      ordxType,
     };
     if (type === 'text') {
       const _value = value?.trim();
@@ -57,13 +66,19 @@ export const generteFiles = async (list: any[]) => {
     } else if (type === 'ordx') {
       file.mimetype = 'text/plain;charset=utf-8';
       file.show = value[0];
-
+      file.originValue = value[0];
       file.hex = textToHex(value[0]);
       if (value.length > 1) {
-        file.fileHex = value[1]?.value;
-        file.fileMimeType = value[1]?.mimeType;
-        file.fileName = value[1]?.name;
-        file.show += `;${value[1]?.name}`;
+        if (ordxType === 'mint') {
+          file.parent = value[1]?.value;
+          file.parentHex = textToHex(value[1]?.value);
+          file.parentMimeType = value[1]?.mimeType;
+        } else {
+          file.fileHex = value[1]?.value;
+          file.fileMimeType = value[1]?.mimeType;
+          file.fileName = value[1]?.name;
+          file.show += `;${value[1]?.name}`;
+        }
       }
       file.sha256 = '';
       try {
@@ -93,11 +108,17 @@ export const generteFiles = async (list: any[]) => {
       prefix = 546;
     }
     const contentBytes = hexToBytes(file.hex);
-    const contentFileBytes = hexToBytes(file.fileHex);
-    const txsize =
+    
+    let txsize =
       prefix +
-      Math.floor(contentBytes.length / 4) +
-      Math.floor(contentFileBytes.length / 4);
+      Math.floor(contentBytes.length / 4)
+    if (type === 'ordx' && ordxType === 'deploy' && file.fileHex) {
+      const contentFileBytes = hexToBytes(file.fileHex);
+      txsize += Math.floor(contentFileBytes.length / 4);
+    } else if (type === 'ordx' && ordxType === 'mint' && file.parentHex) {
+      const parentContentBytes = hexToBytes(file.parentHex);
+      txsize += Math.floor(parentContentBytes.length / 4);
+    }
     file.txsize = txsize;
     files.push(file);
   }
@@ -134,10 +155,118 @@ export const getAddressBySescet = (sescet: string, network: string) => {
   const pubkey = keys.get_pubkey(seckey, true);
   return Address.p2tr.fromPubKey(pubkey, network as any);
 };
-/*
-铭刻过程
-*/
-
+const generateScript = (secret: string, file: FileItem) => {
+  const seckey = keys.get_seckey(secret);
+  const pubkey = keys.get_pubkey(seckey, true);
+  const ec = new TextEncoder();
+  const content = hexToBytes(file.hex);
+  const mimetype = ec.encode(file.mimetype);
+  let script: any;
+  if (file.type === 'ordx' && file.ordxType === 'deploy' && file.fileHex) {
+    const fileContent = hexToBytes(file.fileHex);
+    const fileMimeType = ec.encode(file.fileMimeType);
+    const metaData = cbor.encode(JSON.parse(file.originValue));
+    console.log(metaData);
+    // script = [
+    //   pubkey,
+    //   'OP_CHECKSIG',
+    //   'OP_0',
+    //   'OP_IF',
+    //   ec.encode('ord'),
+    //   '01',
+    //   fileMimeType,
+    //   'OP_0',
+    //   fileContent,
+    //   'OP_0',
+    //   '07',
+    //   ec.encode('ordx'),
+    //   '01',
+    //   mimetype,
+    //   'OP_0',
+    //   content,
+    //   'OP_ENDIF',
+    // ];
+    script = [
+      pubkey,
+      'OP_CHECKSIG',
+      'OP_0',
+      'OP_IF',
+      ec.encode('ord'),
+      '01',
+      fileMimeType,
+      '07',
+      ec.encode('ordx'),
+      '05',
+      metaData,
+      'OP_0',
+      fileContent,
+      
+      // '01',
+      // mimetype,
+      // 'OP_0',
+      // content,
+      'OP_ENDIF',
+    ];
+  } else if (file.type === 'ordx' && file.ordxType === 'mint' && file.parent) {
+    const parentMimeType = ec.encode(file.parentMimeType);
+    const parentConent = hexToBytes(file.parentHex);
+    console.log(cbor);
+    console.log(JSON.parse(file.originValue));
+    const metaData = cbor.encode(JSON.parse(file.originValue));
+    // const metaData = ''
+    console.log(metaData);
+    // const metaData = '';
+    // script = [
+    //   pubkey,
+    //   'OP_CHECKSIG',
+    //   'OP_0',
+    //   'OP_IF',
+    //   ec.encode('ord'),
+    //   '01',
+    //   parentMimeType,
+    //   'OP_0',
+    //   parentConent,
+    //   'OP_0',
+    //   '07',
+    //   ec.encode('ordx'),
+    //   '01',
+    //   mimetype,
+    //   'OP_0',
+    //   content,
+    //   'OP_ENDIF',
+    // ];
+    script = [
+      pubkey,
+      'OP_CHECKSIG',
+      'OP_0',
+      'OP_IF',
+      ec.encode('ord'),
+      '01',
+      parentMimeType,
+      '07',
+      ec.encode('ordx'),
+      '05',
+      metaData,
+      'OP_0',
+      parentConent,
+      'OP_ENDIF',
+    ];
+  } else {
+    script = [
+      pubkey,
+      'OP_CHECKSIG',
+      'OP_0',
+      'OP_IF',
+      ec.encode('ord'),
+      '01',
+      mimetype,
+      'OP_0',
+      content,
+      'OP_ENDIF',
+    ];
+  }
+  return script;
+};
 /*
 铭刻过程
 */
@@ -157,45 +286,8 @@ export const generateInscriptions = ({
   for (let i = 0; i < files.length; i++) {
     const seckey = keys.get_seckey(secret);
     const pubkey = keys.get_pubkey(seckey, true);
-    const ec = new TextEncoder();
     const content = hexToBytes(files[i].hex);
-    const mimetype = ec.encode(files[i].mimetype);
-    let script: any;
-    if (files[i].type === 'ordx' && files[i].fileHex) {
-      const fileContent = hexToBytes(files[i].fileHex);
-      const fileMimeType = ec.encode(files[i].fileMimeType);
-      script = [
-        pubkey,
-        'OP_CHECKSIG',
-        'OP_0',
-        'OP_IF',
-        ec.encode('ord'),
-        '01',
-        fileMimeType,
-        'OP_0',
-        fileContent,
-        '07',
-        ec.encode('ordx'),
-        '01',
-        mimetype,
-        'OP_0',
-        content,
-        'OP_ENDIF',
-      ];
-    } else {
-      script = [
-        pubkey,
-        'OP_CHECKSIG',
-        'OP_0',
-        'OP_IF',
-        ec.encode('ord'),
-        '01',
-        mimetype,
-        'OP_0',
-        content,
-        'OP_ENDIF',
-      ];
-    }
+    const script = generateScript(secret, files[i]);
 
     const leaf = Tap.encodeScript(script);
     const [tapkey, cblock] = Tap.getPubKey(pubkey, { target: leaf });
@@ -292,45 +384,8 @@ export const inscribe = async ({
   });
   const sig = Signer.taproot.sign(seckey, txdata, 0, { extension: leaf });
 
-  const ec = new TextEncoder();
-  const content = hexToBytes(file.hex);
-  const mimetype = ec.encode(file.mimetype);
-  let script: any;
-  if (file.type === 'ordx' && file.fileHex) {
-    const fileContent = hexToBytes(file.fileHex);
-    const fileMimeType = ec.encode(file.fileMimeType);
-    script = [
-      pubkey,
-      'OP_CHECKSIG',
-      'OP_0',
-      'OP_IF',
-      ec.encode('ord'),
-      '01',
-      fileMimeType,
-      'OP_0',
-      fileContent,
-      '07',
-      ec.encode('ordx'),
-      '01',
-      mimetype,
-      'OP_0',
-      content,
-      'OP_ENDIF',
-    ];
-  } else {
-    script = [
-      pubkey,
-      'OP_CHECKSIG',
-      'OP_0',
-      'OP_IF',
-      ec.encode('ord'),
-      '01',
-      mimetype,
-      'OP_0',
-      content,
-      'OP_ENDIF',
-    ];
-  }
+  const script = generateScript(secret, file);
+
   // Add the signature to our witness data for input 0, along with the script
   // and merkle proof (cblock) for the script.
   txdata.vin[0].witness = [sig, script, cblock];

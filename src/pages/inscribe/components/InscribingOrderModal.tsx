@@ -66,6 +66,7 @@ export const InscribingOrderModal = ({
   const order = useMemo(() => {
     return findOrder(orderId);
   }, [orderId]);
+  console.log('order', order);
   const payOrder = async () => {
     if (!order) {
       return;

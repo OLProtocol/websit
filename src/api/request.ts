@@ -64,7 +64,6 @@ export const getOrdxAddressHistory = async ({
   start,
   limit,
 }: OrdXHistoryParams) => {
-  console.log('getOrdxAddressHistory', address, ticker, network);
   const { data } = await axios.get(
     generateUrl(
       `query-v4/address/${address}/ordx/${ticker}/history?start=${start}&limit=${limit}`,

@@ -78,7 +78,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const filesChange: UploadProps['onChange'] = async ({ fileList }) => {
     const originFiles = fileList.map((f) => f.originFileObj);
     // onChange?.(originFiles);
-    console.log(12313)
+    console.log(12313);
     const file = originFiles[0];
     if (file) {
       const b64 = (await encodeBase64(file as any)) as string;
@@ -97,15 +97,15 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     set('file', '');
     set('fileName', '');
     set('fileType', '');
-  }
+  };
   const getOrdXInfo = async (tick: string) => {
     // If there is no data in localStorage, fetch it
     try {
       const key = `${network}_${tick}`;
       const cachedData = localStorage.getItem(key);
-      if (cachedData) {
-        return JSON.parse(cachedData);
-      }
+      // if (cachedData) {
+      //   return JSON.parse(cachedData);
+      // }
       const info = await getOrdxInfo({ tick, network });
       if (info) {
         localStorage.setItem(key, JSON.stringify(info));
@@ -537,32 +537,34 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             </div>
           </FormControl>
         )}
-        <FormControl>
-          <div className='flex items-center  mb-4'>
-            <FormLabel className='w-52' marginBottom={0}>
-              Sat
-            </FormLabel>
-            <div className='flex-1'>
-              <Dragger
-                accept='image/*'
-                maxCount={1}
-                onRemove={onFilesRemove}
-                listType='picture'
-                beforeUpload={() => false}
-                onChange={filesChange}>
-                <p className='ant-upload-drag-icon'>
-                  <InboxOutlined />
-                </p>
-                <p className='ant-upload-text'>
-                  {t('pages.inscribe.files.upload_des_1')}
-                </p>
-                <p className='ant-upload-hint'>
-                  {t('pages.inscribe.files.upload_des_2')}
-                </p>
-              </Dragger>
+        {data.type === 'deploy' && (
+          <FormControl>
+            <div className='flex items-center  mb-4'>
+              <FormLabel className='w-52' marginBottom={0}>
+                Image
+              </FormLabel>
+              <div className='flex-1'>
+                <Dragger
+                  accept='image/*'
+                  maxCount={1}
+                  onRemove={onFilesRemove}
+                  listType='picture'
+                  beforeUpload={() => false}
+                  onChange={filesChange}>
+                  <p className='ant-upload-drag-icon'>
+                    <InboxOutlined />
+                  </p>
+                  <p className='ant-upload-text'>
+                    {t('pages.inscribe.files.upload_des_1')}
+                  </p>
+                  <p className='ant-upload-hint'>
+                    {t('pages.inscribe.files.upload_des_2')}
+                  </p>
+                </Dragger>
+              </div>
             </div>
-          </div>
-        </FormControl>
+          </FormControl>
+        )}
         {data.type === 'mint' && tickChecked && !showSat && (
           <FormControl>
             <div className='flex items-center  mb-4'>

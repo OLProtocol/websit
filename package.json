@@ -26,6 +26,7 @@
     "axios": "^1.6.0",
     "bitcoinjs-lib": "^6.1.5",
     "buffer": "^6.0.3",
+    "cbor-web": "^9.0.2",
     "date-fns": "^2.30.0",
     "framer-motion": "^10.16.4",
     "i18next": "^23.5.1",

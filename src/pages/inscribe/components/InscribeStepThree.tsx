@@ -54,6 +54,7 @@ export const InscribeStepThree = ({
   const files = useMemo(() => {
     return list;
   }, [list]);
+  console.log('files', files);
   const inscriptionSize = useMemo(() => {
     if (['brc20', 'text'].includes(type)) {
       return 546;
@@ -65,8 +66,12 @@ export const InscribeStepThree = ({
       return 546;
     }
   }, [type, list]);
-  const clacFee = useCalcFee({ feeRate, inscriptionSize, files, serviceStatus });
-  console.log(clacFee)
+  const clacFee = useCalcFee({
+    feeRate,
+    inscriptionSize,
+    files,
+    serviceStatus,
+  });
   const submit = async () => {
     if (loading) return;
     setLoading(true);
@@ -96,6 +101,15 @@ export const InscribeStepThree = ({
     onAddOrder?.(order);
     setLoading(false);
   };
+  const calcHex = (file: any) => {
+    if (file.fileHex) {
+      return file.hex + file.fileHex;
+    } else if (file.parent) {
+      return file.hex + file.parent;
+    } else {
+      return file.hex;
+    }
+  };
   useEffect(() => {
     if (currentAccount) {
       set('toSingleAddress', currentAccount);
@@ -118,7 +132,7 @@ export const InscribeStepThree = ({
               key={index}
               onRemove={() => onItemRemove?.(index)}
               label={index + 1}
-              hex={item.fileHex ? item.hex + item.fileHex : item.hex }
+              hex={calcHex(item)}
               value={item.show}
             />
           ))}
@@ -167,7 +181,12 @@ export const InscribeStepThree = ({
       </div>
       <div className='w-60 mx-auto'>
         <BusButton>
-          <Button size='md' isLoading={loading} colorScheme='blue' width='100%' onClick={submit}>
+          <Button
+            size='md'
+            isLoading={loading}
+            colorScheme='blue'
+            width='100%'
+            onClick={submit}>
             {t('buttons.submit_payment')}
           </Button>
         </BusButton>

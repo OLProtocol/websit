@@ -3,14 +3,17 @@ import type { MenuProps } from 'antd';
 import { Button, Popover, Space, Divider, Tag } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
+import { useNavigate } from 'react-router-dom';
 import { Center, useToast } from '@chakra-ui/react';
 
 import { hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { ROUTE_PATH } from '@/router';
 
 export const UnisatConnectButton = () => {
   const { t } = useTranslation();
   const toast = useToast();
+  const nav = useNavigate();
   const {
     currentAccount,
     isConnected,
@@ -66,6 +69,9 @@ export const UnisatConnectButton = () => {
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     console.log('click', e);
   };
+  const toAccount = () => {
+    nav(ROUTE_PATH.ACCOUNT_INDEX);
+  }
   const menuProps = {
     items,
     onClick: handleMenuClick,
@@ -85,6 +91,15 @@ export const UnisatConnectButton = () => {
               <div className='flex justify-center items-center'>
                 <span className='mr-2'>{balance.total} SAT</span>
                 <Tag color='error'>{network}</Tag>
+              </div>
+              <Divider style={{ margin: '10px 0' }} />
+              <div className='flex justify-center'>
+                <Button
+                  type='primary'
+                  className='w-28'
+                  onClick={toAccount}>
+                  {t('buttons.toAccount')}
+                </Button>
               </div>
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
