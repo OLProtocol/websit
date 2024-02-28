@@ -43,15 +43,17 @@ export const ItemList = () => {
           return <OrdxItem key={item.id} item={item} />;
         })}
       </div>
-      <div className='flex justify-center'>
-        <Pagination
-          total={total}
-          onChange={paginationChange}
-          showTotal={(total) => `Total ${total} items`}
-          defaultPageSize={limit}
-          defaultCurrent={1}
-        />
-      </div>
+      {total > 0 && (
+        <div className='flex justify-center'>
+          <Pagination
+            total={total}
+            onChange={paginationChange}
+            showTotal={(total) => `Total ${total} items`}
+            defaultPageSize={limit}
+            defaultCurrent={1}
+          />
+        </div>
+      )}
     </div>
   );
 };

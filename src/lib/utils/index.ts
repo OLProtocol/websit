@@ -3,8 +3,17 @@ import { getBlockStatus } from '@/api';
 import { add, format } from 'date-fns';
 
 export const getTimeByHeight = async (height: number, network: string) => {
+  const key = `height-time-${height}`;
+  const lcoalCache = localStorage.getItem(key);
+  if (lcoalCache) {
+    return +lcoalCache;
+  }
   const { timestamp } = await getBlockStatus({ height, network });
-  return timestamp * 1000;
+  const time = timestamp * 1000;
+  if (time) {
+    localStorage.setItem(key, time.toString());
+  }
+  return time;
 };
 
 export const calcTimeBetweenBlocks = async ({
@@ -18,7 +27,7 @@ export const calcTimeBetweenBlocks = async ({
     const now = +new Date();
     let startTime: any = now;
     let endTime: any = now;
-    console.log(start)
+    console.log(start);
     if (start && start < height) {
       startTime = await getTimeByHeight(start, network);
       console.log('startTime', startTime);
@@ -27,7 +36,7 @@ export const calcTimeBetweenBlocks = async ({
       startTime = add(now, { minutes: startDis * 10 });
     }
 
-    if (end &&end < height) {
+    if (end && end < height) {
       endTime = await getTimeByHeight(end, network);
     } else {
       const endDis = end - height;

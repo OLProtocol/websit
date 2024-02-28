@@ -204,6 +204,7 @@ export const Ord2FullList = () => {
   const dataSource: DataType[] = useMemo(
     () =>
       list.map((item) => {
+        console.log(item);
         let status;
         if (item.rarity !== 'unknow' && item.rarity !== 'common') {
           status = 'Minting';
