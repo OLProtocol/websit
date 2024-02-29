@@ -29,7 +29,7 @@ export default function Inscribe() {
   //     isClosable: true,
   //   });
   // }, []);
-  console.log('hexstring:'+ hexString('6f7264'));
+  console.log('hexstring:' + hexString('6f7264'));
   const { btcHeight } = useGlobalStore((state) => state);
   const { t } = useTranslation();
   const [step, setStep] = useState(3);
@@ -166,26 +166,29 @@ export default function Inscribe() {
           type: 'ordx',
           name: `mint_${i}`,
           ordxType: 'mint',
-          value: [JSON.stringify(
-            removeObjectEmptyValue({
-              p: 'ordx',
-              op: 'mint',
-              tick: ordxData.tick.toString(),
-              amt: ordxData.amount.toString(),
-              sat:
-                ordxData.mintRarity !== 'common' &&
-                ordxData.mintRarity !== 'unknow' &&
-                !!ordxData.mintRarity
-                  ? ordxData.sat.toString()
-                  : undefined,
-            }),
-          ), {
-            type: 'file',
-            name: 'test.png',
-            // value: '<script src="/content/73e77779d84bb049fbf3a9542100a693282d11f010cedd3ec403cbaab29c098di0"></script>',
-            value: '<html><img src="/content/2e05e8f64955ecf31e2ba411af16cbb3d47cb225f2cd45039955c96282612006i0" width="100%"/></html>',
-            mimeType: 'text/html;charset=utf-8',
-          }],
+          value: [
+            JSON.stringify(
+              removeObjectEmptyValue({
+                p: 'ordx',
+                op: 'mint',
+                tick: ordxData.tick.toString(),
+                amt: ordxData.amount.toString(),
+                sat:
+                  ordxData.mintRarity !== 'common' &&
+                  ordxData.mintRarity !== 'unknow' &&
+                  !!ordxData.mintRarity
+                    ? ordxData.sat.toString()
+                    : undefined,
+              }),
+            ),
+            // {
+            //   type: 'file',
+            //   name: 'test.png',
+            //   // value: '<script src="/content/73e77779d84bb049fbf3a9542100a693282d11f010cedd3ec403cbaab29c098di0"></script>',
+            //   value: '<html><img src="/content/2e05e8f64955ecf31e2ba411af16cbb3d47cb225f2cd45039955c96282612006i0" width="100%"/></html>',
+            //   mimeType: 'text/html;charset=utf-8',
+            // }
+          ],
         });
       }
     } else if (ordxData.type === 'deploy') {
@@ -203,26 +206,28 @@ export default function Inscribe() {
       if (attrArr.length) {
         attr = attrArr.join(';');
       }
-      const value: any[] = [JSON.stringify(
-        removeObjectEmptyValue({
-          p: 'ordx',
-          op: 'deploy',
-          tick: ordxData.tick.toString(),
-          block: ordxData.blockChecked
-            ? ordxData.block.toString()
-            : undefined,
-          lim: ordxData.limitPerMint.toString(),
-          attr,
-          des: ordxData.des.toString(),
-        }),
-      )];
+      const value: any[] = [
+        JSON.stringify(
+          removeObjectEmptyValue({
+            p: 'ordx',
+            op: 'deploy',
+            tick: ordxData.tick.toString(),
+            block: ordxData.blockChecked
+              ? ordxData.block.toString()
+              : undefined,
+            lim: ordxData.limitPerMint.toString(),
+            attr,
+            des: ordxData.des.toString(),
+          }),
+        ),
+      ];
       if (ordxData.file) {
         value.push({
           type: 'file',
           name: ordxData.fileName,
           value: ordxData.file,
           mimeType: ordxData.fileType,
-        })
+        });
       }
       list.push({
         type: 'ordx',

@@ -34,10 +34,10 @@ export default function Ord2Index() {
     // nav(`${ROUTE_PATH.ORDX_INDEX}?q=${search}`);
   };
   const summaryEmptyHandler = (b: boolean) => {
-    setSummaryEmptyStatus(true);
+    setSummaryEmptyStatus(b);
   };
   const historyEmptyHandler = (b: boolean) => {
-    setHistoryEmptyStatus(true);
+    setHistoryEmptyStatus(b);
   };
   const empty = useMemo(() => {
     return summaryEmptyStatus && historyEmptyStatus;

@@ -56,6 +56,8 @@ export const InscribeStepThree = ({
   }, [list]);
   console.log('files', files);
   const inscriptionSize = useMemo(() => {
+    console.log('type', type);
+    console.log('type', list);
     if (['brc20', 'text'].includes(type)) {
       return 546;
     } else if (type === 'brc100') {

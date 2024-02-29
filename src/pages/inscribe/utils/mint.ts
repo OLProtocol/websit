@@ -81,12 +81,9 @@ export const generteFiles = async (list: any[]) => {
         }
       }
       file.sha256 = '';
-      try {
-        file.amt = Number(JSON.parse(value).amt);
-        file.op = JSON.parse(value).op;
-      } catch (error) {
-        console.log(error);
-      }
+      const ordxData = JSON.parse(value[0]);
+      file.amt = Number(ordxData.amt);
+      file.op = ordxData.op;
     } else if (type === 'file') {
       let mimetype = value.type?.trim();
       if (mimetype.includes('text/plain')) {
@@ -108,10 +105,8 @@ export const generteFiles = async (list: any[]) => {
       prefix = 546;
     }
     const contentBytes = hexToBytes(file.hex);
-    
-    let txsize =
-      prefix +
-      Math.floor(contentBytes.length / 4)
+
+    let txsize = prefix + Math.floor(contentBytes.length / 4);
     if (type === 'ordx' && ordxType === 'deploy' && file.fileHex) {
       const contentFileBytes = hexToBytes(file.fileHex);
       txsize += Math.floor(contentFileBytes.length / 4);
@@ -200,7 +195,7 @@ const generateScript = (secret: string, file: FileItem) => {
       metaData,
       'OP_0',
       fileContent,
-      
+
       // '01',
       // mimetype,
       // 'OP_0',
