@@ -5,6 +5,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useGlobalStore } from '@/store';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Ord2FullList } from './components/OrdxFullList';
+import { SatRareBox } from './components/SatRareBox';
 import { Ord2SummaryList } from './components/OrdxSummaryList';
 import { OrdxAddressHistory } from './components/OrdxAddressHistory';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +17,8 @@ export default function Ord2Index() {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [address, setAddress] = useState('');
+  const [summaryEmptyStatus, setSummaryEmptyStatus] = useState(false);
+  const [historyEmptyStatus, setHistoryEmptyStatus] = useState(false);
   const [selectTick, setSelectTick] = useState('');
   const [searchParams] = useSearchParams();
   const q = searchParams.get('q');
@@ -30,6 +33,15 @@ export default function Ord2Index() {
     history.replaceState(null, '', `/#/explorer?q=${search}`);
     // nav(`${ROUTE_PATH.ORDX_INDEX}?q=${search}`);
   };
+  const summaryEmptyHandler = (b: boolean) => {
+    setSummaryEmptyStatus(true);
+  };
+  const historyEmptyHandler = (b: boolean) => {
+    setHistoryEmptyStatus(true);
+  };
+  const empty = useMemo(() => {
+    return summaryEmptyStatus && historyEmptyStatus;
+  }, [summaryEmptyStatus, historyEmptyStatus]);
   useEffect(() => {
     if (search === '') {
       console.log(search);
@@ -53,7 +65,9 @@ export default function Ord2Index() {
             <h1 className='text-2xl text-orange-500 text-center mb-2'>
               {t('pages.explorer.subtitle')}
             </h1>
-            <h2 className='text-sm text-gray-500 text-center mb-6'>{t('pages.explorer.not_support')}</h2>
+            <h2 className='text-sm text-gray-500 text-center mb-6'>
+              {t('pages.explorer.not_support')}
+            </h2>
           </>
         )}
 
@@ -76,15 +90,27 @@ export default function Ord2Index() {
       <div className='max-w-7xl mx-auto px-4'>
         {showAddress && (
           <>
+            {empty && (
+              <div className='mb-4'>
+                <Empty />
+              </div>
+            )}
             <div className='mb-4'>
               <Ord2SummaryList
+                onEmpty={summaryEmptyHandler}
                 address={address}
                 onChange={(tick) => setSelectTick(tick)}
               />
             </div>
-            <div>{/* <SatBox /> */}</div>
             <div className='mb-4'>
-              <OrdxAddressHistory tick={selectTick} address={address} />
+              <SatRareBox sats={[]} />
+            </div>
+            <div className='mb-4'>
+              <OrdxAddressHistory
+                onEmpty={historyEmptyHandler}
+                tick={selectTick}
+                address={address}
+              />
             </div>
           </>
         )}

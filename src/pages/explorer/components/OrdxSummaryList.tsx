@@ -6,10 +6,12 @@ import { on } from 'events';
 interface Ord2SummaryListProps {
   address: string;
   onChange?: (tick: string) => void;
+  onEmpty?: (b: boolean) => void;
 }
 export const Ord2SummaryList = ({
   address,
   onChange,
+  onEmpty,
 }: Ord2SummaryListProps) => {
   const { network } = useUnisatConnect();
   const { data, trigger } = useOrdxSummary({ address, network });
@@ -23,6 +25,9 @@ export const Ord2SummaryList = ({
     if (list.length) {
       onClick(list[0]);
     }
+  }, [list]);
+  useEffect(() => {
+    onEmpty?.(list.length === 0);
   }, [list]);
   useEffect(() => {
     if (address) {

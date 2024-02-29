@@ -10,8 +10,9 @@ import { hideStr } from '@/lib/utils';
 interface Ord2HistoryProps {
   tick: string;
   address: string;
+  onEmpty?: (b: boolean) => void;
 }
-export const OrdxAddressHistory = ({ tick, address }: Ord2HistoryProps) => {
+export const OrdxAddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { network } = useUnisatConnect();
@@ -93,6 +94,9 @@ export const OrdxAddressHistory = ({ tick, address }: Ord2HistoryProps) => {
   const toInfo = () => {
     nav(`/explorer/${tick}`);
   };
+  useEffect(() => {
+    onEmpty?.(dataSource.length === 0);
+  }, [dataSource]);
   useEffect(() => {
     console.log(address, tick);
     if (address && tick) {
