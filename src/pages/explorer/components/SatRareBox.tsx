@@ -12,19 +12,19 @@ export const SatRareBox = ({ sats }: SatRareBoxProps) => {
       {
         icon: '/images/sat/icon-uncommon.svg',
         name: 'Uncommon',
-        className: 'text-[#ffd387] ml-2 text-lg',
+        className: 'text-[#ac8258] ml-2 text-lg',
         list: sats.filter((item) => item.types.includes('uncommon')),
       },
       {
         icon: '/images/sat/icon-rare.svg',
         name: 'Rare',
-        className: 'text-[#8CFF82] ml-2 text-lg',
+        className: 'text-[#598858] ml-2 text-lg',
         list: sats.filter((item) => item.types.includes('rare')),
       },
       {
         icon: '/images/sat/icon-epic.svg',
         name: 'Epic',
-        className: 'text-[#2FFFD6] ml-2 text-lg',
+        className: 'text-[#3c887c] ml-2 text-lg',
         list: sats.filter((item) => item.types.includes('epic')),
       },
       {
