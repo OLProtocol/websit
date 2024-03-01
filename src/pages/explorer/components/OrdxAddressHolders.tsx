@@ -39,21 +39,21 @@ export const OrdxAddressHolders = ({
       key: 'utxo',
       width: 100,
       align: 'center',
-      // render: (t) => {
-      //   const txid = t.replace(/i0$/m, '')
-      //   const href =
-      //     network === 'testnet'
-      //       ? `https://mempool.space/testnet/tx/${txid}`
-      //       : `https://mempool.space/tx/${txid}`;
-      //   return (
-      //     <a
-      //       className='text-blue-500 cursor-pointer'
-      //       href={href}
-      //       target='_blank'>
-      //       {hideStr(txid)}
-      //     </a>
-      //   );
-      // },
+      render: (t) => {
+        const txid = t.replace(/:0$/m, '')
+        const href =
+          network === 'testnet'
+            ? `https://mempool.space/testnet/tx/${txid}`
+            : `https://mempool.space/tx/${txid}`;
+        return (
+          <a
+            className='text-blue-500 cursor-pointer'
+            href={href}
+            target='_blank'>
+            {t}
+          </a>
+        );
+      },
     },
     {
       title: 'Sats Ranges',
