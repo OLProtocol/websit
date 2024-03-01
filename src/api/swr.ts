@@ -122,6 +122,23 @@ export const useOrdxAddressHolders = ({
     isLoading: isMutating,
   };
 };
+export const useInscriptiontInfo = ({
+  inscribNum,
+  network,
+}: any) => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
+    `ordx-inscription-${inscribNum }-${network}`,
+    () => request.getInscriptiontInfo({ inscribNum, network }),
+  );
+  1;
+  return {
+    data,
+    trigger,
+    reset,
+    error,
+    isLoading: isMutating,
+  };
+};
 export const useOrdxTickHolders = ({ tick, network }: Ord2InfoParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ordx-history-${tick}-${network}`,

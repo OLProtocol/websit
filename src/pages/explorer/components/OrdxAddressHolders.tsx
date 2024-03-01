@@ -29,6 +29,9 @@ export const OrdxAddressHolders = ({
     start,
     limit,
   });
+  const toInscriptionInfo = (inscriptionNumber) => {
+    nav(`/explorer/inscription/${inscriptionNumber}`);
+  };
   const columns: ColumnsType<any> = [
     {
       title: 'utxo',
@@ -53,35 +56,36 @@ export const OrdxAddressHolders = ({
       // },
     },
     {
-      title: t('common.inscriptionNumber'),
-      dataIndex: 'inscriptionnum',
-      key: 'inscriptionnum',
-      width: 100,
-      align: 'center',
-      render: (t) => {
-        const href =
-          network === 'testnet'
-            ? `https://testnet.ordinals.com/inscription/${t}`
-            : `https://ordinals.com/inscription/${t}`;
-        return (
-          <a
-            className='text-blue-500 cursor-pointer'
-            href={href}
-            target='_blank'>
-            #{t}
-          </a>
-        );
-      },
-    },
-    {
       title: 'Sats Ranges',
       dataIndex: 'ranges',
       key: 'ranges',
       width: 120,
       align: 'center',
       render: (t) => {
-        const ranges = t.map((r: any) => `${r.start}-${r.start + r.size - 1}`);
+        const ranges = t.map((r: any) =>
+          r.size === 1 ? r.start : `${r.start}-${r.start + r.size - 1}`,
+        );
         return ranges.join(', ');
+      },
+    },
+    {
+      title: t('common.inscriptionNumber'),
+      dataIndex: 'inscriptionnum',
+      key: 'inscriptionnum',
+      width: 100,
+      align: 'center',
+      render: (t) => {
+        // const href =
+        //   network === 'testnet'
+        //     ? `https://testnet.ordinals.com/inscription/${t}`
+        //     : `https://ordinals.com/inscription/${t}`;
+        return (
+          <span
+            className='text-blue-500 cursor-pointer'
+            onClick={() => toInscriptionInfo(t)}>
+            #{t}
+          </span>
+        );
       },
     },
     {

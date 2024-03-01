@@ -143,9 +143,16 @@ export const savePaidOrder = async ({ key, content, network }: any) => {
   );
   return data;
 };
-export const getMintInfo = async ({ inscribId }: any) => {
+export const getMintInfo = async ({ inscribId, network }: any) => {
   const { data } = await axios.get(
-    generateUrl(`v1/indexer/inscription/${inscribId}/mintinfo`, inscribId),
+    generateUrl(`v1/indexer/inscription/${inscribId}/mintinfo`, network),
+  );
+  return data;
+};
+export const getInscriptiontInfo = async ({ inscribNum, network }: any) => {
+  console.log(network)
+  const { data } = await axios.get(
+    generateUrl(`v1/indexer/inscription/${inscribNum}/mintdetails`, network),
   );
   return data;
 };
