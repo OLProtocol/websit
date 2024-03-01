@@ -80,7 +80,7 @@ export const OrdxAddressHolders = ({
       width: 120,
       align: 'center',
       render: (t) => {
-        const ranges = t.map((r: any) => `${r.start}-${r.start + r.size}`);
+        const ranges = t.map((r: any) => `${r.start}-${r.start + r.size - 1}`);
         return ranges.join(', ');
       },
     },
