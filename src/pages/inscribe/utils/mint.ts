@@ -195,7 +195,6 @@ const generateScript = (secret: string, file: FileItem) => {
       metaData,
       'OP_0',
       fileContent,
-
       // '01',
       // mimetype,
       // 'OP_0',
@@ -209,7 +208,6 @@ const generateScript = (secret: string, file: FileItem) => {
     console.log(JSON.parse(file.originValue));
     const metaData = cbor.encode(JSON.parse(file.originValue));
     // const metaData = ''
-    console.log(metaData);
     // const metaData = '';
     // script = [
     //   pubkey,

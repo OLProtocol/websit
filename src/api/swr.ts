@@ -101,6 +101,27 @@ export const useOrdxAddressHistory = ({
     isLoading: isMutating,
   };
 };
+export const useOrdxAddressHolders = ({
+  address,
+  ticker,
+  network,
+  start,
+  limit,
+}: OrdXHistoryParams) => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
+    `ordx-history-${address}-${ticker}`,
+    () =>
+      request.getOrdxAddressHolders({ start, limit, address, ticker, network }),
+  );
+  1;
+  return {
+    data,
+    trigger,
+    reset,
+    error,
+    isLoading: isMutating,
+  };
+};
 export const useOrdxTickHolders = ({ tick, network }: Ord2InfoParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ordx-history-${tick}-${network}`,

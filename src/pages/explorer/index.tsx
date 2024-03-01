@@ -7,7 +7,7 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Ord2FullList } from './components/OrdxFullList';
 import { SatRareBox } from './components/SatRareBox';
 import { Ord2SummaryList } from './components/OrdxSummaryList';
-import { OrdxAddressHistory } from './components/OrdxAddressHistory';
+import { OrdxAddressHolders } from './components/OrdxAddressHolders';
 import { useTranslation } from 'react-i18next';
 
 const { Search } = Input;
@@ -106,7 +106,7 @@ export default function Ord2Index() {
               <SatRareBox sats={[]} />
             </div>
             <div className='mb-4'>
-              <OrdxAddressHistory
+              <OrdxAddressHolders
                 onEmpty={historyEmptyHandler}
                 tick={selectTick}
                 address={address}
