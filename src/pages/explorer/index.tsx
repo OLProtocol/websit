@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { useEffect, useMemo, useState } from 'react';
-import { Alert, Input, Empty } from 'antd';
+import { Alert, Input, Empty, Button } from 'antd';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useGlobalStore } from '@/store';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
@@ -39,6 +39,7 @@ export default function Ord2Index() {
   const historyEmptyHandler = (b: boolean) => {
     setHistoryEmptyStatus(true);
   };
+
   const empty = useMemo(() => {
     return summaryEmptyStatus && historyEmptyStatus;
   }, [summaryEmptyStatus, historyEmptyStatus]);

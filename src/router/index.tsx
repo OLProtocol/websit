@@ -7,6 +7,7 @@ import Ord2Index from '@/pages/explorer';
 import Ord2Info from '@/pages/explorer/info';
 import InscribeCheck from '@/pages/inscribe_check';
 import Tools from '@/pages/tools';
+import RareSat from '@/pages/tools/rareSat';
 import MarketIndex from '@/pages/market';
 import AccountIndex from '@/pages/account';
 
@@ -25,6 +26,7 @@ export const ROUTE_PATH = {
   TOOLS: '/tools',
   MARKET_INDEX: '/market',
   ACCOUNT_INDEX: '/account',
+  RARE_SAT: '/tools/rare_sat',
 };
 const hashPath: any = {};
 Object.keys(ROUTE_PATH).forEach((k: any) => {
@@ -70,6 +72,9 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.TOOLS,
         element: <Tools />,
+      },{
+        path: ROUTE_PATH.RARE_SAT,
+        element: <RareSat />,
       },
       {
         path: ROUTE_PATH.MARKET_INDEX,
