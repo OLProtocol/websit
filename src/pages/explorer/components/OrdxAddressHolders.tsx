@@ -92,7 +92,7 @@ export const OrdxAddressHolders = ({
       align: 'center',
     },
   ];
-  const dataSource = useMemo(() => data?.data?.detail, [data]);
+  const dataSource = useMemo(() => data?.data?.detail || [], [data]);
   const total = useMemo(() => data?.data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
