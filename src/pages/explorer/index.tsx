@@ -103,9 +103,6 @@ export default function Ord2Index() {
               />
             </div>
             <div className='mb-4'>
-              <SatRareBox sats={[]} />
-            </div>
-            <div className='mb-4'>
               <OrdxAddressHolders
                 onEmpty={historyEmptyHandler}
                 tick={selectTick}
