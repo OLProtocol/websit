@@ -15,6 +15,7 @@ export default function RareSat() {
     const [address, setAddress] = useState('');
     const [rareSatList, setRareSatList] = useState<any[]>();
     const [satList, setSatList] = useState<any[]>();
+    const [satFilterList, setSatFilterList] = useState<any[]>();
     const toast = useToast();
     const [loading, setLoading] = useState(false);
 
@@ -28,11 +29,15 @@ export default function RareSat() {
         }
     }
     
-    
     function setFilterType(satType: string): void {
       console.log(satType);
-    //   satList = satList.filter((item) => item.type.includes(satType))
-    //   alert(satList.length);
+      if (satType === 'all') {
+        setSatFilterList([]);
+      } else {
+        if (satList !== undefined) {
+            setSatFilterList(satList.filter((item) => item.type.includes(satType)));
+        }
+      }
     }
 
     const doSearch = async () => {
@@ -108,7 +113,11 @@ export default function RareSat() {
                                     {item}
                                     </Button>
                                 ))}
+                                {satFilterList && satFilterList.length > 0 ? 
+                                <SatTable sats={satFilterList} /> :
                                 <SatTable sats={satList} />
+                                }
+                                
                             </div>
                         </> : 
                         <>
