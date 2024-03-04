@@ -8,6 +8,7 @@ import Ord2Info from '@/pages/explorer/info';
 import OrdxInscription from '@/pages/explorer/inscription';
 import InscribeCheck from '@/pages/inscribe_check';
 import Tools from '@/pages/tools';
+import ToolSplitSats from '@/pages/tools/splitSats';
 import MarketIndex from '@/pages/market';
 import AccountIndex from '@/pages/account';
 
@@ -25,6 +26,7 @@ export const ROUTE_PATH = {
   ORDX_INSCRIPTION: '/explorer/inscription/:inscriptionnum',
   INSCRIBE_CHECK: '/inscribe_check',
   TOOLS: '/tools',
+  TOOLS_SPLIT_SATS: '/tools/split-sats',
   MARKET_INDEX: '/market',
   ACCOUNT_INDEX: '/account',
 };
@@ -76,6 +78,10 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.TOOLS,
         element: <Tools />,
+      },
+      {
+        path: ROUTE_PATH.TOOLS_SPLIT_SATS,
+        element: <ToolSplitSats />,
       },
       {
         path: ROUTE_PATH.MARKET_INDEX,
