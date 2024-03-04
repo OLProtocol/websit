@@ -9,6 +9,7 @@ import OrdxInscription from '@/pages/explorer/inscription';
 import InscribeCheck from '@/pages/inscribe_check';
 import Tools from '@/pages/tools';
 import ToolSplitSats from '@/pages/tools/splitSats';
+import RareSat from '@/pages/tools/rareSat';
 import MarketIndex from '@/pages/market';
 import AccountIndex from '@/pages/account';
 
@@ -29,6 +30,7 @@ export const ROUTE_PATH = {
   TOOLS_SPLIT_SATS: '/tools/split-sats',
   MARKET_INDEX: '/market',
   ACCOUNT_INDEX: '/account',
+  RARE_SAT: '/tools/rare_sat',
 };
 const hashPath: any = {};
 Object.keys(ROUTE_PATH).forEach((k: any) => {
@@ -78,6 +80,9 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.TOOLS,
         element: <Tools />,
+      },{
+        path: ROUTE_PATH.RARE_SAT,
+        element: <RareSat />,
       },
       {
         path: ROUTE_PATH.TOOLS_SPLIT_SATS,

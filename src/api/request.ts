@@ -169,6 +169,13 @@ export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
   return data;
 };
 
+export const getSats = async ({ address }: any) => {
+  const { data } = await axios.get(
+    `https://gw.sating.io/api/account/sats/${address}`,
+  );
+  return data;
+};
+
 
 export async function pollGetTxStatus(
   txid: string,

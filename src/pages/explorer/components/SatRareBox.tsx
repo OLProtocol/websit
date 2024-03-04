@@ -12,31 +12,31 @@ export const SatRareBox = ({ sats }: SatRareBoxProps) => {
       {
         icon: '/images/sat/icon-uncommon.svg',
         name: 'Uncommon',
-        color: 'text-[#f97316]',
+        className: 'text-[#ac8258] ml-2 text-lg',
         list: sats.filter((item) => item.types.includes('uncommon')),
       },
       {
         icon: '/images/sat/icon-rare.svg',
         name: 'Rare',
-        color: 'text-[#f97316]',
+        className: 'text-[#598858] ml-2 text-lg',
         list: sats.filter((item) => item.types.includes('rare')),
       },
       {
         icon: '/images/sat/icon-epic.svg',
         name: 'Epic',
-        color: 'text-[#f97316]',
+        className: 'text-[#3c887c] ml-2 text-lg',
         list: sats.filter((item) => item.types.includes('epic')),
       },
       {
         icon: '/images/sat/icon-legendary.svg',
         name: 'Legendary',
-        color: 'text-[#f97316]',
+        className: 'text-[#829BFF] ml-2 text-lg',
         list: sats.filter((item) => item.types.includes('legendary')),
       },
       {
         icon: '/images/sat/icon-mythic.svg',
         name: 'Mythic',
-        color: 'text-[#f97316]',
+        className: 'text-[#C84EFF] ml-2 text-lg',
         list: sats.filter((item) => item.types.includes('mythic')),
       },
     ],
@@ -52,8 +52,8 @@ export const SatRareBox = ({ sats }: SatRareBoxProps) => {
             key={index}
             onClick={() => setTabIndex(index)}
             className='flex items-center w-20 py-2 border-b-2 hover:border-red-400 cursor-pointer'>
-            <img src={item.icon} alt='' className='w-8 h-8' />
-            <span className='text-[red] ml-2 text-lg'>x{item.list.length}</span>
+            <img src={item.icon} alt='' className='w-6 h-6' />
+            <span className={item.className}>x{item.list.length}</span>
           </div>
         ))}
       </div>

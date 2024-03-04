@@ -220,6 +220,11 @@
         }
       }
     },
+    "rare_sat": {
+      "title": "Discover",
+      "des": "Hunt rare, interesting and special sats.",
+      "search_placeholder": "input the BTC address ..."
+    },
     "docs": {
       "title": "文档"
     },

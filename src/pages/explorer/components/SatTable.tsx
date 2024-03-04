@@ -1,8 +1,6 @@
-import React, { useMemo, useState } from 'react';
-import { Table, Tag } from 'antd';
+import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { SatItem } from './SatItem';
-import { position } from '@chakra-ui/react';
 interface SatTableProps {
   sats: any[];
 }
@@ -24,9 +22,10 @@ export const SatTable = ({ sats }: SatTableProps) => {
     },
   ];
   return (
-    <div className='sat-box'>
+    <div className='rounded-2xl sat-box bg-gray-200 p-4 mt-2.5'>
+      <h3 className='text-2xl mb-2'>Interesting Sats</h3>
       <Table
-        className='bg-transparent'
+        className='bg-transparent bg-gray-200'
         showHeader={false}
         columns={columns}
         dataSource={sats}
