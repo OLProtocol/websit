@@ -170,8 +170,9 @@ export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
 };
 
 export const getSats = async ({ address }: any) => {
+  // https://api.ordx.space/testnet-go/testnet/sats/mmhMAiNisqkpUSMz7k4ufUQbqWN6Yf3RmS
   const { data } = await axios.get(
-    `https://gw.sating.io/api/account/sats/${address}`,
+    generateUrl(`testnet/sats/${address}`),
   );
   return data;
 };
