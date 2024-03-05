@@ -19,7 +19,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
       case 'legendary':
         return '/images/sat/icon-legendary.svg';
       case 'mythical':
-        return '/images/sat/icon-mythical.svg';
+        return '/images/sat/icon-mythic.svg';
       case 'alpha':
         return '/images/sat/icon-al.svg';
       case 'black':
@@ -65,7 +65,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
 
   return (
     <div className='group'>
-      <div className='flex mb-2'>
+      <div className='flex'>
         <Tag color='gray'>{format(new Date(sat.time), 'yyyy-MM-dd')}</Tag>
         {/* <Tag color='gray'>{sat.time}</Tag> */}
         <Tag color='green' bordered={false}>
