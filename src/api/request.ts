@@ -117,6 +117,20 @@ export const getOrdxHistoryDetail = async ({
   );
   return data;
 };
+export const getUtxoByInscriptionNumber = async ({
+  address,
+  inscriptionNumber,
+  network,
+}: any) => {
+  const { data } = await axios.post(
+    generateUrl(`query-v4/address/getUtxoByInscriptionNumber`, network),
+    {
+      address,
+      InscriptionNumber: inscriptionNumber,
+    },
+  );
+  return data;
+};
 
 export const getAvailableUtxos = async ({ address, ticker, network }: any) => {
   const { data } = await axios.get(
@@ -124,6 +138,22 @@ export const getAvailableUtxos = async ({ address, ticker, network }: any) => {
       `query-v4/address/${address}/ordx/${ticker}/getAvailableUtxo`,
       network,
     ),
+  );
+  return data;
+};
+export const getUtxoByConditon = async ({
+  address,
+  satNumber,
+  network,
+  limit = 330,
+}: any) => {
+  const { data } = await axios.post(
+    generateUrl(`utxo/getUtxoByConditon`, network),
+    {
+      address,
+      satIndex: satNumber,
+      value: limit,
+    },
   );
   return data;
 };
@@ -150,7 +180,7 @@ export const getMintInfo = async ({ inscribId, network }: any) => {
   return data;
 };
 export const getInscriptiontInfo = async ({ inscribNum, network }: any) => {
-  console.log(network)
+  console.log(network);
   const { data } = await axios.get(
     generateUrl(`v1/indexer/inscription/${inscribNum}/mintdetails`, network),
   );
@@ -175,7 +205,6 @@ export const getSats = async ({ address }: any) => {
   );
   return data;
 };
-
 
 export async function pollGetTxStatus(
   txid: string,

@@ -77,11 +77,13 @@ export default function Test() {
         },
       };
     });
+    console.log(inputs);
     const psbtNetwork = bitcoin.networks.testnet;
     const psbt = new bitcoin.Psbt({
       network: psbtNetwork,
     });
     inputs.forEach((input) => {
+      console.log(input);
       psbt.addInput(input);
     });
     const total = inputs.reduce((acc, cur) => {

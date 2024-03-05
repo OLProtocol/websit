@@ -8,7 +8,7 @@ import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { useTranslation } from 'react-i18next';
-
+import { removeObjectEmptyValue } from '../../inscribe/utils';
 interface DataType {
   tick: string;
   block: string;
@@ -72,6 +72,17 @@ export const Ord2FullList = () => {
       align: 'center',
       render: (t) => t || '-',
     },
+    // {
+    //   title: t('common.content'),
+    //   dataIndex: 'content',
+    //   key: 'content',
+    //   width: 120,
+    //   align: 'center',
+    //   render: (content) => {
+    //     return <div className='break-all'>{content}</div>;
+    //   },
+    // },
+
     {
       title: t('common.block'),
       dataIndex: 'block',
@@ -222,6 +233,34 @@ export const Ord2FullList = () => {
           status = 'Completed';
         }
         const special = item.rarity !== 'unknow' && item.rarity !== 'common';
+        const attrArr: string[] = [];
+        if (item.rarity !== 'unknow' && item.rarity !== 'common') {
+          attrArr.push(`rar=${item.rarity}`);
+        }
+        if (item.cn) {
+          attrArr.push(`cn=${item.cn}`);
+        }
+        if (item.trz) {
+          attrArr.push(`trz=${item.trz}`);
+        }
+        let attr;
+        if (attrArr.length) {
+          attr = attrArr.join(';');
+        }
+        const value = JSON.stringify(
+          removeObjectEmptyValue({
+            p: 'ordx',
+            op: 'deploy',
+            tick: item.ticker?.toString(),
+            block: item.blockChecked
+              ? item.block?.toString()
+              : undefined,
+            lim: item.limit?.toString(),
+            attr,
+            des: item.description?.toString(),
+          }),
+        );
+        console.log(value);
         return {
           id: item.id,
           tick: item.ticker,
@@ -231,6 +270,7 @@ export const Ord2FullList = () => {
           rarity: item.rarity,
           description: item.description,
           reg: item.reg,
+          content: value,
           holders: item.holdersCount,
           deployHeight: item.deployHeight,
           minted: item.totalMinted,
