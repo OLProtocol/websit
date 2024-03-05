@@ -9,6 +9,7 @@ import {
 } from './types';
 export const generateUrl = (url: string, network?: string) => {
   return `${VITE_API_HOST}${network === 'testnet' ? '/testnet' : ''}/${url}`;
+  // return `${VITE_API_HOST}/${url}`;
 };
 const { VITE_API_HOST } = import.meta.env;
 export const responseParse = async (response) => {
@@ -199,9 +200,17 @@ export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
   return data;
 };
 
-export const getSats = async ({ address }: any) => {
+export const getSats = async ({ address, network }: any) => {
+  // https://api.ordx.space/testnet-go/testnet/sats/mmhMAiNisqkpUSMz7k4ufUQbqWN6Yf3RmS
   const { data } = await axios.get(
-    `https://gw.sating.io/api/account/sats/${address}`,
+    generateUrl(`sats/${address}`, network),
+  );
+  return data;
+};
+
+export const getSplittedSats = async ({ ticker }: any) => {
+  const { data } = await axios.get(
+    generateUrl(`v1/indexer/ordx/${ticker}/splittedInscriptions`, ticker),
   );
   return data;
 };

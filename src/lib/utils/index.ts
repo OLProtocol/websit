@@ -30,7 +30,7 @@ export const calcTimeBetweenBlocks = async ({
     console.log(start);
     if (start && start < height) {
       startTime = await getTimeByHeight(start, network);
-      console.log('startTime', startTime);
+      // console.log('startTime', startTime);
     } else {
       const startDis = start - height;
       startTime = add(now, { minutes: startDis * 10 });
@@ -42,7 +42,7 @@ export const calcTimeBetweenBlocks = async ({
       const endDis = end - height;
       endTime = add(now, { minutes: endDis * 10 });
     }
-    console.log('startTime', startTime, 'endTime', endTime);
+    // console.log('startTime', startTime, 'endTime', endTime);
     return {
       start: format(new Date(startTime), 'yyyy-MM-dd HH:mm'),
       end: format(new Date(endTime), 'yyyy-MM-dd HH:mm'),
