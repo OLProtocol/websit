@@ -13,7 +13,7 @@ import { SatTypeBox } from '../explorer/components/SatTypeBox';
 export default function RareSat() {
 
     const { t } = useTranslation();
-    const [address, setAddress] = useState('mmhMAiNisqkpUSMz7k4ufUQbqWN6Yf3RmS');
+    const [address, setAddress] = useState('');
     const [rareSatList, setRareSatList] = useState<any[]>();
     const [satList, setSatList] = useState<any[]>();
     const [satFilterList, setSatFilterList] = useState<any[]>();
