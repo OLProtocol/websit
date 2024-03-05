@@ -172,11 +172,17 @@ export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
 export const getSats = async ({ address }: any) => {
   // https://api.ordx.space/testnet-go/testnet/sats/mmhMAiNisqkpUSMz7k4ufUQbqWN6Yf3RmS
   const { data } = await axios.get(
-    generateUrl(`testnet/sats/${address}`),
+    generateUrl(`sats/${address}`),
   );
   return data;
 };
 
+export const getSplittedSats = async ({ ticker }: any) => {
+  const { data } = await axios.get(
+    generateUrl(`v1/indexer/ordx/${ticker}/splittedInscriptions`, ticker),
+  );
+  return data;
+};
 
 export async function pollGetTxStatus(
   txid: string,

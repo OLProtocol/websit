@@ -19,13 +19,10 @@ export default function InscribeCheck() {
 
   return (
     <div className='flex gap-2 max-w-xl mx-auto p-2'>
-      <Card title='Split Sats' className='w-60' onClick={toSplitSats}>
-        Split a range of sats into segments.
+      <Card title={t('pages.split_sat.title')} className='w-60' onClick={toSplitSats}>
+        {t('pages.split_sat.des')}
       </Card>
-      <Card
-        title={t('pages.rare_sat.title')}
-        className='w-60 cursor-pointer'
-        onClick={toSearchRareSat}>
+      <Card title={t('pages.rare_sat.title')} className='w-60 cursor-pointer' onClick={toSearchRareSat}>
         {t('pages.rare_sat.des')}
       </Card>
     </div>

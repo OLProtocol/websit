@@ -69,7 +69,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
         <Tag color='gray'>{format(new Date(sat.time), 'yyyy-MM-dd')}</Tag>
         {/* <Tag color='gray'>{sat.time}</Tag> */}
         <Tag color='green' bordered={false}>
-          Blk#{sat.block}
+          Block#{sat.block}
         </Tag>
         
       {/* </div>
