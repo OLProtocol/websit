@@ -181,7 +181,6 @@ export const getMintInfo = async ({ inscribId, network }: any) => {
   return data;
 };
 export const getInscriptiontInfo = async ({ inscribNum, network }: any) => {
-  console.log(network);
   const { data } = await axios.get(
     generateUrl(`v1/indexer/inscription/${inscribNum}/mintdetails`, network),
   );
