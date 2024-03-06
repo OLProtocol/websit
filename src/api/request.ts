@@ -208,9 +208,9 @@ export const getSats = async ({ address, network }: any) => {
   return data;
 };
 
-export const getSplittedSats = async ({ ticker }: any) => {
+export const getSplittedSats = async ({ ticker, network }: any) => {
   const { data } = await axios.get(
-    generateUrl(`v1/indexer/ordx/${ticker}/splittedInscriptions`, ticker),
+    generateUrl(`v1/indexer/ordx/${ticker}/splittedInscriptions`, network),
   );
   return data;
 };
