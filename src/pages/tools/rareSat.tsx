@@ -134,7 +134,7 @@ export default function RareSat() {
         <div className='max-w-7xl mx-auto px-4'>
           {rareSatList !== undefined && satList !== undefined ? (
             <div>
-              <SatRareBox sats={rareSatList} />
+              <SatRareBox sats={rareSatList} canSplit={false}/>
               <div className='pt-4' />
               <Card>
                 <CardHeader>
@@ -150,23 +150,23 @@ export default function RareSat() {
                     </Button>
                   ))}
                   {satFilterList && satFilterList.length > 0 ? (
-                    <SatTable sats={satFilterList} />
+                    <SatTable sats={satFilterList} canSplit={false}/>
                   ) : (
-                    <SatTable sats={satList} />
+                    <SatTable sats={satList} canSplit={false}/>
                   )}
                 </CardBody>
               </Card>
             </div>
           ) : (
             <div>
-              <SatRareBox sats={[]} />
+              <SatRareBox sats={[]} canSplit={false}/>
               <div className='pt-4' />
               <Card>
                 <CardHeader>
                   <Heading size='md'>Interesting Sats</Heading>
                 </CardHeader>
                 <CardBody>
-                  <SatTable sats={[]} />
+                  <SatTable sats={[]} canSplit={false}/>
                 </CardBody>
               </Card>
             </div>

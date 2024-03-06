@@ -34,3 +34,4 @@ export interface TxStatusParams {
   txid: string;
   network: string;
 }
+

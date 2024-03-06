@@ -2,6 +2,7 @@ import { Tag } from 'antd';
 import { format } from 'date-fns';
 // import { useSatIcon } from '@/lib/hooks';
 import { CopyButton } from '@/components/CopyButton';
+import { SplitSatButton } from './SplitSatButton';
 interface SatItemProps {
   sat: any;
 }
@@ -91,6 +92,9 @@ export const SatItem = ({ sat }: SatItemProps) => {
         {/* {icon && <img src={icon} alt='' className='w-6 h-6 ml-4' />} */}
         <div className='ml-4 hidden group-hover:flex'>
           <CopyButton text={sat.sat[0]} tooltip='Copy Sat' />
+          { sat.canSplit &&
+          <SplitSatButton text={sat.sat[0]} tooltip='Split Sat' />
+          }
         </div>
       </div>
     </div>

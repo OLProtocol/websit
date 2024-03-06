@@ -5,8 +5,9 @@ import { Card, CardBody, CardHeader, Heading } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 interface SatRareBoxProps {
   sats: any[];
+  canSplit: boolean;
 }
-export const SatRareBox = ({ sats }: SatRareBoxProps) => {
+export const SatRareBox = ({ sats, canSplit }: SatRareBoxProps) => {
 
   const { t } = useTranslation();
   const [tabIndex, setTabIndex] = useState(-1);
@@ -73,7 +74,7 @@ export const SatRareBox = ({ sats }: SatRareBoxProps) => {
               <span>The first sat of each block</span>
             </div>
             <div> */}
-              <SatTable sats={showData.list} />
+              <SatTable sats={showData.list} canSplit={canSplit} />
             {/* </div> */}
           </div>
         )}
