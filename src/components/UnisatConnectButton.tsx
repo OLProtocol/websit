@@ -93,7 +93,7 @@ export const UnisatConnectButton = () => {
                 <Tag color='error'>{network}</Tag>
               </div>
               <Divider style={{ margin: '10px 0' }} />
-              <div className='flex justify-center'>
+              {/* <div className='flex justify-center'>
                 <Button
                   type='primary'
                   className='w-28'
@@ -101,15 +101,15 @@ export const UnisatConnectButton = () => {
                   {t('buttons.toAccount')}
                 </Button>
               </div>
-              <Divider style={{ margin: '10px 0' }} />
-              <div className='flex justify-center'>
+              <Divider style={{ margin: '10px 0' }} /> */}
+              {/* <div className='flex justify-center'>
                 <Button
                   type='primary'
                   className='w-28'
                   onClick={switchNetworkHandler}>
                   {t('buttons.switchNetwork')}
                 </Button>
-              </div>
+              </div> */}
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
                 <Button type='primary' className='w-28' onClick={disconnect}>

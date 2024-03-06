@@ -52,7 +52,7 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
   });
   const [currentAccount, setCurrentAccount] = useState('');
   const [currentPublicKey, setcurrentPublicKey] = useState('');
-  const [unisatNetwork, setUnisatNetwork] = useState('livenet'); // Default network
+  const [unisatNetwork, setUnisatNetwork] = useState('testnet'); // Default network
   const toast = useToast();
   const checkUnisat = async () => {
     const unisat = window.unisat;
