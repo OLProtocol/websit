@@ -228,9 +228,13 @@
     },
     "split_sat": {
       "title": "Split Sats",
-      "des": "Split a range of sats into segments.",
+      "des": "Split a range of sats into segments."
+    },
+    "splitted_inscription": {
+      "title": "Splitted Inscriptions",
+      "des": "Splitted Inscriptions",
       "search_placeholder": "Ticker ...",
-      "card_header": "Splitted Inscription Numbers"
+      "card_header": "Splitted Inscriptions"
     },
     "docs": {
       "title": "文档"
