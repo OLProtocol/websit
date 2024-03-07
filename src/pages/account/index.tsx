@@ -1,12 +1,14 @@
 import { Tabs } from 'antd';
-import { getMintInfo, getSats } from '@/api';
-import { useUnisat, useUnisatConnect } from '@/lib/hooks';
+import { getSats } from '@/api';
+import { useUnisatConnect } from '@/lib/hooks';
 import { ItemList } from './components/ItemList';
 import { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 import { SatRareBox } from '../explorer/components/SatRareBox';
+import { useTranslation } from 'react-i18next';
 
-export default function AccountIndex() {
+export default function Account() {
+  const { t } = useTranslation();
   const toast = useToast();
   const [rareSatList, setRareSatList] = useState<any[]>();
   const { network, currentAccount } = useUnisatConnect();
@@ -48,12 +50,12 @@ export default function AccountIndex() {
         size='large'
         items={[
           {
-            label: 'My Items',
+            label: t('pages.account.my_items'),
             key: '1',
             children: <ItemList />,
           },
           {
-            label: 'Rare Sats',
+            label: t('pages.account.rare_sats'),
             key: '2',
             children: rareSatList ? <SatRareBox sats={rareSatList} canSplit={true}/> : <SatRareBox sats={[]} canSplit={true}/>,
           },

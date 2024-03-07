@@ -7,7 +7,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Tooltip,
   useToast,
 } from '@chakra-ui/react';
 // import { Button, useToast } from '@chakra-ui/react';
@@ -51,6 +50,12 @@ export default function RareSat() {
       if (satList !== undefined) {
         setSatFilterList(satList.filter((item) => item.type.includes(satType)));
       }
+    }
+  }
+
+  function handleKeyDown(event) {
+    if (event.key === 'Enter') {
+      doSearch();
     }
   }
 
@@ -106,7 +111,9 @@ export default function RareSat() {
               placeholder={t('pages.rare_sat.search_placeholder')}
               value={address}
               size='lg'
-              onChange={(e) => setAddress(e.target.value)}
+              onChange={(e) => setAddress(e.target.value)
+              }
+              onKeyDown={handleKeyDown}
             />
             <InputRightElement width='4.5rem' className='mr-1'>
               <Button
@@ -119,14 +126,6 @@ export default function RareSat() {
               </Button>
             </InputRightElement>
           </InputGroup>
-          {/* <Search className='rounded-2xl'
-                        allowClear
-                        placeholder={t('pages.rare_sat.search_placeholder')}
-                        size='large'
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        onSearch={doSearch}
-                    /> */}
         </div>
         <div className='max-w-7xl mx-auto px-4 pb-4'>
           <SatTypeBox />

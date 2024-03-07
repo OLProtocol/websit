@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from 'react';
-import { SatItem } from './SatItem';
+import { useMemo, useState } from 'react';
 import { SatTable } from './SatTable';
 import { Card, CardBody, CardHeader, Heading } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
