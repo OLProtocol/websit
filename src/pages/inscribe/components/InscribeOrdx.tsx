@@ -509,7 +509,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       value={data.rarity}
                       onChange={(e) => rarityChange(e.target.value)}>
                         {
-                          satTypeList.map((item, index) => {
+                          satTypeList.map((item) => {
                             return <option value={item.name}>{item.name}</option>
                           })
                         }
