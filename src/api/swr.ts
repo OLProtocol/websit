@@ -7,7 +7,6 @@ import {
   Ord2InfoParams,
   OrdXSummaryParams,
   OrdXHistoryParams,
-  OrdXHistoryDetailParams,
 } from './types';
 
 import { fetchTipHeight, fetchChainFeeRate } from '@/lib/utils';

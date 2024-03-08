@@ -3,13 +3,15 @@ import type { ColumnsType } from 'antd/es/table';
 import { SatItem } from './SatItem';
 interface SatTableProps {
   sats: any[];
+  canSplit: boolean;
 }
 interface DataType {
   sat: number[];
   time: string;
   block: number;
+  canSplit: boolean;
 }
-export const SatTable = ({ sats }: SatTableProps) => {
+export const SatTable = ({ sats, canSplit }: SatTableProps) => {
   const columns: ColumnsType<DataType> = [
     {
       title: 'Sat',
@@ -17,6 +19,7 @@ export const SatTable = ({ sats }: SatTableProps) => {
       key: 'sat',
       align: 'center',
       render(_, record) {
+        record.canSplit = canSplit;
         return <SatItem sat={record} />;
       },
     },

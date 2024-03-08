@@ -48,7 +48,7 @@ export const ItemList = () => {
           return <OrdxItem key={item.id} item={item} />;
         })}
       </div>
-      {total > 0 && (
+      {total > 0 ? (
         <div className='flex justify-center'>
           <Pagination
             total={total}
@@ -58,7 +58,13 @@ export const ItemList = () => {
             defaultCurrent={1}
           />
         </div>
-      )}
+      ):(
+        <div className='max-w-max mx-auto p-2'>
+        <img src='/images/no_data.svg' className='w-10 h-10 ml-1'/>
+        <span className='text-gray-300'>No data</span>
+      </div>
+      )
+      }
     </div>
   );
 };

@@ -16,7 +16,7 @@ export const SatInterstingBox = ({ sats }: SatInterstingBoxProps) => {
     <div className='rounded-2xl bg-gray-200 p-4 sat-box'>
       <h3 className='text-2xl mb-2 bg-transparent'>Intersting Sats</h3>
       <div>
-        <SatTable sats={list} />
+        <SatTable sats={list} canSplit={false} />
       </div>
     </div>
   );

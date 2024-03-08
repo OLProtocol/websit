@@ -214,6 +214,13 @@ export const getSplittedSats = async ({ ticker, network }: any) => {
   return data;
 };
 
+export const getSatTypes = async ({ network }: any) => {
+  const { data } = await axios.get(
+    generateUrl(`info/satributes`, network),
+  );
+  return data;
+};
+
 export async function pollGetTxStatus(
   txid: string,
   network: string,

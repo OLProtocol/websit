@@ -37,10 +37,22 @@ export const NavHeader = () => {
       value: ROUTE_PATH.TOOLS,
       type: 'route',
     },
+    // {
+    //   key: ROUTE_PATH.MARKET_INDEX,
+    //   label: t('nav.market'),
+    //   value: ROUTE_PATH.MARKET_INDEX,
+    //   type: 'route',
+    // },
     {
-      key: ROUTE_PATH.MARKET_INDEX,
-      label: t('nav.market'),
-      value: ROUTE_PATH.MARKET_INDEX,
+      key: ROUTE_PATH.DISCOVER_RARE_SAT,
+      label: t('nav.discover'),
+      value: ROUTE_PATH.DISCOVER_RARE_SAT,
+      type: 'route',
+    },
+    {
+      key: ROUTE_PATH.ACCOUNT,
+      label: t('nav.account'),
+      value: ROUTE_PATH.ACCOUNT,
       type: 'route',
     },
     {

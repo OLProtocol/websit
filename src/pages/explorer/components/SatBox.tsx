@@ -283,7 +283,7 @@ export const SatBox = () => {
   return (
     <div>
       <div className='mb-4'>
-        <SatRareBox sats={spliceList.rareList} />
+        <SatRareBox sats={spliceList.rareList} canSplit={false} />
       </div>
       <SatInterstingBox sats={spliceList.interstingList} />
     </div>
