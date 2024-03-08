@@ -75,6 +75,7 @@ export const NavHeader = () => {
       if (type === 'link') {
         window.open(value, '_blank');
       } else if (type === 'route') {
+        localStorage.setItem('address-4-search-rare-sats', "");
         nav(value);
       }
     }

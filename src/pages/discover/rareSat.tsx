@@ -9,10 +9,8 @@ import {
   InputRightElement,
   useToast,
 } from '@chakra-ui/react';
-// import { Button, useToast } from '@chakra-ui/react';
-// import { Card, Input } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SatRareBox } from '../explorer/components/SatRareBox';
 import { getSats } from '@/api';
 import { SatTable } from '../explorer/components/SatTable';
@@ -30,6 +28,7 @@ export default function RareSat() {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
 
+  
   let uniqueTypes: string[] = [];
   if (satList) {
     const uniqueTypeSet = new Set<string>();
@@ -89,6 +88,8 @@ export default function RareSat() {
     );
     setRareSatList(tmpSats);
 
+    localStorage.setItem('address-4-search-rare-sats', address);
+
     tmpSats = tmpSats
       .filter((item) => !item.type.includes('uncommon'))
       .filter((item) => !item.type.includes('rare'))
@@ -99,6 +100,14 @@ export default function RareSat() {
     setLoading(false);
   };
 
+  useEffect(() => {
+    let tmpAddress = localStorage.getItem('address-4-search-rare-sats')
+    if (tmpAddress != null && tmpAddress !== '') {
+      setAddress(tmpAddress);
+      doSearch();
+    }
+  }, []);
+  
   return (
     <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
       <h1 className='text-lg font-bold text-orange-500 text-center mb-4'>

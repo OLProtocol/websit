@@ -7,6 +7,7 @@ import {
   OrdXHistoryDetailParams,
   TxStatusParams,
 } from './types';
+
 export const generateUrl = (url: string, network?: string) => {
   return `${VITE_API_HOST}${network === 'testnet' ? '/testnet' : ''}/${url}`;
 };
@@ -157,7 +158,6 @@ export const getUtxoByConditon = async ({
   );
   return data;
 };
-
 export const getCurrentHeight = async ({ network }: any) => {
   const { data } = await axios.get(
     generateUrl(`v1/indexer/ordx/bestheight`, network),

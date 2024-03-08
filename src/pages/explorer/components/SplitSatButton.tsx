@@ -13,7 +13,7 @@ export const SplitSatButton = ({
   tooltip?: string;
 }) => {
   const nav = useNavigate();
-  const clickHandler = () => {
+  const clickHandler = () => { 
     nav(ROUTE_PATH.TOOLS_SPLIT_SATS + '?q='+text);
   };
   
