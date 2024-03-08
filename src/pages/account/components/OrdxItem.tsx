@@ -1,11 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { useOrdxAddressHistory } from '@/api';
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { getUtxoByInscriptionNumber } from '@/api';
+
 import { Avatar, Card, Button } from 'antd';
 
 const { Meta } = Card;
@@ -23,6 +19,16 @@ const TickerContent = ({ content }: any) => {
   );
 };
 export const OrdxItem = ({ item }: Props) => {
+  const { network } = useUnisatConnect();
+
+  const getUtxo = async () => {
+    const res = await getUtxoByInscriptionNumber({ inscriptionNumber: item.inscriptionNumber, network });
+    console.log(res);
+  }
+  const splitHandler = async () => {
+    const utxos = await getUtxo();
+    console.log('split');
+  }
   return (
     <Card
       hoverable
@@ -40,7 +46,7 @@ export const OrdxItem = ({ item }: Props) => {
         <Button type='text' color='blue'>
           上架
         </Button>,
-        <Button type='text' color='blue'>
+        <Button type='text' color='blue' onClick={splitHandler}>
           拆分
         </Button>,
       ]}>

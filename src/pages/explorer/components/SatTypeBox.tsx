@@ -114,7 +114,7 @@ export const SatTypeBox = () => {
       default:
         return '';
     }
-  };
+  }
 
   return (
     <Card>

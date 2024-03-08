@@ -3,13 +3,15 @@ import { Pagination, Spin } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { useOrdxAddressHistory } from '@/api';
 import { OrdxItem } from './OrdxItem';
+import { ListTypes } from './ListTypes';
 
 export const ItemList = () => {
   const { network, currentAccount } = useUnisatConnect();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
+  const [ticker, setTicker] = useState('');
   const { data, isLoading, trigger } = useOrdxAddressHistory({
-    ticker: 'Pearl',
+    ticker,
     address: currentAccount,
     network,
     start,
@@ -22,10 +24,10 @@ export const ItemList = () => {
     return data?.data?.total || [];
   }, [data]);
   useEffect(() => {
-    if (currentAccount && network) {
+    if (currentAccount && network && ticker) {
       trigger();
     }
-  }, [currentAccount, network, start, limit]);
+  }, [currentAccount, network, ticker, start, limit]);
   console.log(data);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
@@ -33,6 +35,9 @@ export const ItemList = () => {
   };
   return (
     <div>
+      <div className='mb-4'>
+        <ListTypes onChange={(t) => setTicker(t)} />
+      </div>
       <div className='grid grid-cols-4 gap-3 mb-4 relative'>
         {isLoading && (
           <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10'>

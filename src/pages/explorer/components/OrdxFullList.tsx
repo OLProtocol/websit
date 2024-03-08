@@ -260,11 +260,10 @@ export const Ord2FullList = () => {
             des: item.description?.toString(),
           }),
         );
-        console.log(value);
         return {
           id: item.id,
           tick: item.ticker,
-          block: !special ? `${item.startBlock}-${item.endBlock}` : '-',
+          block: !special && start > 0 ? `${item.startBlock}-${item.endBlock}` : '-',
           startBlock: item.startBlock,
           endBlock: item.endBlock,
           rarity: item.rarity,

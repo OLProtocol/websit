@@ -1,20 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
-import { OrdXItem } from '../../../components/OrdXItem';
 import { useOrdxSummary } from '@/api';
+import { ListTypeItem } from './ListTypeItem';
 import { useUnisatConnect } from '@/lib/hooks';
-import { on } from 'events';
-interface Ord2SummaryListProps {
-  address: string;
+
+interface ListTypesProps {
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
-export const Ord2SummaryList = ({
-  address,
+export const ListTypes = ({
   onChange,
   onEmpty,
-}: Ord2SummaryListProps) => {
-  const { network } = useUnisatConnect();
-  const { data, trigger } = useOrdxSummary({ address, network });
+}: ListTypesProps) => {
+  const { network, currentAccount } = useUnisatConnect();
+  const { data, trigger } = useOrdxSummary({ address: currentAccount, network });
   const [select, setSelect] = useState('');
   const list = useMemo(() => data?.data?.detail || [], [data]);
   const onClick = (item) => {
@@ -30,14 +28,14 @@ export const Ord2SummaryList = ({
     onEmpty?.(list.length === 0);
   }, [list]);
   useEffect(() => {
-    if (address) {
+    if (currentAccount) {
       trigger();
     }
-  }, [address, network]);
+  }, [currentAccount, network]);
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.map((item) => (
-        <OrdXItem
+        <ListTypeItem
           selected={select === item.ticker}
           onClick={() => {
             onClick(item);

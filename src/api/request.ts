@@ -157,6 +157,7 @@ export const getUtxoByConditon = async ({
   );
   return data;
 };
+
 export const getCurrentHeight = async ({ network }: any) => {
   const { data } = await axios.get(
     generateUrl(`v1/indexer/ordx/bestheight`, network),
