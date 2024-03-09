@@ -236,7 +236,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       setTickChecked(true);
 
       const { rarity, trz, cn, startBlock, endBlock, limit } = info.data || {};
-      const isSpecial = rarity !== 'unknow' && rarity !== 'common';
+      const isSpecial = rarity !== 'unknow' && rarity !== 'common' && !!rarity;
       let status = 'Completed';
       if (
         startBlock &&

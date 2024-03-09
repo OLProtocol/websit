@@ -28,7 +28,9 @@ export const ItemList = () => {
       trigger();
     }
   }, [currentAccount, network, ticker, start, limit]);
-  console.log(data);
+  const onTransfer = () => {
+    trigger();
+  }
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
     setLimit(pageSize);
@@ -45,7 +47,7 @@ export const ItemList = () => {
           </div>
         )}
         {list.map((item) => {
-          return <OrdxItem key={item.id} item={item} />;
+          return <OrdxItem key={item.id} item={item} onTransfer={onTransfer}/>;
         })}
       </div>
       {total > 0 ? (

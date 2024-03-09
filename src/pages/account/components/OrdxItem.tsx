@@ -10,6 +10,7 @@ const { Meta } = Card;
 
 interface Props {
   item: any;
+  onTransfer?: () => void;
 }
 const TickerContent = ({ content }: any) => {
   return (
@@ -20,7 +21,7 @@ const TickerContent = ({ content }: any) => {
     </div>
   );
 };
-export const OrdxItem = ({ item }: Props) => {
+export const OrdxItem = ({ item, onTransfer }: Props) => {
   const { network, currentAccount, currentPublicKey } = useUnisatConnect();
   const unisat = useUnisat();
   const [transferAddress, setTransferAddress] = useState('');
@@ -123,6 +124,7 @@ export const OrdxItem = ({ item }: Props) => {
       ];
       await signAndPushPsbt(inputs, outputs);
       message.success('发送成功');
+      onTransfer?.();
       setLoading(false);
     } catch (error: any) {
       console.error(error.message || 'Split failed');
