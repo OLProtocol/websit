@@ -4,7 +4,6 @@ import path from 'path';
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import wasm from "vite-plugin-wasm";
 
-console.log(process.env)
 // https://vitejs.dev/config/
 export default defineConfig({
   // build: { commonjsOptions: { transformMixedEsModules: true, include: ['@mempool/mempool.js'] } },

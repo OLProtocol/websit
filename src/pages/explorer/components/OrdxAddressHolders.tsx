@@ -90,8 +90,8 @@ export const OrdxAddressHolders = ({
     },
     {
       title: t('common.quantity'),
-      dataIndex: 'amount',
-      key: 'amount',
+      dataIndex: 'assetamount',
+      key: 'assetamount',
       width: 130,
       align: 'center',
     },
