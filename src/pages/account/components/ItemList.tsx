@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pagination, Spin } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { useOrdxAddressHistory } from '@/api';
+import { useOrdxAddressHolders } from '@/api';
 import { OrdxItem } from './OrdxItem';
 import { ListTypes } from './ListTypes';
 
@@ -10,7 +10,7 @@ export const ItemList = () => {
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
   const [ticker, setTicker] = useState('');
-  const { data, isLoading, trigger } = useOrdxAddressHistory({
+  const { data, isLoading, trigger } = useOrdxAddressHolders({
     ticker,
     address: currentAccount,
     network,

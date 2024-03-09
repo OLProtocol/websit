@@ -168,7 +168,6 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
   useEffect(() => {
     if (window.unisat) {
       window.unisat.on('accountsChanged', async (accounts) => {
-        console.log('accounts', accounts);
         if (accounts.length > 0) {
           setIsConnected(true);
           setCurrentAccount(accounts[0]);

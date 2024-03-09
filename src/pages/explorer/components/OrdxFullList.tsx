@@ -232,9 +232,9 @@ export const Ord2FullList = () => {
         } else {
           status = 'Completed';
         }
-        const special = item.rarity !== 'unknow' && item.rarity !== 'common';
+        const special = item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         const attrArr: string[] = [];
-        if (item.rarity !== 'unknow' && item.rarity !== 'common') {
+        if (item.rarity !== 'unknow' && item.rarity !== 'common' && item.rarity) {
           attrArr.push(`rar=${item.rarity}`);
         }
         if (item.cn) {
@@ -263,7 +263,7 @@ export const Ord2FullList = () => {
         return {
           id: item.id,
           tick: item.ticker,
-          block: !special && start > 0 ? `${item.startBlock}-${item.endBlock}` : '-',
+          block: !special && item.startBlock > 0 ? `${item.startBlock}-${item.endBlock}` : '-',
           startBlock: item.startBlock,
           endBlock: item.endBlock,
           rarity: item.rarity,

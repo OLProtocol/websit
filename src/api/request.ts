@@ -157,6 +157,20 @@ export const getUtxoByConditon = async ({
   );
   return data;
 };
+export const getUtxoByValue = async ({
+  address,
+  value = 600,
+  network,
+}: any) => {
+  const { data } = await axios.post(
+    generateUrl(`utxo/getUtxoByValue`, network),
+    {
+      address,
+      Value: value,
+    },
+  );
+  return data;
+};
 
 export const getCurrentHeight = async ({ network }: any) => {
   const { data } = await axios.get(
