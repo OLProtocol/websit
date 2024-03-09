@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 import { SatRareBox } from '../explorer/components/SatRareBox';
 import { useTranslation } from 'react-i18next';
+import { SatTypeBox } from '../explorer/components/SatTypeBox';
 
 export default function Account() {
   const { t } = useTranslation();
@@ -57,7 +58,25 @@ export default function Account() {
           {
             label: t('pages.account.rare_sats'),
             key: '2',
-            children: rareSatList ? <SatRareBox sats={rareSatList} canSplit={true}/> : <SatRareBox sats={[]} canSplit={true}/>,
+            children: rareSatList ? (
+              <div>
+                <div className='max-w-7xl mx-auto px-4 pb-4'>
+                  <SatTypeBox/>
+                </div>
+                <div className='max-w-7xl mx-auto px-4'>
+                  <SatRareBox sats={rareSatList} canSplit={true}/>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className='max-w-7xl mx-auto px-4 pb-4'>
+                  <SatTypeBox />
+                </div>
+                <div className='max-w-7xl mx-auto px-4'>
+                  <SatRareBox sats={[]} canSplit={true}/>
+                </div>
+              </div>
+            ),
           },
         ]}
       />

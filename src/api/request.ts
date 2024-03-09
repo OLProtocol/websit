@@ -7,6 +7,7 @@ import {
   OrdXHistoryDetailParams,
   TxStatusParams,
 } from './types';
+
 export const generateUrl = (url: string, network?: string) => {
   return `${VITE_API_HOST}${network === 'testnet' ? '/testnet' : ''}/${url}`;
 };

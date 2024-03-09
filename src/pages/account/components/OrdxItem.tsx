@@ -221,6 +221,7 @@ export const OrdxItem = ({ item }: Props) => {
   };
   const handleCancel = () => {
     setIsModalOpen(false);
+    setLoading(false);
   };
   return (
     <div>
@@ -238,10 +239,10 @@ export const OrdxItem = ({ item }: Props) => {
           />
         }
         actions={[
-          <Button type='text' color='blue' onClick={() => setIsModalOpen(true)}>
+          <Button type='text' color='blue' loading={loading} onClick={() => setIsModalOpen(true)}>
             发送
           </Button>,
-          <Button type='text' color='blue' onClick={splitHandler}>
+          <Button type='text' color='blue' loading={loading} onClick={splitHandler}>
             拆分
           </Button>,
         ]}>

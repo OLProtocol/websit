@@ -10,7 +10,8 @@ interface SatItemProps {
 }
 export const SatItem = ({ sat }: SatItemProps) => {
   const { network } = useUnisatConnect();
-  const location = useLocation();
+  console.log(network)
+  console.log(network.includes('testnet'))
   function setSatIcon (type:  string) : string {
     switch (type) {
       case 'rare':
@@ -94,7 +95,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
         {/* {icon && <img src={icon} alt='' className='w-6 h-6 ml-4' />} */}
         <div className='ml-4 hidden group-hover:flex'>
           <CopyButton text={sat.sat[0]} tooltip='Copy Sat' />
-          { (sat.canSplit || location.pathname.includes('testnet')) &&
+          { (sat.canSplit || network.includes('testnet')) &&
           <SplitSatButton text={sat.sat[0]} tooltip='Split Sat' />
           }
         </div>
