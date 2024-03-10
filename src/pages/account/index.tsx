@@ -30,7 +30,7 @@ export default function Account() {
       return;
     }
 
-    let tmpSats: any[] | undefined = [];
+    const tmpSats: any[] | undefined = [];
     for (let i = 0; i < data?.data?.length; i++) {
       if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
         tmpSats.push(...data.data[i].sats);
@@ -45,7 +45,7 @@ export default function Account() {
     getRareSats();
   }, []);
   return (
-    <div className='max-w-3xl mx-auto p-2'>
+    <div className='max-w-6xl mx-auto p-2'>
       <Tabs
         defaultActiveKey='1'
         size='large'
