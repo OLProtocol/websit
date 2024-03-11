@@ -21,7 +21,7 @@ export const ItemList = () => {
         />
       </div>
       {ticker === '可花费utxo' ? (
-        <UtxoList address={currentAccount} />
+        <UtxoList address={currentAccount} tick={ticker}/>
       ) : (
         <OrdxAddressHolders tick={ticker} address={currentAccount} />
       )}

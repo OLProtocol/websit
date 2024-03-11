@@ -2,23 +2,21 @@ import { Button, message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useUtxoByValue, getUtxoByValue } from '@/api';
 import { Address, Script } from '@cmdcode/tapscript';
+import { CopyButton } from '@/components/CopyButton';
 import * as bitcoin from 'bitcoinjs-lib';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
 import { hideStr } from '@/lib/utils';
 
 interface Ord2HistoryProps {
   address: string;
+  tick: string;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
 }
-export const UtxoList = ({
-  address,
-  onEmpty,
-}: Ord2HistoryProps) => {
+export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { network, currentAccount, currentPublicKey } = useUnisatConnect();
@@ -74,7 +72,7 @@ export const UtxoList = ({
       return;
     }
     const avialableUtxo: any[] = [];
-    let avialableValue = 0
+    let avialableValue = 0;
     for (let i = 0; i < dataSource.length; i++) {
       const utxo = dataSource[i];
       avialableUtxo.push(utxo);
@@ -118,7 +116,8 @@ export const UtxoList = ({
       }, 0);
       const firstOutputValue = 600;
       const secondOutputValue = 600;
-      const thirdOutputValue = total - firstOutputValue - secondOutputValue - fee;
+      const thirdOutputValue =
+        total - firstOutputValue - secondOutputValue - fee;
       const outputs = [
         {
           address: currentAccount,
@@ -133,8 +132,8 @@ export const UtxoList = ({
           value: thirdOutputValue,
         },
       ];
-      console.log(inputs)
-      console.log(outputs)
+      console.log(inputs);
+      console.log(outputs);
       await signAndPushPsbt(inputs, outputs);
       message.success('切割成功');
       setLoading(false);
@@ -232,17 +231,20 @@ export const UtxoList = ({
               ? `https://mempool.space/testnet/tx/${txid}`
               : `https://mempool.space/tx/${txid}`;
           return (
-            <a
-              className='text-blue-500 cursor-pointer'
-              href={href}
-              target='_blank'>
-              {t}
-            </a>
+            <div className='flex item-center justify-center'>
+              <a
+                className='text-blue-500 cursor-pointer mr-2'
+                href={href}
+                target='_blank'>
+                {hideStr(t)}
+              </a>
+              <CopyButton text={t} tooltip='Copy Tick' />
+            </div>
           );
         },
       },
       {
-        title: t('common.quantity'),
+        title: 'Sats/BTC',
         dataIndex: 'value',
         key: 'value',
         align: 'center',
@@ -294,27 +296,35 @@ export const UtxoList = ({
 
   return (
     <div>
-      <div className='mb-4'>
-        <Button onClick={fastClick}>快速切割</Button>
+      <div className='rounded-2xl bg-gray-200 p-4'>
+        <div className='mb-2'>
+          <span className='text-orange-500'> {tick}</span>
+          <span className='text-gray-500'>, {t('common.holder')}: </span>
+          <span>{address}</span>
+        </div>
+
+        <div className='mb-4'>
+          <Button onClick={fastClick}>快速切割</Button>
+        </div>
+        <Table
+          loading={isLoading}
+          columns={columns}
+          dataSource={dataSource}
+          scroll={{ x: 800 }}
+          pagination={{
+            position: ['bottomCenter'],
+            defaultPageSize: 100,
+            total: total,
+            onChange: paginationChange,
+            showSizeChanger: false,
+          }}
+          // onRow={(record) => {
+          //   return {
+          //     onClick: () => clickHandler(record), // 点击行
+          //   };
+          // }}
+        />
       </div>
-      <Table
-        loading={isLoading}
-        columns={columns}
-        dataSource={dataSource}
-        scroll={{ x: 800 }}
-        pagination={{
-          position: ['bottomCenter'],
-          defaultPageSize: 100,
-          total: total,
-          onChange: paginationChange,
-          showSizeChanger: false,
-        }}
-        // onRow={(record) => {
-        //   return {
-        //     onClick: () => clickHandler(record), // 点击行
-        //   };
-        // }}
-      />
     </div>
   );
 };
