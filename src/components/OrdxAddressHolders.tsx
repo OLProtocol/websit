@@ -339,7 +339,7 @@ export const OrdxAddressHolders = ({
         width: 100,
         render: (record) => {
           return (
-            <div className='flex gap-2'>
+            <div className='flex gap-2 justify-center'>
               <Button
                 type='link'
                 loading={loading}

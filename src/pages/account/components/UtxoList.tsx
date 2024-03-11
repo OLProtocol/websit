@@ -256,7 +256,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
         align: 'center',
         render: (record) => {
           return (
-            <div className='flex gap-2'>
+            <div className='flex gap-2 justify-center'>
               <Button
                 type='link'
                 loading={loading}
@@ -304,7 +304,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
         </div>
 
         <div className='mb-4'>
-          <Button onClick={fastClick}>快速切割</Button>
+          <Button onClick={fastClick}>快速切割生成2个600Utxo</Button>
         </div>
         <Table
           loading={isLoading}
