@@ -27,6 +27,9 @@ export default function InscribeCheck() {
       <Card title={t('pages.tools.utxo.title')} className='w-60 cursor-pointer' onClick={toSearchUtxo}>
         {t('pages.tools.utxo.des')}
       </Card>
+      {/* <Card title='分离UTXO' className='w-60 cursor-pointer'>
+        标注UTXO中的特殊聪位置和资产位置都标注出来。由用户决定切割方案并进行切割。
+      </Card> */}
     </div>
   );
 }
