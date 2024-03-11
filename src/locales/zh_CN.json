@@ -44,6 +44,7 @@
     "inscriptionNumber": "铭文序号",
     "value": "价值",
     "genesisTx": "铸造交易",
+    "deployTx": "部署交易",
     "select_option": "选择选项",
     "height_alert": "当前 BTC 高度为 ",
     "founder": "铸造者"

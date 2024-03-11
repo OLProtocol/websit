@@ -39,7 +39,7 @@ export const UnisatConnectButton = () => {
       return;
     }
     await connectWallet();
-    // await switchNetwork('testnet');
+    await switchNetwork('testnet');
   };
   const items: MenuProps['items'] = [
     {
@@ -77,7 +77,8 @@ export const UnisatConnectButton = () => {
     onClick: handleMenuClick,
   };
   const switchNetworkHandler = async () => {
-    await switchNetwork(network === 'testnet' ? 'livenet' : 'testnet');
+    await switchNetwork('testnet');
+    // await switchNetwork(network === 'testnet' ? 'livenet' : 'testnet');
   };
   const hideAccount = useMemo(() => {
     return hideStr(currentAccount, 4);
@@ -100,7 +101,7 @@ export const UnisatConnectButton = () => {
                   onClick={toAccount}>
                   {t('buttons.toAccount')}
                 </Button>
-              </div> */}
+              </div> 
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
                 <Button
@@ -109,7 +110,7 @@ export const UnisatConnectButton = () => {
                   onClick={switchNetworkHandler}>
                   {t('buttons.switchNetwork')}
                 </Button>
-              </div>
+              </div> */}
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
                 <Button type='primary' className='w-28' onClick={disconnect}>

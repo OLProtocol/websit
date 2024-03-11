@@ -19,6 +19,7 @@ import {
   pushCommitTx,
   getFundingAddress,
   waitSomeSeconds,
+  sendBTC,
 } from '../utils';
 import { savePaidOrder } from '@/api';
 import { useEffect, useMemo, useState } from 'react';
@@ -48,7 +49,7 @@ export const InscribingOrderModal = ({
     { title: t('pages.inscribe.pay.step_three.name') },
     { title: t('pages.inscribe.pay.step_four.name') },
   ];
-  const { currentAccount } = useUnisatConnect();
+  const { currentAccount, currentPublicKey } = useUnisatConnect();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const {
@@ -77,13 +78,15 @@ export const InscribingOrderModal = ({
       const { inscriptions, feeRate, inscriptionSize, secret, network, fee } =
         order;
       if (inscriptions.length === 1) {
-        const txid = await unisat.sendBitcoin(
-          inscriptions[0].inscriptionAddress,
-          fee.totalFee,
-          {
-            feeRate: feeRate,
-          },
-        );
+        const txid = await sendBTC({
+          toAddress: inscriptions[0].inscriptionAddress,
+          value: fee.totalFee,
+          feeRate: feeRate,
+          network: network,
+          fromAddress: currentAccount,
+          fromPubKey: currentPublicKey,
+        });
+        console.log(txid);
         const commitTx = {
           txid,
           outputs: [
@@ -106,13 +109,21 @@ export const InscribingOrderModal = ({
         let fundingTxid = funding?.txid || '';
         if (!funding) {
           const fundingData = getFundingAddress(secret, network);
-          fundingTxid = await unisat.sendBitcoin(
-            fundingData.address,
-            fee.totalFee,
-            {
-              feeRate: feeRate,
-            },
-          );
+          // fundingTxid = await unisat.sendBitcoin(
+          //   fundingData.address,
+          //   fee.totalFee,
+          //   {
+          //     feeRate: feeRate,
+          //   },
+          // );
+          fundingTxid = await sendBTC({
+            toAddress: fundingData.address,
+            value: fee.totalFee,
+            feeRate: feeRate,
+            network: network,
+            fromAddress: currentAccount,
+            fromPubKey: currentPublicKey,
+          });
           funding = {
             txid: fundingTxid,
             vout: 0,
@@ -231,19 +242,19 @@ export const InscribingOrderModal = ({
         const inscription = order.inscriptions[i];
         await waitSomeSeconds(1500);
         // if (!inscription.txid) {
-          const txid = await inscribe({
-            secret: order.secret,
-            network: order.network as any,
-            inscription,
-            file: inscription.file,
-            txid: commitTxid,
-            serviceFee: order.inscriptions.length === 1 ? fee.serviceFee : 0,
-            vout: commitTx.outputs[i].vout,
-            amount: commitTx.outputs[i].amount,
-            toAddress: order.toAddress[0],
-            inscribeFee: order.inscriptionSize,
-          });
-          addTxidToInscription(order.orderId, i, txid);
+        const txid = await inscribe({
+          secret: order.secret,
+          network: order.network as any,
+          inscription,
+          file: inscription.file,
+          txid: commitTxid,
+          serviceFee: order.inscriptions.length === 1 ? fee.serviceFee : 0,
+          vout: commitTx.outputs[i].vout,
+          amount: commitTx.outputs[i].amount,
+          toAddress: order.toAddress[0],
+          inscribeFee: order.inscriptionSize,
+        });
+        addTxidToInscription(order.orderId, i, txid);
         // }
         changeStatus(orderId, 'inscribe_success');
         changeInscriptionStatus(order.orderId, i, 'inscribe_success');
@@ -345,7 +356,13 @@ export const InscribingOrderModal = ({
     onClose?.();
   };
   return (
-    <Modal closeOnEsc={false} closeOnOverlayClick={false} size='3xl' isOpen={show} onClose={closeHandler} isCentered>
+    <Modal
+      closeOnEsc={false}
+      closeOnOverlayClick={false}
+      size='3xl'
+      isOpen={show}
+      onClose={closeHandler}
+      isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader className='flex items-center'>

@@ -20,7 +20,6 @@ export default function Root() {
     const height = heightData;
     if (height) {
       const serviceStatus = heightData >= Number(VITE_TIP_HEIGHT);
-      console.log(height);
       setServiceStatus(serviceStatus ? 1 : 0);
       setHeight(height);
       getBlockStatus({ height: height, network }).then((res) => {

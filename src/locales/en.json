@@ -44,6 +44,7 @@
     "inscriptionNumber": "Inscription Number",
     "value": "Value",
     "genesisTx": "Genesis transaction",
+    "deployTx": "Deploy Transaction",
     "select_option": "Select Option",
     "height_alert": "The current BTC height is ",
     "founder": "Founder"

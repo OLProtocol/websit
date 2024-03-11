@@ -23,11 +23,9 @@ export const calcTimeBetweenBlocks = async ({
   network,
 }: any) => {
   try {
-    console.log(height);
     const now = +new Date();
     let startTime: any = now;
     let endTime: any = now;
-    console.log(start);
     if (start && start < height) {
       startTime = await getTimeByHeight(start, network);
       // console.log('startTime', startTime);

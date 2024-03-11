@@ -66,9 +66,9 @@ export default function Ord2Index() {
             <h1 className='text-2xl text-orange-500 text-center mb-2'>
               {t('pages.explorer.subtitle')}
             </h1>
-            <h2 className='text-sm text-gray-500 text-center mb-6'>
+            {/* <h2 className='text-sm text-gray-500 text-center mb-6'>
               {t('pages.explorer.not_support')}
-            </h2>
+            </h2> */}
           </>
         )}
 

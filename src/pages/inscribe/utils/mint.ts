@@ -1,6 +1,6 @@
 import { Address, Signer, Tap, Tx, Script } from '@cmdcode/tapscript';
 import * as cbor from 'cbor-web';
-console.log('cbor', cbor);
+import * as bitcoin from 'bitcoinjs-lib';
 import { keys } from '@cmdcode/crypto-utils';
 import {
   textToHex,
@@ -9,7 +9,7 @@ import {
   hexToBytes,
   fileToSha256Hex,
 } from './index';
-import { pollPushBTCpmt, pushBTCpmt } from '@/api';
+import { getUtxoByValue, pushBTCpmt } from '@/api';
 interface FileItem {
   mimetype: string;
   show: string;
@@ -457,4 +457,110 @@ export const pushCommitTx = async ({
     }),
   };
   return result;
+};
+
+const signAndPushPsbt = async (inputs, outputs) => {
+  const psbtNetwork = bitcoin.networks.testnet;
+  const psbt = new bitcoin.Psbt({
+    network: psbtNetwork,
+  });
+  inputs.forEach((input) => {
+    psbt.addInput(input);
+  });
+  outputs.forEach((output) => {
+    psbt.addOutput(output);
+  });
+  const signed = await window.unisat.signPsbt(psbt.toHex());
+  const pushedTxId = await window.unisat.pushPsbt(signed);
+  return pushedTxId;
+};
+const addresToScriptPublicKey = (address: string) => {
+  const scriptPublicKey = Script.fmt.toAsm(
+    Address.toScriptPubKey(address),
+  )?.[0];
+  return scriptPublicKey;
+};
+
+interface SendBTCProps {
+  toAddress: string;
+  network: string;
+  value: number;
+  feeRate: number;
+  fromAddress: string;
+  fromPubKey: string;
+}
+
+export const sendBTC = async ({
+  toAddress,
+  network,
+  value,
+  feeRate = 1,
+  fromAddress,
+  fromPubKey,
+}: SendBTCProps) => {
+  const data = await getUtxoByValue({
+    address: fromAddress,
+    value: 600,
+    network,
+  });
+  const consumUtxos = data?.data || [];
+  if (!consumUtxos.length) {
+    throw new Error('余额不足');
+  }
+  const fee = (180 + 34 * 2 + 10) * feeRate;
+  const avialableUtxo: any[] = [];
+  let avialableValue = 0;
+  for (let i = 0; i < consumUtxos.length; i++) {
+    const utxo = consumUtxos[i];
+    avialableUtxo.push(utxo);
+    avialableValue += utxo.value;
+    if (avialableValue >= value + 330 + fee) {
+      break;
+    }
+  }
+  const btcUtxos = avialableUtxo.map((v) => {
+    return {
+      txid: v.txid,
+      vout: v.vout,
+      satoshis: v.value,
+      scriptPk: addresToScriptPublicKey(fromAddress),
+      addressType: 2,
+      inscriptions: [],
+      pubkey: fromPubKey,
+      atomicals: [],
+    };
+  });
+  const inputs: any[] = btcUtxos.map((v) => {
+    return {
+      hash: v.txid,
+      index: v.vout,
+      witnessUtxo: {
+        script: Buffer.from(v.scriptPk, 'hex'),
+        value: v.satoshis,
+      },
+    };
+  });
+  const psbtNetwork = bitcoin.networks.testnet;
+  const psbt = new bitcoin.Psbt({
+    network: psbtNetwork,
+  });
+  inputs.forEach((input) => {
+    psbt.addInput(input);
+  });
+  const total = inputs.reduce((acc, cur) => {
+    return acc + cur.witnessUtxo.value;
+  }, 0);
+  const toValue = value;
+  const fromValue = total - toValue - fee;
+  const outputs = [
+    {
+      address: toAddress,
+      value: toValue,
+    },
+    {
+      address: fromAddress,
+      value: fromValue,
+    },
+  ];
+  return await signAndPushPsbt(inputs, outputs);
 };

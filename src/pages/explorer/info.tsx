@@ -203,7 +203,7 @@ export default function Ord2Info() {
               <p className='indent-2'>{attr || '-'}</p>
             </div>
             <div className=''>
-              <p className='text-gray-400'>{t('common.genesisTx')}:</p>
+              <p className='text-gray-400'>{t('common.deployTx')}:</p>
               <a href={txLink} className='indent-2' target='_blank'>
                 {detail?.txid || '-'}
               </a>
