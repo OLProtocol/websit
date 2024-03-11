@@ -17,6 +17,7 @@ export const OrdxSummaryList = ({
   const { data, trigger } = useOrdxSummary({ address, network });
   const [select, setSelect] = useState('');
   const list = useMemo(() => data?.data?.detail || [], [data]);
+
   const onClick = (item) => {
     setSelect(item.ticker);
     onChange?.(item.ticker);

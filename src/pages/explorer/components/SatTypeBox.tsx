@@ -37,8 +37,8 @@ export const SatTypeBox = () => {
       tip: 'The first sat of each block.'
     },
     common: {
-      icon: '/images/sat/common.svg',
-      name: 'Connom/Unknown',
+      icon: '/images/sat/icon-default.svg',
+      name: 'Common/Unknown',
       tip: 'A sat of unknown rarity.'
     },
     black: {
@@ -47,7 +47,7 @@ export const SatTypeBox = () => {
       tip: 'The last sat of each block.'
     },
     fibonacci: {
-      icon: '/images/sat/icon-bl.svg',
+      icon: '/images/sat/icon-fibonacci.svg',
       name: 'Fibonacci Sequence',
       tip: 'Sats with IDs that follow the Fibonacci Sequence.'
     },
@@ -122,6 +122,12 @@ export const SatTypeBox = () => {
     for (let i = 0; i < data?.data?.length; i++) {
       if (typeMap[data.data[i]]) {
         tmpTypes.push(typeMap[data.data[i]]);
+      } else {
+        tmpTypes.push({
+          icon: '/images/sat/icon-default.svg',
+          name: data.data[i],
+          tip: data.data[i]
+        })
       }
     }
 

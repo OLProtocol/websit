@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-
 interface Ord2ItemProps {
   item: {
     tick: string;
