@@ -17,7 +17,6 @@ export const OrdxAccountSummaryList = ({
   const { data, trigger } = useOrdxSummary({ address, network });
   const {
     data: utxosRes,
-    isLoading,
     trigger: getUtxo,
   } = useUtxoByValue({
     address,
