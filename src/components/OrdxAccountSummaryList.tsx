@@ -37,7 +37,7 @@ export const OrdxAccountSummaryList = ({
   const [select, setSelect] = useState('');
   const arr = useMemo(() => data?.data?.detail || [], [data]);
   const list = useMemo(() => {
-    return [...arr, avialableTicker];
+    return [avialableTicker, ...arr];
   }, [arr, avialableTicker]);
   const onClick = (item) => {
     setSelect(item.ticker);
