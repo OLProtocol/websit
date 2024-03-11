@@ -61,7 +61,7 @@ export default function SplittedInscription() {
         <div>
           <div className='flex justify-center mb-12 max-w-7xl mx-auto px-4'>
             <InputGroup size='lg' className='rounded-2xl'>
-              <Input placeholder={t('pages.splitted_inscription.search_placeholder')} value={ticker} size='lg' onChange={(e) => setTicker(e.target.value)} onKeyDown={handleKeyDown} />
+              <Input placeholder={t('pages.tools.splitted_inscription.search_placeholder')} value={ticker} size='lg' onChange={(e) => setTicker(e.target.value)} onKeyDown={handleKeyDown} />
               <InputRightElement width='4.5rem' className='mr-1'>
                 <Button isLoading={loading} size='md' onClick={doSearch} variant="solid" colorScheme='blue'>
                   Search
@@ -73,7 +73,7 @@ export default function SplittedInscription() {
             <Card>
               <CardHeader>
                 <Heading size='md'>
-                {t('pages.splitted_inscription.card_header')}
+                {t('pages.tools.splitted_inscription.card_header')}
                 </Heading>
               </CardHeader>
               <CardBody>

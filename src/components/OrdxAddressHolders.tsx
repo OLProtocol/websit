@@ -279,7 +279,7 @@ export const OrdxAddressHolders = ({
             <a className='text-blue-500 cursor-pointer' href={href} target='_blank'>
               {hideStr(t)}
             </a>&nbsp;&nbsp;
-            <CopyButton text={t} tooltip='Copy Tick' />
+            <CopyButton text={t} tooltip='Copy' />
             </div>
           );
         },
@@ -347,7 +347,7 @@ export const OrdxAddressHolders = ({
                   setSelectItem(record);
                   setIsModalOpen(true);
                 }}>
-                发送
+                {t('buttons.send')}
               </Button>
               <Button
                 type='link'
@@ -355,7 +355,7 @@ export const OrdxAddressHolders = ({
                 onClick={() => {
                   splitHandler(record);
                 }}>
-                拆分
+                {t('buttons.split')}
               </Button>
             </div>
           );
