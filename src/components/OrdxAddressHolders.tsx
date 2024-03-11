@@ -161,7 +161,7 @@ export const OrdxAddressHolders = ({
       };
       const fee = 370;
       if (splitUtxo.value < 331) {
-        message.warning('utxo数量不足，无法切割');
+        message.warning('utxo数量不足，无法拆分！');
         setLoading(false);
         return;
       }
@@ -172,7 +172,7 @@ export const OrdxAddressHolders = ({
       });
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length || consumUtxos.length < 2) {
-        message.error('没有可用utxo,请先进行切割');
+        message.error('没有可用utxo,请先进行切割！');
         return;
       }
       const sortConsumUtXos = consumUtxos.sort((a, b) => a.value - b.value);
@@ -180,7 +180,7 @@ export const OrdxAddressHolders = ({
       const serviceUtxo = sortConsumUtXos[0];
 
       if (serviceUtxo.value > 1000) {
-        message.error('没有可用utxo,请先进行切割');
+        message.error('没有可用utxo,请先进行切割！');
         return;
       }
       const avialableUtxo: any[] = [];
