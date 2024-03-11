@@ -76,7 +76,9 @@
     "switchNetwork": "Switch Network",
     "view": "View",
     "disconnect": "Disconnect",
-    "select_lang": "Select Language"
+    "select_lang": "Select Language",
+    "send": "Send",
+    "split": "Split"
   },
   "pages": {
     "home": {
@@ -226,16 +228,25 @@
       "search_placeholder": "BTC address ...",
       "card_header": "Rare Sats"
     },
-    "split_sat": {
-      "title": "Split Sats",
-      "des": "Split a range of sats into segments."
+    "tools": {
+      "split_sat": {
+        "title": "Split Sats",
+        "des": "Split a range of sats into segments."
+      },
+      "splitted_inscription": {
+        "title": "Splitted Inscriptions",
+        "des": "Splitted Inscriptions",
+        "search_placeholder": "Ticker ...",
+        "card_header": "Splitted Inscriptions"
+      },
+      "utxo": {
+        "title": "Assets",
+        "des": "Get assets by UTXO",
+        "search_placeholder": "UTXO ...",
+        "card_header": "Assets"
+      }
     },
-    "splitted_inscription": {
-      "title": "Splitted Inscriptions",
-      "des": "Splitted Inscriptions",
-      "search_placeholder": "Ticker ...",
-      "card_header": "Splitted Inscriptions"
-    },
+   
     "docs": {
       "title": "Docs"
     },

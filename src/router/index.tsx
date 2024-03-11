@@ -12,6 +12,7 @@ import RareSat from '@/pages/discover/rareSat';
 import Account from '@/pages/account';
 import SplitSats from '@/pages/tools/splitSats';
 import SplittedInscription from '@/pages/tools/splittedInscription';
+import UtxoAsset from '@/pages/tools/utxoAsset';
 
 const resolveHashPath = (path: string) => {
   return `/#${path}`;
@@ -28,6 +29,7 @@ export const ROUTE_PATH = {
   INSCRIBE_CHECK: '/inscribe_check',
   TOOLS: '/tools',
   TOOLS_SPLIT_SATS: '/tools/split-sats',
+  TOOLS_UTXO_ASSET: '/tools/utxo-asset',
   TOOLS_SPLITTED_INSCRIPTION: '/tools/splitted-inscription',
   // MARKET_INDEX: '/market',
   DISCOVER_RARE_SAT: '/discover',
@@ -89,6 +91,10 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.TOOLS_SPLIT_SATS,
         element: <SplitSats />,
+      },
+      {
+        path: ROUTE_PATH.TOOLS_UTXO_ASSET,
+        element: <UtxoAsset />,
       },
       {
         path: ROUTE_PATH.TOOLS_SPLITTED_INSCRIPTION,
