@@ -25,7 +25,7 @@ export const UtxoAssetTable = ({ assets }: AssetTableProps) => {
   return (
     <Table
       className='bg-transparent bg-gray-200'
-      showHeader={false}
+      showHeader={true}
       columns={columns}
       dataSource={assets}
       rowClassName='bg-transparent'

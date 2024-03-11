@@ -1,11 +1,14 @@
-// import { Input } from 'antd';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Input, Button, InputGroup, InputRightElement, useToast, Card, CardHeader, Heading, CardBody } from '@chakra-ui/react';
+// import { Input, Button, InputGroup, InputRightElement, useToast, Card, CardHeader, Heading, CardBody } from '@chakra-ui/react';
+import { useToast, Card, CardHeader, Heading, CardBody } from '@chakra-ui/react';
 import { getAssetByUtxo } from '@/api';
 import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks';
 import { UtxoAssetTable } from './components/UtxoAssetTable';
+import { Input } from 'antd';
+
+const { Search } = Input;
 
 export default function UtxoAsset() {
   const { t } = useTranslation();
@@ -58,17 +61,25 @@ export default function UtxoAsset() {
   };
   return (
     <div>
-      <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
+      <div className='flex flex-col max-w-[56rem] mx-auto pt-8'>
         <div>
-          <div className='flex justify-center mb-12 max-w-7xl mx-auto px-4'>
-            <InputGroup size='lg' className='rounded-2xl'>
-              <Input placeholder={t('pages.tools.utxo.search_placeholder')} value={utxo} size='lg' onChange={(e) => setUtxo(e.target.value)} onKeyDown={handleKeyDown} />
+          <div className='flex justify-center mb-12 max-w-full mx-auto px-4'>
+            {/* <InputGroup size='lg' className='rounded-2xl'>
+              <Input placeholder={t('pages.tools.utxo.search_placeholder')} value={utxo} size='lg' onChange={(e) => setUtxo(e.target.value)} onKeyDown={handleKeyDown}/>
               <InputRightElement width='4.5rem' className='mr-1'>
                 <Button isLoading={loading} size='md' onClick={doSearch} variant="solid" colorScheme='blue'>
                   Search
                 </Button>
               </InputRightElement>
-            </InputGroup>
+            </InputGroup> */}
+            <Search
+              allowClear
+              placeholder={t('pages.tools.utxo.search_placeholder')}
+              size='large'
+              value={utxo}
+              onChange={(e) => setUtxo(e.target.value)}
+              onSearch={doSearch}
+            />
           </div>
           <div className='max-w-7xl mx-auto px-4'>
             <Card>
