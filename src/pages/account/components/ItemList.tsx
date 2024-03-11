@@ -3,8 +3,8 @@ import { Pagination, Spin } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { useOrdxAddressHolders } from '@/api';
 import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
-import { OrdxSummaryList } from '@/components/OrdxSummaryList';
-import { OrdxItem } from './OrdxItem';
+import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
+import { UtxoList } from './UtxoList';
 import { ListTypes } from './ListTypes';
 
 export const ItemList = () => {
@@ -15,13 +15,16 @@ export const ItemList = () => {
   return (
     <div>
       <div className='mb-4'>
-        <OrdxSummaryList
+        <OrdxAccountSummaryList
           address={currentAccount}
           onChange={(tick) => setTicker(tick)}
         />
       </div>
-
+      {ticker === '可花费utxo' ? (
+        <UtxoList address={currentAccount} />
+      ) : (
         <OrdxAddressHolders tick={ticker} address={currentAccount} />
+      )}
     </div>
   );
 };

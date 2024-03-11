@@ -63,7 +63,6 @@ export const OrdxAddressHolders = ({
       psbt.addOutput(output);
     });
     const signed = await unisat.signPsbt(psbt.toHex());
-    console.log(signed);
     const pushedTxId = await unisat.pushPsbt(signed);
     return pushedTxId;
   };
@@ -154,22 +153,48 @@ export const OrdxAddressHolders = ({
       const inscriptionValue = item.amount;
       const inscriptionTxid = inscriptionUtxo.split(':')[0];
       const inscriptionVout = inscriptionUtxo.split(':')[1];
-      const firstUtxo = {
+      const splitUtxo = {
         txid: inscriptionTxid,
         vout: Number(inscriptionVout),
         value: Number(inscriptionValue),
       };
+      const fee = 370;
+      if (splitUtxo.value < 331) {
+        message.warning('utxo数量不足，无法切割');
+        setLoading(false);
+        return;
+      }
       const data = await getUtxoByValue({
         address: currentAccount,
-        value: 600,
+        value: 500,
         network,
       });
       const consumUtxos = data?.data || [];
-      if (!consumUtxos.length) {
-        message.error('余额不足');
+      if (!consumUtxos.length || consumUtxos.length < 2) {
+        message.error('没有可用utxo,请先进行切割');
         return;
       }
-      const utxos: any[] = [firstUtxo, ...consumUtxos];
+      const sortConsumUtXos = consumUtxos.sort((a, b) => a.value - b.value);
+
+      const serviceUtxo = sortConsumUtXos[0];
+
+      if (serviceUtxo.value > 1000) {
+        message.error('没有可用utxo,请先进行切割');
+        return;
+      }
+      const avialableUtxo: any[] = [];
+      let avialableValue = 0;
+      for (let i = 1; i < sortConsumUtXos.length; i++) {
+
+        const utxo = sortConsumUtXos[i];
+        avialableUtxo.push(utxo);
+        avialableValue += utxo.value;
+        if (avialableValue >= 330 + fee) {
+          break;
+        }
+      }
+
+      const utxos: any[] = [serviceUtxo, splitUtxo, ...avialableUtxo];
       const btcUtxos = utxos.map((v) => {
         return {
           txid: v.txid,
@@ -182,7 +207,6 @@ export const OrdxAddressHolders = ({
           atomicals: [],
         };
       });
-      console.log(btcUtxos);
       const inputs: any[] = btcUtxos.map((v) => {
         return {
           hash: v.txid,
@@ -193,40 +217,27 @@ export const OrdxAddressHolders = ({
           },
         };
       });
-      const psbtNetwork = bitcoin.networks.testnet;
-      const psbt = new bitcoin.Psbt({
-        network: psbtNetwork,
-      });
-      inputs.forEach((input) => {
-        psbt.addInput(input);
-      });
-      const total = inputs.reduce((acc, cur) => {
-        return acc + cur.witnessUtxo.value;
-      }, 0);
-      const fee = 280;
-      const firstOutputValue = 330;
-      const secondOutputValue = total - firstOutputValue - fee;
+      console.log(inputs);
+      const serviceOutputValue = serviceUtxo.value + 1;
+      const splitOutputValue = splitUtxo.value - 1;
+      const balanceOutputValue = avialableValue - fee;
       const outputs = [
         {
           address:
             'tb1pttjr9292tea2nr28ca9zswgdhz0dasnz6n3v58mtg9cyf9wqr49sv8zjep',
-          value: firstOutputValue,
+          value: serviceOutputValue,
         },
         {
           address: currentAccount,
-          value: secondOutputValue,
+          value: splitOutputValue,
+        },
+        {
+          address: currentAccount,
+          value: balanceOutputValue,
         },
       ];
+      console.log(inputs, outputs);
       await signAndPushPsbt(inputs, outputs);
-      // const signed = await unisat.signPsbt(psbt.toHex());
-      // console.log(signed);
-      // const pushedTxId = await unisat.pushPsbt(signed);
-      // const signedToPsbt = bitcoin.Psbt.fromHex(signed, {
-      //   network: psbtNetwork,
-      // });
-      // console.log(pushedTxId);
-      // const txHex = signedToPsbt.extractTransaction().toHex();
-      // console.log(txHex);
       message.success('拆分成功');
       setLoading(false);
     } catch (error: any) {
@@ -236,7 +247,6 @@ export const OrdxAddressHolders = ({
     }
   };
   const handleOk = async () => {
-    console.log(transferAddress);
     if (!transferAddress) {
       message.error('请输入地址');
       return;
@@ -319,7 +329,6 @@ export const OrdxAddressHolders = ({
         title: '操作',
         align: 'center',
         render: (record) => {
-          console.log(record);
           return (
             <div className='flex gap-2'>
               <Button

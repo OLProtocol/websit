@@ -2,6 +2,7 @@ import { Tabs } from 'antd';
 import { getSats } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks';
 import { ItemList } from './components/ItemList';
+import { UtxoList } from './components/UtxoList';
 import { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 import { SatRareBox } from '../explorer/components/SatRareBox';
@@ -40,7 +41,7 @@ export default function Account() {
       (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
     );
     setRareSatList(tmpSats);
-  }
+  };
   useEffect(() => {
     getRareSats();
   }, []);
@@ -61,10 +62,10 @@ export default function Account() {
             children: rareSatList ? (
               <div>
                 <div className='max-w-7xl mx-auto px-4 pb-4'>
-                  <SatTypeBox/>
+                  <SatTypeBox />
                 </div>
                 <div className='max-w-7xl mx-auto px-4'>
-                  <SatRareBox sats={rareSatList} canSplit={true}/>
+                  <SatRareBox sats={rareSatList} canSplit={true} />
                 </div>
               </div>
             ) : (
@@ -73,11 +74,16 @@ export default function Account() {
                   <SatTypeBox />
                 </div>
                 <div className='max-w-7xl mx-auto px-4'>
-                  <SatRareBox sats={[]} canSplit={true}/>
+                  <SatRareBox sats={[]} canSplit={true} />
                 </div>
               </div>
             ),
           },
+          // {
+          //   label: '可花费Utxo',
+          //   key: '3',
+          //   children: <UtxoList address={currentAccount} />,
+          // },
         ]}
       />
     </div>

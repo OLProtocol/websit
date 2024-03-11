@@ -121,12 +121,23 @@ export const useOrdxAddressHolders = ({
     isLoading: isMutating,
   };
 };
-export const useInscriptiontInfo = ({
-  inscribNum,
-  network,
-}: any) => {
+export const useUtxoByValue = ({ address, network, value }: any) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ordx-inscription-${inscribNum }-${network}`,
+    `ordx-utxo-${address}-${value}-${network}`,
+    () => request.getUtxoByValue({ address, network, value }),
+  );
+  1;
+  return {
+    data,
+    trigger,
+    reset,
+    error,
+    isLoading: isMutating,
+  };
+};
+export const useInscriptiontInfo = ({ inscribNum, network }: any) => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
+    `ordx-inscription-${inscribNum}-${network}`,
     () => request.getInscriptiontInfo({ inscribNum, network }),
   );
   1;

@@ -4,7 +4,6 @@ import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import { Address, Script } from '@cmdcode/tapscript';
 import { Modal, Card, Button, Input, message } from 'antd';
 import * as bitcoin from 'bitcoinjs-lib';
-import { first } from 'lodash';
 
 const { Meta } = Card;
 
@@ -143,9 +142,11 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
       });
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
-        message.error('余额不足');
+        message.error('没有可用utxo，请先切割');
         return;
       }
+      console.log(firstUtxo);
+      console.log(consumUtxos);
       const utxos: any[] = [firstUtxo, ...consumUtxos];
       const btcUtxos = utxos.map((v) => {
         return {
@@ -194,7 +195,7 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
           value: secondOutputValue,
         },
       ];
-      await signAndPushPsbt(inputs, outputs);
+      // await signAndPushPsbt(inputs, outputs);
       // const signed = await unisat.signPsbt(psbt.toHex());
       // console.log(signed);
       // const pushedTxId = await unisat.pushPsbt(signed);
