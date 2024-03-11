@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { hideStr } from '@/lib/utils';
+import { CopyButton } from './CopyButton';
 
 interface Ord2HistoryProps {
   tick: string;
@@ -255,7 +256,7 @@ export const OrdxAddressHolders = ({
         title: 'utxo',
         dataIndex: 'utxo',
         key: 'utxo',
-        width: 100,
+        width: 130,
         align: 'center',
         render: (t) => {
           const txid = t.replace(/:0$/m, '');
@@ -264,17 +265,31 @@ export const OrdxAddressHolders = ({
               ? `https://mempool.space/testnet/tx/${txid}`
               : `https://mempool.space/tx/${txid}`;
           return (
-            <a
-              className='text-blue-500 cursor-pointer'
-              href={href}
-              target='_blank'>
-              {t}
-            </a>
+            <div className='flex'>
+            <a className='text-blue-500 cursor-pointer' href={href} target='_blank'>
+              {hideStr(t)}
+            </a>&nbsp;&nbsp;
+            <CopyButton text={t} tooltip='Copy Tick' />
+            </div>
           );
         },
       },
       {
-        title: 'Sats Ranges',
+        title: 'Sats/BTC',
+        dataIndex: 'amount',
+        key: 'amount',
+        width: 130,
+        align: 'center',
+      },
+      {
+        title: 'Assets',
+        dataIndex: 'assetamount',
+        key: 'assetamount',
+        width: 130,
+        align: 'center',
+      },
+      {
+        title: 'Asset Ranges',
         dataIndex: 'ranges',
         key: 'ranges',
         width: 120,
@@ -306,18 +321,12 @@ export const OrdxAddressHolders = ({
           );
         },
       },
-      {
-        title: t('common.quantity'),
-        dataIndex: 'assetamount',
-        key: 'assetamount',
-        width: 130,
-        align: 'center',
-      },
     ];
     if (address === currentAccount) {
       defaultColumn.push({
-        title: '操作',
+        title: 'Operations',
         align: 'center',
+        width: 100,
         render: (record) => {
           console.log(record);
           return (

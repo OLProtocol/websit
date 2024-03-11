@@ -21,7 +21,7 @@ export const ItemList = () => {
         />
       </div>
 
-        <OrdxAddressHolders tick={ticker} address={currentAccount} />
+      <OrdxAddressHolders tick={ticker} address={currentAccount} />
     </div>
   );
 };
