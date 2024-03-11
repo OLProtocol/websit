@@ -44,6 +44,18 @@ export const NavHeader = () => {
     //   type: 'route',
     // },
     {
+      key: ROUTE_PATH.DISCOVER_RARE_SAT,
+      label: t('nav.discover'),
+      value: ROUTE_PATH.DISCOVER_RARE_SAT,
+      type: 'route',
+    },
+    {
+      key: ROUTE_PATH.ACCOUNT,
+      label: t('nav.account'),
+      value: ROUTE_PATH.ACCOUNT,
+      type: 'route',
+    },
+    {
       key: 'https://docs.ordx.space/',
       label: t('nav.docs'),
       value: 'https://docs.ordx.space/',
@@ -63,6 +75,7 @@ export const NavHeader = () => {
       if (type === 'link') {
         window.open(value, '_blank');
       } else if (type === 'route') {
+        localStorage.setItem('address-4-search-rare-sats', "");
         nav(value);
       }
     }

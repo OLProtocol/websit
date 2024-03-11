@@ -29,7 +29,7 @@ export default function Ord2Info() {
 
   const status = useMemo(() => {
     let _status;
-    if (detail?.rarity !== 'unknow' && detail?.rarity !== 'common') {
+    if (detail?.rarity !== 'unknow' && detail?.rarity !== 'common' && !!detail?.rarity) {
       _status = 'Minting';
     } else if (
       detail?.startBlock &&
@@ -61,7 +61,7 @@ export default function Ord2Info() {
   const attr = useMemo(() => {
     const { rarity, cn, trz } = detail || {};
     const attrArr: string[] = [];
-    if (rarity !== 'unknow' && rarity !== 'common') {
+    if (rarity !== 'unknow' && rarity !== 'common' && !!rarity) {
       attrArr.push(`rar=${rarity}`);
     }
     if (cn !== undefined) {

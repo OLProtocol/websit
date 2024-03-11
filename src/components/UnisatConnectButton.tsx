@@ -69,9 +69,9 @@ export const UnisatConnectButton = () => {
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     console.log('click', e);
   };
-  const toAccount = () => {
-    nav(ROUTE_PATH.ACCOUNT_INDEX);
-  }
+  // const toAccount = () => {
+  //   nav(ROUTE_PATH.ACCOUNT);
+  // }
   const menuProps = {
     items,
     onClick: handleMenuClick,
@@ -93,17 +93,17 @@ export const UnisatConnectButton = () => {
                 <span className='mr-2'>{balance.total} SAT</span>
                 <Tag color='error'>{network}</Tag>
               </div>
-              <Divider style={{ margin: '10px 0' }} />
-              {/* <div className='flex justify-center'>
+              {/* <Divider style={{ margin: '10px 0' }} />
+              <div className='flex justify-center'>
                 <Button
                   type='primary'
                   className='w-28'
                   onClick={toAccount}>
                   {t('buttons.toAccount')}
                 </Button>
-              </div>
-              <Divider style={{ margin: '10px 0' }} /> */}
-              {/* <div className='flex justify-center'>
+              </div> 
+              <Divider style={{ margin: '10px 0' }} />
+              <div className='flex justify-center'>
                 <Button
                   type='primary'
                   className='w-28'

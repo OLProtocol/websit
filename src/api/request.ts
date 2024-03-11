@@ -7,6 +7,7 @@ import {
   OrdXHistoryDetailParams,
   TxStatusParams,
 } from './types';
+
 export const generateUrl = (url: string, network?: string) => {
   return `${VITE_API_HOST}${network === 'testnet' ? '/testnet' : ''}/${url}`;
 };
@@ -157,6 +158,21 @@ export const getUtxoByConditon = async ({
   );
   return data;
 };
+export const getUtxoByValue = async ({
+  address,
+  value = 600,
+  network,
+}: any) => {
+  const { data } = await axios.post(
+    generateUrl(`utxo/getUtxoByValue`, network),
+    {
+      address,
+      Value: value,
+    },
+  );
+  return data;
+};
+
 export const getCurrentHeight = async ({ network }: any) => {
   const { data } = await axios.get(
     generateUrl(`v1/indexer/ordx/bestheight`, network),
@@ -209,6 +225,13 @@ export const getSats = async ({ address, network }: any) => {
 export const getSplittedSats = async ({ ticker, network }: any) => {
   const { data } = await axios.get(
     generateUrl(`v1/indexer/ordx/${ticker}/splittedInscriptions`, network),
+  );
+  return data;
+};
+
+export const getSatTypes = async ({ network }: any) => {
+  const { data } = await axios.get(
+    generateUrl(`info/satributes`, network),
   );
   return data;
 };

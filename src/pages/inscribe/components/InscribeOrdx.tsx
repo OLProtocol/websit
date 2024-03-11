@@ -41,6 +41,94 @@ interface InscribeOrdxProps {
   onNext?: () => void;
   onChange?: (data: any) => void;
 }
+const satTypeList = [
+  {
+    icon: '/images/sat/icon-mythic.svg',
+    name: 'mythical',
+    tip: 'The first sat of the genesis block.',
+  },
+  {
+    icon: '/images/sat/icon-legendary.svg',
+    name: 'legendary',
+    tip: 'The first sat of each cycle.',
+  },
+  {
+    icon: '/images/sat/icon-epic.svg',
+    name: 'epic',
+    tip: 'The first saat of each halving epoch.',
+  },
+  {
+    icon: '/images/sat/icon-rare.svg',
+    name: 'rare',
+    tip: 'The first sat of each difficulty adjustment period.',
+  },
+  {
+    icon: '/images/sat/icon-uncommon.svg',
+    name: 'uncommon',
+    tip: 'The first sat of each block.',
+  },
+  // {
+  //   icon: '/images/sat/common.svg',
+  //   name: 'Connom/Unknown',
+  //   tip: 'A sat of unknown rarity.'
+  // },
+  {
+    icon: '/images/sat/icon-bl.svg',
+    name: 'black',
+    tip: 'The last sat of each block.',
+  },
+  {
+    icon: '/images/sat/icon-np.svg',
+    name: 'name_palindrome',
+    tip: 'Sats with palindromic names.',
+  },
+  {
+    icon: '/images/sat/icon-al.svg',
+    name: 'alpha',
+    tip: 'The first sats in each bitcoin.They always end in at least 8 zeros.',
+  },
+  {
+    icon: '/images/sat/icon-om.svg',
+    name: 'omega',
+    tip: 'The last sats in each bitcoin.They always end in at least 8 nines.',
+  },
+  {
+    icon: '/images/sat/icon-9.svg',
+    name: 'block9',
+    tip: 'Sats mined in Block 9(the first block with sats circulating today).',
+  },
+  {
+    icon: '/images/sat/icon-78.svg',
+    name: 'block78',
+    tip: 'Sats mined by Hal Finney in Block 78(the first block mined by someone other than Satoshi).',
+  },
+  {
+    icon: '/images/sat/icon-nk.svg',
+    name: 'nakamoto',
+    tip: 'Sats mined by Satoshi Nakamoto himself.',
+  },
+  {
+    icon: '/images/sat/icon-vt.svg',
+    name: 'vintage',
+    tip: 'Sats mined in the first 1000 bitcoin blocks.',
+  },
+  {
+    icon: '/images/sat/icon-pz.svg',
+    name: 'pizza',
+    tip: 'Sats involved in the famous pizza transaction from 2010.',
+  },
+  {
+    icon: '/images/sat/icon-jp.svg',
+    name: 'jpeg',
+    tip: 'Sats involved in the possible first bitcoin trade for an image on February 24,2010.',
+  },
+  {
+    icon: '/images/sat/icon-hm.svg',
+    name: 'hitman',
+    tip: 'Sats involved in the transaction made by Ross Ulbricht to hire a hitman.',
+  },
+];
+
 export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const { btcHeight } = useGlobalStore((state) => state);
   const { t } = useTranslation();
@@ -148,7 +236,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       setTickChecked(true);
 
       const { rarity, trz, cn, startBlock, endBlock, limit } = info.data || {};
-      const isSpecial = rarity !== 'unknow' && rarity !== 'common';
+      const isSpecial = rarity !== 'unknow' && rarity !== 'common' && !!rarity;
       let status = 'Completed';
       if (
         startBlock &&
@@ -420,12 +508,11 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                       placeholder={t('common.select_option')}
                       value={data.rarity}
                       onChange={(e) => rarityChange(e.target.value)}>
-                      <option value='common'>common</option>
-                      <option value='uncommon'>uncommon</option>
-                      <option value='rare'>rare</option>
-                      <option value='epic'>epic</option>
-                      <option value='legendary'>legendary</option>
-                      <option value='mythic'>mythic</option>
+                        {
+                          satTypeList.map((item) => {
+                            return <option value={item.name}>{item.name}</option>
+                          })
+                        }
                     </Select>
                   </div>
                 </div>

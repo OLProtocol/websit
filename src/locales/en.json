@@ -57,8 +57,9 @@
     "inscribe": "Inscribe",
     "docs": "Docs",
     "tools": "Tools",
-    "market": "Market",
-    "explorer": "Explorer"
+    "discover": "Discover",
+    "explorer": "Explorer",
+    "account": "Account"
   },
   "buttons": {
     "submit": "Submit",
@@ -76,7 +77,6 @@
     "switchNetwork": "Switch Network",
     "view": "View",
     "disconnect": "Disconnect",
-    "toAccount": "Account",
     "select_lang": "Select Language"
   },
   "pages": {
@@ -246,6 +246,10 @@
       "des": "Recognize all operations including DEPLOY, MINT and TRANSFER.",
       "list_title": "The full list of ordx",
       "not_support": "Viewing the transferred balance is temporarily unavailable."
+    },
+    "account": {
+      "my_items": "My Items",
+      "rare_sats": "Rare Sats"
     }
   }
 }

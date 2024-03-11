@@ -6,8 +6,8 @@ import { useGlobalStore } from '@/store';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Ord2FullList } from './components/OrdxFullList';
 import { SatRareBox } from './components/SatRareBox';
-import { Ord2SummaryList } from './components/OrdxSummaryList';
-import { OrdxAddressHolders } from './components/OrdxAddressHolders';
+import { OrdxSummaryList } from '../../components/OrdxSummaryList';
+import { OrdxAddressHolders } from '../../components/OrdxAddressHolders';
 import { useTranslation } from 'react-i18next';
 
 const { Search } = Input;
@@ -97,7 +97,7 @@ export default function Ord2Index() {
               </div>
             )}
             <div className='mb-4'>
-              <Ord2SummaryList
+              <OrdxSummaryList
                 onEmpty={summaryEmptyHandler}
                 address={address}
                 onChange={(tick) => setSelectTick(tick)}

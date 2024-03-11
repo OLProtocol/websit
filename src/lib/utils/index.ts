@@ -23,7 +23,6 @@ export const calcTimeBetweenBlocks = async ({
   network,
 }: any) => {
   try {
-    console.log(height);
     const now = +new Date();
     let startTime: any = now;
     let endTime: any = now;

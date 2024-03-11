@@ -1,17 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { useOrdxAddressHistory } from '@/api';
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
-import { Avatar, Card, Button } from 'antd';
+import { getUtxoByInscriptionNumber, getUtxoByValue } from '@/api';
+import { useUnisatConnect, useUnisat } from '@/lib/hooks';
+import { Address, Script } from '@cmdcode/tapscript';
+import { Modal, Card, Button, Input, message } from 'antd';
+import * as bitcoin from 'bitcoinjs-lib';
 
 const { Meta } = Card;
 
 interface Props {
   item: any;
+  onTransfer?: () => void;
 }
 const TickerContent = ({ content }: any) => {
   return (
@@ -22,29 +20,249 @@ const TickerContent = ({ content }: any) => {
     </div>
   );
 };
-export const OrdxItem = ({ item }: Props) => {
-  return (
-    <Card
-      hoverable
-      cover={
-        <TickerContent
-          content={JSON.stringify({
-            p: 'ordx',
-            op: 'mint',
-            tick: item.ticker,
-            amt: item.balance,
-          })}
-        />
+export const OrdxItem = ({ item, onTransfer }: Props) => {
+  const { network, currentAccount, currentPublicKey } = useUnisatConnect();
+  const unisat = useUnisat();
+  const [transferAddress, setTransferAddress] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const addresToScriptPublicKey = (address: string) => {
+    const scriptPublicKey = Script.fmt.toAsm(
+      Address.toScriptPubKey(address),
+    )?.[0];
+    // const asmScript = Address.toScriptPubKey(currentAccount) as string[];
+    // const scriptPubKey = bitcoin.script.fromASM(asmScript.join(' '));
+    return scriptPublicKey;
+  };
+
+  const signAndPushPsbt = async (inputs, outputs) => {
+    const psbtNetwork = bitcoin.networks.testnet;
+    const psbt = new bitcoin.Psbt({
+      network: psbtNetwork,
+    });
+    inputs.forEach((input) => {
+      psbt.addInput(input);
+    });
+    outputs.forEach((output) => {
+      psbt.addOutput(output);
+    });
+    const signed = await unisat.signPsbt(psbt.toHex());
+    console.log(signed);
+    const pushedTxId = await unisat.pushPsbt(signed);
+    return pushedTxId;
+  };
+  const firstUtxo = useMemo(() => {
+    const inscriptionUtxo = item.utxo;
+    const inscriptionValue = item.amount;
+    const inscriptionTxid = inscriptionUtxo.split(':')[0];
+    const inscriptionVout = inscriptionUtxo.split(':')[1];
+    return {
+      txid: inscriptionTxid,
+      vout: Number(inscriptionVout),
+      value: Number(inscriptionValue),
+    };
+  }, [item]);
+  const transferHander = async () => {
+    try {
+      const data = await getUtxoByValue({
+        address: currentAccount,
+        value: 600,
+        network,
+      });
+      console.log(firstUtxo);
+      const consumUtxos = data?.data || [];
+      if (!consumUtxos.length) {
+        message.error('余额不足');
+        return;
       }
-      actions={[
-        <Button type='text' color='blue'>
-          上架
-        </Button>,
-        <Button type='text' color='blue'>
-          拆分
-        </Button>,
-      ]}>
-      #{item.inscriptionNumber}
-    </Card>
+      const utxos: any[] = [firstUtxo, ...consumUtxos];
+      const btcUtxos = utxos.map((v) => {
+        return {
+          txid: v.txid,
+          vout: v.vout,
+          satoshis: v.value,
+          scriptPk: addresToScriptPublicKey(currentAccount),
+          addressType: 2,
+          inscriptions: [],
+          pubkey: currentPublicKey,
+          atomicals: [],
+        };
+      });
+      const inputs: any[] = btcUtxos.map((v) => {
+        return {
+          hash: v.txid,
+          index: v.vout,
+          witnessUtxo: {
+            script: Buffer.from(v.scriptPk, 'hex'),
+            value: v.satoshis,
+          },
+        };
+      });
+      const psbtNetwork = bitcoin.networks.testnet;
+      const psbt = new bitcoin.Psbt({
+        network: psbtNetwork,
+      });
+      inputs.forEach((input) => {
+        psbt.addInput(input);
+      });
+      const total = inputs.reduce((acc, cur) => {
+        return acc + cur.witnessUtxo.value;
+      }, 0);
+      const fee = 280;
+      const firstOutputValue = firstUtxo.value;
+      const secondOutputValue = total - firstOutputValue - fee;
+      const outputs = [
+        {
+          address: transferAddress,
+          value: firstOutputValue,
+        },
+        {
+          address: currentAccount,
+          value: secondOutputValue,
+        },
+      ];
+      await signAndPushPsbt(inputs, outputs);
+      message.success('发送成功');
+      onTransfer?.();
+      setLoading(false);
+    } catch (error: any) {
+      console.error(error.message || 'Split failed');
+      message.error(error.message || 'Transfer failed');
+      setLoading(false);
+    }
+  };
+  const splitHandler = async () => {
+    setLoading(true);
+    // const utxos = await getUtxo();
+    try {
+      const data = await getUtxoByValue({
+        address: currentAccount,
+        value: 600,
+        network,
+      });
+      const consumUtxos = data?.data || [];
+      if (!consumUtxos.length) {
+        message.error('没有可用utxo，请先切割');
+        return;
+      }
+      console.log(firstUtxo);
+      console.log(consumUtxos);
+      const utxos: any[] = [firstUtxo, ...consumUtxos];
+      const btcUtxos = utxos.map((v) => {
+        return {
+          txid: v.txid,
+          vout: v.vout,
+          satoshis: v.value,
+          scriptPk: addresToScriptPublicKey(currentAccount),
+          addressType: 2,
+          inscriptions: [],
+          pubkey: currentPublicKey,
+          atomicals: [],
+        };
+      });
+      console.log(btcUtxos);
+      const inputs: any[] = btcUtxos.map((v) => {
+        return {
+          hash: v.txid,
+          index: v.vout,
+          witnessUtxo: {
+            script: Buffer.from(v.scriptPk, 'hex'),
+            value: v.satoshis,
+          },
+        };
+      });
+      const psbtNetwork = bitcoin.networks.testnet;
+      const psbt = new bitcoin.Psbt({
+        network: psbtNetwork,
+      });
+      inputs.forEach((input) => {
+        psbt.addInput(input);
+      });
+      const total = inputs.reduce((acc, cur) => {
+        return acc + cur.witnessUtxo.value;
+      }, 0);
+      const fee = 280;
+      const firstOutputValue = 330;
+      const secondOutputValue = total - firstOutputValue - fee;
+      const outputs = [
+        {
+          address:
+            'tb1pttjr9292tea2nr28ca9zswgdhz0dasnz6n3v58mtg9cyf9wqr49sv8zjep',
+          value: firstOutputValue,
+        },
+        {
+          address: currentAccount,
+          value: secondOutputValue,
+        },
+      ];
+      // await signAndPushPsbt(inputs, outputs);
+      // const signed = await unisat.signPsbt(psbt.toHex());
+      // console.log(signed);
+      // const pushedTxId = await unisat.pushPsbt(signed);
+      // const signedToPsbt = bitcoin.Psbt.fromHex(signed, {
+      //   network: psbtNetwork,
+      // });
+      // console.log(pushedTxId);
+      // const txHex = signedToPsbt.extractTransaction().toHex();
+      // console.log(txHex);
+      message.success('拆分成功');
+      setLoading(false);
+    } catch (error: any) {
+      console.error(error.message || 'Split failed');
+      message.error(error.message || 'Split failed');
+      setLoading(false);
+    }
+  };
+  const handleOk = async () => {
+    console.log(transferAddress);
+    if (!transferAddress) {
+      message.error('请输入地址');
+      return;
+    }
+    await transferHander();
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setLoading(false);
+  };
+  return (
+    <div>
+      <Card
+        hoverable
+        cover={
+          <TickerContent
+            content={JSON.stringify({
+              p: 'ordx',
+              op: 'mint',
+              amount: item.assetamount,
+              tick: item.ticker,
+              amt: item.balance,
+            })}
+          />
+        }
+        actions={[
+          <Button type='text' color='blue' loading={loading} onClick={() => setIsModalOpen(true)}>
+            发送
+          </Button>,
+          <Button type='text' color='blue' loading={loading} onClick={splitHandler}>
+            拆分
+          </Button>,
+        ]}>
+        {/* #{item.inscriptionNumber} */}
+      </Card>
+      <Modal
+        title='发送'
+        centered
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}>
+        <Input
+          placeholder='请输入地址'
+          value={transferAddress}
+          onChange={(e) => setTransferAddress(e.target.value)}
+        />
+      </Modal>
+    </div>
   );
 };

@@ -12,9 +12,9 @@ export default function InscribeCheck() {
   const toSplittedInscriptions = () => {
     nav(ROUTE_PATH.TOOLS_SPLITTED_INSCRIPTION);
   }
-  const toSearchRareSat = () => {
-    nav('/tools/rare_sat');
-  };
+  // const toSearchRareSat = () => {
+  //   nav('/tools/rare_sat');
+  // };
 
   return (
     <div className='flex gap-2 max-w-max mx-auto p-2'>
@@ -24,9 +24,9 @@ export default function InscribeCheck() {
       <Card title={t('pages.splitted_inscription.title')} className='w-60 cursor-pointer' onClick={toSplittedInscriptions}>
         {t('pages.splitted_inscription.des')}
       </Card>
-      <Card title={t('pages.rare_sat.title')} className='w-60 cursor-pointer' onClick={toSearchRareSat}>
+      {/* <Card title={t('pages.rare_sat.title')} className='w-60 cursor-pointer' onClick={toSearchRareSat}>
         {t('pages.rare_sat.des')}
-      </Card>
+      </Card> */}
     </div>
   );
 }

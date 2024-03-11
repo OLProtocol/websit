@@ -123,7 +123,7 @@ export const Ord2FullList = () => {
       render: (_, record) => {
         const { rarity, cn, trz } = record;
         const attrArr: string[] = [];
-        if (rarity !== 'unknow' && rarity !== 'common') {
+        if (rarity !== 'unknow' && rarity !== 'common' && !!rarity) {
           attrArr.push(`rar=${rarity}`);
         }
         if (cn !== undefined) {
@@ -218,7 +218,7 @@ export const Ord2FullList = () => {
     () =>
       list.map((item) => {
         let status;
-        if (item.rarity !== 'unknow' && item.rarity !== 'common') {
+        if (item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity) {
           status = 'Minting';
         } else if (
           item.startBlock &&
@@ -232,9 +232,10 @@ export const Ord2FullList = () => {
         } else {
           status = 'Completed';
         }
-        const special = item.rarity !== 'unknow' && item.rarity !== 'common';
+        const special = item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         const attrArr: string[] = [];
-        if (item.rarity !== 'unknow' && item.rarity !== 'common') {
+        console.log(!!item.rarity)
+        if (item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity) {
           attrArr.push(`rar=${item.rarity}`);
         }
         if (item.cn) {
@@ -244,6 +245,7 @@ export const Ord2FullList = () => {
           attrArr.push(`trz=${item.trz}`);
         }
         let attr;
+        console.log(attrArr.length)
         if (attrArr.length) {
           attr = attrArr.join(';');
         }
@@ -260,11 +262,10 @@ export const Ord2FullList = () => {
             des: item.description?.toString(),
           }),
         );
-        console.log(value);
         return {
           id: item.id,
           tick: item.ticker,
-          block: !special ? `${item.startBlock}-${item.endBlock}` : '-',
+          block: !special && item.startBlock > 0 ? `${item.startBlock}-${item.endBlock}` : '-',
           startBlock: item.startBlock,
           endBlock: item.endBlock,
           rarity: item.rarity,

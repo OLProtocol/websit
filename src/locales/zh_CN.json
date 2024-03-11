@@ -57,8 +57,9 @@
     "inscribe": "铭文",
     "docs": "文档",
     "tools": "工具箱",
-    "market": "市场",
-    "explorer": "浏览器"
+    "discover": "发现",
+    "explorer": "浏览器",
+    "account": "我的资产"
   },
   "buttons": {
     "submit": "提交",
@@ -76,7 +77,6 @@
     "switchNetwork": "切换网络",
     "view": "查看",
     "disconnect": "断开连接",
-    "toAccount": "我的资产",
     "select_lang": "选择语言"
   },
   "pages": {
@@ -246,6 +246,10 @@
       "des": "识别包括部署、铸造和转账在内的所有操作。",
       "list_title": "OrdX 的完整列表",
       "not_support": "暂时不支持查看转移后的余额。"
+    },
+    "account": {
+      "my_items": "My Items",
+      "rare_sats": "Rare Sats"
     }
   }
 }
