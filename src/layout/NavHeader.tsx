@@ -31,12 +31,12 @@ export const NavHeader = () => {
       value: ROUTE_PATH.ORDX_INDEX,
       type: 'route',
     },
-    // {
-    //   key: ROUTE_PATH.TOOLS,
-    //   label: t('nav.tools'),
-    //   value: ROUTE_PATH.TOOLS,
-    //   type: 'route',
-    // },
+    {
+      key: ROUTE_PATH.TOOLS,
+      label: t('nav.tools'),
+      value: ROUTE_PATH.TOOLS,
+      type: 'route',
+    },
     // {
     //   key: ROUTE_PATH.MARKET_INDEX,
     //   label: t('nav.market'),
