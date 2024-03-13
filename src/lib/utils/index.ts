@@ -1,4 +1,5 @@
 export * from './mempool';
+export * from './utxo';
 import { getBlockStatus } from '@/api';
 import { add, format } from 'date-fns';
 

@@ -68,15 +68,14 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
         // Check the current network
         const currentNetwork = await unisat.getNetwork();
         setUnisatNetwork(currentNetwork);
-
         // Check for accounts and balance
         const accounts = await unisat.getAccounts();
         if (accounts.length > 0) {
+          const publicKey = await unisat.getPublicKey()
+          const balance = await unisat.getBalance(accounts[0]);
           setIsConnected(true);
           setCurrentAccount(accounts[0]);
-          const publicKey = await unisat.getPublicKey()
           setcurrentPublicKey(publicKey)
-          const balance = await unisat.getBalance(accounts[0]);
           setBalance(balance);
         }
       } catch (error) {
@@ -102,12 +101,12 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
       try {
         const accounts = await unisat.requestAccounts();
         if (accounts.length > 0) {
+          const publicKey = await unisat.getPublicKey()
+          const balance = await unisat.getBalance(accounts[0]);
           setIsConnected(true);
           setCurrentAccount(accounts[0]);
-          const publicKey = await unisat.getPublicKey()
           setcurrentPublicKey(publicKey)
-          const newBalance = await unisat.getBalance(accounts[0]);
-          setBalance(newBalance);
+          setBalance(balance);
         }
       } catch (error) {
         console.error('Error connecting to Unisat:', error);
@@ -139,12 +138,12 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
         const accounts = await unisat.getAccounts();
 
         if (accounts.length > 0) {
-          setCurrentAccount(accounts[0]);
-          const newBalance = await unisat.getBalance(accounts[0]);
           const publicKey = await unisat.getPublicKey()
+          const balance = await unisat.getBalance(accounts[0]);
+          setIsConnected(true);
+          setCurrentAccount(accounts[0]);
           setcurrentPublicKey(publicKey)
-          console.log('newBalance', newBalance);
-          setBalance(newBalance);
+          setBalance(balance);
         } else {
           // Handle the case where no accounts are found after the network switch
           setIsConnected(false);
@@ -169,13 +168,12 @@ export const UnisatConnectProvider: React.FC<ConnectionProviderProps> = ({
     if (window.unisat) {
       window.unisat.on('accountsChanged', async (accounts) => {
         if (accounts.length > 0) {
+          const publicKey = await window.unisat.getPublicKey()
+          const balance = await window.unisat.getBalance(accounts[0]);
           setIsConnected(true);
           setCurrentAccount(accounts[0]);
-          const newBalance = await window.unisat.getBalance(accounts[0]);
-          const publicKey = await window.unisat.getPublicKey()
           setcurrentPublicKey(publicKey)
-          console.log('newBalance', newBalance);
-          setBalance(newBalance);
+          setBalance(balance);
         } else {
           setIsConnected(false);
           setCurrentAccount('');

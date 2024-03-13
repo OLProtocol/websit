@@ -31,12 +31,7 @@ export const NavHeader = () => {
       value: ROUTE_PATH.ORDX_INDEX,
       type: 'route',
     },
-    // {
-    //   key: ROUTE_PATH.TOOLS,
-    //   label: t('nav.tools'),
-    //   value: ROUTE_PATH.TOOLS,
-    //   type: 'route',
-    // },
+
     // {
     //   key: ROUTE_PATH.MARKET_INDEX,
     //   label: t('nav.market'),
@@ -62,7 +57,14 @@ export const NavHeader = () => {
       type: 'link',
     },
   ];
-
+  if (location.href.indexOf('test.ordx') < 1) {
+    items.push({
+      key: ROUTE_PATH.TOOLS,
+      label: t('nav.tools'),
+      value: ROUTE_PATH.TOOLS,
+      type: 'route',
+    });
+  }
   const options = [
     { value: 'en', label: 'EN' },
     { value: 'ZH', label: 'zh' },
@@ -75,7 +77,7 @@ export const NavHeader = () => {
       if (type === 'link') {
         window.open(value, '_blank');
       } else if (type === 'route') {
-        localStorage.setItem('address-4-search-rare-sats', "");
+        localStorage.setItem('address-4-search-rare-sats', '');
         nav(value);
       }
     }

@@ -7,8 +7,7 @@ import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
-import { hideStr } from '@/lib/utils';
+import { hideStr, filterUtxosByValue } from '@/lib/utils';
 import { CopyButton } from './CopyButton';
 
 interface Ord2HistoryProps {
@@ -84,13 +83,14 @@ export const OrdxAddressHolders = ({
         value: 600,
         network,
       });
-      console.log(firstUtxo);
+      const fee = 600;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
         message.error('余额不足');
         return;
       }
-      const utxos: any[] = [firstUtxo, ...consumUtxos];
+      const { utxos: filterConsumUtxos } = filterUtxosByValue(consumUtxos, fee);
+      const utxos: any[] = [firstUtxo, ...filterConsumUtxos];
       const btcUtxos = utxos.map((v) => {
         return {
           txid: v.txid,
@@ -123,7 +123,7 @@ export const OrdxAddressHolders = ({
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const fee = 600;
+
       const firstOutputValue = firstUtxo.value;
       const secondOutputValue = total - firstOutputValue - fee;
       const outputs = [
@@ -175,27 +175,15 @@ export const OrdxAddressHolders = ({
         message.error('没有可用utxo,请先进行切割！');
         return;
       }
-      const sortConsumUtXos = consumUtxos.sort((a, b) => a.value - b.value);
 
-      const serviceUtxo = sortConsumUtXos[0];
-
+      const { utxos: filterConsumUtxos, minUtxo: serviceUtxo, total: avialableValue } =
+        filterUtxosByValue(consumUtxos, fee + 330);
       if (serviceUtxo.value > 1000) {
         message.error('没有可用utxo,请先进行切割！');
         return;
       }
-      const avialableUtxo: any[] = [];
-      let avialableValue = 0;
-      for (let i = 1; i < sortConsumUtXos.length; i++) {
 
-        const utxo = sortConsumUtXos[i];
-        avialableUtxo.push(utxo);
-        avialableValue += utxo.value;
-        if (avialableValue >= 330 + fee) {
-          break;
-        }
-      }
-
-      const utxos: any[] = [serviceUtxo, splitUtxo, ...avialableUtxo];
+      const utxos: any[] = [serviceUtxo, splitUtxo, ...filterConsumUtxos];
       const btcUtxos = utxos.map((v) => {
         return {
           txid: v.txid,
@@ -276,10 +264,14 @@ export const OrdxAddressHolders = ({
               : `https://mempool.space/tx/${txid}`;
           return (
             <div className='flex'>
-            <a className='text-blue-500 cursor-pointer' href={href} target='_blank'>
-              {hideStr(t)}
-            </a>&nbsp;&nbsp;
-            <CopyButton text={t} tooltip='Copy' />
+              <a
+                className='text-blue-500 cursor-pointer'
+                href={href}
+                target='_blank'>
+                {hideStr(t)}
+              </a>
+              &nbsp;&nbsp;
+              <CopyButton text={t} tooltip='Copy' />
             </div>
           );
         },

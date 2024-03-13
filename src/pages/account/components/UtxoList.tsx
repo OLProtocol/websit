@@ -1,5 +1,5 @@
 import { Button, message, Table, Modal, Input } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { useUtxoByValue, getUtxoByValue } from '@/api';
 import { Address, Script } from '@cmdcode/tapscript';
 import { CopyButton } from '@/components/CopyButton';
@@ -8,7 +8,8 @@ import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { hideStr } from '@/lib/utils';
+import { hideStr, filterUtxosByValue } from '@/lib/utils';
+import { sortBy, reverse } from 'lodash';
 
 interface Ord2HistoryProps {
   address: string;
@@ -20,6 +21,13 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { network, currentAccount, currentPublicKey } = useUnisatConnect();
+  console.log(network);
+  console.log(currentAccount);
+  console.log(currentPublicKey);
+  const addressRef = useRef<any>();
+  const publickkeyRef = useRef<any>();
+  addressRef.current = currentAccount;
+  publickkeyRef.current = currentPublicKey;
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
   const [selectItem, setSelectItem] = useState<any>();
@@ -39,11 +47,8 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
     const scriptPublicKey = Script.fmt.toAsm(
       Address.toScriptPubKey(address),
     )?.[0];
-    // const asmScript = Address.toScriptPubKey(currentAccount) as string[];
-    // const scriptPubKey = bitcoin.script.fromASM(asmScript.join(' '));
     return scriptPublicKey;
   };
-
   const signAndPushPsbt = async (inputs, outputs) => {
     const psbtNetwork = bitcoin.networks.testnet;
     const psbt = new bitcoin.Psbt({
@@ -60,27 +65,22 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
     const pushedTxId = await unisat.pushPsbt(signed);
     return pushedTxId;
   };
-
   const fastClick = async () => {
     setLoading(true);
     const fee = 600;
-    const totalValue = dataSource.reduce((acc, cur) => {
+    const utxos = dataSource.filter((v) => v.value !== 600);
+    const totalValue = utxos.reduce((acc, cur) => {
       return acc + cur.value;
     }, 0);
     if (totalValue < 1530 + fee) {
       message.warning('utxo数量不足，无法切割');
       return;
     }
-    const avialableUtxo: any[] = [];
-    let avialableValue = 0;
-    for (let i = 0; i < dataSource.length; i++) {
-      const utxo = dataSource[i];
-      avialableUtxo.push(utxo);
-      avialableValue += utxo.value;
-      if (avialableValue >= 1530 + fee) {
-        break;
-      }
-    }
+
+    const { utxos: avialableUtxo, total: avialableValue } = filterUtxosByValue(
+      utxos,
+      fee + 330,
+    );
     try {
       const btcUtxos = avialableUtxo.map((v) => {
         return {
@@ -143,15 +143,18 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
       setLoading(false);
     }
   };
-  const splitHandler = async (item: any) => {
-    setLoading(true);
-    const fee = 600;
-    // const utxos = await getUtxo();
-    if (item.value < 930 + fee) {
-      message.warning('utxo数量不足，无法切割');
-      return;
-    }
-    try {
+  const splitHandler = useCallback(
+    async (item: any) => {
+      setLoading(true);
+      const fee = 600;
+      // const utxos = await getUtxo();
+      if (item.value < 930 + fee) {
+        message.warning('utxo数量不足，无法切割');
+        return;
+      }
+      console.log(network);
+      console.log(currentAccount, currentPublicKey);
+      // try {
       const inscriptionUtxo = item.utxo;
       const inscriptionValue = item.value;
       const inscriptionTxid = inscriptionUtxo.split(':')[0];
@@ -168,7 +171,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
           txid: v.txid,
           vout: v.vout,
           satoshis: v.value,
-          scriptPk: addresToScriptPublicKey(currentAccount),
+          scriptPk: addresToScriptPublicKey(addressRef.current),
           addressType: 2,
           inscriptions: [],
           pubkey: currentPublicKey,
@@ -210,12 +213,9 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
       await signAndPushPsbt(inputs, outputs);
       message.success('拆分成功');
       setLoading(false);
-    } catch (error: any) {
-      console.error(error.message || 'Split failed');
-      message.error(error.message || 'Split failed');
-      setLoading(false);
-    }
-  };
+    },
+    [currentAccount, currentPublicKey, network],
+  );
 
   const columns: ColumnsType<any> = useMemo(() => {
     const defaultColumn: any[] = [
