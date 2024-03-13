@@ -63,7 +63,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
 
   const fastClick = async () => {
     setLoading(true);
-    const fee = 400;
+    const fee = 600;
     const totalValue = dataSource.reduce((acc, cur) => {
       return acc + cur.value;
     }, 0);
@@ -145,7 +145,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
   };
   const splitHandler = async (item: any) => {
     setLoading(true);
-    const fee = 400;
+    const fee = 600;
     // const utxos = await getUtxo();
     if (item.value < 930 + fee) {
       message.warning('utxo数量不足，无法切割');

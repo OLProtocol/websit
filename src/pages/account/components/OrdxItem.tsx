@@ -108,7 +108,7 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const fee = 400;
+      const fee = 600;
       const firstOutputValue = firstUtxo.value;
       const secondOutputValue = total - firstOutputValue - fee;
       const outputs = [
@@ -181,7 +181,7 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const fee = 400;
+      const fee = 600;
       const firstOutputValue = 330;
       const secondOutputValue = total - firstOutputValue - fee;
       const outputs = [

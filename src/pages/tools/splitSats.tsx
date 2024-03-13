@@ -114,7 +114,7 @@ export default function SplitSats() {
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const fee = 400;
+      const fee = 600;
       const firstOutputValue = btcUtxos[1].satoshis + offset;
       const secondOutputValue = total - firstOutputValue - fee;
       psbt.addOutput({
