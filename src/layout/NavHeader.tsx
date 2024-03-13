@@ -1,5 +1,6 @@
 import { Menu, Tag } from 'antd';
 import { UnisatConnectButton } from '@/components/UnisatConnectButton';
+import { FeerateSelectButton } from '@/components/FeerateSelectButton';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from '@/router';
 import { useTranslation } from 'react-i18next';
@@ -121,7 +122,9 @@ export const NavHeader = () => {
             </LinkOverlay>
           </LinkBox> */}
         </div>
+
         <div className='flex justify-center h-full items-center'>
+          <FeerateSelectButton />
           <Select
             defaultValue={i18n.language}
             className='text-white'

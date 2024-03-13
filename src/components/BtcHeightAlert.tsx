@@ -1,13 +1,13 @@
 import { Alert } from 'antd';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useGlobalStore } from '@/store';
+import { useCommonStore } from '@/store';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 
 const MessageText = () => {
   const { t } = useTranslation();
   const { network } = useUnisatConnect();
-  const { btcHeight } = useGlobalStore((state) => state);
+  const { btcHeight } = useCommonStore((state) => state);
   const href = useMemo(
     () =>
       `https://mempool.space/zh${

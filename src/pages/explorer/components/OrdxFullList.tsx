@@ -3,7 +3,7 @@ import { Segmented, Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { useOrd2Status } from '@/api';
-import { useGlobalStore } from '@/store';
+import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
@@ -18,7 +18,7 @@ interface DataType {
 export const Ord2FullList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
-  const { btcHeight } = useGlobalStore((state) => state);
+  const { btcHeight } = useCommonStore((state) => state);
   const { network } = useUnisatConnect();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);

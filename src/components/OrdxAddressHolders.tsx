@@ -4,6 +4,7 @@ import { useOrdxAddressHolders, getUtxoByValue } from '@/api';
 import { Address, Script } from '@cmdcode/tapscript';
 import * as bitcoin from 'bitcoinjs-lib';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
+import { useCommonStore } from '@/store';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +25,7 @@ export const OrdxAddressHolders = ({
 }: Ord2HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
+  const { feeRate } = useCommonStore((state) => state);
   const { network, currentAccount, currentPublicKey } = useUnisatConnect();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -83,13 +85,13 @@ export const OrdxAddressHolders = ({
         value: 600,
         network,
       });
-      const fee = 600;
+      const virtualFee = (180 * 10 + 34 * 10 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
         message.error('余额不足');
         return;
       }
-      const { utxos: filterConsumUtxos } = filterUtxosByValue(consumUtxos, fee);
+      const { utxos: filterConsumUtxos } = filterUtxosByValue(consumUtxos, virtualFee);
       const utxos: any[] = [firstUtxo, ...filterConsumUtxos];
       const btcUtxos = utxos.map((v) => {
         return {
@@ -123,9 +125,9 @@ export const OrdxAddressHolders = ({
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-
+      const realityFee = (180 * inputs.length + 34 * 2 + 10) * feeRate.value;
       const firstOutputValue = firstUtxo.value;
-      const secondOutputValue = total - firstOutputValue - fee;
+      const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [
         {
           address: transferAddress,
@@ -150,6 +152,7 @@ export const OrdxAddressHolders = ({
     setLoading(true);
     // const utxos = await getUtxo();
     try {
+      const virtualFee = (180 * 10 + 34 * 10 + 10) * feeRate.value;
       const inscriptionUtxo = item.utxo;
       const inscriptionValue = item.amount;
       const inscriptionTxid = inscriptionUtxo.split(':')[0];
@@ -159,7 +162,6 @@ export const OrdxAddressHolders = ({
         vout: Number(inscriptionVout),
         value: Number(inscriptionValue),
       };
-      const fee = 600;
       if (splitUtxo.value < 331) {
         message.warning('utxo数量不足，无法拆分！');
         setLoading(false);
@@ -177,7 +179,7 @@ export const OrdxAddressHolders = ({
       }
 
       const { utxos: filterConsumUtxos, minUtxo: serviceUtxo, total: avialableValue } =
-        filterUtxosByValue(consumUtxos, fee + 330);
+        filterUtxosByValue(consumUtxos, virtualFee + 330);
       if (serviceUtxo.value > 1000) {
         message.error('没有可用utxo,请先进行切割！');
         return;
@@ -206,10 +208,10 @@ export const OrdxAddressHolders = ({
           },
         };
       });
-      console.log(inputs);
+      const realityFee = (180 * inputs.length + 34 * 3 + 10) * feeRate.value;
       const serviceOutputValue = serviceUtxo.value + 1;
       const splitOutputValue = splitUtxo.value - 1;
-      const balanceOutputValue = avialableValue - fee;
+      const balanceOutputValue = avialableValue - realityFee;
       const outputs = [
         {
           address:

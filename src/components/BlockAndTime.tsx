@@ -1,13 +1,13 @@
 import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { useGlobalStore } from '@/store';
+import { useCommonStore } from '@/store';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 
 export const BlockAndTime = ({ startBlock, endBlock }: any) => {
   const { network } = useUnisatConnect();
   const [time, setTime] = useState({ start: undefined, end: undefined } as any);
-  const { btcHeight } = useGlobalStore((state) => state);
+  const { btcHeight } = useCommonStore((state) => state);
   useEffect(() => {
     calcTimeBetweenBlocks({
       height: btcHeight,

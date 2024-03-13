@@ -11,14 +11,14 @@ import {
 import { useMemo, useState, useEffect } from 'react';
 import { useMap, useList } from 'react-use';
 import { InscribeRemoveItem } from './InscribeRemoveItem';
-import { BtcFeeRate } from './BtcFeeRate';
+import { BtcFeeRate } from '../../../components/BtcFeeRate';
 import { BusButton } from '@/components/BusButton';
 import { v4 as uuidV4 } from 'uuid';
 import { FeeShow } from './FeeShow';
 // import mempoolJS from '@mempool/mempool.js';
 import { generatePrivateKey, generateInscriptions } from '../utils';
 import { useUnisatConnect, useCalcFee } from '@/lib/hooks';
-import { OrderItemType, useGlobalStore, useOrderStore } from '@/store';
+import { OrderItemType, useCommonStore, useOrderStore } from '@/store';
 import { InscribeType } from '@/types';
 import { useTranslation } from 'react-i18next';
 
@@ -44,7 +44,7 @@ export const InscribeStepThree = ({
   });
   const [loading, setLoading] = useState(false);
   const { add: addOrder, changeStatus } = useOrderStore((state) => state);
-  const { serviceStatus } = useGlobalStore((state) => state);
+  const { serviceStatus } = useCommonStore((state) => state);
   const [feeRate, setFeeRate] = useState(1);
   const feeRateChange = (value: number) => {
     console.log('value', value);

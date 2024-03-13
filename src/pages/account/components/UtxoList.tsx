@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { hideStr, filterUtxosByValue } from '@/lib/utils';
 import { sortBy, reverse } from 'lodash';
+import { useCommonStore } from '@/store';
 
 interface Ord2HistoryProps {
   address: string;
@@ -21,9 +22,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { network, currentAccount, currentPublicKey } = useUnisatConnect();
-  console.log(network);
-  console.log(currentAccount);
-  console.log(currentPublicKey);
+  const { feeRate } = useCommonStore((state) => state);
   const addressRef = useRef<any>();
   const publickkeyRef = useRef<any>();
   addressRef.current = currentAccount;
@@ -61,25 +60,24 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
       psbt.addOutput(output);
     });
     const signed = await unisat.signPsbt(psbt.toHex());
-    console.log(signed);
     const pushedTxId = await unisat.pushPsbt(signed);
     return pushedTxId;
   };
   const fastClick = async () => {
     setLoading(true);
-    const fee = 600;
+    const virtualFee = (180 * 10 + 34 * 10 + 10) * feeRate.value;
     const utxos = dataSource.filter((v) => v.value !== 600);
     const totalValue = utxos.reduce((acc, cur) => {
       return acc + cur.value;
     }, 0);
-    if (totalValue < 1530 + fee) {
+    if (totalValue < 1530 + virtualFee) {
       message.warning('utxo数量不足，无法切割');
       return;
     }
 
     const { utxos: avialableUtxo, total: avialableValue } = filterUtxosByValue(
       utxos,
-      fee + 330,
+      virtualFee + 330,
     );
     try {
       const btcUtxos = avialableUtxo.map((v) => {
@@ -114,10 +112,12 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
+      const realityFee = (180 * inputs.length + 34 * 3 + 10) * feeRate.value;
       const firstOutputValue = 600;
       const secondOutputValue = 600;
       const thirdOutputValue =
-        total - firstOutputValue - secondOutputValue - fee;
+        total - firstOutputValue - secondOutputValue - realityFee;
+      console.log(realityFee);
       const outputs = [
         {
           address: currentAccount,
@@ -146,9 +146,9 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
   const splitHandler = useCallback(
     async (item: any) => {
       setLoading(true);
-      const fee = 600;
+      const virtualFee = (180 * 1 + 34 * 2 + 10) * feeRate.value;
       // const utxos = await getUtxo();
-      if (item.value < 930 + fee) {
+      if (item.value < 930 + virtualFee) {
         message.warning('utxo数量不足，无法切割');
         return;
       }
@@ -198,8 +198,9 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
+      const realityFee = (180 * inputs.length + 34 * 2 + 10) * feeRate.value;
       const firstOutputValue = 600;
-      const secondOutputValue = total - firstOutputValue - fee;
+      const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [
         {
           address: currentAccount,

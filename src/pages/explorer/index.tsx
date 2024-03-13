@@ -2,7 +2,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Input, Empty, Button } from 'antd';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useGlobalStore } from '@/store';
+import { useCommonStore } from '@/store';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Ord2FullList } from './components/OrdxFullList';
 import { SatRareBox } from './components/SatRareBox';
@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 const { Search } = Input;
 
 export default function Ord2Index() {
-  const { btcHeight } = useGlobalStore((state) => state);
+  const { btcHeight } = useCommonStore((state) => state);
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [address, setAddress] = useState('');

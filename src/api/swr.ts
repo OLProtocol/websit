@@ -126,13 +126,23 @@ export const useUtxoByValue = ({ address, network, value }: any) => {
     `ordx-utxo-${address}-${value}-${network}`,
     () => request.getUtxoByValue({ address, network, value }),
   );
-  1;
   return {
     data,
     trigger,
     reset,
     error,
     isLoading: isMutating,
+  };
+};
+export const useSatTypes = ({ network }: any) => {
+  const { data, error, isLoading } = useSWR(
+    `ordx-utxo-satstype-${network}`,
+    () => request.getSatTypes({ network }),
+  );
+  return {
+    data,
+    error,
+    isLoading: isLoading,
   };
 };
 export const useInscriptiontInfo = ({ inscribNum, network }: any) => {

@@ -15,7 +15,7 @@ import { removeObjectEmptyValue, generteFiles, hexString } from './utils';
 import { InscribeType } from '@/types';
 import { useTranslation } from 'react-i18next';
 import { OrderList } from './components/OrderList';
-import { useGlobalStore } from '@/store';
+import { useCommonStore } from '@/store';
 
 export default function Inscribe() {
   const { state } = useLocation();
@@ -30,7 +30,7 @@ export default function Inscribe() {
   //   });
   // }, []);
   console.log('hexstring:' + hexString('6f7264'));
-  const { btcHeight } = useGlobalStore((state) => state);
+  const { btcHeight } = useCommonStore((state) => state);
   const { t } = useTranslation();
   const [step, setStep] = useState(3);
   const [tab, setTab] = useState<InscribeType>('files');

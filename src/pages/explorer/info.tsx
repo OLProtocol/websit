@@ -10,12 +10,12 @@ import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Button, Tag, Spin, Alert } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useGlobalStore } from '@/store';
+import { useCommonStore } from '@/store';
 
 export default function Ord2Info() {
   const { t } = useTranslation();
   const { tick } = useParams();
-  const { btcHeight } = useGlobalStore((state) => state);
+  const { btcHeight } = useCommonStore((state) => state);
   const [tabText, setTabText] = useState(t('common.holders'));
   const nav = useNavigate();
   const { network } = useUnisatConnect();

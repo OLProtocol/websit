@@ -3,7 +3,7 @@ import { NavHeader } from '@/layout/NavHeader';
 import { Alert, Layout, Menu, theme } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 const { Header, Content, Footer, Sider } = Layout;
-import { useGlobalStore } from './store';
+import { useCommonStore } from './store';
 import { UpdateVersionModal } from './components/UpdateVersionModal';
 import { useBtcHeight, getBlockStatus } from '@/api';
 import { useEffect } from 'react';
@@ -12,7 +12,7 @@ export default function Root() {
   const { network } = useUnisatConnect();
   const { data: heightData } = useBtcHeight(network as any);
 
-  const { setHeight, setServiceStatus, setAppVersion } = useGlobalStore(
+  const { setHeight, setServiceStatus, setAppVersion } = useCommonStore(
     (state) => state,
   );
   const { VITE_TIP_STATUS, VITE_TIP_HEIGHT } = import.meta.env;
