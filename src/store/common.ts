@@ -65,6 +65,12 @@ export const useCommonStore = create<GlobalState>()(
       }),
       {
         name: 'common-store',
+        partialize: (state) =>
+          Object.fromEntries(
+            Object.entries(state).filter(([key]) =>
+              !['feeRate'].includes(key),
+            ),
+          ),
       },
     ),
   ),
