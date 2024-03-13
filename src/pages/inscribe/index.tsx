@@ -171,7 +171,7 @@ export default function Inscribe() {
               removeObjectEmptyValue({
                 p: 'ordx',
                 op: 'mint',
-                tick: ordxData.tick.toString().trim().toLocaleLowerCase(),
+                tick: ordxData.tick.toString().trim(),
                 amt: ordxData.amount.toString(),
                 sat:
                   ordxData.mintRarity !== 'common' &&
@@ -211,7 +211,7 @@ export default function Inscribe() {
           removeObjectEmptyValue({
             p: 'ordx',
             op: 'deploy',
-            tick: ordxData.tick.toString().trim().toLocaleLowerCase(),
+            tick: ordxData.tick.toString().trim(),
             block: ordxData.blockChecked
               ? ordxData.block.toString()
               : undefined,
