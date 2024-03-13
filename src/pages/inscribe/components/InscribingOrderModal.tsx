@@ -78,14 +78,21 @@ export const InscribingOrderModal = ({
       const { inscriptions, feeRate, inscriptionSize, secret, network, fee } =
         order;
       if (inscriptions.length === 1) {
-        const txid = await sendBTC({
-          toAddress: inscriptions[0].inscriptionAddress,
-          value: fee.totalFee,
-          feeRate: feeRate,
-          network: network,
-          fromAddress: currentAccount,
-          fromPubKey: currentPublicKey,
-        });
+        const txid = await unisat.sendBitcoin(
+          inscriptions[0].inscriptionAddress,
+          fee.totalFee,
+          {
+            feeRate: feeRate,
+          },
+        );
+        // const txid = await sendBTC({
+        //   toAddress: inscriptions[0].inscriptionAddress,
+        //   value: fee.totalFee,
+        //   feeRate: feeRate,
+        //   network: network,
+        //   fromAddress: currentAccount,
+        //   fromPubKey: currentPublicKey,
+        // });
         console.log(txid);
         const commitTx = {
           txid,

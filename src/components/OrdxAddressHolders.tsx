@@ -123,7 +123,7 @@ export const OrdxAddressHolders = ({
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const fee = 280;
+      const fee = 400;
       const firstOutputValue = firstUtxo.value;
       const secondOutputValue = total - firstOutputValue - fee;
       const outputs = [
@@ -159,7 +159,7 @@ export const OrdxAddressHolders = ({
         vout: Number(inscriptionVout),
         value: Number(inscriptionValue),
       };
-      const fee = 370;
+      const fee = 400;
       if (splitUtxo.value < 331) {
         message.warning('utxo数量不足，无法拆分！');
         setLoading(false);
