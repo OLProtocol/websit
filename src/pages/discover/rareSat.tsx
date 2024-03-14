@@ -17,8 +17,11 @@ import { SatTable } from '../explorer/components/SatTable';
 import { SatTypeBox } from '../explorer/components/SatTypeBox';
 import { useUnisatConnect } from '@/lib/hooks';
 
-// const { Search } = Input;
-export default function RareSat() {
+interface RareSatProps {
+  canSplit: boolean;
+}
+
+export const RareSat = ({ canSplit }: RareSatProps) => {
   const { t } = useTranslation();
   const [address, setAddress] = useState('');
   const [rareSatList, setRareSatList] = useState<any[]>();
@@ -28,7 +31,6 @@ export default function RareSat() {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
 
-  
   let uniqueTypes: string[] = [];
   if (satList) {
     const uniqueTypeSet = new Set<string>();
@@ -114,6 +116,7 @@ export default function RareSat() {
         {t('pages.rare_sat.des')}
       </h1>
       <div>
+        {!canSplit && (
         <div className='flex justify-center mb-12 max-w-7xl mx-auto px-4'>
           <InputGroup size='lg' className='rounded-2xl'>
             <Input
@@ -136,13 +139,14 @@ export default function RareSat() {
             </InputRightElement>
           </InputGroup>
         </div>
+        )}
         <div className='max-w-7xl mx-auto px-4 pb-4'>
           <SatTypeBox />
         </div>
         <div className='max-w-7xl mx-auto px-4'>
           {rareSatList !== undefined && satList !== undefined ? (
             <div>
-              <SatRareBox sats={rareSatList} canSplit={false}/>
+              <SatRareBox sats={rareSatList} canSplit={canSplit}/>
               <div className='pt-4' />
               <Card>
                 <CardHeader>
@@ -158,23 +162,23 @@ export default function RareSat() {
                     </Button>
                   ))}
                   {satFilterList && satFilterList.length > 0 ? (
-                    <SatTable sats={satFilterList} canSplit={false}/>
+                    <SatTable sats={satFilterList} canSplit={canSplit}/>
                   ) : (
-                    <SatTable sats={satList} canSplit={false}/>
+                    <SatTable sats={satList} canSplit={canSplit}/>
                   )}
                 </CardBody>
               </Card>
             </div>
           ) : (
             <div>
-              <SatRareBox sats={[]} canSplit={false}/>
+              <SatRareBox sats={[]} canSplit={canSplit}/>
               <div className='pt-4' />
               <Card>
                 <CardHeader>
                   <Heading size='md'>Interesting Sats</Heading>
                 </CardHeader>
                 <CardBody>
-                  <SatTable sats={[]} canSplit={false}/>
+                  <SatTable sats={[]} canSplit={canSplit}/>
                 </CardBody>
               </Card>
             </div>

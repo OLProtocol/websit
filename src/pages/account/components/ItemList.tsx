@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pagination, Spin } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { useOrdxAddressHolders } from '@/api';
 import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
 import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
 import { UtxoList } from './UtxoList';

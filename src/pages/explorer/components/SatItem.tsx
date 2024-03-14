@@ -17,7 +17,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
       case 'rare':
         return '/images/sat/icon-rare.svg';
       case 'common':
-        return '/images/sat/common.svg';
+        return '/images/sat/icon-default.svg';
       case 'uncommon':
         return '/images/sat/icon-uncommon.svg';
       case 'legendary':
@@ -63,13 +63,13 @@ export const SatItem = ({ sat }: SatItemProps) => {
       case 'vintage':
         return '/images/sat/icon-vt.svg';
       default:
-        return '/images/logo.jpg';
+        return '/images/sat/icon-default.svg';
     }
   };
 
   return (
-    <div className='group'>
-      <div className='flex'>
+    // <div className='group max-w-full mx-auto'>
+      <div className='group max-w-full mx-auto flex'>
         <Tag color='gray'>{format(new Date(sat.time), 'yyyy-MM-dd')}</Tag>
         {/* <Tag color='gray'>{sat.time}</Tag> */}
         <Tag color='green' bordered={false}>
@@ -91,15 +91,15 @@ export const SatItem = ({ sat }: SatItemProps) => {
         {sat.type.map((item, _) => (
           <img src={setSatIcon(item)} className='w-6 h-6 ml-1'/>
         ))}
-        
+        &nbsp;&nbsp;&nbsp;&nbsp;
         {/* {icon && <img src={icon} alt='' className='w-6 h-6 ml-4' />} */}
-        <div className='ml-4 hidden group-hover:flex'>
-          <CopyButton text={sat.sat[0]} tooltip='Copy Sat' />
+        <div className='flex'>
+          <CopyButton text={sat.sat[0]} tooltip='Copy Sat' />&nbsp;&nbsp;
           { (sat.canSplit || network.includes('testnet')) &&
           <SplitSatButton text={sat.sat[0]} tooltip='Split Sat' />
           }
         </div>
       </div>
-    </div>
+    // </div>
   );
 };

@@ -250,6 +250,18 @@ export const getUtxoByType = async ({
   return data;
 };
 
+export const getUtxoRanges = async ({ utxos, excludeCommonRanges, network }: any) => {
+  const { data } = await axios.post(
+    generateUrl(`utxo-ranges`, network),
+    {
+      utxos,
+      excludeCommonRanges,
+    },
+  );
+  return data;
+};
+
+
 export const getSatTypes = async ({ network }: any) => {
   const { data } = await axios.get(generateUrl(`info/satributes`, network));
   return data;

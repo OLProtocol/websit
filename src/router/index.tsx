@@ -8,11 +8,13 @@ import Ord2Info from '@/pages/explorer/info';
 import OrdxInscription from '@/pages/explorer/inscription';
 import InscribeCheck from '@/pages/inscribe_check';
 import Tools from '@/pages/tools';
-import RareSat from '@/pages/discover/rareSat';
 import Account from '@/pages/account';
 import SplitSats from '@/pages/tools/splitSats';
 import SplittedInscription from '@/pages/tools/splittedInscription';
 import UtxoAsset from '@/pages/tools/utxoAsset';
+import Transaction from '@/pages/tools/transaction';
+import { RareSat } from '@/pages/discover/rareSat';
+import UtxoSat from '@/pages/tools/utxoSat';
 
 const resolveHashPath = (path: string) => {
   return `/#${path}`;
@@ -30,11 +32,13 @@ export const ROUTE_PATH = {
   TOOLS: '/tools',
   TOOLS_SPLIT_SATS: '/tools/split-sats',
   TOOLS_UTXO_ASSET: '/tools/utxo-asset',
+  TOOLS_GET_UTXO: '/tools/get-utxo',
+  TOOLS_TRANSACT: '/tools/transact',
   TOOLS_SPLITTED_INSCRIPTION: '/tools/splitted-inscription',
   // MARKET_INDEX: '/market',
   DISCOVER_RARE_SAT: '/discover',
   ACCOUNT: '/account',
-  RARE_SAT: '/tools/rare_sat',
+  // RARE_SAT: '/tools/rare_sat',
 };
 const hashPath: any = {};
 Object.keys(ROUTE_PATH).forEach((k: any) => {
@@ -84,10 +88,11 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.TOOLS,
         element: <Tools />,
-      },{
-        path: ROUTE_PATH.RARE_SAT,
-        element: <RareSat />,
       },
+      // {
+      //   path: ROUTE_PATH.RARE_SAT,
+      //   element: <RareSat canSplit={false} />,
+      // },
       {
         path: ROUTE_PATH.TOOLS_SPLIT_SATS,
         element: <SplitSats />,
@@ -95,6 +100,14 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.TOOLS_UTXO_ASSET,
         element: <UtxoAsset />,
+      },
+      {
+        path: ROUTE_PATH.TOOLS_GET_UTXO,
+        element: <UtxoSat />,
+      },
+      {
+        path: ROUTE_PATH.TOOLS_TRANSACT,
+        element: <Transaction />,
       },
       {
         path: ROUTE_PATH.TOOLS_SPLITTED_INSCRIPTION,
@@ -106,7 +119,7 @@ export const routes: RouteObject[] = [
       // },
       {
         path: ROUTE_PATH.DISCOVER_RARE_SAT,
-        element: <RareSat />,
+        element: <RareSat canSplit={false} />,
       },
       {
         path: ROUTE_PATH.ACCOUNT,
