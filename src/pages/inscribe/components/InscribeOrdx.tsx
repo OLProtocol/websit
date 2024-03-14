@@ -22,7 +22,7 @@ import type { UploadProps } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Tooltip, Upload } from 'antd';
+import { Button, Tooltip, Upload, Modal } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
 import { useEffect, useMemo, useState, useRef } from 'react';
@@ -39,10 +39,15 @@ const { Dragger } = Upload;
 interface InscribeOrdxProps {
   onNext?: () => void;
   onChange?: (data: any) => void;
+  onUtxoChange?: (data: any) => void;
 }
 // const satTypeList = [
 
-export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
+export const InscribeOrdx = ({
+  onNext,
+  onChange,
+  onUtxoChange,
+}: InscribeOrdxProps) => {
   const { currentAccount } = useUnisatConnect();
   const { btcHeight } = useCommonStore((state) => state);
   const { t } = useTranslation();
@@ -80,6 +85,9 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   const [tickLoading, setTickLoading] = useState(false);
   const [tickChecked, setTickChecked] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
+  const [specialBeyondStatus, setSpecialBeyondStatus] = useState(false);
+  const [allowSpecialBeyondStatus, setAllowSpecialBeyondStatus] =
+    useState(false);
   const [originFiles, setOriginFiles] = useState<any[]>([]);
   const filesChange: UploadProps['onChange'] = async ({ fileList }) => {
     const originFiles = fileList.map((f) => f.originFileObj);
@@ -106,7 +114,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   };
   const getOrdxUtxoByType = async (type: string, amount: number) => {
     try {
-      console.log(type);
       const { data } = await getUtxoByType({
         address: currentAccount,
         type,
@@ -146,12 +153,11 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
 
       if (!checkStatus) {
         return;
-      } 
+      }
       setTickChecked(true);
     } else {
       onNext?.();
     }
-
   };
   const checkTick = async (blur: boolean = false) => {
     setErrorText('');
@@ -207,11 +213,27 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             setErrorText(`${rarity}类型的特殊聪数量不够`);
             return checkStatus;
           }
-          set('sat', satsData[0].value);
+          set('sat', satsData?.[0]?.sats?.[0].start);
           set('rarity', rarity);
-          // if (data.amount === 1) {
-          // }
-          console.log(satsData);
+          if (satsData?.[0]) {
+            onUtxoChange?.(satsData?.[0]);
+            if (satsData?.[0].amount > data.amount) {
+              if (!allowSpecialBeyondStatus) {
+                Modal.confirm({
+                  centered: true,
+                  content:
+                    '找到的Utxo包含的特殊聪数量超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉',
+                  okText: '继续',
+                  cancelText: '取消',
+                  onOk() {
+                    setAllowSpecialBeyondStatus(true);
+                  },
+                });
+              }
+              checkStatus = allowSpecialBeyondStatus;
+              return checkStatus;
+            }
+          }
         }
         // if (isSpecial) {
         //   checkStatus = false;

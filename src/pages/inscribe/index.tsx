@@ -1,7 +1,7 @@
 import { Radio, Alert } from 'antd';
 import { useLocation } from 'react-router-dom';
 import { useToast } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { InscribeBrc20 } from './components/InscribeBrc20';
 import { InscribeOrdx } from './components/InscribeOrdx';
@@ -32,6 +32,7 @@ export default function Inscribe() {
   console.log('hexstring:' + hexString('6f7264'));
   const { btcHeight } = useCommonStore((state) => state);
   const { t } = useTranslation();
+  const ordxUtxoRef = useRef<any>();
   const [step, setStep] = useState(3);
   const [tab, setTab] = useState<InscribeType>('files');
   const [files, setFiles] = useState<any[]>([]);
@@ -115,6 +116,9 @@ export default function Inscribe() {
     setOrd2Data('trzChecked', data.trzChecked);
     setOrd2Data('blockChecked', data.blockChecked);
   };
+  const onOrdxUtxoChange = (utxo: any) => {
+    ordxUtxoRef.current = utxo;
+  } 
   const brc20Next = async () => {
     const list: any = [];
     if (brc20Data.type === 'mint') {
@@ -390,7 +394,7 @@ export default function Inscribe() {
                   <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
                 )}
                 {tab === 'ordx' && (
-                  <InscribeOrdx onChange={ordxChange} onNext={ordxNext} />
+                  <InscribeOrdx onChange={ordxChange} onNext={ordxNext} onUtxoChange={onOrdxUtxoChange}/>
                 )}
               </>
             )}
@@ -404,6 +408,7 @@ export default function Inscribe() {
             )}
             {step === 3 && (
               <InscribeStepThree
+                ordxUtxo={ordxUtxoRef.current}
                 onItemRemove={onItemRemove}
                 onRemoveAll={onRemoveAll}
                 onAddOrder={onAddOrder}

@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next';
 interface Brc20SetpOneProps {
   list: any[];
   type: InscribeType;
+  ordxUtxo?: any;
   onItemRemove?: (index: number) => void;
   onRemoveAll?: () => void;
   onAddOrder?: (order: OrderItemType) => void;
@@ -32,6 +33,7 @@ interface Brc20SetpOneProps {
 export const InscribeStepThree = ({
   list,
   type,
+  ordxUtxo,
   onItemRemove,
   onAddOrder,
   onRemoveAll,
@@ -95,6 +97,7 @@ export const InscribeStepThree = ({
       feeRate,
       files,
       network,
+      ordxUtxo,
       inscriptionSize: inscriptionSize,
       status: 'pending',
       createAt: Date.now().valueOf(),

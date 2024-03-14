@@ -488,6 +488,8 @@ interface SendBTCProps {
   feeRate: number;
   fromAddress: string;
   fromPubKey: string;
+  ordxUtxo?: any;
+  specialAmt?: number;
 }
 
 export const sendBTC = async ({
@@ -496,8 +498,9 @@ export const sendBTC = async ({
   value,
   feeRate = 1,
   fromAddress,
-  fromPubKey,
+  ordxUtxo,
 }: SendBTCProps) => {
+  const hasOrdxUtxo = !!ordxUtxo;
   const data = await getUtxoByValue({
     address: fromAddress,
     value: 600,
@@ -507,39 +510,56 @@ export const sendBTC = async ({
   if (!consumUtxos.length) {
     throw new Error('余额不足');
   }
-  const fee = (180 + 34 * 2 + 10) * feeRate;
+  const fee = (180 * (hasOrdxUtxo ? 2 : 1) + 34 * 2 + 10) * feeRate;
+  const filterTotalValue = hasOrdxUtxo ? 330 + fee : value + 330 + fee;
   const avialableUtxo: any[] = [];
   let avialableValue = 0;
   for (let i = 0; i < consumUtxos.length; i++) {
     const utxo = consumUtxos[i];
     avialableUtxo.push(utxo);
     avialableValue += utxo.value;
-    if (avialableValue >= value + 330 + fee) {
+    if (avialableValue >= filterTotalValue) {
       break;
     }
   }
-  const btcUtxos = avialableUtxo.map((v) => {
-    return {
-      txid: v.txid,
-      vout: v.vout,
-      satoshis: v.value,
-      scriptPk: addresToScriptPublicKey(fromAddress),
-      addressType: 2,
-      inscriptions: [],
-      pubkey: fromPubKey,
-      atomicals: [],
-    };
-  });
-  const inputs: any[] = btcUtxos.map((v) => {
+  // const btcUtxos = avialableUtxo.map((v) => {
+  //   return {
+  //     txid: v.txid,
+  //     vout: v.vout,
+  //     satoshis: v.value,
+  //     scriptPk: addresToScriptPublicKey(fromAddress),
+  //     addressType: 2,
+  //     inscriptions: [],
+  //     pubkey: fromPubKey,
+  //     atomicals: [],
+  //   };
+  // });
+  const inputs: any[] = avialableUtxo.map((v) => {
+    const scriptPk = addresToScriptPublicKey(fromAddress);
     return {
       hash: v.txid,
       index: v.vout,
       witnessUtxo: {
-        script: Buffer.from(v.scriptPk, 'hex'),
-        value: v.satoshis,
+        script: Buffer.from(scriptPk, 'hex'),
+        value: v.value,
       },
     };
   });
+  if (hasOrdxUtxo) {
+    const scriptPk = addresToScriptPublicKey(fromAddress);
+    const { utxo, value } = ordxUtxo;
+    const ordxTxid = utxo.split(':')[0];
+    const ordxVout = utxo.split(':')[1];
+    inputs.unshift({
+      hash: ordxTxid,
+      index: Number(ordxVout),
+      witnessUtxo: {
+        script: Buffer.from(scriptPk, 'hex'),
+        value: value,
+      },
+    });
+  }
+  console.log(inputs);
   const psbtNetwork = bitcoin.networks.testnet;
   const psbt = new bitcoin.Psbt({
     network: psbtNetwork,

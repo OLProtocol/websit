@@ -67,7 +67,6 @@ export const InscribingOrderModal = ({
   const order = useMemo(() => {
     return findOrder(orderId);
   }, [orderId]);
-  console.log('order', order);
   const payOrder = async () => {
     if (!order) {
       return;
@@ -78,22 +77,27 @@ export const InscribingOrderModal = ({
       const { inscriptions, feeRate, inscriptionSize, secret, network, fee } =
         order;
       if (inscriptions.length === 1) {
-        const txid = await unisat.sendBitcoin(
-          inscriptions[0].inscriptionAddress,
-          fee.totalFee,
-          {
+        let txid;
+        if (order.ordxUtxo) {
+          txid = await sendBTC({
+            toAddress: inscriptions[0].inscriptionAddress,
+            value: fee.totalFee,
             feeRate: feeRate,
-          },
-        );
-        // const txid = await sendBTC({
-        //   toAddress: inscriptions[0].inscriptionAddress,
-        //   value: fee.totalFee,
-        //   feeRate: feeRate,
-        //   network: network,
-        //   fromAddress: currentAccount,
-        //   fromPubKey: currentPublicKey,
-        // });
-        console.log(txid);
+            network: network,
+            fromAddress: currentAccount,
+            fromPubKey: currentPublicKey,
+            ordxUtxo: order.ordxUtxo,
+          });
+        } else {
+          txid = await sendBTC({
+            toAddress: inscriptions[0].inscriptionAddress,
+            value: fee.totalFee,
+            feeRate: feeRate,
+            network: network,
+            fromAddress: currentAccount,
+            fromPubKey: currentPublicKey,
+          });
+        }
         const commitTx = {
           txid,
           outputs: [
