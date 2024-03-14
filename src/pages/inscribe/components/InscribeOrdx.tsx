@@ -265,11 +265,11 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           set('amount', Number(limit));
           set('mintRarity', rarity);
         }
-        if (isSpecial) {
-          checkStatus = false;
-          setErrorText(t('pages.inscribe.ordx.error_8', { tick: data.tick }));
-          return checkStatus;
-        }
+        // if (isSpecial) {
+        //   checkStatus = false;
+        //   setErrorText(t('pages.inscribe.ordx.error_8', { tick: data.tick }));
+        //   return checkStatus;
+        // }
         if (status === 'Pending') {
           checkStatus = false;
           setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
