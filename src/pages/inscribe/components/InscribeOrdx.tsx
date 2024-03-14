@@ -245,8 +245,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       let status = 'Completed';
       if (isSpecial) {
         status = 'Minting';
-      }
-      if (
+      } else if (
         startBlock &&
         endBlock &&
         btcHeight <= endBlock &&
