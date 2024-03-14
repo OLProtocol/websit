@@ -267,6 +267,7 @@ export const InscribeOrdx = ({
       }
     } catch (error) {
       setTickLoading(true);
+      checkStatus = false;
       console.log('error', error);
       return checkStatus;
     }
