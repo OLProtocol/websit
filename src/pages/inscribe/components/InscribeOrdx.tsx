@@ -600,7 +600,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <div className='flex-1'>
                   <Input
                     type='text'
-                    maxLength={32}
+                    maxLength={128}
                     value={data.des}
                     onChange={(e) => set('des', e.target.value)}
                   />
