@@ -243,6 +243,9 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       const { rarity, trz, cn, startBlock, endBlock, limit } = info.data || {};
       const isSpecial = rarity !== 'unknow' && rarity !== 'common' && !!rarity;
       let status = 'Completed';
+      if (isSpecial) {
+        status = 'Minting';
+      }
       if (
         startBlock &&
         endBlock &&
@@ -275,6 +278,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
           return checkStatus;
         }
+        console.log(status)
         if (status === 'Completed') {
           checkStatus = false;
           setErrorText(t('pages.inscribe.ordx.error_7', { tick: data.tick }));
