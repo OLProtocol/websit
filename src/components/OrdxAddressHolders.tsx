@@ -299,10 +299,10 @@ export const OrdxAddressHolders = ({
         width: 120,
         align: 'center',
         render: (t) => {
-          const ranges = t.map((r: any) =>
+          const ranges = t?.map((r: any) =>
             r.size === 1 ? r.start : `${r.start}-${r.start + r.size - 1}`,
           );
-          return ranges.join(', ');
+          return ranges?.join(', ');
         },
       },
       {
