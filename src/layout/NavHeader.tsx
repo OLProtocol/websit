@@ -123,9 +123,10 @@ export const NavHeader = () => {
           </LinkBox> */}
         </div>
 
-        <div className='flex justify-center h-full items-center'>
+        <div className='flex justify-center h-full items-center gap-2'>
           <FeerateSelectButton />
           <Select
+            size='middle'
             defaultValue={i18n.language}
             className='text-white'
             bg='#1677ff'
@@ -135,9 +136,7 @@ export const NavHeader = () => {
             <option value='zh'>ZH</option>
             <option value='en'>EN</option>
           </Select>
-          <div className='ml-4'>
-            <UnisatConnectButton />
-          </div>
+          <UnisatConnectButton />
         </div>
       </div>
     </header>
