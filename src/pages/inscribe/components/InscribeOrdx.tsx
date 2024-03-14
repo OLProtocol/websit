@@ -213,16 +213,17 @@ export const InscribeOrdx = ({
             setErrorText(`${rarity}类型的特殊聪数量不够`);
             return checkStatus;
           }
-          set('sat', satsData?.[0]?.sats?.[0].start);
+          const satData = satsData?.[satsData?.length -1]
+          set('sat', satData?.sats?.[0].start);
           set('rarity', rarity);
-          if (satsData?.[0]) {
-            onUtxoChange?.(satsData?.[0]);
-            if (satsData?.[0].amount > data.amount) {
+          if (satData) {
+            onUtxoChange?.(satData);
+            if (satData.amount > data.amount) {
               if (!allowSpecialBeyondStatus) {
                 Modal.confirm({
                   centered: true,
                   content:
-                    `找到的Utxo包含的特殊聪数量(${satsData?.[0].amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
+                    `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
                   okText: '继续',
                   cancelText: '取消',
                   onOk() {
