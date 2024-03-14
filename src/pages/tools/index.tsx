@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card } from 'antd';
+import { Card, message } from 'antd';
 import { ROUTE_PATH } from '@/router';
 
 export default function InscribeCheck() {
@@ -16,6 +16,19 @@ export default function InscribeCheck() {
     nav(ROUTE_PATH.TOOLS_UTXO_ASSET);
   };
 
+  const toGetUtxo = () => {
+    nav(ROUTE_PATH.TOOLS_GET_UTXO);
+  }
+
+  const toSplit = () => {
+    message.success('Coming soon!');
+  }
+
+  const toTransact = () => {
+    // nav(ROUTE_PATH.TOOLS_TRANSACT);
+    message.success('Coming soon!');
+  }
+  
   return (
     <div className='flex gap-2 max-w-max mx-auto p-2'>
       <Card title={t('pages.tools.split_sat.title')} className='w-60 cursor-pointer' onClick={toSplitSats}>
@@ -27,9 +40,15 @@ export default function InscribeCheck() {
       <Card title={t('pages.tools.utxo.title')} className='w-60 cursor-pointer' onClick={toSearchUtxo}>
         {t('pages.tools.utxo.des')}
       </Card>
-      {/* <Card title='分离UTXO' className='w-60 cursor-pointer'>
-        标注UTXO中的特殊聪位置和资产位置都标注出来。由用户决定切割方案并进行切割。
-      </Card> */}
+      <Card title='查询UTXO' className='w-60 cursor-pointer' onClick={toGetUtxo}>
+        查询utxo中的所有sat。
+      </Card>
+      <Card title='分离UTXO' className='w-60 cursor-pointer' onClick={toSplit}>
+        标注UTXO中的特殊聪位置和资产位置，由用户决定切割方案并进行切割。
+      </Card>
+      <Card title='Transaction' className='w-60 cursor-pointer' onClick={toTransact}>
+        融合发送和拆分的工具。
+      </Card>
     </div>
   );
 }
