@@ -19,7 +19,7 @@ export const FeerateSelectButton = () => {
   };
   return (
     <div>
-      <Button onClick={() => setIsModalOpen(true)}>Gas: {feeRate.value}</Button>
+      <Button type='dashed' size='small' ghost className='bg-transparent' onClick={() => setIsModalOpen(true)}>Gas: {feeRate.value}</Button>
       <Modal
         centered
         title='Gas Fee'

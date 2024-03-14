@@ -63,7 +63,7 @@ export default function Inscribe() {
     cn: 0,
     trz: 0,
     des: '',
-    sat: '',
+    sat: 0,
     rarity: '',
     mintRarity: '',
     file: '',
@@ -162,6 +162,21 @@ export default function Inscribe() {
     const list: any = [];
     if (ordxData.type === 'mint') {
       for (let i = 0; i < ordxData.repeatMint; i++) {
+        console.log(ordxData);
+        const attrArr: string[] = [];
+        if (ordxData.rarity && ordxData.rarity !== 'common') {
+          attrArr.push(`rar=${ordxData.rarity}`);
+        }
+        if (ordxData.cn > 0) {
+          attrArr.push(`cn=${ordxData.cn}`);
+        }
+        if (ordxData.trz > 0) {
+          attrArr.push(`trz=${ordxData.trz}`);
+        }
+        let attr;
+        if (attrArr.length) {
+          attr = attrArr.join(';');
+        }
         list.push({
           type: 'ordx',
           name: `mint_${i}`,
@@ -173,12 +188,7 @@ export default function Inscribe() {
                 op: 'mint',
                 tick: ordxData.tick.toString().trim(),
                 amt: ordxData.amount.toString(),
-                sat:
-                  ordxData.mintRarity !== 'common' &&
-                  ordxData.mintRarity !== 'unknow' &&
-                  !!ordxData.mintRarity
-                    ? ordxData.sat.toString()
-                    : undefined,
+                sat: ordxData.sat > 0 ? ordxData.sat.toString() : undefined,
               }),
             ),
             // {

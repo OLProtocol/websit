@@ -81,7 +81,7 @@ export const UnisatConnectButton = () => {
     // await switchNetwork(network === 'testnet' ? 'livenet' : 'testnet');
   };
   const hideAccount = useMemo(() => {
-    return hideStr(currentAccount, 4);
+    return hideStr(currentAccount, 3, '**');
   }, [currentAccount]);
   return (
     <>
@@ -119,7 +119,7 @@ export const UnisatConnectButton = () => {
               </div>
             </div>
           }>
-          <Button shape='round' size='large'>
+          <Button  shape='round' size='small'>
             <Space>
               {hideAccount}
               <DownOutlined />
@@ -127,7 +127,7 @@ export const UnisatConnectButton = () => {
           </Button>
         </Popover>
       ) : (
-        <Button size='large' type='primary' onClick={connect}>
+        <Button size='small' type='primary' onClick={connect}>
           {t('buttons.connect')}
         </Button>
       )}

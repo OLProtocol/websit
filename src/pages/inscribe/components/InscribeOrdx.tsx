@@ -29,9 +29,8 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import { useMap } from 'react-use';
 import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
 import { clacTextSize, encodeBase64, base64ToHex } from '../utils';
-import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { getOrdxInfo, useSatTypes } from '@/api';
+import { getOrdxInfo, useSatTypes, getUtxoByType } from '@/api';
 import toast from 'react-hot-toast';
 import { useCommonStore } from '@/store';
 
@@ -42,94 +41,9 @@ interface InscribeOrdxProps {
   onChange?: (data: any) => void;
 }
 // const satTypeList = [
-//   {
-//     icon: '/images/sat/icon-mythic.svg',
-//     name: 'mythical',
-//     tip: 'The first sat of the genesis block.',
-//   },
-//   {
-//     icon: '/images/sat/icon-legendary.svg',
-//     name: 'legendary',
-//     tip: 'The first sat of each cycle.',
-//   },
-//   {
-//     icon: '/images/sat/icon-epic.svg',
-//     name: 'epic',
-//     tip: 'The first saat of each halving epoch.',
-//   },
-//   {
-//     icon: '/images/sat/icon-rare.svg',
-//     name: 'rare',
-//     tip: 'The first sat of each difficulty adjustment period.',
-//   },
-//   {
-//     icon: '/images/sat/icon-uncommon.svg',
-//     name: 'uncommon',
-//     tip: 'The first sat of each block.',
-//   },
-//   // {
-//   //   icon: '/images/sat/common.svg',
-//   //   name: 'Connom/Unknown',
-//   //   tip: 'A sat of unknown rarity.'
-//   // },
-//   {
-//     icon: '/images/sat/icon-bl.svg',
-//     name: 'black',
-//     tip: 'The last sat of each block.',
-//   },
-//   {
-//     icon: '/images/sat/icon-np.svg',
-//     name: 'name_palindrome',
-//     tip: 'Sats with palindromic names.',
-//   },
-//   {
-//     icon: '/images/sat/icon-al.svg',
-//     name: 'alpha',
-//     tip: 'The first sats in each bitcoin.They always end in at least 8 zeros.',
-//   },
-//   {
-//     icon: '/images/sat/icon-om.svg',
-//     name: 'omega',
-//     tip: 'The last sats in each bitcoin.They always end in at least 8 nines.',
-//   },
-//   {
-//     icon: '/images/sat/icon-9.svg',
-//     name: 'block9',
-//     tip: 'Sats mined in Block 9(the first block with sats circulating today).',
-//   },
-//   {
-//     icon: '/images/sat/icon-78.svg',
-//     name: 'block78',
-//     tip: 'Sats mined by Hal Finney in Block 78(the first block mined by someone other than Satoshi).',
-//   },
-//   {
-//     icon: '/images/sat/icon-nk.svg',
-//     name: 'nakamoto',
-//     tip: 'Sats mined by Satoshi Nakamoto himself.',
-//   },
-//   {
-//     icon: '/images/sat/icon-vt.svg',
-//     name: 'vintage',
-//     tip: 'Sats mined in the first 1000 bitcoin blocks.',
-//   },
-//   {
-//     icon: '/images/sat/icon-pz.svg',
-//     name: 'pizza',
-//     tip: 'Sats involved in the famous pizza transaction from 2010.',
-//   },
-//   {
-//     icon: '/images/sat/icon-jp.svg',
-//     name: 'jpeg',
-//     tip: 'Sats involved in the possible first bitcoin trade for an image on February 24,2010.',
-//   },
-//   {
-//     icon: '/images/sat/icon-hm.svg',
-//     name: 'hitman',
-//     tip: 'Sats involved in the transaction made by Ross Ulbricht to hire a hitman.',
-//   },
-// ];
 
 export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
+  const { currentAccount } = useUnisatConnect();
   const { btcHeight } = useCommonStore((state) => state);
   const { t } = useTranslation();
   const { state } = useLocation();
@@ -158,7 +72,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     sat: 0,
   });
   const { data: satTypeData } = useSatTypes({ network });
-  console.log(satTypeData);
   const satTypeList = useMemo(() => {
     return satTypeData?.data || [];
   }, [satTypeData]);
@@ -191,6 +104,22 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     set('fileName', '');
     set('fileType', '');
   };
+  const getOrdxUtxoByType = async (type: string, amount: number) => {
+    try {
+      console.log(type);
+      const { data } = await getUtxoByType({
+        address: currentAccount,
+        type,
+        amount,
+        network,
+      });
+      return data;
+    } catch (error) {
+      toast.error(t('toast.system_error'));
+      console.error('Failed to fetch ordxUtxo:', error);
+      throw error;
+    }
+  };
   const getOrdXInfo = async (tick: string) => {
     // If there is no data in localStorage, fetch it
     try {
@@ -212,11 +141,17 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
   };
   const nextHandler = async () => {
     setErrorText('');
-    const checkStatus = await checkTick();
-    if (!checkStatus) {
-      return;
+    if (!tickChecked) {
+      const checkStatus = await checkTick();
+
+      if (!checkStatus) {
+        return;
+      } 
+      setTickChecked(true);
+    } else {
+      onNext?.();
     }
-    onNext?.();
+
   };
   const checkTick = async (blur: boolean = false) => {
     setErrorText('');
@@ -235,10 +170,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     }
     try {
       setTickLoading(true);
-      setTickChecked(false);
       const info = await getOrdXInfo(data.tick);
       setTickLoading(false);
-      setTickChecked(true);
 
       const { rarity, trz, cn, startBlock, endBlock, limit } = info.data || {};
       const isSpecial = rarity !== 'unknow' && rarity !== 'common' && !!rarity;
@@ -266,6 +199,19 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
         if (blur) {
           set('amount', Number(limit));
           set('mintRarity', rarity);
+        } else if (isSpecial) {
+          const satsData = await getOrdxUtxoByType(rarity, data.amount);
+          console.log(satsData);
+          if (!satsData?.length) {
+            checkStatus = false;
+            setErrorText(`${rarity}类型的特殊聪数量不够`);
+            return checkStatus;
+          }
+          set('sat', satsData[0].value);
+          set('rarity', rarity);
+          // if (data.amount === 1) {
+          // }
+          console.log(satsData);
         }
         // if (isSpecial) {
         //   checkStatus = false;
@@ -277,7 +223,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
           return checkStatus;
         }
-        console.log(status)
+        console.log(status);
         if (status === 'Completed') {
           checkStatus = false;
           setErrorText(t('pages.inscribe.ordx.error_7', { tick: data.tick }));
@@ -299,7 +245,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       }
     } catch (error) {
       setTickLoading(true);
-      setTickChecked(false);
       console.log('error', error);
       return checkStatus;
     }
@@ -357,8 +302,8 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
     );
   }, [data.mintRarity]);
   const buttonDisabled = useMemo(() => {
-    return !data.tick || (data.type === 'mint' && !tickChecked);
-  }, [data, tickChecked]);
+    return !data.tick;
+  }, [data]);
   // const time = useBlockHeightTime({
   //   height: btcHeight,
   //   start: data.block_start,
@@ -382,7 +327,6 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
       set('tick', item.tick);
       set('amount', item.limit);
       set('mintRarity', item.rarity);
-      setTickChecked(true);
     }
   }, [state]);
   useEffect(() => {
@@ -603,7 +547,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
                 <div className='flex-1'>
                   <Input
                     type='text'
-                    maxLength={32}
+                    maxLength={128}
                     value={data.des}
                     onChange={(e) => set('des', e.target.value)}
                   />
@@ -612,7 +556,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
             </FormControl>
           </>
         )}
-        {data.type === 'mint' && showSat && (
+        {/* {data.type === 'mint' && showSat && (
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
@@ -629,7 +573,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
               </div>
             </div>
           </FormControl>
-        )}
+        )} */}
         {data.type === 'deploy' && (
           <FormControl>
             <div className='flex items-center  mb-4'>
@@ -707,7 +651,7 @@ export const InscribeOrdx = ({ onNext, onChange }: InscribeOrdxProps) => {
           type='primary'
           className='w-60'
           onClick={nextHandler}>
-          {t('buttons.next')}
+          {tickChecked ? t('buttons.next') : 'Check'}
         </Button>
       </div>
     </div>

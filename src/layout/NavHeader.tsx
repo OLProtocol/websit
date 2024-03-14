@@ -1,6 +1,7 @@
 import { Menu, Tag } from 'antd';
 import { UnisatConnectButton } from '@/components/UnisatConnectButton';
 import { FeerateSelectButton } from '@/components/FeerateSelectButton';
+import { LanguageSelect } from '@/components/LanguageSelect';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from '@/router';
 import { useTranslation } from 'react-i18next';
@@ -123,21 +124,10 @@ export const NavHeader = () => {
           </LinkBox> */}
         </div>
 
-        <div className='flex justify-center h-full items-center'>
+        <div className='flex justify-center h-full items-center gap-2'>
           <FeerateSelectButton />
-          <Select
-            defaultValue={i18n.language}
-            className='text-white'
-            bg='#1677ff'
-            borderColor='#1677ff'
-            color='white'
-            onChange={(e) => changeLanguage(e.target.value)}>
-            <option value='zh'>ZH</option>
-            <option value='en'>EN</option>
-          </Select>
-          <div className='ml-4'>
-            <UnisatConnectButton />
-          </div>
+          <UnisatConnectButton />
+          <LanguageSelect />
         </div>
       </div>
     </header>

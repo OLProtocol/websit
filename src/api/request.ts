@@ -216,9 +216,7 @@ export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
 
 export const getSats = async ({ address, network }: any) => {
   // https://api.ordx.space/testnet-go/testnet/sats/mmhMAiNisqkpUSMz7k4ufUQbqWN6Yf3RmS
-  const { data } = await axios.get(
-    generateUrl(`sats/${address}`, network),
-  );
+  const { data } = await axios.get(generateUrl(`sats/${address}`, network));
   return data;
 };
 
@@ -229,17 +227,31 @@ export const getSplittedSats = async ({ ticker, network }: any) => {
   return data;
 };
 
-export const getAssetByUtxo = async ({ utxo, network, }: any) => {
+export const getAssetByUtxo = async ({ utxo, network }: any) => {
   const { data } = await axios.post(
     generateUrl(`getAssetByUtxo/${utxo}`, network),
   );
   return data;
 };
+export const getUtxoByType = async ({
+  address,
+  type,
+  amount,
+  network,
+}: any) => {
+  const { data } = await axios.post(
+    generateUrl(`utxo/getUtxoByType`, network),
+    {
+      Address: address,
+      Type: type,
+      Amount: amount,
+    },
+  );
+  return data;
+};
 
 export const getSatTypes = async ({ network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`info/satributes`, network),
-  );
+  const { data } = await axios.get(generateUrl(`info/satributes`, network));
   return data;
 };
 
