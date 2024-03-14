@@ -202,44 +202,6 @@ export const InscribeOrdx = ({
           setErrorText(t('pages.inscribe.ordx.error_4', { tick: data.tick }));
           return checkStatus;
         }
-        if (blur) {
-          set('amount', Number(limit));
-          set('mintRarity', rarity);
-        } else if (isSpecial) {
-          const satsData = await getOrdxUtxoByType(rarity, data.amount);
-          console.log(satsData);
-          if (!satsData?.length) {
-            checkStatus = false;
-            setErrorText(`${rarity}类型的特殊聪数量不够`);
-            return checkStatus;
-          }
-          set('sat', satsData?.[0]?.sats?.[0].start);
-          set('rarity', rarity);
-          if (satsData?.[0]) {
-            onUtxoChange?.(satsData?.[0]);
-            if (satsData?.[0].amount > data.amount) {
-              if (!allowSpecialBeyondStatus) {
-                Modal.confirm({
-                  centered: true,
-                  content:
-                    '找到的Utxo包含的特殊聪数量超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉',
-                  okText: '继续',
-                  cancelText: '取消',
-                  onOk() {
-                    setAllowSpecialBeyondStatus(true);
-                  },
-                });
-              }
-              checkStatus = allowSpecialBeyondStatus;
-              return checkStatus;
-            }
-          }
-        }
-        // if (isSpecial) {
-        //   checkStatus = false;
-        //   setErrorText(t('pages.inscribe.ordx.error_8', { tick: data.tick }));
-        //   return checkStatus;
-        // }
         if (status === 'Pending') {
           checkStatus = false;
           setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
@@ -258,6 +220,47 @@ export const InscribeOrdx = ({
           );
           return checkStatus;
         }
+        if (blur) {
+          set('amount', Number(limit));
+          set('mintRarity', rarity);
+        } else if (isSpecial) {
+          const satsData = await getOrdxUtxoByType(rarity, data.amount);
+          console.log(satsData);
+          if (!satsData?.length) {
+            checkStatus = false;
+            setErrorText(`${rarity}类型的特殊聪数量不够`);
+            return checkStatus;
+          }
+          const satData = satsData?.[satsData?.length -1]
+          set('sat', satData?.sats?.[0].start);
+          set('rarity', rarity);
+          if (satData) {
+            onUtxoChange?.(satData);
+            if (satData.amount > data.amount) {
+              if (!allowSpecialBeyondStatus) {
+                Modal.confirm({
+                  centered: true,
+                  content:
+                    `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
+                  okText: '继续',
+                  cancelText: '取消',
+                  onOk() {
+                    setAllowSpecialBeyondStatus(true);
+                    setTickChecked(true);
+                  },
+                });
+              }
+              checkStatus = allowSpecialBeyondStatus;
+              return checkStatus;
+            }
+          }
+        }
+        // if (isSpecial) {
+        //   checkStatus = false;
+        //   setErrorText(t('pages.inscribe.ordx.error_8', { tick: data.tick }));
+        //   return checkStatus;
+        // }
+        
       } else {
         if (info.data) {
           checkStatus = false;

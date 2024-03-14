@@ -501,6 +501,7 @@ export const sendBTC = async ({
   ordxUtxo,
 }: SendBTCProps) => {
   const hasOrdxUtxo = !!ordxUtxo;
+  console.log('hasOrdxUtxo', hasOrdxUtxo);
   const data = await getUtxoByValue({
     address: fromAddress,
     value: 600,
@@ -534,6 +535,7 @@ export const sendBTC = async ({
   //     atomicals: [],
   //   };
   // });
+  console.log(avialableUtxo);
   const inputs: any[] = avialableUtxo.map((v) => {
     const scriptPk = addresToScriptPublicKey(fromAddress);
     return {
