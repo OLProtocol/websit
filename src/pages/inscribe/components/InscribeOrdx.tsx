@@ -222,7 +222,7 @@ export const InscribeOrdx = ({
                 Modal.confirm({
                   centered: true,
                   content:
-                    '找到的Utxo包含的特殊聪数量超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉',
+                    `找到的Utxo包含的特殊聪数量(${satsData?.[0].amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
                   okText: '继续',
                   cancelText: '取消',
                   onOk() {
