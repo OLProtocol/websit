@@ -69,9 +69,12 @@ export const UnisatConnectButton = () => {
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     console.log('click', e);
   };
-  // const toAccount = () => {
-  //   nav(ROUTE_PATH.ACCOUNT);
-  // }
+  const toHistory = () => {
+    const url = `https://mempool.space${
+      network === 'testnet' ? '/testnet' : ''
+    }/address/${currentAccount}`;
+    window.open(url, '_blank');
+  };
   const menuProps = {
     items,
     onClick: handleMenuClick,
@@ -113,13 +116,19 @@ export const UnisatConnectButton = () => {
               </div> */}
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
+                <Button type='primary' className='w-28' onClick={toHistory}>
+                  交易历史
+                </Button>
+              </div>
+              <Divider style={{ margin: '10px 0' }} />
+              <div className='flex justify-center'>
                 <Button type='primary' className='w-28' onClick={disconnect}>
                   {t('buttons.disconnect')}
                 </Button>
               </div>
             </div>
           }>
-          <Button  shape='round' size='small'>
+          <Button shape='round' size='small'>
             <Space>
               {hideAccount}
               <DownOutlined />

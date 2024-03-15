@@ -85,6 +85,7 @@ export const InscribeStepThree = ({
       files,
       network,
       feeRate,
+      ordxUtxo,
     });
     const orderId = uuidV4();
     const order: OrderItemType = {

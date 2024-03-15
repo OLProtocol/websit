@@ -264,6 +264,7 @@ export const InscribingOrderModal = ({
           amount: commitTx.outputs[i].amount,
           toAddress: order.toAddress[0],
           inscribeFee: order.inscriptionSize,
+          ordxUtxo: order.ordxUtxo,
         });
         addTxidToInscription(order.orderId, i, txid);
         // }
