@@ -10,20 +10,23 @@ import * as bitcoin from 'bitcoinjs-lib';
 
 export default function Transaction() {
 
-  const [utxoList, { set: setUtxoList }] = useMap({
+  const [utxoList, { set: setUtxoList }] = useMap<any>({
     items: [{
       id: 1, 
       value: {
         ticker: '',
-        sats: '0',
+        utxo: '',
+        sats: 0,
         address: '',
+      },
+      options: {
+        tickers: [],
+        utxos: [],
       }
     }]
   });
 
   const { currentAccount, network, currentPublicKey } = useUnisatConnect();
-  // const ordxData = useOrdxSummary({ address: currentAccount, network });
-  // const utxoList = useMemo(() => ordxData?.data?.data?.detail || [], [ordxData?.data]);
   const [tickerList, setTickerList] = useState<any[]>();
   const [loading, setLoading] = useState(false);
   const [messageApi] = message.useMessage();
@@ -31,15 +34,22 @@ export default function Transaction() {
   const toast = useToast();
 
   const addItem = () => {
+    const tickers = tickerList?.map((item) => item.ticker) || [];
     const newId = utxoList.items.length + 1;
     const newItem = {
       id: newId, 
       value: {
         ticker: '',
-        sats: '0',
+        utxo: '',
+        sats: 0,
         address: '',
+      },
+      options: {
+        tickers: tickers,
+        utxos: [],
       }
     };
+    
     setUtxoList('items', [...utxoList.items, newItem]);
   };
  
@@ -54,15 +64,23 @@ export default function Transaction() {
   };
 
   const handleTickerSelectChange = (itemId, ticker) => {
-    if (tickerList !== undefined) {
-      for (let i = 0; i < tickerList.length; i++) {
-        if (tickerList[i].ticker === ticker) {
-          utxoList.items[itemId-1].value.ticker = tickerList[i].ticker;
-          utxoList.items[itemId-1].value.sats = tickerList[i].balance + '';
-        }
-      }
-      setUtxoList('items', utxoList.items);
+    utxoList.items[itemId-1].value.ticker = ticker;
+    utxoList.items[itemId-1].value.sats = 0;
+
+    const selectTicker = tickerList?.find((item) => item.ticker === ticker);
+    if (selectTicker !== undefined) {
+      utxoList.items[itemId-1].options.utxos = selectTicker.utxos.map((utxo) => ({txid: utxo.txid, vout: utxo.vout, value: utxo.value})) || utxoList.items[itemId-1].options.utxos.filter((utxo) => utxo.txid !== utxoList.items[itemId-1].value.utxo.vout) || [];
     }
+
+    setUtxoList('items', utxoList.items);
+  }
+
+  const handleUtxoSelectChange = (itemId, utxo) => {
+    const txid = utxo.split(':')[0];
+    const vout = Number(utxo.split(':')[1]);
+    utxoList.items[itemId-1].value.sats = utxoList.items[itemId-1].options.utxos.find((item) => item.txid === txid && item.vout === vout)?.value || 0;
+    utxoList.items[itemId-1].value.utxo = utxo;
+    setUtxoList('items', utxoList.items);
   }
 
   const setBtcAddress = (itemId: number, address: string) => {
@@ -71,7 +89,18 @@ export default function Transaction() {
   }
 
   const setSats = (itemId: number, sats: string) => {
-    utxoList.items[itemId-1].value.sats = sats;
+    const item = utxoList.items[itemId-1]
+    const total = utxoList.items[itemId-1].options.utxos.find((v) => v.txid + ':' + v.vout === item.value.utxo)?.value
+    if (total < Number(sats)) {
+      toast({
+        title: 'Not enough sats. This utxo has ' + total + ' sats',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return
+    }
+    utxoList.items[itemId-1].value.sats = Number(sats);
     setUtxoList('items', utxoList.items);
   }
 
@@ -79,8 +108,6 @@ export default function Transaction() {
     const scriptPublicKey = Script.fmt.toAsm(
       Address.toScriptPubKey(address),
     )?.[0];
-    // const asmScript = Address.toScriptPubKey(currentAccount) as string[];
-    // const scriptPubKey = bitcoin.script.fromASM(asmScript.join(' '));
     return scriptPublicKey;
   };
 
@@ -91,84 +118,75 @@ export default function Transaction() {
     }
     setLoading(true);
 
-    // try {
-    //   const btcUtxos = utxos.map((v) => {
-    //     return {
-    //       txid: v.txid,
-    //       vout: v.vout,
-    //       satoshis: v.value,
-    //       scriptPk: addressToScriptPublicKey(currentAccount),
-    //       addressType: 2,
-    //       inscriptions: [],
-    //       pubkey: currentPublicKey,
-    //       atomicals: [],
-    //     };
-    //   });
-    //   console.log(btcUtxos);
-    //   const inputs: any[] = [
-    //     {
-    //       hash: btcUtxos[1].txid,
-    //       index: btcUtxos[1].vout,
-    //       witnessUtxo: {
-    //         script: Buffer.from(btcUtxos[1].scriptPk, 'hex'),
-    //         value: btcUtxos[1].satoshis,
-    //       },
-    //     },
-    //     {
-    //       hash: btcUtxos[0].txid,
-    //       index: btcUtxos[0].vout,
-    //       witnessUtxo: {
-    //         script: Buffer.from(btcUtxos[0].scriptPk, 'hex'),
-    //         value: btcUtxos[0].satoshis,
-    //       },
-    //     },
-    //     {
-    //       hash: btcUtxos[2].txid,
-    //       index: btcUtxos[2].vout,
-    //       witnessUtxo: {
-    //         script: Buffer.from(btcUtxos[2].scriptPk, 'hex'),
-    //         value: btcUtxos[2].satoshis,
-    //       },
-    //     },
-    //   ];
-    //   console.log(inputs);
-    //   const psbtNetwork = bitcoin.networks.testnet;
-    //   const psbt = new bitcoin.Psbt({
-    //     network: psbtNetwork,
-    //   });
-    //   inputs.forEach((input) => {
-    //     console.log(input);
-    //     psbt.addInput(input);
-    //   });
-    //   const total = inputs.reduce((acc, cur) => {
-    //     return acc + cur.witnessUtxo.value;
-    //   }, 0);
-    //   const fee = 280;
-    //   const firstOutputValue = btcUtxos[1].satoshis + offset;
-    //   const secondOutputValue = total - firstOutputValue - fee;
-    //   psbt.addOutput({
-    //     address: currentAccount,
-    //     value: firstOutputValue,
-    //   });
-    //   psbt.addOutput({
-    //     address: currentAccount,
-    //     value: secondOutputValue,
-    //   });
-    //   const signed = await unisat.signPsbt(psbt.toHex());
-    //   console.log(signed);
-    //   const pushedTxId = await unisat.pushPsbt(signed);
-    //   const signedToPsbt = bitcoin.Psbt.fromHex(signed, {
-    //     network: psbtNetwork,
-    //   });
-    //   console.log(pushedTxId);
-    //   const txHex = signedToPsbt.extractTransaction().toHex();
-    //   console.log(txHex);
-    //   setTxId(pushedTxId);
-    //   setLoading(false);
-    // } catch (error: any) {
-    //   messageApi.error(error.message || 'Split & Send failed');
-    //   setLoading(false);
-    // }
+    try {
+      const psbtNetwork = bitcoin.networks.testnet;
+      const psbt = new bitcoin.Psbt({
+        network: psbtNetwork,
+      });
+      const fee = 600;
+      let inTotal = 0
+      let outTotal = 0;
+      utxoList.items.map((v) => {
+        const inValue = v.options.utxos.find((item) => item.txid + ':' + item.vout === v.value.utxo)?.value
+        inTotal += inValue;
+        outTotal += v.value.sats;
+
+        psbt.addInput({
+          hash: v.value.utxo.split(':')[0],
+          index: Number(v.value.utxo.split(':')[1]),
+          witnessUtxo: {
+            script: Buffer.from(addressToScriptPublicKey(currentAccount), 'hex'),
+            value: inValue,
+          },
+        })
+
+        psbt.addOutput({
+          address: v.value.address,
+          value: v.value.sats,
+        })
+      })
+
+      if (inTotal - outTotal - fee < 0) {
+        setLoading(false);
+        toast({
+          title: 'Not enough sats',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        return
+      }
+      psbt.addOutput({
+        address: currentAccount,
+        value: inTotal - outTotal - fee,
+      })
+
+      const signed = await unisat.signPsbt(psbt.toHex());
+      console.log(signed);
+      const pushedTxId = await unisat.pushPsbt(signed);
+      const signedToPsbt = bitcoin.Psbt.fromHex(signed, {
+        network: psbtNetwork,
+      });
+      
+      const txHex = signedToPsbt.extractTransaction().toHex();
+      console.log(txHex);
+      setLoading(false);
+      toast({
+        title: 'Split & Send success',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error: any) {
+      console.log('error = ', error);
+      setLoading(false);
+      toast({
+        title: error.message || 'Split & Send failed',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   }
 
   const getAvialableTicker = async () => {
@@ -233,7 +251,7 @@ export default function Transaction() {
         details.map((detail) => {
           const utxo = {
             txid: detail.utxo.split(':')[0],
-            vout: detail.utxo.split(':')[1],
+            vout: Number(detail.utxo.split(':')[1]),
             value: detail.amount,
           }
           utxosOfTicker.push(utxo);
@@ -257,7 +275,6 @@ export default function Transaction() {
   }
   
   useEffect(() => {
-    console.log('aaaaaaaaaaaaaaaaaaaaaa')
     getAllTickers();
   }, []);
   
@@ -282,9 +299,10 @@ export default function Transaction() {
                   ))}
                 </Select>
 
-                <Select placeholder='Select UTXO'>
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
+                <Select placeholder='Select UTXO' onChange={(e) => handleUtxoSelectChange(item.id, e.target.value)}>
+                  {item.options.utxos.map((utxo) => (
+                    <option key={item.value.ticker + '-' + utxo.txid + '-' + item.id} value={utxo.txid + ':' + utxo.vout}>{utxo.txid + ':' + utxo.vout}</option>
+                  ))}
                 </Select>
 
                 <InputGroup>
