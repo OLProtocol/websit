@@ -5,6 +5,7 @@ import { getAvailableUtxos } from '@/api';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import * as bitcoin from 'bitcoinjs-lib';
 import { UnspentOutput, txHelpers } from '@unisat/wallet-sdk';
+console.log(txHelpers);
 export default function Test() {
   const { currentAccount, currentPublicKey } = useUnisatConnect();
   const unisat = useUnisat();
@@ -14,7 +15,6 @@ export default function Test() {
   // console.log(
   //   buf2hex(Script.fmt.toBytes(Address.toScriptPubKey(currentAccount))),
   // );
-
   const addresToScriptPublicKey = (address: string) => {
     const scriptPublicKey = Script.fmt.toAsm(
       Address.toScriptPubKey(address),
@@ -54,9 +54,6 @@ export default function Test() {
     return btcUtxos;
   };
   const testHandler = async () => {
-    // console.log(currentPublicKey);
-    // const testsigned = await unisat.signMessage('abcdefghijk123456789');
-    // console.log(testsigned);
     const btcUtxos = await getBtcUtxos();
     console.log(btcUtxos);
     console.log(Buffer.from(btcUtxos[0].scriptPk, 'hex'));
