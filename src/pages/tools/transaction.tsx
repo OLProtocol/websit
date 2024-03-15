@@ -10,7 +10,7 @@ import * as bitcoin from 'bitcoinjs-lib';
 
 export default function Transaction() {
 
-  const [data, { set }] = useMap({
+  const [utxoList, { set: setUtxoList }] = useMap({
     items: [{
       id: 1, 
       value: {
@@ -24,14 +24,14 @@ export default function Transaction() {
   const { currentAccount, network, currentPublicKey } = useUnisatConnect();
   // const ordxData = useOrdxSummary({ address: currentAccount, network });
   // const utxoList = useMemo(() => ordxData?.data?.data?.detail || [], [ordxData?.data]);
-  const [utxoList, setUtxoList] = useState<any[]>();
+  const [tickerList, setTickerList] = useState<any[]>();
   const [loading, setLoading] = useState(false);
   const [messageApi] = message.useMessage();
   const unisat = useUnisat();
   const toast = useToast();
 
   const addItem = () => {
-    const newId = data.items.length + 1;
+    const newId = utxoList.items.length + 1;
     const newItem = {
       id: newId, 
       value: {
@@ -40,39 +40,39 @@ export default function Transaction() {
         address: '',
       }
     };
-    set('items', [...data.items, newItem]);
+    setUtxoList('items', [...utxoList.items, newItem]);
   };
  
   const removeItem = (id: number) => {
-    if (data.items.length > 1) {
-      let tmpItems = data.items.filter((item) => item.id !== id)
+    if (utxoList.items.length > 1) {
+      let tmpItems = utxoList.items.filter((item) => item.id !== id)
       tmpItems.forEach((item, index) => {
         item.id = index + 1
       })
-      set('items', tmpItems);
+      setUtxoList('items', tmpItems);
     }
   };
 
   const handleTickerSelectChange = (itemId, ticker) => {
-    if (utxoList !== undefined) {
-      for (let i = 0; i < utxoList.length; i++) {
-        if (utxoList[i].ticker === ticker) {
-          data.items[itemId-1].value.ticker = utxoList[i].ticker;
-          data.items[itemId-1].value.sats = utxoList[i].balance + '';
+    if (tickerList !== undefined) {
+      for (let i = 0; i < tickerList.length; i++) {
+        if (tickerList[i].ticker === ticker) {
+          utxoList.items[itemId-1].value.ticker = tickerList[i].ticker;
+          utxoList.items[itemId-1].value.sats = tickerList[i].balance + '';
         }
       }
-      set('items', data.items);
+      setUtxoList('items', utxoList.items);
     }
   }
 
   const setBtcAddress = (itemId: number, address: string) => {
-    data.items[itemId-1].value.address = address;
-    set('items', data.items);
+    utxoList.items[itemId-1].value.address = address;
+    setUtxoList('items', utxoList.items);
   }
 
   const setSats = (itemId: number, sats: string) => {
-    data.items[itemId-1].value.sats = sats;
-    set('items', data.items);
+    utxoList.items[itemId-1].value.sats = sats;
+    setUtxoList('items', utxoList.items);
   }
 
   const addressToScriptPublicKey = (address: string) => {
@@ -85,7 +85,7 @@ export default function Transaction() {
   };
 
   const splitHandler = async () => {
-    console.log(data.items);
+    console.log(utxoList.items);
     if (!currentAccount) {
       return;
     }
@@ -171,7 +171,7 @@ export default function Transaction() {
     // }
   }
 
-  const getAvialableUtxos = async () => {
+  const getAvialableTicker = async () => {
     let data = await getUtxoByValue({
       address: currentAccount,
       value: 600,
@@ -200,12 +200,13 @@ export default function Transaction() {
 
     return {
       ticker: '可花费utxo',
-      balance: totalValue,
       utxos: data.data
     };
   }
 
-  const getUtxos = async () => {
+  const getTickers = async () => {
+    let tickers: any[] = [];
+
     let data = await getOrdxSummary({
       address: currentAccount,
       network,
@@ -216,9 +217,9 @@ export default function Transaction() {
       messageApi.error(data.msg);
       return;
     }
-    const tickers = data.data.detail
-    let utxos = []
-    tickers.map(async (item) => {
+    const detail = data.data.detail
+    
+    detail.map(async (item) => {
       data = await getOrdxAddressHolders({
         start: 0, 
         limit: 10000, 
@@ -226,37 +227,38 @@ export default function Transaction() {
         ticker: item.ticker, 
         network: network
       });
-
+      let utxosOfTicker: any[] = [];
       if (data.code === 0) {
         const details = data.data.detail
-        details.foreach((item) => {
+        details.map((detail) => {
           const utxo = {
-            txid: item.txid,
-            vout: item.vout,
-            vin: item.vin,
+            txid: detail.utxo.split(':')[0],
+            vout: detail.utxo.split(':')[1],
+            value: detail.amount,
           }
+          utxosOfTicker.push(utxo);
         })
-        
-
-        // utxos.push(utxo);
       }
+      tickers.push({
+        ticker: item.ticker,
+        utxos: utxosOfTicker
+      });
     })
-
-    return utxos;
+    
+    return tickers;
   }
   
-  const getAllUtxos = async () => {
-    const avialableUtxos = await getAvialableUtxos();
-    
-    const utxos = await getUtxos()
-
-    // setUtxoList([avialableUtxos, ...utxos]);
+  const getAllTickers = async () => {
+    const tickers = await getTickers()
+    const avialableTicker = await getAvialableTicker();
+    tickers?.push(avialableTicker);
+    setTickerList(tickers);
+    console.log(tickerList)
   }
-
+  
   useEffect(() => {
-    if (currentAccount) {
-      getAllUtxos();
-    }
+    console.log('aaaaaaaaaaaaaaaaaaaaaa')
+    getAllTickers();
   }, []);
   
   return (
@@ -272,19 +274,18 @@ export default function Transaction() {
               <Heading flex={8} as='h6' size='sm'>Select UTXO</Heading>
             </Flex>
             <FormControl>
-              {data.items.map((item) => (
+              {utxoList.items.map((item) => (
               <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
                 <Select placeholder='Select Ticker' onChange={(e) => handleTickerSelectChange(item.id, e.target.value)}>
-                  {utxoList !== undefined && utxoList.map((utxo) => (
+                  {tickerList !== undefined && tickerList.map((utxo) => (
                     <option key={utxo.ticker + '-' + item.id} value={ (item.value.ticker!== '' && item.value.ticker===utxo.ticker) ? item.value.ticker : utxo.ticker }>{utxo.ticker}</option>
                   ))}
                 </Select>
 
-                {/* <Select placeholder='Select UTXO' onChange={(e) => handleSelectChange(item.id, e.target.value)}>
-                  {utxoList.map((utxo) => (
-                    <option key={utxo.ticker + '-' + item.id} value={ (item.value.ticker!== '' && item.value.ticker===utxo.ticker) ? item.value.ticker : utxo.ticker }>{utxo.ticker}</option>
-                  ))}
-                </Select> */}
+                <Select placeholder='Select UTXO'>
+                  <option value='1'>1</option>
+                  <option value='2'>2</option>
+                </Select>
 
                 <InputGroup>
                   <Input key={'input-sat-' + item.id} placeholder='0' size='md' value={item.value.sats} onChange={(e) => setSats(item.id, e.target.value)}/>

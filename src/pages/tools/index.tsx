@@ -25,8 +25,7 @@ export default function InscribeCheck() {
   }
 
   const toTransact = () => {
-    // nav(ROUTE_PATH.TOOLS_TRANSACT);
-    message.success('Coming soon!');
+    nav(ROUTE_PATH.TOOLS_TRANSACT);
   }
   
   return (

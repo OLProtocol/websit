@@ -100,6 +100,11 @@ export const SatTypeBox = () => {
       icon: '/images/sat/icon-hm.svg',
       name: 'Hitman',
       tip: 'Sats involved in the transaction made by Ross Ulbricht to hire a hitman.'
+    },
+    customized: {
+      icon: '/images/sat/icon-customized.svg',
+      name: 'Customized',
+      tip: 'Customized'
     }
   }
 
