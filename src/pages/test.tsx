@@ -5,6 +5,7 @@ import { getAvailableUtxos } from '@/api';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import * as bitcoin from 'bitcoinjs-lib';
 import { UnspentOutput, txHelpers } from '@unisat/wallet-sdk';
+console.log(txHelpers);
 export default function Test() {
   const { currentAccount, currentPublicKey } = useUnisatConnect();
   const unisat = useUnisat();
