@@ -10,14 +10,13 @@ import * as bitcoin from 'bitcoinjs-lib';
 
 export default function Transaction() {
 
-  const [utxoList, { set: setUtxoList }] = useMap<any>({
+  const [inputList, { set: setInputList }] = useMap<any>({
     items: [{
-      id: 1, 
+      id: 1,
       value: {
         ticker: '',
         utxo: '',
         sats: 0,
-        address: '',
       },
       options: {
         tickers: [],
@@ -25,6 +24,15 @@ export default function Transaction() {
       }
     }]
   });
+  const [outputList, { set: setOutputList }] = useMap<any>({
+    items: [{
+    id: 1,
+      value: {
+        sats: 0,
+        address: '',
+      }
+    }]
+  })
 
   const { currentAccount, network, currentPublicKey } = useUnisatConnect();
   const [tickerList, setTickerList] = useState<any[]>();
@@ -33,64 +41,86 @@ export default function Transaction() {
   const unisat = useUnisat();
   const toast = useToast();
 
-  const addItem = () => {
+  const addInputItem = () => {
     const tickers = tickerList?.map((item) => item.ticker) || [];
-    const newId = utxoList.items.length + 1;
+    const newId = inputList.items.length + 1;
     const newItem = {
-      id: newId, 
+      id: newId,
       value: {
         ticker: '',
         utxo: '',
         sats: 0,
-        address: '',
       },
       options: {
         tickers: tickers,
         utxos: [],
       }
     };
-    
-    setUtxoList('items', [...utxoList.items, newItem]);
+
+    setInputList('items', [...inputList.items, newItem]);
   };
- 
-  const removeItem = (id: number) => {
-    if (utxoList.items.length > 1) {
-      let tmpItems = utxoList.items.filter((item) => item.id !== id)
+
+  const removeInputItem = (id: number) => {
+    if (inputList.items.length > 1) {
+      let tmpItems = inputList.items.filter((item) => item.id !== id)
       tmpItems.forEach((item, index) => {
         item.id = index + 1
       })
-      setUtxoList('items', tmpItems);
+      setInputList('items', tmpItems);
+    }
+  };
+  
+  const addOuputItem = () => {
+    const newId = outputList.items.length + 1;
+    const newItem = {
+      id: newId,
+      value: {
+        sats: 0,
+        address: '',
+      }
+    };
+
+    setOutputList('items', [...outputList.items, newItem]);
+  };
+
+  const removeOutputItem = (id: number) => {
+    if (outputList.items.length > 1) {
+      let tmpItems = outputList.items.filter((item) => item.id !== id)
+      tmpItems.forEach((item, index) => {
+        item.id = index + 1
+      })
+      setOutputList('items', tmpItems);
     }
   };
 
   const handleTickerSelectChange = (itemId, ticker) => {
-    utxoList.items[itemId-1].value.ticker = ticker;
-    utxoList.items[itemId-1].value.sats = 0;
+    inputList.items[itemId - 1].value.ticker = ticker;
+    inputList.items[itemId - 1].value.sats = 0;
 
     const selectTicker = tickerList?.find((item) => item.ticker === ticker);
     if (selectTicker !== undefined) {
-      utxoList.items[itemId-1].options.utxos = selectTicker.utxos.map((utxo) => ({txid: utxo.txid, vout: utxo.vout, value: utxo.value})) || utxoList.items[itemId-1].options.utxos.filter((utxo) => utxo.txid !== utxoList.items[itemId-1].value.utxo.vout) || [];
+      inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid !== inputList.items[itemId - 1].value.utxo.vout) || [];
     }
 
-    setUtxoList('items', utxoList.items);
+    setInputList('items', inputList.items);
   }
 
   const handleUtxoSelectChange = (itemId, utxo) => {
     const txid = utxo.split(':')[0];
     const vout = Number(utxo.split(':')[1]);
-    utxoList.items[itemId-1].value.sats = utxoList.items[itemId-1].options.utxos.find((item) => item.txid === txid && item.vout === vout)?.value || 0;
-    utxoList.items[itemId-1].value.utxo = utxo;
-    setUtxoList('items', utxoList.items);
+    inputList.items[itemId - 1].value.sats = inputList.items[itemId - 1].options.utxos.find((item) => item.txid === txid && item.vout === vout)?.value || 0;
+    inputList.items[itemId - 1].value.utxo = utxo;
+    setInputList('items', inputList.items);
   }
 
   const setBtcAddress = (itemId: number, address: string) => {
-    utxoList.items[itemId-1].value.address = address;
-    setUtxoList('items', utxoList.items);
+    outputList.items[itemId - 1].value.address = address;
+    setOutputList('items', outputList.items);
   }
 
-  const setSats = (itemId: number, sats: string) => {
-    const item = utxoList.items[itemId-1]
-    const total = utxoList.items[itemId-1].options.utxos.find((v) => v.txid + ':' + v.vout === item.value.utxo)?.value
+  const setInputSats = (itemId: number, sats: string) => {
+    const item = inputList.items[itemId - 1]
+    const total = inputList.items[itemId - 1].options.utxos.find((v) => v.txid + ':' + v.vout === item.value.utxo)?.value
     if (total < Number(sats)) {
       toast({
         title: 'Not enough sats. This utxo has ' + total + ' sats',
@@ -100,8 +130,14 @@ export default function Transaction() {
       });
       return
     }
-    utxoList.items[itemId-1].value.sats = Number(sats);
-    setUtxoList('items', utxoList.items);
+    inputList.items[itemId - 1].value.sats = Number(sats);
+    setInputList('items', inputList.items);
+  }
+
+  const setOutputSats = (itemId: number, sats: string) => {
+    const item = outputList.items[itemId - 1]
+    outputList.items[itemId - 1].value.sats = Number(sats);
+    setOutputList('items', outputList.items);
   }
 
   const addressToScriptPublicKey = (address: string) => {
@@ -112,7 +148,7 @@ export default function Transaction() {
   };
 
   const splitHandler = async () => {
-    console.log(utxoList.items);
+    console.log(inputList.items);
     if (!currentAccount) {
       return;
     }
@@ -126,20 +162,23 @@ export default function Transaction() {
       const fee = 600;
       let inTotal = 0
       let outTotal = 0;
-      utxoList.items.map((v) => {
-        const inValue = v.options.utxos.find((item) => item.txid + ':' + item.vout === v.value.utxo)?.value
-        inTotal += inValue;
-        outTotal += v.value.sats;
-
+      inputList.items.map((v) => {
+        inTotal += v.value.sats;
+        
         psbt.addInput({
           hash: v.value.utxo.split(':')[0],
           index: Number(v.value.utxo.split(':')[1]),
           witnessUtxo: {
             script: Buffer.from(addressToScriptPublicKey(currentAccount), 'hex'),
-            value: inValue,
+            value: v.value.sats,
           },
         })
 
+        
+      })
+
+      outputList.items.map((v) => {
+        outTotal += v.value.sats;
         psbt.addOutput({
           address: v.value.address,
           value: v.value.sats,
@@ -156,10 +195,14 @@ export default function Transaction() {
         });
         return
       }
-      psbt.addOutput({
-        address: currentAccount,
-        value: inTotal - outTotal - fee,
-      })
+
+      alert(inTotal - outTotal - fee)
+      if (inTotal - outTotal - fee > 0) {
+        psbt.addOutput({
+          address: currentAccount,
+          value: inTotal - outTotal - fee,
+        })
+      }
 
       const signed = await unisat.signPsbt(psbt.toHex());
       console.log(signed);
@@ -167,7 +210,7 @@ export default function Transaction() {
       const signedToPsbt = bitcoin.Psbt.fromHex(signed, {
         network: psbtNetwork,
       });
-      
+
       const txHex = signedToPsbt.extractTransaction().toHex();
       console.log(txHex);
       setLoading(false);
@@ -236,13 +279,13 @@ export default function Transaction() {
       return;
     }
     const detail = data.data.detail
-    
+
     detail.map(async (item) => {
       data = await getOrdxAddressHolders({
-        start: 0, 
-        limit: 10000, 
-        address: currentAccount, 
-        ticker: item.ticker, 
+        start: 0,
+        limit: 10000,
+        address: currentAccount,
+        ticker: item.ticker,
         network: network
       });
       let utxosOfTicker: any[] = [];
@@ -262,10 +305,10 @@ export default function Transaction() {
         utxos: utxosOfTicker
       });
     })
-    
+
     return tickers;
   }
-  
+
   const getAllTickers = async () => {
     const tickers = await getTickers()
     const avialableTicker = await getAvialableTicker();
@@ -273,66 +316,100 @@ export default function Transaction() {
     setTickerList(tickers);
     console.log(tickerList)
   }
-  
+
   useEffect(() => {
     getAllTickers();
   }, []);
-  
+
   return (
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
       <Card>
         <CardHeader>
           <Heading size='md'>拆分&发送</Heading>
         </CardHeader>
-        <Divider borderColor={'teal.500'}/>
+        <Divider borderColor={'teal.500'} />
         <CardBody>
           <Stack>
             <Flex>
-              <Heading flex={8} as='h6' size='sm'>Select UTXO</Heading>
+              <Heading flex={8} as='h6' size='sm'>Input</Heading>
             </Flex>
             <FormControl>
-              {utxoList.items.map((item) => (
-              <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
-                <Select placeholder='Select Ticker' onChange={(e) => handleTickerSelectChange(item.id, e.target.value)}>
-                  {tickerList !== undefined && tickerList.map((utxo) => (
-                    <option key={utxo.ticker + '-' + item.id} value={ (item.value.ticker!== '' && item.value.ticker===utxo.ticker) ? item.value.ticker : utxo.ticker }>{utxo.ticker}</option>
-                  ))}
-                </Select>
+              {inputList.items.map((item) => (
+                <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
+                  <Select placeholder='Select Ticker' onChange={(e) => handleTickerSelectChange(item.id, e.target.value)}>
+                    {tickerList !== undefined && tickerList.map((utxo) => (
+                      <option key={utxo.ticker + '-' + item.id} value={(item.value.ticker !== '' && item.value.ticker === utxo.ticker) ? item.value.ticker : utxo.ticker}>{utxo.ticker}</option>
+                    ))}
+                  </Select>
 
-                <Select placeholder='Select UTXO' onChange={(e) => handleUtxoSelectChange(item.id, e.target.value)}>
-                  {item.options.utxos.map((utxo) => (
-                    <option key={item.value.ticker + '-' + utxo.txid + '-' + item.id} value={utxo.txid + ':' + utxo.vout}>{utxo.txid + ':' + utxo.vout}</option>
-                  ))}
-                </Select>
+                  <Select placeholder='Select UTXO' onChange={(e) => handleUtxoSelectChange(item.id, e.target.value)}>
+                    {item.options.utxos.map((utxo) => (
+                      <option key={item.value.ticker + '-' + utxo.txid + '-' + item.id} value={utxo.txid + ':' + utxo.vout}>{utxo.txid + ':' + utxo.vout}</option>
+                    ))}
+                  </Select>
 
-                <InputGroup>
-                  <Input key={'input-sat-' + item.id} placeholder='0' size='md' value={item.value.sats} onChange={(e) => setSats(item.id, e.target.value)}/>
-                  <InputRightAddon>sat</InputRightAddon>
-                </InputGroup>
-                
-                <Input placeholder='Btc address' size='md' value={item.value.address} onChange={(e) => setBtcAddress(item.id, e.target.value)} />
-                <ButtonGroup gap='1'>
-                  <IconButton size='sm' mt={1} onClick={addItem}
-                    isRound={true}
-                    variant='outline'
-                    colorScheme='teal'
-                    aria-label='Add'
-                    icon={<AddIcon />}
-                  />
-                  <IconButton size='sm' mt={1} onClick={() => removeItem(item.id)}
-                    isRound={true}
-                    variant='outline'
-                    colorScheme='teal'
-                    aria-label='Delete'
-                    icon={<MinusIcon />}
-                  />
-                </ButtonGroup>
-              </Flex>
+                  <InputGroup>
+                    <Input key={'input-sat-' + item.id} placeholder='0' size='md' value={item.value.sats} onChange={(e) => setInputSats(item.id, e.target.value)} />
+                    <InputRightAddon>sat</InputRightAddon>
+                  </InputGroup>
+
+                  <ButtonGroup gap='1'>
+                    <IconButton size='sm' mt={1} onClick={addInputItem}
+                      isRound={true}
+                      variant='outline'
+                      colorScheme='teal'
+                      aria-label='Add'
+                      icon={<AddIcon />}
+                    />
+                    <IconButton size='sm' mt={1} onClick={() => removeInputItem(item.id)}
+                      isRound={true}
+                      variant='outline'
+                      colorScheme='teal'
+                      aria-label='Delete'
+                      icon={<MinusIcon />}
+                    />
+                  </ButtonGroup>
+                </Flex>
+              ))}
+            </FormControl>
+          </Stack>
+          <Divider borderColor={'teal.500'} mt={4} mb={4} />
+          <Stack>
+            <Flex>
+              <Heading flex={8} as='h6' size='sm'>Output</Heading>
+            </Flex>
+            <FormControl>
+              {outputList.items.map((item) => (
+                <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
+                  <Input placeholder='Btc address' size='md' value={item.value.address} onChange={(e) => setBtcAddress(item.id, e.target.value)} />
+
+                  <InputGroup>
+                    <Input key={'output-sat-' + item.id} placeholder='0' size='md' value={item.value.sats} onChange={(e) => setOutputSats(item.id, e.target.value)} />
+                    <InputRightAddon>sat</InputRightAddon>
+                  </InputGroup>
+
+                  <ButtonGroup gap='1'>
+                    <IconButton size='sm' mt={1} onClick={addOuputItem}
+                      isRound={true}
+                      variant='outline'
+                      colorScheme='teal'
+                      aria-label='Add'
+                      icon={<AddIcon />}
+                    />
+                    <IconButton size='sm' mt={1} onClick={() => removeOutputItem(item.id)}
+                      isRound={true}
+                      variant='outline'
+                      colorScheme='teal'
+                      aria-label='Delete'
+                      icon={<MinusIcon />}
+                    />
+                  </ButtonGroup>
+                </Flex>
               ))}
             </FormControl>
           </Stack>
         </CardBody>
-        <Divider borderColor={'teal.500'}/>
+        <Divider borderColor={'teal.500'} />
         <CardFooter>
           <Button variant='solid' colorScheme='teal' onClick={splitHandler} isLoading={loading}>Send</Button>
         </CardFooter>
