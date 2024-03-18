@@ -5,11 +5,13 @@ import { getUtxoByConditon } from '@/api';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import { Address, Script } from '@cmdcode/tapscript';
 import * as bitcoin from 'bitcoinjs-lib';
+import { useToast } from '@chakra-ui/react';
 
 export default function SplitSats() {
   const [searchParams] = useSearchParams();
   const q = searchParams.get('q');
   const [sat, setSat] = useState('');
+  const toast = useToast();
   useEffect(() => {
     if (q) {
       setSat(q);
@@ -42,6 +44,16 @@ export default function SplitSats() {
         satNumber: Number(sat),
         network,
       });
+      if (data.code !== 0) {
+        setLoading(false);
+        toast({
+          title: data.msg,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
       const { satIndexCondition = null, randomCondition = null } =
         data?.data || {};
       const utxos: any[] = [];
