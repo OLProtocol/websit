@@ -25,6 +25,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip, Upload, Modal } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
+import { BusButton } from '@/components/BusButton';
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { useMap } from 'react-use';
 import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
@@ -231,7 +232,7 @@ export const InscribeOrdx = ({
             setErrorText(`${rarity}类型的特殊聪数量不够`);
             return checkStatus;
           }
-          const satData = satsData?.[satsData?.length -1]
+          const satData = satsData?.[satsData?.length - 1];
           set('sat', satData?.sats?.[0].start);
           set('rarity', rarity);
           if (satData) {
@@ -240,8 +241,7 @@ export const InscribeOrdx = ({
               if (!allowSpecialBeyondStatus) {
                 Modal.confirm({
                   centered: true,
-                  content:
-                    `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
+                  content: `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
                   okText: '继续',
                   cancelText: '取消',
                   onOk() {
@@ -260,7 +260,6 @@ export const InscribeOrdx = ({
         //   setErrorText(t('pages.inscribe.ordx.error_8', { tick: data.tick }));
         //   return checkStatus;
         // }
-        
       } else {
         if (info.data) {
           checkStatus = false;
@@ -670,15 +669,17 @@ export const InscribeOrdx = ({
         )}
       </div>
       <div className='w-60 mx-auto'>
-        <Button
-          size='large'
-          loading={loading}
-          disabled={buttonDisabled}
-          type='primary'
-          className='w-60'
-          onClick={nextHandler}>
-          {tickChecked ? t('buttons.next') : 'Check'}
-        </Button>
+        <BusButton>
+          <Button
+            size='large'
+            loading={loading}
+            disabled={buttonDisabled}
+            type='primary'
+            className='w-60'
+            onClick={nextHandler}>
+            {tickChecked ? t('buttons.next') : 'Check'}
+          </Button>
+        </BusButton>
       </div>
     </div>
   );
