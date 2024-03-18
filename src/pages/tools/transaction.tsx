@@ -196,7 +196,6 @@ export default function Transaction() {
         return
       }
 
-      alert(inTotal - outTotal - fee)
       if (inTotal - outTotal - fee > 0) {
         psbt.addOutput({
           address: currentAccount,
@@ -205,14 +204,12 @@ export default function Transaction() {
       }
 
       const signed = await unisat.signPsbt(psbt.toHex());
-      console.log(signed);
       const pushedTxId = await unisat.pushPsbt(signed);
       const signedToPsbt = bitcoin.Psbt.fromHex(signed, {
         network: psbtNetwork,
       });
 
       const txHex = signedToPsbt.extractTransaction().toHex();
-      console.log(txHex);
       setLoading(false);
       toast({
         title: 'Split & Send success',

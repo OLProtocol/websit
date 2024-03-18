@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useToast, Card, CardHeader, Heading, CardBody, Image, Box, Tooltip, Spacer } from '@chakra-ui/react';
+import { useToast, Card, CardHeader, Heading, CardBody, Image, Box, Tooltip, Spacer, Divider } from '@chakra-ui/react';
 import { getUtxoRanges } from '@/api';
 import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks';
@@ -15,6 +15,7 @@ export default function UtxoSat() {
   const toast = useToast();
   const [utxo, setUtxo] = useState('');
   const [satSize, setSatSize] = useState('');
+  const [rareSatSize, setRareSatSize] = useState('');
   const [satList, setSatList] = useState<any[]>();
   const [rareSatList, setRareSatList] = useState<any[]>();
   const [loading, setLoading] = useState(false);
@@ -69,7 +70,9 @@ export default function UtxoSat() {
       })
     }
     setSatList(tmpSatList);
+    setSatSize('(total: ' + tmpSize + ')')
 
+    tmpSize = 0;
     let tmpRareSatList: any[] = [];
     if (data.data.exoticRanges !== null && data.data.exoticRanges.length > 0) {
       data.data.exoticRanges.map((item) => {
@@ -83,7 +86,8 @@ export default function UtxoSat() {
       })
     }
     setRareSatList(tmpRareSatList);
-    setSatSize('(total: ' + tmpSize + ')')
+    setRareSatSize('(total: ' + tmpSize + ')')
+
     setLoading(false);
   };
 
@@ -105,24 +109,15 @@ export default function UtxoSat() {
             <Card>
               <CardHeader>
                 <Heading size='md'>
-                  Sats{satSize}
+                  Rare Sats{rareSatSize}
                 </Heading>
               </CardHeader>
               <CardBody>
-              {((satList === undefined || satList.length === 0) && (rareSatList === undefined || rareSatList.length === 0)) && (
+              {((rareSatList === undefined || rareSatList.length === 0)) && (
                 <div className='max-w-max mx-auto p-2'>
                   <img src='/images/no_data.svg' className='w-10 h-10 ml-1'/>
                   <span className='text-gray-300'>No data</span>
                 </div>
-              )}
-              {(satList !== undefined && satList.length > 0) && (
-                satList.map((item: any) => (
-                  <div className='max-w-max border border-teal-500 rounded-md mt-2'>
-                  <Box as='button' borderRadius='md' bg='white' color='teal' px={4} h={8} m={2}>
-                    {item.start+ '-' + item.end + '(' + item.size + ' sats)'}
-                  </Box>
-                  </div>
-                ))
               )}
               {(rareSatList !== undefined && rareSatList.length > 0) && (
                 rareSatList.map((item: any) => (
@@ -137,6 +132,31 @@ export default function UtxoSat() {
                   ))}
                   </div>
                 )) 
+              )}
+              </CardBody>
+            </Card>
+            <Divider mt={4} mb={4} />
+            <Card>
+              <CardHeader>
+                <Heading size='md'>
+                  Sats{satSize}
+                </Heading>
+              </CardHeader>
+              <CardBody>
+              {((satList === undefined || satList.length === 0)) && (
+                <div className='max-w-max mx-auto p-2'>
+                  <img src='/images/no_data.svg' className='w-10 h-10 ml-1'/>
+                  <span className='text-gray-300'>No data</span>
+                </div>
+              )}
+              {(satList !== undefined && satList.length > 0) && (
+                satList.map((item: any) => (
+                  <div className='max-w-max border border-teal-500 rounded-md mt-2'>
+                  <Box as='button' borderRadius='md' bg='white' color='teal' px={4} h={8} m={2}>
+                    {item.start+ '-' + item.end + '(' + item.size + ' sats)'}
+                  </Box>
+                  </div>
+                ))
               )}
               </CardBody>
             </Card>
