@@ -1,11 +1,9 @@
-import { SearchOutlined } from '@ant-design/icons';
 import { useEffect, useMemo, useState } from 'react';
-import { Alert, Input, Empty, Button } from 'antd';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Input, Empty } from 'antd';
+import { useSearchParams } from 'react-router-dom';
 import { useCommonStore } from '@/store';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Ord2FullList } from './components/OrdxFullList';
-import { SatRareBox } from './components/SatRareBox';
 import { OrdxSummaryList } from '../../components/OrdxSummaryList';
 import { OrdxAddressHolders } from '../../components/OrdxAddressHolders';
 import { useTranslation } from 'react-i18next';

@@ -42,7 +42,7 @@ export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
       dataIndex: 'created',
       key: 'created',
       render: (_, { created }) => {
-        return new Date(created).toLocaleString();
+        return new Date(created).toLocaleString('af');
       },
     },
   ];

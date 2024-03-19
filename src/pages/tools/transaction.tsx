@@ -17,6 +17,7 @@ export default function Transaction() {
         ticker: '',
         utxo: '',
         sats: 0,
+        unit: 'sat',
       },
       options: {
         tickers: [],
@@ -29,6 +30,7 @@ export default function Transaction() {
     id: 1,
       value: {
         sats: 0,
+        unit: 'sat',
         address: '',
       }
     }]
@@ -50,6 +52,7 @@ export default function Transaction() {
         ticker: '',
         utxo: '',
         sats: 0,
+        unit: 'sat',
       },
       options: {
         tickers: tickers,
@@ -76,6 +79,7 @@ export default function Transaction() {
       id: newId,
       value: {
         sats: 0,
+        unit: 'sat',
         address: '',
       }
     };
@@ -96,6 +100,7 @@ export default function Transaction() {
   const handleTickerSelectChange = (itemId, ticker) => {
     inputList.items[itemId - 1].value.ticker = ticker;
     inputList.items[itemId - 1].value.sats = 0;
+    inputList.items[itemId - 1].value.utxo = 'sat';
 
     const selectTicker = tickerList?.find((item) => item.ticker === ticker);
     if (selectTicker !== undefined) {
@@ -118,25 +123,40 @@ export default function Transaction() {
     setOutputList('items', outputList.items);
   }
 
-  const setInputSats = (itemId: number, sats: string) => {
-    const item = inputList.items[itemId - 1]
-    const total = inputList.items[itemId - 1].options.utxos.find((v) => v.txid + ':' + v.vout === item.value.utxo)?.value
-    if (total < Number(sats)) {
-      toast({
-        title: 'Not enough sats. This utxo has ' + total + ' sats',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return
-    }
-    inputList.items[itemId - 1].value.sats = Number(sats);
+  const handleInputUnitSelectChange = (itemId: number, unit: string) => {
+    inputList.items[itemId - 1].value.unit = unit;
     setInputList('items', inputList.items);
   }
 
+  const handleOutputUnitSelectChange = (itemId: number, unit: string) => {
+    inputList.items[itemId - 1].value.unit = unit;
+    setInputList('items', inputList.items);
+  }
+
+  // const setInputSats = (itemId: number, sats: string) => {
+  //   const item = inputList.items[itemId - 1]
+  //   const total = inputList.items[itemId - 1].options.utxos.find((v) => v.txid + ':' + v.vout === item.value.utxo)?.value
+  //   if (total < Number(sats)) {
+  //     toast({
+  //       title: 'Not enough sats. This utxo has ' + total + ' sats',
+  //       status: 'error',
+  //       duration: 3000,
+  //       isClosable: true,
+  //     });
+  //     return
+  //   }
+  //   inputList.items[itemId - 1].value.sats = Number(sats);
+  //   setInputList('items', inputList.items);
+  // }
+
   const setOutputSats = (itemId: number, sats: string) => {
-    const item = outputList.items[itemId - 1]
-    outputList.items[itemId - 1].value.sats = Number(sats);
+    const unit = outputList.items[itemId - 1].value.unit;
+    if (unit === 'sat') {
+      outputList.items[itemId - 1].value.sats = Number(sats);
+    } else {
+      outputList.items[itemId - 1].value.sats = Number(sats)*100000000;
+    }
+    
     setOutputList('items', outputList.items);
   }
 
@@ -346,8 +366,12 @@ export default function Transaction() {
                   </Select>
 
                   <InputGroup>
-                    <Input key={'input-sat-' + item.id} placeholder='0' size='md' value={item.value.sats} onChange={(e) => setInputSats(item.id, e.target.value)} />
-                    <InputRightAddon>sat</InputRightAddon>
+                    <Input key={'input-sat-' + item.id} placeholder='0' size='md' value={item.value.unit === 'sat' ? item.value.sats : item.value.sats / 100000000} readOnly/>
+                    {/* <InputRightAddon>sat</InputRightAddon> */}
+                    <Select variant='filled' w={24} onChange={(e) => handleInputUnitSelectChange(item.id, e.target.value)}>
+                      <option value='sat'>sat</option>
+                      <option value='btc'>btc</option>
+                    </Select>
                   </InputGroup>
 
                   <ButtonGroup gap='1'>
@@ -381,8 +405,11 @@ export default function Transaction() {
                   <Input placeholder='Btc address' size='md' value={item.value.address} onChange={(e) => setBtcAddress(item.id, e.target.value)} />
 
                   <InputGroup>
-                    <Input key={'output-sat-' + item.id} placeholder='0' size='md' value={item.value.sats} onChange={(e) => setOutputSats(item.id, e.target.value)} />
-                    <InputRightAddon>sat</InputRightAddon>
+                    <Input key={'output-sat-' + item.id} placeholder='0' size='md' value={item.value.unit === 'sat' ? item.value.sats : item.value.sats / 100000000} onChange={(e) => setOutputSats(item.id, e.target.value)} />
+                    <Select variant='filled' w={24} onChange={(e) => handleOutputUnitSelectChange(item.id, e.target.value)}>
+                      <option value='sat'>sat</option>
+                      <option value='btc'>btc</option>
+                    </Select>
                   </InputGroup>
 
                   <ButtonGroup gap='1'>

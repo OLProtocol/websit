@@ -82,7 +82,7 @@ export const getOrdxAddressHolders = async ({
 }: OrdXHistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      `query-v4/address/${address}/ordx/${ticker}/heldlist?start=${start}&limit=${limit}`,
+      `query-v4/address/${address}/ordx/${ticker}/holderlist?start=${start}&limit=${limit}`,
       network,
     ),
   );

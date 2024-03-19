@@ -1,10 +1,10 @@
-// import { Input } from 'antd';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Input, Button, InputGroup, InputRightElement, useToast, Card, CardHeader, Heading, CardBody } from '@chakra-ui/react';
+import { Input, Button, InputGroup, InputRightElement, useToast, Card, CardHeader, CardBody, IconButton, Tabs, Tab, TabList, TabPanels, TabPanel } from '@chakra-ui/react';
 import { getSplittedSats } from '@/api';
 import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks';
+import { CloseIcon, SearchIcon } from '@chakra-ui/icons';
 
 export default function SplittedInscription() {
   const { t } = useTranslation();
@@ -19,6 +19,10 @@ export default function SplittedInscription() {
     if (event.key === 'Enter') {
       doSearch();
     }
+  }
+
+  function doClearSearchInput() {
+    setTicker('');
   }
   
   const doSearch = async () => {
@@ -56,27 +60,42 @@ export default function SplittedInscription() {
     nav(`/explorer/inscription/${inscriptionNumber}`);
   };
   return (
-    <div>
-      <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
-        <div>
-          <div className='flex justify-center mb-12 max-w-7xl mx-auto px-4'>
-            <InputGroup size='lg' className='rounded-2xl'>
-              <Input placeholder={t('pages.tools.splitted_inscription.search_placeholder')} value={ticker} size='lg' onChange={(e) => setTicker(e.target.value)} onKeyDown={handleKeyDown} />
-              <InputRightElement width='4.5rem' className='mr-1'>
-                <Button isLoading={loading} size='md' onClick={doSearch} variant="solid" colorScheme='blue'>
-                  Search
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-          </div>
-          <div className='max-w-7xl mx-auto px-4'>
-            <Card>
-              <CardHeader>
-                <Heading size='md'>
-                {t('pages.tools.splitted_inscription.card_header')}
-                </Heading>
-              </CardHeader>
-              <CardBody>
+    <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
+      <Card>
+        <CardHeader>
+          <InputGroup size='md'>
+            <Input 
+              fontSize={'xs'}
+              pr='4.5rem'
+              placeholder={t('pages.tools.utxo.search_placeholder')} 
+              value={ticker} 
+              onChange={(e) => setTicker(e.target.value)} onKeyDown={handleKeyDown}
+            />
+            <InputRightElement className='mr-3'>
+              <IconButton isLoading={loading}
+                variant={'ghost'}
+                color="gray.300"
+                size={'xs'}
+                aria-label='Clear UTXO'
+                icon={<CloseIcon />}
+                onClick={doClearSearchInput}
+              />
+              <IconButton isLoading={loading}
+                size={'md'}
+                aria-label='Search UTXO'
+                icon={<SearchIcon />}
+                onClick={doSearch} 
+              />
+            </InputRightElement>
+          </InputGroup>
+        </CardHeader>
+        <CardBody pt={0}>
+          <Tabs>
+            <TabList>
+              <Tab>{t('pages.tools.splitted_inscription.card_header')}</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
               {(inscriptionList !== undefined && inscriptionList.length > 0) ? (
                 inscriptionList.map((item: any) => (
                   <Button size='sm' className='m-1' onClick={() => toInscriptionInfo(item)}>
@@ -89,11 +108,11 @@ export default function SplittedInscription() {
                   <span className='text-gray-300'>No data</span>
                 </div>
               )}
-              </CardBody>
-            </Card>
-          </div>
-        </div>
-      </div>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </CardBody>
+      </Card>
     </div>
   );
 }

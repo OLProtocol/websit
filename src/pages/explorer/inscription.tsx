@@ -95,7 +95,7 @@ export default function OrdxInscription() {
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
-                {new Date(detail?.mintTimes).toLocaleString()}
+                {new Date(detail?.mintTimes).toLocaleString('af')}
               </p>
             </div>
 
