@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useToast, Input, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, CardFooter, Button, InputGroup, InputRightElement, IconButton } from '@chakra-ui/react';
+import { useToast, Input, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, InputGroup, InputRightElement, IconButton } from '@chakra-ui/react';
 import { getAssetByUtxo, getUtxoRanges } from '@/api';
 import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks';
@@ -150,7 +150,7 @@ export default function Utxo() {
         <CardHeader>
           <InputGroup size='md'>
             <Input
-              fontSize={'xs'}
+              fontSize={'md'}
               pr='4.5rem'
               placeholder={t('pages.tools.utxo.search_placeholder')}
               value={utxo}
@@ -254,11 +254,6 @@ export default function Utxo() {
             </TabPanels>
           </Tabs>
         </CardBody>
-        <CardFooter>
-          <Button variant='solid' colorScheme='blue'>
-            Split
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );

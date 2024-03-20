@@ -111,80 +111,85 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   }, []);
   
   return (
-    <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
-      <h1 className='text-lg font-bold text-orange-500 text-center mb-4'>
-        {t('pages.rare_sat.des')}
-      </h1>
-      <div>
-        {!canSplit && (
-        <div className='flex justify-center mb-12 max-w-7xl mx-auto px-4'>
-          <InputGroup size='lg' className='rounded-2xl'>
-            <Input
-              placeholder={t('pages.rare_sat.search_placeholder')}
-              value={address}
-              size='lg'
-              onChange={(e) => setAddress(e.target.value)
-              }
-              onKeyDown={handleKeyDown}
-            />
-            <InputRightElement width='4.5rem' className='mr-1'>
-              <Button
-                isLoading={loading}
-                size='md'
-                onClick={doSearch}
-                variant='solid'
-                colorScheme='blue'>
-                Check
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-        </div>
-        )}
-        <div className='max-w-7xl mx-auto px-4 pb-4'>
-          <SatTypeBox />
-        </div>
-        <div className='max-w-7xl mx-auto px-4'>
-          {rareSatList !== undefined && satList !== undefined ? (
-            <div>
-              <SatRareBox sats={rareSatList} canSplit={canSplit}/>
-              <div className='pt-4' />
-              <Card>
-                <CardHeader>
-                  <Heading size='md'>Interesting Sats</Heading>
-                </CardHeader>
-                <CardBody>
-                  {uniqueTypes.map((item, _) => (
-                    <Button
-                      size='sm'
-                      className='m-1'
-                      onClick={() => setFilterType(item)}>
-                      {item}
-                    </Button>
-                  ))}
-                  {satFilterList && satFilterList.length > 0 ? (
-                    <SatTable sats={satFilterList} canSplit={canSplit}/>
-                  ) : (
-                    <SatTable sats={satList} canSplit={canSplit}/>
-                  )}
-                </CardBody>
-              </Card>
+    // <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
+    <div className='flex flex-col max-w-7xl mx-auto pt-8'>
+      <Card>
+        <CardBody>
+          <h1 className='text-lg font-bold text-orange-500 text-center mb-4'>
+            {t('pages.rare_sat.des')}
+          </h1>
+          <div>
+            {!canSplit && (
+            <div className='flex justify-center mb-12 max-w-7xl mx-auto px-4'>
+              <InputGroup  size='md'>
+                <Input
+                  fontSize={'md'}
+                  pr='4.5rem'
+                  placeholder={t('pages.rare_sat.search_placeholder')}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                />
+                <InputRightElement width='4.5rem'>
+                  <Button
+                    isLoading={loading}
+                    size={'md'}
+                    onClick={doSearch}
+                    variant='solid'
+                    colorScheme='blue'>
+                    Check
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
             </div>
-          ) : (
-            <div>
-              <SatRareBox sats={[]} canSplit={canSplit}/>
-              <div className='pt-4' />
-              <Card>
-                <CardHeader>
-                  <Heading size='md'>Interesting Sats</Heading>
-                </CardHeader>
-                <CardBody>
-                  <SatTable sats={[]} canSplit={canSplit}/>
-                </CardBody>
-              </Card>
+            )}
+            <div className='max-w-7xl mx-auto px-4 pb-4'>
+              <SatTypeBox />
             </div>
-          )}
-        </div>
-      </div>
+            <div className='max-w-7xl mx-auto px-4'>
+              {rareSatList !== undefined && satList !== undefined ? (
+                <div>
+                  <SatRareBox sats={rareSatList} canSplit={canSplit}/>
+                  <div className='pt-4' />
+                  <Card>
+                    <CardHeader>
+                      <Heading size='md'>Interesting Sats</Heading>
+                    </CardHeader>
+                    <CardBody>
+                      {uniqueTypes.map((item, _) => (
+                        <Button
+                          size='sm'
+                          className='m-1'
+                          onClick={() => setFilterType(item)}>
+                          {item}
+                        </Button>
+                      ))}
+                      {satFilterList && satFilterList.length > 0 ? (
+                        <SatTable sats={satFilterList} canSplit={canSplit}/>
+                      ) : (
+                        <SatTable sats={satList} canSplit={canSplit}/>
+                      )}
+                    </CardBody>
+                  </Card>
+                </div>
+              ) : (
+                <div>
+                  <SatRareBox sats={[]} canSplit={canSplit}/>
+                  <div className='pt-4' />
+                  <Card>
+                    <CardHeader>
+                      <Heading size='md'>Interesting Sats</Heading>
+                    </CardHeader>
+                    <CardBody>
+                      <SatTable sats={[]} canSplit={canSplit}/>
+                    </CardBody>
+                  </Card>
+                </div>
+              )}
+            </div>
+          </div>
+        </CardBody>
+      </Card>
     </div>
   );
 }
