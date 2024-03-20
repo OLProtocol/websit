@@ -11,10 +11,9 @@ import Tools from '@/pages/tools';
 import Account from '@/pages/account';
 import SplitSats from '@/pages/tools/splitSats';
 import SplittedInscription from '@/pages/tools/splittedInscription';
-import UtxoAsset from '@/pages/tools/utxoAsset';
+import Utxo from '@/pages/tools/utxo';
 import Transaction from '@/pages/tools/transaction';
 import { RareSat } from '@/pages/discover/rareSat';
-import UtxoSat from '@/pages/tools/utxoSat';
 
 const resolveHashPath = (path: string) => {
   return `/#${path}`;
@@ -31,8 +30,9 @@ export const ROUTE_PATH = {
   INSCRIBE_CHECK: '/inscribe_check',
   TOOLS: '/tools',
   TOOLS_SPLIT_SATS: '/tools/split-sats',
-  TOOLS_UTXO_ASSET: '/tools/utxo-asset',
-  TOOLS_GET_UTXO: '/tools/get-utxo',
+  TOOLS_UTXO: '/tools/utxo',
+  // TOOLS_UTXO_ASSET: '/tools/utxo-asset',
+  // TOOLS_GET_UTXO: '/tools/get-utxo',
   TOOLS_TRANSACT: '/tools/transact',
   TOOLS_SPLITTED_INSCRIPTION: '/tools/splitted-inscription',
   // MARKET_INDEX: '/market',
@@ -97,13 +97,17 @@ export const routes: RouteObject[] = [
         path: ROUTE_PATH.TOOLS_SPLIT_SATS,
         element: <SplitSats />,
       },
+      // {
+      //   path: ROUTE_PATH.TOOLS_UTXO_ASSET,
+      //   element: <UtxoAsset />,
+      // },
+      // {
+      //   path: ROUTE_PATH.TOOLS_GET_UTXO,
+      //   element: <UtxoSat />,
+      // },
       {
-        path: ROUTE_PATH.TOOLS_UTXO_ASSET,
-        element: <UtxoAsset />,
-      },
-      {
-        path: ROUTE_PATH.TOOLS_GET_UTXO,
-        element: <UtxoSat />,
+        path: ROUTE_PATH.TOOLS_UTXO,
+        element: <Utxo />,
       },
       {
         path: ROUTE_PATH.TOOLS_TRANSACT,

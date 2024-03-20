@@ -12,15 +12,18 @@ export default function InscribeCheck() {
   const toSplittedInscriptions = () => {
     nav(ROUTE_PATH.TOOLS_SPLITTED_INSCRIPTION);
   }
-  const toSearchUtxo = () => {
-    nav(ROUTE_PATH.TOOLS_UTXO_ASSET);
-  };
+  // const toSearchUtxo = () => {
+  //   nav(ROUTE_PATH.TOOLS_UTXO_ASSET);
+  // };
 
-  const toGetUtxo = () => {
-    nav(ROUTE_PATH.TOOLS_GET_UTXO);
+  // const toGetUtxo = () => {
+  //   nav(ROUTE_PATH.TOOLS_GET_UTXO);
+  // }
+  const toUtxo = () => {
+    nav(ROUTE_PATH.TOOLS_UTXO);
   }
 
-  const toSplit = () => {
+  const toSplitUtxo = () => {
     message.success('Coming soon!');
   }
 
@@ -36,17 +39,20 @@ export default function InscribeCheck() {
       <Card title={t('pages.tools.splitted_inscription.title')} className='w-60 cursor-pointer' onClick={toSplittedInscriptions}>
         {t('pages.tools.splitted_inscription.des')}
       </Card>
-      <Card title={t('pages.tools.utxo.title')} className='w-60 cursor-pointer' onClick={toSearchUtxo}>
+      <Card title={t('pages.tools.utxo.title')} className='w-60 cursor-pointer' onClick={toUtxo}>
+        {t('pages.tools.utxo.des')}
+      </Card>
+      {/* <Card title={t('pages.tools.utxo.title')} className='w-60 cursor-pointer' onClick={toSearchUtxo}>
         {t('pages.tools.utxo.des')}
       </Card>
       <Card title='查询UTXO' className='w-60 cursor-pointer' onClick={toGetUtxo}>
         查询utxo中的所有sat。
-      </Card>
-      <Card title='分离UTXO' className='w-60 cursor-pointer' onClick={toSplit}>
+      </Card> */}
+      <Card title='分离UTXO' className='w-60 cursor-pointer' onClick={toSplitUtxo}>
         标注UTXO中的特殊聪位置和资产位置，由用户决定切割方案并进行切割。
       </Card>
       <Card title='Transaction' className='w-60 cursor-pointer' onClick={toTransact}>
-        融合发送和拆分的工具。
+        发送和拆分的工具。
       </Card>
     </div>
   );

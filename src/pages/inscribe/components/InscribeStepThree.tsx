@@ -65,11 +65,42 @@ export const InscribeStepThree = ({
     } else if (type === 'brc100') {
       return 294;
     } else if (type === 'ordx' && list?.[0]?.op === 'mint') {
-      return list?.[0]?.amt > 546 ? list?.[0]?.amt : 546;
+      if (ordxUtxo) {
+        const userAmt = list?.[0]?.amt || 0;
+        const realAmt = Math.max(userAmt, 546);
+        const findBetweenByValue = (
+          userAmt: number,
+          realAmt,
+          ranges: any[],
+        ) => {
+          let outAmt = 0;
+          let outValue = 0;
+          let preTotalSize = 0;
+          for (let i = 0; i < ranges.length; i++) {
+            const range = ranges[i];
+            outValue += range.size;
+            if (userAmt > outValue) {
+              preTotalSize += range.size;
+            }
+            if (userAmt <= outValue) {
+              const dis = userAmt - preTotalSize;
+              outAmt = range.offset + dis;
+              break;
+            }
+          }
+          if (outAmt < realAmt) {
+            outAmt += realAmt - outAmt;
+          }
+          return outAmt;
+        };
+        return findBetweenByValue(userAmt, realAmt, ordxUtxo.sats);
+      } else {
+        return list?.[0]?.amt > 546 ? list?.[0]?.amt : 546;
+      }
     } else {
       return 546;
     }
-  }, [type, list]);
+  }, [type, list, ordxUtxo]);
   const clacFee = useCalcFee({
     feeRate,
     inscriptionSize,
@@ -85,6 +116,7 @@ export const InscribeStepThree = ({
       files,
       network,
       feeRate,
+      ordxUtxo,
     });
     const orderId = uuidV4();
     const order: OrderItemType = {

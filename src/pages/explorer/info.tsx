@@ -7,7 +7,7 @@ import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
 import { OrdxTickHistory } from './components/OrdxTickHistory';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { Button, Tag, Spin, Alert } from 'antd';
+import { Button, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
@@ -162,7 +162,7 @@ export default function Ord2Info() {
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
-                {new Date(detail?.deployBlocktime).toLocaleString()}
+                {new Date(detail?.deployBlocktime).toLocaleString('af')}
               </p>
             </div>
             <div className=''>

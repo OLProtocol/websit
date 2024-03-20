@@ -9,7 +9,7 @@ import {
 } from './types';
 
 export const generateUrl = (url: string, network?: string) => {
-  return `${VITE_API_HOST}${network === 'testnet' ? '/testnet' : ''}/${url}`;
+  return `${VITE_API_HOST}${network === 'testnet' ? '/testnet' : '/mainnet'}/${url}`;
 };
 const { VITE_API_HOST } = import.meta.env;
 export const responseParse = async (response) => {
@@ -82,7 +82,7 @@ export const getOrdxAddressHolders = async ({
 }: OrdXHistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      `query-v4/address/${address}/ordx/${ticker}/heldlist?start=${start}&limit=${limit}`,
+      `query-v4/address/${address}/ordx/${ticker}/holderlist?start=${start}&limit=${limit}`,
       network,
     ),
   );

@@ -256,7 +256,7 @@ export const OrdxAddressHolders = ({
         title: 'utxo',
         dataIndex: 'utxo',
         key: 'utxo',
-        width: 130,
+        width: 100,
         align: 'center',
         render: (t) => {
           const txid = t.replace(/:0$/m, '');
@@ -296,33 +296,41 @@ export const OrdxAddressHolders = ({
         title: 'Asset Ranges',
         dataIndex: 'ranges',
         key: 'ranges',
-        width: 120,
+        width: 300,
         align: 'center',
         render: (t) => {
           const ranges = t?.map((r: any) =>
-            r.size === 1 ? r.start : `${r.start}-${r.start + r.size - 1}`,
+            <div>
+              <span>
+                {r.size === 1 ? r.start : `${r.start}-${r.start + r.size - 1}`}
+              </span>
+            </div>
           );
-          return ranges?.join(', ');
+          return ranges;
         },
       },
       {
         title: t('common.inscriptionNumber'),
-        dataIndex: 'inscriptionnum',
-        key: 'inscriptionnum',
+        dataIndex: 'inscriptionnums',
+        key: 'inscriptionnums',
         width: 100,
         align: 'center',
         render: (t) => {
-          // const href =
-          //   network === 'testnet'
-          //     ? `https://testnet.ordinals.com/inscription/${t}`
-          //     : `https://ordinals.com/inscription/${t}`;
-          return (
-            <span
-              className='text-blue-500 cursor-pointer'
-              onClick={() => toInscriptionInfo(t)}>
-              #{t}
-            </span>
-          );
+          let inscriptionnums : any
+          if (t.includes('801715801653801712')) {
+            inscriptionnums = <span>-</span>;
+          } else {
+            inscriptionnums = t?.map((r: any) => 
+              <div>
+                <span
+                  className='text-blue-500 cursor-pointer'
+                  onClick={() => toInscriptionInfo(r)}>
+                  #{r}
+                </span>
+              </div>
+            );
+          }
+          return inscriptionnums;
         },
       },
     ];
@@ -358,7 +366,43 @@ export const OrdxAddressHolders = ({
     }
     return defaultColumn;
   }, []);
-  const dataSource = useMemo(() => data?.data?.detail || [], [data]);
+  
+  // const [dataSource, setDataSource] = useState<any[]>();
+  const generateData = () => {
+    const details = data?.data?.detail
+    let datas : any[] = []
+    if(details){
+      for (let detail of details){
+        let ranges : any[] = []
+        let inscriptionNums : any[] = []
+        let item = {
+          utxo: detail.utxo,
+          amount: detail.amount,
+          assetamount: detail.assetamount,
+          ranges: ranges,
+          inscriptionnums: inscriptionNums,
+        }
+        if (Array.isArray(detail.assets)) {
+          detail.assets.forEach((assetInfo) => {
+            ranges = item['ranges'].concat(assetInfo.ranges)
+            inscriptionNums.push(assetInfo.inscriptionnum)
+          })
+          
+          item['ranges'] = ranges
+          item['inscriptionnums'] = inscriptionNums
+        }
+        datas.push(item)
+      }
+      
+    }
+    return datas;
+  }
+  // const dataSource = useMemo(() => data?.data?.detail || [], []);
+  const dataSource = useMemo(() => {
+    return generateData();
+  }, [data])
+  console.log('dataSource = ', dataSource)
+
   const total = useMemo(() => data?.data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
@@ -368,10 +412,9 @@ export const OrdxAddressHolders = ({
     nav(`/explorer/${tick}`);
   };
   useEffect(() => {
-    onEmpty?.(dataSource.length === 0);
+    onEmpty?.(dataSource !== undefined && dataSource.length === 0);
   }, [dataSource]);
   useEffect(() => {
-    console.log(address, tick);
     if (address && tick) {
       trigger();
     }
@@ -379,7 +422,7 @@ export const OrdxAddressHolders = ({
 
   return (
     <>
-      {dataSource.length ? (
+      {(dataSource !== undefined && dataSource.length) ? (
         <div className='rounded-2xl bg-gray-200 p-4'>
           <div className='mb-2'>
             <span className='text-orange-500'> {tick}</span>

@@ -150,7 +150,7 @@ export const getAddressBySescet = (sescet: string, network: string) => {
   const pubkey = keys.get_pubkey(seckey, true);
   return Address.p2tr.fromPubKey(pubkey, network as any);
 };
-const generateScript = (secret: string, file: FileItem) => {
+const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
   const seckey = keys.get_seckey(secret);
   const pubkey = keys.get_pubkey(seckey, true);
   const ec = new TextEncoder();
@@ -201,49 +201,83 @@ const generateScript = (secret: string, file: FileItem) => {
       // content,
       'OP_ENDIF',
     ];
-  } else if (file.type === 'ordx' && file.ordxType === 'mint' && file.parent) {
-    const parentMimeType = ec.encode(file.parentMimeType);
-    const parentConent = hexToBytes(file.parentHex);
-    console.log(cbor);
-    console.log(JSON.parse(file.originValue));
-    const metaData = cbor.encode(JSON.parse(file.originValue));
-    // const metaData = ''
-    // const metaData = '';
-    // script = [
-    //   pubkey,
-    //   'OP_CHECKSIG',
-    //   'OP_0',
-    //   'OP_IF',
-    //   ec.encode('ord'),
-    //   '01',
-    //   parentMimeType,
-    //   'OP_0',
-    //   parentConent,
-    //   'OP_0',
-    //   '07',
-    //   ec.encode('ordx'),
-    //   '01',
-    //   mimetype,
-    //   'OP_0',
-    //   content,
-    //   'OP_ENDIF',
-    // ];
-    script = [
-      pubkey,
-      'OP_CHECKSIG',
-      'OP_0',
-      'OP_IF',
-      ec.encode('ord'),
-      '01',
-      parentMimeType,
-      '07',
-      ec.encode('ordx'),
-      '05',
-      metaData,
-      'OP_0',
-      parentConent,
-      'OP_ENDIF',
-    ];
+  } else if (file.type === 'ordx' && file.ordxType === 'mint') {
+    if (file.parent) {
+      const parentMimeType = ec.encode(file.parentMimeType);
+      const parentConent = hexToBytes(file.parentHex);
+      const metaData = cbor.encode(JSON.parse(file.originValue));
+      const offset = ordxUtxo?.satas?.[0]?.offset || 0;
+      console.log('offset', offset);
+      if (ordxUtxo && offset > 0) {
+        script = [
+          pubkey,
+          'OP_CHECKSIG',
+          'OP_0',
+          'OP_IF',
+          ec.encode('ord'),
+          '01',
+          parentMimeType,
+          '02',
+          ec.encode(offset),
+          '07',
+          ec.encode('ordx'),
+          '05',
+          metaData,
+          'OP_0',
+          parentConent,
+          'OP_ENDIF',
+        ];
+      } else {
+        script = [
+          pubkey,
+          'OP_CHECKSIG',
+          'OP_0',
+          'OP_IF',
+          ec.encode('ord'),
+          '01',
+          parentMimeType,
+          '07',
+          ec.encode('ordx'),
+          '05',
+          metaData,
+          'OP_0',
+          parentConent,
+          'OP_ENDIF',
+        ];
+      }
+    } else {
+      const offset = ordxUtxo?.satas?.[0]?.offset || 0;
+      console.log('offset', offset);
+      if (ordxUtxo && offset > 0) {
+        script = [
+          pubkey,
+          'OP_CHECKSIG',
+          'OP_0',
+          'OP_IF',
+          ec.encode('ord'),
+          '01',
+          mimetype,
+          '02',
+          ec.encode(offset),
+          'OP_0',
+          content,
+          'OP_ENDIF',
+        ];
+      } else {
+        script = [
+          pubkey,
+          'OP_CHECKSIG',
+          'OP_0',
+          'OP_IF',
+          ec.encode('ord'),
+          '01',
+          mimetype,
+          'OP_0',
+          content,
+          'OP_ENDIF',
+        ];
+      }
+    }
   } else {
     script = [
       pubkey,
@@ -268,11 +302,13 @@ export const generateInscriptions = ({
   feeRate,
   secret,
   network = 'main',
+  ordxUtxo,
 }: {
   files: FileItem[];
   feeRate: number;
   secret: string;
   network: any;
+  ordxUtxo: any;
 }) => {
   const inscriptions: InscriptionItem[] = [];
 
@@ -280,7 +316,7 @@ export const generateInscriptions = ({
     const seckey = keys.get_seckey(secret);
     const pubkey = keys.get_pubkey(seckey, true);
     const content = hexToBytes(files[i].hex);
-    const script = generateScript(secret, files[i]);
+    const script = generateScript(secret, files[i], ordxUtxo);
 
     const leaf = Tap.encodeScript(script);
     const [tapkey, cblock] = Tap.getPubKey(pubkey, { target: leaf });
@@ -323,6 +359,7 @@ interface InscribeParams {
   serviceFee?: number;
   secret: any;
   toAddress: string;
+  ordxUtxo?: any;
   network: 'main' | 'testnet';
 }
 export const inscribe = async ({
@@ -336,6 +373,7 @@ export const inscribe = async ({
   inscribeFee = 546,
   toAddress,
   secret,
+  ordxUtxo,
 }: InscribeParams) => {
   const { VITE_TESTNET_TIP_ADDRESS, VITE_MAIN_TIP_ADDRESS } = import.meta.env;
   const tipAddress =
@@ -377,7 +415,7 @@ export const inscribe = async ({
   });
   const sig = Signer.taproot.sign(seckey, txdata, 0, { extension: leaf });
 
-  const script = generateScript(secret, file);
+  const script = generateScript(secret, file, ordxUtxo);
 
   // Add the signature to our witness data for input 0, along with the script
   // and merkle proof (cblock) for the script.
@@ -501,6 +539,7 @@ export const sendBTC = async ({
   ordxUtxo,
 }: SendBTCProps) => {
   const hasOrdxUtxo = !!ordxUtxo;
+  console.log('hasOrdxUtxo', hasOrdxUtxo);
   const data = await getUtxoByValue({
     address: fromAddress,
     value: 600,
@@ -534,6 +573,7 @@ export const sendBTC = async ({
   //     atomicals: [],
   //   };
   // });
+  console.log(avialableUtxo);
   const inputs: any[] = avialableUtxo.map((v) => {
     const scriptPk = addresToScriptPublicKey(fromAddress);
     return {

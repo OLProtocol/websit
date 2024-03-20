@@ -264,6 +264,7 @@ export const InscribingOrderModal = ({
           amount: commitTx.outputs[i].amount,
           toAddress: order.toAddress[0],
           inscribeFee: order.inscriptionSize,
+          ordxUtxo: order.ordxUtxo,
         });
         addTxidToInscription(order.orderId, i, txid);
         // }
@@ -557,7 +558,7 @@ export const InscribingOrderModal = ({
           {order?.createAt && (
             <div className='text-right text-sm text-gray-400'>
               {t('pages.inscribe.pay.created_text')}{' '}
-              {new Date(order?.createAt).toLocaleString()}
+              {new Date(order?.createAt).toLocaleString('af')}
             </div>
           )}
         </ModalBody>

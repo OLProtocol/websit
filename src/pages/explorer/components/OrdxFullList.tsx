@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Segmented, Table, Tag, Button } from 'antd';
+import { useMemo, useState } from 'react';
+import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { useOrd2Status } from '@/api';
@@ -212,7 +212,6 @@ export const Ord2FullList = () => {
   ];
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
-    console.log(page, pageSize);
   };
   const dataSource: DataType[] = useMemo(
     () =>
@@ -234,7 +233,6 @@ export const Ord2FullList = () => {
         }
         const special = item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         const attrArr: string[] = [];
-        console.log(!!item.rarity)
         if (item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity) {
           attrArr.push(`rar=${item.rarity}`);
         }
@@ -245,7 +243,6 @@ export const Ord2FullList = () => {
           attrArr.push(`trz=${item.trz}`);
         }
         let attr;
-        console.log(attrArr.length)
         if (attrArr.length) {
           attr = attrArr.join(';');
         }
@@ -277,7 +274,7 @@ export const Ord2FullList = () => {
           minted: item.totalMinted,
           limit: item.limit,
           status,
-          deploy_time: new Date(item.deployBlocktime).toLocaleString(),
+          deploy_time: new Date(item.deployBlocktime).toLocaleString('af'),
         };
       }),
     [list, height],

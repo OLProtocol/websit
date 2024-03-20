@@ -241,10 +241,11 @@
         "card_header": "Splitted Inscriptions"
       },
       "utxo": {
-        "title": "Assets",
-        "des": "Get assets by UTXO",
+        "title": "Utxo",
+        "des": "Get assets and sats by UTXO",
         "search_placeholder": "UTXO ...",
-        "card_header": "Assets"
+        "card_header_asset": "Assets",
+        "card_header_sat": "Sats"
       }
     },
    
