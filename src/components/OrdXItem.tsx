@@ -11,7 +11,7 @@ interface Ord2ItemProps {
 export const OrdXItem = ({ item, onClick, selected }: Ord2ItemProps) => {
   const { t } = useTranslation();
   return (
-    <div
+    <div key={item.tick}
       className={`border-[2px] border-gray-200 rounded-lg overflow-hidden ${
         selected ? 'border-orange-500 border-[2px]' : ''
       }`}
