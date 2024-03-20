@@ -316,16 +316,21 @@ export const OrdxAddressHolders = ({
         width: 100,
         align: 'center',
         render: (t) => {
-          const inscriptionnums = t?.map((r: any) => 
-            <div>
-              <span
-                className='text-blue-500 cursor-pointer'
-                onClick={() => toInscriptionInfo(r)}>
-                #{hideStr(t)}
-              </span>
-            </div>
-          );
-          return (inscriptionnums);
+          let inscriptionnums : any
+          if (t.includes('801715801653801712')) {
+            inscriptionnums = <span>-</span>;
+          } else {
+            inscriptionnums = t?.map((r: any) => 
+              <div>
+                <span
+                  className='text-blue-500 cursor-pointer'
+                  onClick={() => toInscriptionInfo(r)}>
+                  #{r}
+                </span>
+              </div>
+            );
+          }
+          return inscriptionnums;
         },
       },
     ];
@@ -382,6 +387,7 @@ export const OrdxAddressHolders = ({
             ranges = item['ranges'].concat(assetInfo.ranges)
             inscriptionNums.push(assetInfo.inscriptionnum)
           })
+          
           item['ranges'] = ranges
           item['inscriptionnums'] = inscriptionNums
         }
