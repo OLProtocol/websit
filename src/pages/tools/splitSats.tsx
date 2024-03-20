@@ -6,6 +6,7 @@ import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import { Address, Script } from '@cmdcode/tapscript';
 import * as bitcoin from 'bitcoinjs-lib';
 import { useToast } from '@chakra-ui/react';
+import { addressToScriptPublicKey } from '@/lib/utils';
 
 export default function SplitSats() {
   const [searchParams] = useSearchParams();
@@ -23,15 +24,6 @@ export default function SplitSats() {
   const unisat = useUnisat();
   const [txId, setTxId] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const addresToScriptPublicKey = (address: string) => {
-    const scriptPublicKey = Script.fmt.toAsm(
-      Address.toScriptPubKey(address),
-    )?.[0];
-    // const asmScript = Address.toScriptPubKey(currentAccount) as string[];
-    // const scriptPubKey = bitcoin.script.fromASM(asmScript.join(' '));
-    return scriptPublicKey;
-  };
 
   const splitHandler = async () => {
     if (!currentAccount) {
@@ -80,7 +72,7 @@ export default function SplitSats() {
           txid: v.txid,
           vout: v.vout,
           satoshis: v.value,
-          scriptPk: addresToScriptPublicKey(currentAccount),
+          scriptPk: addressToScriptPublicKey(currentAccount),
           addressType: 2,
           inscriptions: [],
           pubkey: currentPublicKey,

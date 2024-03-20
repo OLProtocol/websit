@@ -8,7 +8,7 @@ import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { hideStr, filterUtxosByValue } from '@/lib/utils';
+import { hideStr, filterUtxosByValue, addressToScriptPublicKey } from '@/lib/utils';
 import { sortBy, reverse } from 'lodash';
 import { useCommonStore } from '@/store';
 
@@ -42,12 +42,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const addresToScriptPublicKey = (address: string) => {
-    const scriptPublicKey = Script.fmt.toAsm(
-      Address.toScriptPubKey(address),
-    )?.[0];
-    return scriptPublicKey;
-  };
+
   const signAndPushPsbt = async (inputs, outputs) => {
     const psbtNetwork = bitcoin.networks.testnet;
     const psbt = new bitcoin.Psbt({
@@ -85,7 +80,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
           txid: v.txid,
           vout: v.vout,
           satoshis: v.value,
-          scriptPk: addresToScriptPublicKey(currentAccount),
+          scriptPk: addressToScriptPublicKey(currentAccount),
           addressType: 2,
           inscriptions: [],
           pubkey: currentPublicKey,
@@ -171,7 +166,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
           txid: v.txid,
           vout: v.vout,
           satoshis: v.value,
-          scriptPk: addresToScriptPublicKey(addressRef.current),
+          scriptPk: addressToScriptPublicKey(addressRef.current),
           addressType: 2,
           inscriptions: [],
           pubkey: currentPublicKey,

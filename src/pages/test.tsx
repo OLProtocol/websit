@@ -5,6 +5,7 @@ import { getAvailableUtxos } from '@/api';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import * as bitcoin from 'bitcoinjs-lib';
 import { UnspentOutput, txHelpers } from '@unisat/wallet-sdk';
+import { addressToScriptPublicKey } from '@/lib/utils';
 console.log(txHelpers);
 export default function Test() {
   const findBetweenByValue = (userAmt: number, realAmt, ranges: any[]) => {
@@ -37,17 +38,17 @@ export default function Test() {
   // console.log(
   //   buf2hex(Script.fmt.toBytes(Address.toScriptPubKey(currentAccount))),
   // );
-  const addresToScriptPublicKey = (address: string) => {
-    const scriptPublicKey = Script.fmt.toAsm(
-      Address.toScriptPubKey(address),
-    )?.[0];
-    const asmScript = Address.toScriptPubKey(currentAccount) as string[];
-    const scriptPubKey = bitcoin.script.fromASM(asmScript.join(' '));
-    console.log(scriptPubKey);
-    // const hexRepresentation = scriptPubKey.toString('hex');
-    // console.log(hexRepresentation);
-    return scriptPublicKey;
-  };
+  // const addresToScriptPublicKey = (address: string) => {
+  //   const scriptPublicKey = Script.fmt.toAsm(
+  //     Address.toScriptPubKey(address),
+  //   )?.[0];
+  //   const asmScript = Address.toScriptPubKey(currentAccount) as string[];
+  //   const scriptPubKey = bitcoin.script.fromASM(asmScript.join(' '));
+  //   console.log(scriptPubKey);
+  //   // const hexRepresentation = scriptPubKey.toString('hex');
+  //   // console.log(hexRepresentation);
+  //   return scriptPublicKey;
+  // };
   const getBtcUtxos = async () => {
     const data = await getAvailableUtxos({
       address: 'tb1prcc8rp5wn0y9vp434kchl3aag8r8hz699006ufvczwnneuqx0wdsfmvq4y',
@@ -66,7 +67,7 @@ export default function Test() {
           txid: v.txid,
           vout: v.vout,
           satoshis: v.value,
-          scriptPk: addresToScriptPublicKey(currentAccount),
+          scriptPk: addressToScriptPublicKey(currentAccount),
           addressType: 2,
           inscriptions: [],
           pubkey: currentPublicKey,

@@ -4,6 +4,7 @@ import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import { Address, Script } from '@cmdcode/tapscript';
 import { Modal, Card, Button, Input, message } from 'antd';
 import * as bitcoin from 'bitcoinjs-lib';
+import { addressToScriptPublicKey } from '@/lib/utils';
 
 const { Meta } = Card;
 
@@ -26,14 +27,6 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const addresToScriptPublicKey = (address: string) => {
-    const scriptPublicKey = Script.fmt.toAsm(
-      Address.toScriptPubKey(address),
-    )?.[0];
-    // const asmScript = Address.toScriptPubKey(currentAccount) as string[];
-    // const scriptPubKey = bitcoin.script.fromASM(asmScript.join(' '));
-    return scriptPublicKey;
-  };
 
   const signAndPushPsbt = async (inputs, outputs) => {
     const psbtNetwork = bitcoin.networks.testnet;
@@ -81,7 +74,7 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
           txid: v.txid,
           vout: v.vout,
           satoshis: v.value,
-          scriptPk: addresToScriptPublicKey(currentAccount),
+          scriptPk: addressToScriptPublicKey(currentAccount),
           addressType: 2,
           inscriptions: [],
           pubkey: currentPublicKey,
@@ -153,7 +146,7 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
           txid: v.txid,
           vout: v.vout,
           satoshis: v.value,
-          scriptPk: addresToScriptPublicKey(currentAccount),
+          scriptPk: addressToScriptPublicKey(currentAccount),
           addressType: 2,
           inscriptions: [],
           pubkey: currentPublicKey,

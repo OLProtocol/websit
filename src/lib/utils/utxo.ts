@@ -1,4 +1,6 @@
 import { sortBy, reverse, cloneDeep } from 'lodash';
+import { Address, Script } from '@cmdcode/tapscript';
+
 export const filterUtxosByValue = (utxos: any[], value, reverseStatus = true) => {
   const sortUtxos = sortBy(utxos, 'value');
   const _utxoList = cloneDeep(sortUtxos);
@@ -22,3 +24,11 @@ export const filterUtxosByValue = (utxos: any[], value, reverseStatus = true) =>
     total: avialableValue,
   };
 };
+
+export const addressToScriptPublicKey = (address: string) => {
+  const scriptPublicKey = Script.fmt.toAsm(
+    Address.toScriptPubKey(address),
+  )?.[0];
+  return scriptPublicKey;
+};
+

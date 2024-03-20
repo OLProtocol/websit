@@ -6,6 +6,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
+import { CopyButton } from '@/components/CopyButton';
 
 interface Ord2HistoryProps {
   tick: string;
@@ -56,12 +57,15 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
             ? `https://testnet.ordinals.com/inscription/${t}`
             : `https://ordinals.com/inscription/${t}`;
         return (
-          <a
-            className='text-blue-500 cursor-pointer'
-            href={href}
-            target='_blank'>
-            {hideStr(t)}
-          </a>
+          <div className='flex item-center justify-center'>
+            <a
+              className='text-blue-500 cursor-pointer'
+              href={href}
+              target='_blank'>
+              {hideStr(t)}
+            </a>&nbsp;&nbsp;
+            <CopyButton text={t} tooltip='Copy Btc Address' />
+          </div>
         );
       },
     },
@@ -72,13 +76,16 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
       width: 120,
       align: 'center',
       render: (t) => (
-        <span
-          className='text-blue-500 cursor-pointer'
-          onClick={() => {
-            nav(`/explorer?q=${t}`);
-          }}>
-          {hideStr(t)}
-        </span>
+        <div className='flex item-center justify-center'>
+          <span
+            className='text-blue-500 cursor-pointer'
+            onClick={() => {
+              nav(`/explorer?q=${t}`);
+            }}>
+            {hideStr(t)}
+          </span>&nbsp;&nbsp;
+          <CopyButton text={t} tooltip='Copy Btc Address' />
+        </div>
       ),
     },
     {

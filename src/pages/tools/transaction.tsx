@@ -7,6 +7,7 @@ import { useMap } from "react-use";
 import { Address, Script } from '@cmdcode/tapscript';
 import { message } from "antd";
 import * as bitcoin from 'bitcoinjs-lib';
+import { addressToScriptPublicKey } from "@/lib/utils";
 
 export default function Transaction() {
 
@@ -160,13 +161,6 @@ export default function Transaction() {
     setOutputList('items', outputList.items);
   }
 
-  const addressToScriptPublicKey = (address: string) => {
-    const scriptPublicKey = Script.fmt.toAsm(
-      Address.toScriptPubKey(address),
-    )?.[0];
-    return scriptPublicKey;
-  };
-
   const splitHandler = async () => {
     console.log(inputList.items);
     if (!currentAccount) {
@@ -193,8 +187,6 @@ export default function Transaction() {
             value: v.value.sats,
           },
         })
-
-        
       })
 
       outputList.items.map((v) => {

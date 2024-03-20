@@ -6,6 +6,7 @@ import { useOrdxTickHolders } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
+import { CopyButton } from '@/components/CopyButton';
 
 interface DataType {
   rank: string;
@@ -40,13 +41,16 @@ export const InfoHolders = ({ tick }: InfoHoldersProps) => {
       align: 'center',
       key: 'address',
       render: (t) => (
-        <span
-          className='text-blue-500 cursor-pointer'
-          onClick={() => {
-            nav(`/explorer?q=${t}`);
-          }}>
-          {hideStr(t)}
-        </span>
+        <div className='flex item-center justify-center'>
+          <span
+            className='text-blue-500 cursor-pointer'
+            onClick={() => {
+              nav(`/explorer?q=${t}`);
+            }}>
+            {hideStr(t)}
+          </span>&nbsp;&nbsp;
+          <CopyButton text={t} tooltip='Copy Btc Address' />
+        </div>
       ),
     },
     // {

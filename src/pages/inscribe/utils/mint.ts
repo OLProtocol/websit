@@ -10,6 +10,7 @@ import {
   fileToSha256Hex,
 } from './index';
 import { getUtxoByValue, pushBTCpmt } from '@/api';
+import { addressToScriptPublicKey } from '@/lib/utils';
 interface FileItem {
   mimetype: string;
   show: string;
@@ -512,12 +513,6 @@ const signAndPushPsbt = async (inputs, outputs) => {
   const pushedTxId = await window.unisat.pushPsbt(signed);
   return pushedTxId;
 };
-const addresToScriptPublicKey = (address: string) => {
-  const scriptPublicKey = Script.fmt.toAsm(
-    Address.toScriptPubKey(address),
-  )?.[0];
-  return scriptPublicKey;
-};
 
 interface SendBTCProps {
   toAddress: string;
@@ -566,7 +561,7 @@ export const sendBTC = async ({
   //     txid: v.txid,
   //     vout: v.vout,
   //     satoshis: v.value,
-  //     scriptPk: addresToScriptPublicKey(fromAddress),
+  //     scriptPk: addressToScriptPublicKey(fromAddress),
   //     addressType: 2,
   //     inscriptions: [],
   //     pubkey: fromPubKey,
@@ -575,7 +570,7 @@ export const sendBTC = async ({
   // });
   console.log(avialableUtxo);
   const inputs: any[] = avialableUtxo.map((v) => {
-    const scriptPk = addresToScriptPublicKey(fromAddress);
+    const scriptPk = addressToScriptPublicKey(fromAddress);
     return {
       hash: v.txid,
       index: v.vout,
@@ -586,7 +581,7 @@ export const sendBTC = async ({
     };
   });
   if (hasOrdxUtxo) {
-    const scriptPk = addresToScriptPublicKey(fromAddress);
+    const scriptPk = addressToScriptPublicKey(fromAddress);
     const { utxo, value } = ordxUtxo;
     const ordxTxid = utxo.split(':')[0];
     const ordxVout = utxo.split(':')[1];
