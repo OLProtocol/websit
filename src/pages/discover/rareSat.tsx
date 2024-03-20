@@ -44,7 +44,6 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   }
 
   function setFilterType(satType: string): void {
-    console.log(satType);
     if (satType === 'all') {
       setSatFilterList([]);
     } else {
@@ -61,6 +60,9 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   }
 
   const doSearch = async () => {
+    if (address === '') {
+      return;
+    }
     setLoading(true);
     setRareSatList([]);
     setSatList([]);
@@ -108,7 +110,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       setAddress(tmpAddress);
       doSearch();
     }
-  }, []);
+  }, [address]);
   
   return (
     // <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
