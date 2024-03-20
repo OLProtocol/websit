@@ -212,12 +212,12 @@ export default function Utxo() {
                     {(rareSatList !== undefined && rareSatList.length > 0) && (
                       rareSatList.map((item: any) => (
                         <div className='max-w-max flex border border-teal-500 rounded-md mt-2'>
-                          <Box as='button' borderRadius='md' bg='white' color='teal' px={4} h={8} m={2}>
+                          <Box as='text' borderRadius='md' bg='white' color='teal' px={4} h={8} mt={2}>
                             {item.start + '-' + item.end + '  (' + item.size + ' sats)'}
                           </Box>
                           {item.type.map((t, _) => (
                             <Tooltip label={t}>
-                              <Image src={setSatIcon(t)} className='w-6 h-6' mt={3} />
+                              <Image src={setSatIcon(t)} className='w-6 h-6' mt={2} mr={2} />
                             </Tooltip>
                           ))}
                         </div>
@@ -242,7 +242,7 @@ export default function Utxo() {
                     {(satList !== undefined && satList.length > 0) && (
                       satList.map((item: any) => (
                         <div className='max-w-max border border-teal-500 rounded-md mt-2'>
-                          <Box as='button' borderRadius='md' bg='white' color='teal' px={4} h={8} m={2}>
+                          <Box as='text' borderRadius='md' bg='white' color='teal' px={4} h={8} mt={2}>
                             {item.start + '-' + item.end + '(' + item.size + ' sats)'}
                           </Box>
                         </div>

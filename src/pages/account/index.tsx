@@ -13,38 +13,16 @@ export default function Account() {
   // const [rareSatList, setRareSatList] = useState<any[]>();
   const { network, currentAccount } = useUnisatConnect();
   // const { data, isLoading } = useCurUserRareSats({ currentAccount, network });
+  const [address, setAddress] = useState('');
 
-  const getRareSats = async () => {
-    // const data = await getSats({
-    //   address: currentAccount,
-    //   network,
-    // });
-    // if (data.code !== 0) {
-    //   toast({
-    //     title: data.msg,
-    //     status: 'error',
-    //     duration: 3000,
-    //     isClosable: true,
-    //   });
-    //   return;
-    // }
-
-    // const tmpSats: any[] | undefined = [];
-    // for (let i = 0; i < data?.data?.length; i++) {
-    //   if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
-    //     tmpSats.push(...data.data[i].sats);
-    //   }
-    // }
-    // tmpSats.sort(
-    //   (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-    // );
-    // setRareSatList(tmpSats);
-  };
   useEffect(() => {
-    getRareSats();
-  }, []);
+    localStorage.setItem('address-4-search-rare-sats', currentAccount);
+    setAddress(currentAccount)
+  }, [address]);
+
   return (
     <div className='max-w-6xl mx-auto p-2'>
+    { address !== '' && (
       <Card>
         <CardBody>
           <Tabs>
@@ -59,7 +37,7 @@ export default function Account() {
           </Tabs>
         </CardBody>
       </Card>
-      
+      ) }
       {/* <Tabs
         defaultActiveKey='1'
         size='large'
