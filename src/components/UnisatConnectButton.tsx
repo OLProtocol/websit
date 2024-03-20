@@ -39,7 +39,7 @@ export const UnisatConnectButton = () => {
       return;
     }
     await connectWallet();
-    await switchNetwork('testnet');
+    // await switchNetwork('testnet');
   };
   const items: MenuProps['items'] = [
     {
@@ -80,8 +80,8 @@ export const UnisatConnectButton = () => {
     onClick: handleMenuClick,
   };
   const switchNetworkHandler = async () => {
-    await switchNetwork('testnet');
-    // await switchNetwork(network === 'testnet' ? 'livenet' : 'testnet');
+    // await switchNetwork('testnet');
+    await switchNetwork(network === 'testnet' ? 'livenet' : 'testnet');
   };
   const hideAccount = useMemo(() => {
     return hideStr(currentAccount, 3, '**');
