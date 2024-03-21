@@ -104,13 +104,13 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    let tmpAddress = localStorage.getItem('address-4-search-rare-sats')
-    if (tmpAddress != null && tmpAddress !== '') {
-      setAddress(tmpAddress);
-      doSearch();
-    }
-  }, [address]);
+  // useEffect(() => {
+  //   let tmpAddress = localStorage.getItem('address-4-search-rare-sats')
+  //   if (tmpAddress != null && tmpAddress !== '') {
+  //     setAddress(tmpAddress);
+  //     doSearch();
+  //   }
+  // }, [address]);
   
   return (
     // <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>

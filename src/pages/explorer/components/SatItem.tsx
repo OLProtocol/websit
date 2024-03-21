@@ -27,7 +27,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
         <>
           <span className=''>{sat.start}</span>
           <span className='mx-2'>-</span>
-          <span className=''>{ sat.start + sat.size - 1}</span>&nbsp;
+          <span className=''>{ sat.start + sat.size - 1}({sat.size} sats)</span>&nbsp;
         </>
       )}
       
