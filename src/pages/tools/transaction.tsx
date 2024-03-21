@@ -130,7 +130,6 @@ export default function Transaction() {
 
     inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inputList.items[itemId - 1].value.utxo) || [];
 
-
     setInputList('items', inputList.items);
   }
 
