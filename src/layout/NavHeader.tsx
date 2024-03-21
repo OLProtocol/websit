@@ -77,7 +77,11 @@ export const NavHeader = () => {
     const { value, type } = items.find((i) => i.key === key) || {};
     if (value) {
       if (type === 'link') {
-        window.open(value, '_blank');
+        var url = value
+        if (i18n.language == 'en') {
+         url = "https://docs.ordx.space/v/en/"
+        }
+        window.open(url, '_blank');
       } else if (type === 'route') {
         localStorage.setItem('address-4-search-rare-sats', '');
         nav(value);

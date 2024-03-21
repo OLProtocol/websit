@@ -9,6 +9,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { ProtocolTable } from './inscribe/components/ProtocolCompare';
 import { t } from 'i18next';
+import i18n from '@/locales';
 
 type ProtocolCompare = {
   rowTitle: string;
@@ -108,6 +109,17 @@ export default function Home() {
   const toVerify = () => {
     nav('/inscribe_check');
   };
+
+  const toCompare = () => {
+    var url = ""
+    console.log(i18n.language)
+    if (i18n.language == 'zh_CN' || i18n.language == 'zh') {
+      url = "https://docs.ordx.space/ordinals-x/xie-yi-bi-jiao/compare"
+    } else {
+      url = "https://docs.ordx.space/v/en/ordinals-x/protocol-comparison/compare"
+    }
+    window.open(url, '_blank');
+  };
   return (
     <div className='min-h-full bg-gray-900'>
       <div className='mx-auto pt-4 w-4/5'>
@@ -120,17 +132,19 @@ export default function Home() {
         <div className='text-2xl text-center align-middle text-white leading-loose'>
           <section>{t('pages.home.summary_01')}</section>
           <section>{t('pages.home.summary_02')}</section>
-          <section>{t('pages.home.summary_03')}</section>
+          <section>
+            {t('pages.home.summary_03')}(<span onClick={toCompare} className='underline underline-offset-4 text-yellow-500 cursor-pointer'>{t('pages.home.summary_04')}</span>)
+          </section>
         </div>
       </div>
 
-      <div className='mx-auto pt-4 w-4/5 mt-6'>
+      {/* <div className='mx-auto pt-4 w-4/5 mt-6'>
         <div className='rounded-2xl overflow-hidden'>
           <ChakraProvider>
             <ProtocolTable columns={columns} data={data} />
           </ChakraProvider>
         </div>
-      </div>
+      </div> */}
 
       <div className='mx-auto pt-4 w-4/5 mt-6'>
         <div className='flex'>
