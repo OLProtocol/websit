@@ -62,7 +62,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
   };
   const fastClick = async () => {
     setLoading(true);
-    const virtualFee = (180 * 10 + 34 * 10 + 10) * feeRate.value;
+    const virtualFee = (160 * 10 + 34 * 10 + 10) * feeRate.value;
     const utxos = dataSource.filter((v) => v.value !== 600);
     const totalValue = utxos.reduce((acc, cur) => {
       return acc + cur.value;
@@ -111,7 +111,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const realityFee = (180 * inputs.length + 34 * 3 + 10) * feeRate.value;
+      const realityFee = (160 * inputs.length + 34 * 3 + 10) * feeRate.value;
       const firstOutputValue = 600;
       const secondOutputValue = 600;
       const thirdOutputValue =
@@ -145,7 +145,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
   const splitHandler = useCallback(
     async (item: any) => {
       setLoading(true);
-      const virtualFee = (180 * 1 + 34 * 2 + 10) * feeRate.value;
+      const virtualFee = (160 * 1 + 34 * 2 + 10) * feeRate.value;
       // const utxos = await getUtxo();
       if (item.value < 930 + virtualFee) {
         message.warning('utxo数量不足，无法切割');
@@ -199,7 +199,7 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const realityFee = (180 * inputs.length + 34 * 2 + 10) * feeRate.value;
+      const realityFee = (160 * inputs.length + 34 * 2 + 10) * feeRate.value;
       const firstOutputValue = 600;
       const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [
