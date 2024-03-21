@@ -28,7 +28,9 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const signAndPushPsbt = async (inputs, outputs) => {
-    const psbtNetwork = bitcoin.networks.testnet;
+    const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
     const psbt = new bitcoin.Psbt({
       network: psbtNetwork,
     });
@@ -90,7 +92,9 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
           },
         };
       });
-      const psbtNetwork = bitcoin.networks.testnet;
+      const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
       const psbt = new bitcoin.Psbt({
         network: psbtNetwork,
       });
@@ -163,7 +167,9 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
           },
         };
       });
-      const psbtNetwork = bitcoin.networks.testnet;
+      const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
       const psbt = new bitcoin.Psbt({
         network: psbtNetwork,
       });

@@ -13,16 +13,15 @@ export default function Account() {
   // const [rareSatList, setRareSatList] = useState<any[]>();
   const { network, currentAccount } = useUnisatConnect();
   // const { data, isLoading } = useCurUserRareSats({ currentAccount, network });
-  const [address, setAddress] = useState('');
 
-  useEffect(() => {
-    localStorage.setItem('address-4-search-rare-sats', currentAccount);
-    setAddress(currentAccount)
-  }, [address]);
+  // useEffect(() => {
+  //   localStorage.setItem('address-4-search-rare-sats', currentAccount);
+  //   setAddress(currentAccount)
+  // }, [address]);
 
   return (
     <div className='max-w-6xl mx-auto p-2'>
-    { address !== '' && (
+    { currentAccount !== '' && (
       <Card>
         <CardBody>
           <Tabs>

@@ -107,7 +107,9 @@ export default function SplitSats() {
         },
       ];
       console.log(inputs);
-      const psbtNetwork = bitcoin.networks.testnet;
+      const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
       const psbt = new bitcoin.Psbt({
         network: psbtNetwork,
       });

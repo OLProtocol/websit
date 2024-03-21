@@ -150,7 +150,9 @@ export default function SplitSat() {
         setLoading(true);
 
         try {
-            const psbtNetwork = bitcoin.networks.testnet;
+            const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
             const psbt = new bitcoin.Psbt({
                 network: psbtNetwork,
             });

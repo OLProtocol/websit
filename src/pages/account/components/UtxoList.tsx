@@ -44,7 +44,9 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
   const [loading, setLoading] = useState(false);
 
   const signAndPushPsbt = async (inputs, outputs) => {
-    const psbtNetwork = bitcoin.networks.testnet;
+    const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
     const psbt = new bitcoin.Psbt({
       network: psbtNetwork,
     });
@@ -97,7 +99,9 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
           },
         };
       });
-      const psbtNetwork = bitcoin.networks.testnet;
+      const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
       const psbt = new bitcoin.Psbt({
         network: psbtNetwork,
       });
@@ -183,7 +187,9 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
           },
         };
       });
-      const psbtNetwork = bitcoin.networks.testnet;
+      const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
       const psbt = new bitcoin.Psbt({
         network: psbtNetwork,
       });

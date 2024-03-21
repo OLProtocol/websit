@@ -498,8 +498,10 @@ export const pushCommitTx = async ({
   return result;
 };
 
-const signAndPushPsbt = async (inputs, outputs) => {
-  const psbtNetwork = bitcoin.networks.testnet;
+const signAndPushPsbt = async (inputs, outputs, network) => {
+  const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
   const psbt = new bitcoin.Psbt({
     network: psbtNetwork,
   });
@@ -595,7 +597,9 @@ export const sendBTC = async ({
     });
   }
   console.log(inputs);
-  const psbtNetwork = bitcoin.networks.testnet;
+  const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
   const psbt = new bitcoin.Psbt({
     network: psbtNetwork,
   });
@@ -617,5 +621,5 @@ export const sendBTC = async ({
       value: fromValue,
     },
   ];
-  return await signAndPushPsbt(inputs, outputs);
+  return await signAndPushPsbt(inputs, outputs, network);
 };

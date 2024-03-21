@@ -60,8 +60,10 @@ export const OrdxAddressHolders = ({
     return scriptPublicKey;
   };
 
-  const signAndPushPsbt = async (inputs, outputs) => {
-    const psbtNetwork = bitcoin.networks.testnet;
+  const signAndPushPsbt = async (inputs, outputs, network) => {
+    const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
     const psbt = new bitcoin.Psbt({
       network: psbtNetwork,
     });
@@ -122,7 +124,9 @@ export const OrdxAddressHolders = ({
           },
         };
       });
-      const psbtNetwork = bitcoin.networks.testnet;
+      const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
       const psbt = new bitcoin.Psbt({
         network: psbtNetwork,
       });
@@ -145,7 +149,7 @@ export const OrdxAddressHolders = ({
           value: secondOutputValue,
         },
       ];
-      await signAndPushPsbt(inputs, outputs);
+      await signAndPushPsbt(inputs, outputs, network);
       message.success('发送成功');
       onTransfer?.();
       setLoading(false);
@@ -245,7 +249,7 @@ export const OrdxAddressHolders = ({
         },
       ];
       console.log(inputs, outputs);
-      await signAndPushPsbt(inputs, outputs);
+      await signAndPushPsbt(inputs, outputs, network);
       message.success('拆分成功');
       setLoading(false);
     } catch (error: any) {
