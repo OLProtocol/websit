@@ -265,7 +265,7 @@ export const OrdxAddressHolders = ({
               ? `https://mempool.space/testnet/tx/${txid}`
               : `https://mempool.space/tx/${txid}`;
           return (
-            <div className='flex'>
+            <div className='flex item-center justify-center'>
               <a
                 className='text-blue-500 cursor-pointer'
                 href={href}
@@ -282,14 +282,14 @@ export const OrdxAddressHolders = ({
         title: 'Sats/BTC',
         dataIndex: 'amount',
         key: 'amount',
-        width: 130,
+        width: 100,
         align: 'center',
       },
       {
         title: 'Assets',
         dataIndex: 'assetamount',
         key: 'assetamount',
-        width: 130,
+        width: 100,
         align: 'center',
       },
       {
@@ -310,26 +310,30 @@ export const OrdxAddressHolders = ({
         },
       },
       {
-        title: t('common.inscriptionNumber'),
+        title: t('common.inscribe'),
         dataIndex: 'inscriptionnums',
         key: 'inscriptionnums',
         width: 100,
         align: 'center',
         render: (t) => {
           let inscriptionnums : any
-          if (t.includes('801715801653801712')) {
-            inscriptionnums = <span>-</span>;
-          } else {
-            inscriptionnums = t?.map((r: any) => 
-              <div>
+          inscriptionnums = t?.map((r: any) => 
+            <div>
+              {r.num === '9223372036854775807' ? (
+                <span
+                className='text-blue-500 cursor-pointer'
+                onClick={() => toInscriptionInfo(r.id)}>
+                #{r.id}
+              </span>
+              ) : (
                 <span
                   className='text-blue-500 cursor-pointer'
-                  onClick={() => toInscriptionInfo(r)}>
-                  #{r}
+                  onClick={() => toInscriptionInfo(r.num)}>
+                  #{r.num}
                 </span>
-              </div>
+              )}
+            </div>
             );
-          }
           return inscriptionnums;
         },
       },
@@ -385,7 +389,10 @@ export const OrdxAddressHolders = ({
         if (Array.isArray(detail.assets)) {
           detail.assets.forEach((assetInfo) => {
             ranges = item['ranges'].concat(assetInfo.ranges)
-            inscriptionNums.push(assetInfo.inscriptionnum)
+            inscriptionNums.push({
+              num: assetInfo.inscriptionnum,
+              id: assetInfo.inscriptionid
+            })
           })
           
           item['ranges'] = ranges

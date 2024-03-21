@@ -37,6 +37,7 @@
     "overview": "Overview",
     "rank": "Rank",
     "quantity": "Quantity",
+    "quantity_percentage": "Quantity Percentage",
     "percentage": "Percentage",
     "satAttr": "Sat Attr",
     "inscriptionId": "Inscription Id",
@@ -47,7 +48,8 @@
     "deployTx": "Deploy Transaction",
     "select_option": "Select Option",
     "height_alert": "The current BTC height is ",
-    "founder": "Founder"
+    "founder": "Founder",
+    "inscribe": "Inscribe"
   },
   "toast": {
     "system_error": "System Error"

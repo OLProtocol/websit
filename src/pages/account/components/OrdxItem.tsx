@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import { getUtxoByInscriptionNumber, getUtxoByValue } from '@/api';
+import { useMemo, useState } from 'react';
+import { getUtxoByValue } from '@/api';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks';
-import { Address, Script } from '@cmdcode/tapscript';
 import { Modal, Card, Button, Input, message } from 'antd';
 import * as bitcoin from 'bitcoinjs-lib';
 import { addressToScriptPublicKey } from '@/lib/utils';

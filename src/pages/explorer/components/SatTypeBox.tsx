@@ -155,7 +155,7 @@ export const SatTypeBox = () => {
         { satTypeList !== undefined && (
           satTypeList.map((item, index) => (
             <div key={index}>
-              <Tooltip label={'Name: ' + item.name + '. Description: ' + item.tip}>
+              <Tooltip label={item.name + ': ' + item.tip}>
                 <img src={item.icon} className='w-6 h-6' />
               </Tooltip>
             </div>

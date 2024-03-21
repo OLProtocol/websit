@@ -73,6 +73,7 @@ export const getOrdxAddressHistory = async ({
   );
   return data;
 };
+
 export const getOrdxAddressHolders = async ({
   address,
   ticker,
@@ -99,36 +100,6 @@ export const getOrdxTickHistory = async ({
       `query-v4/ordx/${ticker}/history?start=${start}&limit=${limit}`,
       network,
     ),
-  );
-  return data;
-};
-
-export const getOrdxHistoryDetail = async ({
-  address,
-  ticker,
-  network,
-  start,
-  limit,
-}: OrdXHistoryDetailParams) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `query-v4/address/${address}/ordx/${ticker}/history?start=${start}&limit=${limit}`,
-      network,
-    ),
-  );
-  return data;
-};
-export const getUtxoByInscriptionNumber = async ({
-  address,
-  inscriptionNumber,
-  network,
-}: any) => {
-  const { data } = await axios.post(
-    generateUrl(`query-v4/address/getUtxoByInscriptionNumber`, network),
-    {
-      address,
-      InscriptionNumber: inscriptionNumber,
-    },
   );
   return data;
 };
@@ -173,12 +144,6 @@ export const getUtxoByValue = async ({
   return data;
 };
 
-export const getCurrentHeight = async ({ network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`v1/indexer/ordx/bestheight`, network),
-  );
-  return data;
-};
 export const savePaidOrder = async ({ key, content, network }: any) => {
   const { data } = await axios.post(
     generateUrl(`v1/indexer/tx/putkv/${key}`, network),

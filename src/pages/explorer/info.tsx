@@ -219,9 +219,9 @@ export default function Ord2Info() {
               className='w-52'
             />
           </div>
-          {tabText === t('common.holders') && tick && (
+          {tabText === t('common.holders') && tick && detail?.totalMinted && (
             <div className='p-4'>
-              <InfoHolders tick={tick} />
+              <InfoHolders tick={tick} totalQuantity={detail?.totalMinted}/>
             </div>
           )}
           {tabText === t('common.minted_history') && tick && (

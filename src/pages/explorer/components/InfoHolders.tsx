@@ -11,13 +11,14 @@ import { CopyButton } from '@/components/CopyButton';
 interface DataType {
   rank: string;
   address: string;
-  percentage: number;
+  percentage: string;
   value: number;
 }
 interface InfoHoldersProps {
   tick: string;
+  totalQuantity: number;
 }
-export const InfoHolders = ({ tick }: InfoHoldersProps) => {
+export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
   const nav = useNavigate();
   const { t } = useTranslation();
   const { network } = useUnisatConnect();
@@ -30,11 +31,6 @@ export const InfoHolders = ({ tick }: InfoHoldersProps) => {
     trigger();
   }, [network, tick]);
   const columns: ColumnsType<DataType> = [
-    // {
-    //   title: t('common.rank'),
-    //   dataIndex: 'rank',
-    //   key: 'rank',
-    // },
     {
       title: t('common.address'),
       dataIndex: 'address',
@@ -53,26 +49,29 @@ export const InfoHolders = ({ tick }: InfoHoldersProps) => {
         </div>
       ),
     },
-    // {
-    //   title: t('common.percentage'),
-    //   dataIndex: 'percentage',
-    //   key: 'percentage',
-    // },
     {
       title: t('common.quantity'),
       dataIndex: 'value',
       align: 'center',
       key: 'value',
     },
+    {
+      title: t('common.quantity_percentage'),
+      dataIndex: 'percentage',
+      align: 'center',
+      key: 'percentage',
+    },
   ];
   const dataSource: DataType[] = useMemo(
-    () =>
+    () => 
       list.map((item) => ({
         address: item.wallet,
         value: item.total_balance,
+        percentage: (item.total_balance / totalQuantity * 100).toFixed(2) + '%',
       })),
     [list],
   );
+
   return (
     <Table
       columns={columns}

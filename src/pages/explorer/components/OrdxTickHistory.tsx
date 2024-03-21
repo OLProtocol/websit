@@ -30,18 +30,24 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
       key: 'inscriptionNumber',
       width: 100,
       align: 'center',
-      render: (t) => {
+      render: (t: any) => {
         const href =
           network === 'testnet'
             ? `https://testnet.ordinals.com/inscription/${t}`
             : `https://ordinals.com/inscription/${t}`;
         return (
-          <a
-            className='text-blue-500 cursor-pointer'
-            href={href}
-            target='_blank'>
-            #{t}
-          </a>
+          <div>
+            { t.toString() === '9223372036854775807' ? (
+              <span>-</span>
+            ) : (
+              <a
+                className='text-blue-500 cursor-pointer'
+                href={href}
+                target='_blank'>
+                #{t}
+              </a>
+            )}
+          </div>
         );
       },
     },

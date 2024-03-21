@@ -1,13 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { useInscriptiontInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
-import { Segmented } from 'antd';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
-import { BlockAndTime } from '@/components/BlockAndTime';
-import { InfoHolders } from './components/InfoHolders';
-import { OrdxTickHistory } from './components/OrdxTickHistory';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { Button, Tag, Spin, Alert } from 'antd';
+import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
