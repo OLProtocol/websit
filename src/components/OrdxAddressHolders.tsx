@@ -319,7 +319,7 @@ export const OrdxAddressHolders = ({
           let inscriptionnums : any
           inscriptionnums = t?.map((r: any) => 
             <div>
-              {r.num === '9223372036854775807' ? (
+              {r.num === 9223372036854775807 ? (
                 <span
                 className='text-blue-500 cursor-pointer'
                 onClick={() => toInscriptionInfo(r.id)}>

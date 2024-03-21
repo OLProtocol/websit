@@ -37,7 +37,7 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
             : `https://ordinals.com/inscription/${t}`;
         return (
           <div>
-            { t.toString() === '9223372036854775807' ? (
+            { t === 9223372036854775807 ? (
               <span>-</span>
             ) : (
               <a

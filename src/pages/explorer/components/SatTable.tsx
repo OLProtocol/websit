@@ -6,7 +6,8 @@ interface SatTableProps {
   canSplit: boolean;
 }
 interface DataType {
-  sat: number[];
+  start: number;
+  size: number;
   time: string;
   block: number;
   canSplit: boolean;

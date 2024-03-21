@@ -45,7 +45,9 @@ export default function Transaction() {
   const toast = useToast();
 
   const addInputItem = () => {
-    const tickers = tickerList?.map((item) => item.ticker) || [];
+    const allTickers = tickerList?.map((item) => item.ticker) || [];
+    let tickers = allTickers.filter(item => !inputList.items.some(inItem => inItem.value.ticker === item))
+    
     const newId = inputList.items.length + 1;
     const newItem = {
       id: newId,
@@ -253,9 +255,6 @@ export default function Transaction() {
       messageApi.error(data.msg);
       return;
     }
-    const totalValue = (data?.data || []).reduce((acc, cur) => {
-      return acc + cur.value;
-    }, 0);
 
     data = await getUtxoByValue({
       address: currentAccount,
