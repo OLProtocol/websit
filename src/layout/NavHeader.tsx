@@ -60,12 +60,12 @@ export const NavHeader = () => {
     },
   ];
   if (location.href.indexOf('test.ordx') < 1) {
-    items.push({
-      key: ROUTE_PATH.TOOLS,
-      label: t('nav.tools'),
-      value: ROUTE_PATH.TOOLS,
-      type: 'route',
-    });
+    // items.push({
+    //   key: ROUTE_PATH.TOOLS,
+    //   label: t('nav.tools'),
+    //   value: ROUTE_PATH.TOOLS,
+    //   type: 'route',
+    // });
   }
   const options = [
     { value: 'en', label: 'EN' },
