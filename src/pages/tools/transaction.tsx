@@ -45,8 +45,7 @@ export default function Transaction() {
   const toast = useToast();
 
   const addInputItem = () => {
-    const allTickers = tickerList?.map((item) => item.ticker) || [];
-    let tickers = allTickers.filter(item => !inputList.items.some(inItem => inItem.value.ticker === item))
+    const tickers = tickerList?.map((item) => item.ticker) || [];
     
     const newId = inputList.items.length + 1;
     const newItem = {
@@ -105,10 +104,32 @@ export default function Transaction() {
     inputList.items[itemId - 1].value.sats = 0;
     inputList.items[itemId - 1].value.utxo = 'sat';
 
-    const selectTicker = tickerList?.find((item) => item.ticker === ticker);
-    if (selectTicker !== undefined) {
-      inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid !== inputList.items[itemId - 1].value.utxo.vout) || [];
-    }
+    const selectTicker = tickerList?.find((item) => item.ticker === ticker) || [];
+    // let utxos : any[] = [];
+    // if (inputList.items.length === 1) {
+    //   utxos = selectTicker.utxos;
+    // } else {
+    //   for (let i = 0; i < inputList.items.length-1; i++) {
+    //     const inItem = inputList.items[i];
+    //     if (ticker === inItem.value.ticker) {
+    //       selectTicker.utxos.forEach((utxo) => {
+    //         if (inItem.value.utxo !== utxo.txid + ':' + utxo.vout) {
+    //           utxos.push(utxo);
+    //         }
+    //       })
+    //     }
+    //   }
+    // }
+    // inputList.items[itemId - 1].options.utxos = utxos.map((utxo) => {
+    //   return {
+    //     txid: utxo.txid,
+    //     vout: utxo.vout,
+    //     value: utxo.value
+    //   }
+    // });
+
+    inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inputList.items[itemId - 1].value.utxo) || [];
+
 
     setInputList('items', inputList.items);
   }

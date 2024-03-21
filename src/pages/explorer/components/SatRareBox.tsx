@@ -9,7 +9,7 @@ interface SatRareBoxProps {
 export const SatRareBox = ({ sats, canSplit }: SatRareBoxProps) => {
 
   const { t } = useTranslation();
-  const [tabIndex, setTabIndex] = useState(-1);
+  const [tabIndex, setTabIndex] = useState(0);
 
   const tabList = useMemo(
     () => [

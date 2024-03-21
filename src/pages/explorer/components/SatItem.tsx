@@ -14,7 +14,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
 
   return (
     <div className='group max-w-full mx-auto flex'>
-      <Tag color='gray'>{format(new Date(sat.time), 'yyyy-MM-dd')}</Tag>
+      {/* <Tag color='gray'>{format(new Date(sat.time), 'yyyy-MM-dd')}</Tag> */}
       <Tag color='green' bordered={false}>
         Block#{sat.block}
       </Tag>
