@@ -30,6 +30,11 @@ export const OrdxAddressHolders = ({
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
   const [selectItem, setSelectItem] = useState<any>();
+
+  const { VITE_TESTNET_TIP_ADDRESS, VITE_MAIN_TIP_ADDRESS } = import.meta.env;
+  const tipAddress =
+    network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
+
   const { data, isLoading, trigger } = useOrdxAddressHolders({
     ticker: tick,
     address,
@@ -227,8 +232,7 @@ export const OrdxAddressHolders = ({
       const balanceOutputValue = avialableValue - realityFee;
       const outputs = [
         {
-          address:
-            'tb1pttjr9292tea2nr28ca9zswgdhz0dasnz6n3v58mtg9cyf9wqr49sv8zjep',
+          address: tipAddress,
           value: serviceOutputValue,
         },
         {
