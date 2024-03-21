@@ -323,13 +323,13 @@ export const OrdxAddressHolders = ({
                 <span
                 className='text-blue-500 cursor-pointer'
                 onClick={() => toInscriptionInfo(r.id)}>
-                #{r.id}
+                #{hideStr(r.id)}
               </span>
               ) : (
                 <span
                   className='text-blue-500 cursor-pointer'
                   onClick={() => toInscriptionInfo(r.num)}>
-                  #{r.num}
+                   #{r.num}
                 </span>
               )}
             </div>
@@ -391,7 +391,7 @@ export const OrdxAddressHolders = ({
             ranges = item['ranges'].concat(assetInfo.ranges)
             inscriptionNums.push({
               num: assetInfo.inscriptionnum,
-              id: assetInfo.inscriptionid
+              id: assetInfo.inscriptionId
             })
           })
           
