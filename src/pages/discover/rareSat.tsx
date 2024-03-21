@@ -35,7 +35,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   if (satList) {
     const uniqueTypeSet = new Set<string>();
     satList.forEach((item) =>
-      item.type.forEach((satType) => uniqueTypeSet.add(satType)),
+      item.type.forEach((satType) => satType === 'first_transaction' ? uniqueTypeSet.add('1st TX') :uniqueTypeSet.add(satType)),
     );
     uniqueTypes = Array.from(uniqueTypeSet);
     if (uniqueTypes.length > 0) {
