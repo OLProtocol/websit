@@ -27,6 +27,10 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const { VITE_TESTNET_TIP_ADDRESS, VITE_MAIN_TIP_ADDRESS } = import.meta.env;
+  const tipAddress =
+    network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
+
   const signAndPushPsbt = async (inputs, outputs) => {
     const psbtNetwork = bitcoin.networks.testnet;
     const psbt = new bitcoin.Psbt({
@@ -123,6 +127,7 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
       setLoading(false);
     }
   };
+
   const splitHandler = async () => {
     setLoading(true);
     // const utxos = await getUtxo();
@@ -178,8 +183,7 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
       const secondOutputValue = total - firstOutputValue - fee;
       const outputs = [
         {
-          address:
-            'tb1pttjr9292tea2nr28ca9zswgdhz0dasnz6n3v58mtg9cyf9wqr49sv8zjep',
+          address: tipAddress,
           value: firstOutputValue,
         },
         {
