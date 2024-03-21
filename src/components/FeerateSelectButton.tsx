@@ -1,10 +1,14 @@
 import { Button, Modal } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCommonStore } from '@/store';
 import { BtcFeeRate } from './BtcFeeRate';
+import { useBtcFeeRate } from '@/api';
+import { useUnisatConnect } from '@/lib/hooks';
 export const FeerateSelectButton = () => {
+  const { network } = useUnisatConnect();
   const [fee, setFee] = useState(1);
   const { setFeeRate, feeRate } = useCommonStore((state) => state);
+  const { data: feeRateData, error } = useBtcFeeRate(network as any);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOk = () => {
     setFeeRate({ value: fee, type: 'custom' });
@@ -17,6 +21,11 @@ export const FeerateSelectButton = () => {
     console.log('value', value);
     setFee(value);
   };
+  useEffect(() => {
+    if (feeRateData) {
+      setFeeRate({ value: feeRateData?.halfHourFee || 1, type: 'Normal' });
+    }
+  }, [feeRateData]);
   return (
     <div>
       <Button type='dashed' size='small' ghost className='bg-transparent' onClick={() => setIsModalOpen(true)}>Gas: {feeRate.value}</Button>
@@ -26,7 +35,7 @@ export const FeerateSelectButton = () => {
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}>
-        <BtcFeeRate onChange={feeChange} />
+        <BtcFeeRate onChange={feeChange} feeRateData={feeRateData} />
       </Modal>
     </div>
   );

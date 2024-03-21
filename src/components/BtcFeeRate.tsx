@@ -19,8 +19,9 @@ import { useTranslation } from 'react-i18next';
 
 interface BtcFeeRate {
   onChange?: (value: number) => void;
+  feeRateData?:any
 }
-export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
+export const BtcFeeRate = ({ onChange, feeRateData }: BtcFeeRate) => {
   const { t } = useTranslation();
   const [type, setType] = useState('Normal');
   const [customValue, setCustomValue] = useState(1);
@@ -36,7 +37,6 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
     setType(_type);
     onChange?.(value);
   };
-  const { data: feeRateData, error } = useBtcFeeRate(network as any);
   const setRecommendFee = async () => {
     const defaultFee = network === 'testnet' ? 1 : 50;
     setCustomValue(feeRateData?.fastestFee || defaultFee);
@@ -68,7 +68,7 @@ export const BtcFeeRate = ({ onChange }: BtcFeeRate) => {
   );
   useEffect(() => {
     setRecommendFee();
-  }, [feeRateData, error]);
+  }, [feeRateData]);
   useEffect(() => {
     if (type === 'Custom') {
       onChange?.(customValue);
