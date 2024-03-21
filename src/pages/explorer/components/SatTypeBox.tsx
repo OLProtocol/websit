@@ -105,7 +105,12 @@ export const SatTypeBox = () => {
       icon: '/images/sat/icon-customized.svg',
       name: 'Customized',
       tip: 'Customized'
-    }
+    },
+    first_transaction: {
+      icon: '/images/sat/icon-t1.svg',
+      name: 'First Transaction',
+      tip: 'Sats from the 10 bitcoins Satoshi Nakamoto send Hal Finney in the first bitcoin transaction.'
+    },
   }
 
   const getSatTypeList = async () => {
