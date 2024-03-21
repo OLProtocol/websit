@@ -37,9 +37,11 @@ export const OrdxAddressHolders = ({
     start,
     limit,
   });
-  const toInscriptionInfo = (inscriptionNumber) => {
-    nav(`/explorer/inscription/${inscriptionNumber}`);
-  };
+  
+  // const toInscriptionInfo = (inscriptionNumber) => {
+  //   nav(`/explorer/inscription/${inscriptionNumber}`);
+  // };
+
   const unisat = useUnisat();
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -148,6 +150,17 @@ export const OrdxAddressHolders = ({
       setLoading(false);
     }
   };
+  const toSplit = async (item: any) => {
+    Modal.confirm({
+      centered: true,
+      content: `该工具仅用于ordx资产的拆分演示，会收取一个聪的ordx资产加上至少546个普通聪作为拆分费用支付给协议开发团队。请确认是否继续拆分？`,
+      okText: '继续',
+      cancelText: '取消',
+      onOk() {
+        splitHandler(item);
+      },
+    });
+  }
   const splitHandler = async (item: any) => {
     setLoading(true);
     // const utxos = await getUtxo();
@@ -317,20 +330,33 @@ export const OrdxAddressHolders = ({
         align: 'center',
         render: (t) => {
           let inscriptionnums : any
+          const href = network === 'testnet'
+              ? `https://testnet.ordinals.com/inscription/`
+              : `https://ordinals.com/inscription/`;
           inscriptionnums = t?.map((r: any) => 
             <div>
               {r.num === 9223372036854775807 ? (
-                <span
-                className='text-blue-500 cursor-pointer'
-                onClick={() => toInscriptionInfo(r.id)}>
-                #{hideStr(r.id)}
-              </span>
+                // <span
+                //   className='text-blue-500 cursor-pointer'
+                //   onClick={() => toInscriptionInfo(r.id)}>
+                //   #{hideStr(r.id)}
+                // </span>
+                <a className='text-blue-500 cursor-pointer'
+                  href={href + r.id}
+                  target='_blank'>
+                  #{hideStr(r.id)}
+                </a>
               ) : (
-                <span
-                  className='text-blue-500 cursor-pointer'
-                  onClick={() => toInscriptionInfo(r.num)}>
-                   #{r.num}
-                </span>
+                // <span
+                //   className='text-blue-500 cursor-pointer'
+                //   onClick={() => toInscriptionInfo(r.num)}>
+                //    #{r.num}
+                // </span>
+                <a className='text-blue-500 cursor-pointer'
+                  href={href + r.num}
+                  target='_blank'>
+                  #{r.num}
+                </a>
               )}
             </div>
             );
@@ -359,7 +385,7 @@ export const OrdxAddressHolders = ({
                 type='link'
                 loading={loading}
                 onClick={() => {
-                  splitHandler(record);
+                  toSplit(record);
                 }}>
                 {t('buttons.split')}
               </Button>

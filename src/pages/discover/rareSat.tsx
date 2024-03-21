@@ -93,13 +93,27 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     setRareSatList(tmpSats);
 
     localStorage.setItem('address-4-search-rare-sats', address);
-
-    tmpSats = tmpSats
-      .filter((item) => !item.type.includes('uncommon'))
-      .filter((item) => !item.type.includes('rare'))
-      .filter((item) => !item.type.includes('epic'))
-      .filter((item) => !item.type.includes('legendary'))
-      .filter((item) => !item.type.includes('mythic'));
+    
+    tmpSats.forEach((item) => {
+      if (item.type.length === 1) {
+        const satType = item.type[0];
+        if (satType !== 'uncommon' 
+          && satType !== 'rare' 
+          && satType !== 'epic' 
+          && satType !== 'legendary' 
+          && satType !== 'mythic') {
+            return item;
+        }
+      } else {
+        return item;
+      }
+    })
+    // tmpSats = tmpSats
+    //   .filter((item) => !item.type.includes('uncommon') && item.type.length > 1)
+    //   .filter((item) => !item.type.includes('rare'))
+    //   .filter((item) => !item.type.includes('epic'))
+    //   .filter((item) => !item.type.includes('legendary'))
+    //   .filter((item) => !item.type.includes('mythic'));
     setSatList(tmpSats);
     setLoading(false);
   };
