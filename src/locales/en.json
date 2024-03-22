@@ -49,7 +49,8 @@
     "select_option": "Select Option",
     "height_alert": "The current BTC height is ",
     "founder": "Founder",
-    "inscribe": "Inscribe"
+    "inscribe": "Inscribe",
+    "hint_connect": "Please connect your wallet first."
   },
   "toast": {
     "system_error": "System Error"
@@ -81,6 +82,7 @@
     "disconnect": "Disconnect",
     "select_lang": "Select Language",
     "send": "Send",
+    "toHistory": "Tx History",
     "split": "Split"
   },
   "pages": {

@@ -41,6 +41,9 @@ export const OrdxAccountSummaryList = ({
   useEffect(() => {
     onEmpty?.(list.length === 0);
   }, [list]);
+  useEffect(() => {
+    trigger();
+  }, [address, network]);
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.map((item) => (

@@ -3,7 +3,16 @@ import { getSats } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks';
 import { ItemList } from './components/ItemList';
 import { useEffect, useState } from 'react';
-import { Card, CardBody, Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from '@chakra-ui/react';
+import {
+  Card,
+  CardBody,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useToast,
+} from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { RareSat } from '../discover/rareSat';
 
@@ -21,22 +30,28 @@ export default function Account() {
 
   return (
     <div className='max-w-6xl mx-auto p-2'>
-    { currentAccount !== '' && (
-      <Card>
-        <CardBody>
-          <Tabs>
-            <TabList>
-              <Tab>{t('pages.account.my_items')}</Tab>
-              <Tab>{t('pages.account.rare_sats')}</Tab>
-            </TabList>
-            <TabPanels>
-                <TabPanel><ItemList /></TabPanel>
-                <TabPanel><RareSat canSplit={true}/></TabPanel>
+      {currentAccount !== '' ? (
+        <Card>
+          <CardBody>
+            <Tabs>
+              <TabList>
+                <Tab>{t('pages.account.my_items')}</Tab>
+                <Tab>{t('pages.account.rare_sats')}</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <ItemList />
+                </TabPanel>
+                <TabPanel>
+                  <RareSat canSplit={true} />
+                </TabPanel>
               </TabPanels>
-          </Tabs>
-        </CardBody>
-      </Card>
-      ) }
+            </Tabs>
+          </CardBody>
+        </Card>
+      ) : (
+        <div className='text-xl text-center mt-20'>{t('common.hint_connect')}</div>
+      )}
       {/* <Tabs
         defaultActiveKey='1'
         size='large'

@@ -109,20 +109,21 @@ export const UnisatConnectButton = () => {
               <div className='flex justify-center'>
                 <Button
                   type='primary'
-                  className='w-28'
+                  className='w-32'
                   onClick={switchNetworkHandler}>
                   {t('buttons.switchNetwork')}
                 </Button>
               </div>
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
-                <Button type='primary' className='w-28' onClick={toHistory}>
-                  交易历史
+                <Button type='primary' className='w-32' onClick={toHistory}>
+                  
+                  {t('buttons.toHistory')}
                 </Button>
               </div>
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
-                <Button type='primary' className='w-28' onClick={disconnect}>
+                <Button type='primary' className='w-32' onClick={disconnect}>
                   {t('buttons.disconnect')}
                 </Button>
               </div>
