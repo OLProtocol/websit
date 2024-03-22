@@ -137,7 +137,7 @@ export const UnisatConnectButton = () => {
         </Popover>
       ) : (
         <Button size='small' type='primary' onClick={connect}>
-          {t('buttons.connect')}
+          {t('buttons.connect')}(Unisat)
         </Button>
       )}
     </>

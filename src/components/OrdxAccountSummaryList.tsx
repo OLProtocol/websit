@@ -5,6 +5,7 @@ import { useUnisatConnect } from '@/lib/hooks';
 import { on } from 'events';
 interface OrdxSummaryListProps {
   address: string;
+  utxosTotal?: number;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
@@ -12,27 +13,17 @@ export const OrdxAccountSummaryList = ({
   address,
   onChange,
   onEmpty,
+  utxosTotal,
 }: OrdxSummaryListProps) => {
   const { network } = useUnisatConnect();
   const { data, trigger } = useOrdxSummary({ address, network });
-  const {
-    data: utxosRes,
-    trigger: getUtxo,
-  } = useUtxoByValue({
-    address,
-    network,
-    value: 10,
-  });
+
   const avialableTicker = useMemo(() => {
-    const utxos = utxosRes?.data || [];
-    const totalValue = utxos.reduce((acc, cur) => {
-      return acc + cur.value;
-    }, 0);
     return {
       ticker: '可花费utxo',
-      balance: totalValue,
+      balance: utxosTotal,
     };
-  }, [utxosRes]);
+  }, [utxosTotal]);
   const [select, setSelect] = useState('');
   const arr = useMemo(() => data?.data?.detail || [], [data]);
   const list = useMemo(() => {
@@ -50,12 +41,6 @@ export const OrdxAccountSummaryList = ({
   useEffect(() => {
     onEmpty?.(list.length === 0);
   }, [list]);
-  useEffect(() => {
-    if (address) {
-      trigger();
-      getUtxo();
-    }
-  }, [address, network]);
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.map((item) => (

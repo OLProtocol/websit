@@ -8,7 +8,11 @@ import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { hideStr, filterUtxosByValue, addressToScriptPublicKey } from '@/lib/utils';
+import {
+  hideStr,
+  filterUtxosByValue,
+  addressToScriptPublicKey,
+} from '@/lib/utils';
 import { sortBy, reverse } from 'lodash';
 import { useCommonStore } from '@/store';
 
@@ -17,8 +21,9 @@ interface Ord2HistoryProps {
   tick: string;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
+  onTotalChange?: (total: number) => void;
 }
-export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
+export const UtxoList = ({ address, onEmpty, tick, onTotalChange }: Ord2HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { network, currentAccount, currentPublicKey } = useUnisatConnect();
@@ -44,9 +49,10 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
   const [loading, setLoading] = useState(false);
 
   const signAndPushPsbt = async (inputs, outputs) => {
-    const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+    const psbtNetwork =
+      network === 'testnet'
+        ? bitcoin.networks.testnet
+        : bitcoin.networks.bitcoin;
     const psbt = new bitcoin.Psbt({
       network: psbtNetwork,
     });
@@ -99,9 +105,10 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
           },
         };
       });
-      const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+      const psbtNetwork =
+        network === 'testnet'
+          ? bitcoin.networks.testnet
+          : bitcoin.networks.bitcoin;
       const psbt = new bitcoin.Psbt({
         network: psbtNetwork,
       });
@@ -187,9 +194,10 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
           },
         };
       });
-      const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+      const psbtNetwork =
+        network === 'testnet'
+          ? bitcoin.networks.testnet
+          : bitcoin.networks.bitcoin;
       const psbt = new bitcoin.Psbt({
         network: psbtNetwork,
       });
@@ -282,7 +290,15 @@ export const UtxoList = ({ address, onEmpty, tick }: Ord2HistoryProps) => {
       })) || [],
     [data],
   );
-  const total = useMemo(() => data?.data?.total || 10, [data]);
+  const totalValue = useMemo(() => {
+    return dataSource.reduce((acc, cur) => {
+      return acc + cur.value;
+    }, 0);
+  }, [dataSource]);
+  const total = useMemo(() => data?.data?.total || 0, [data]);
+  useEffect(() => {
+    onTotalChange?.(totalValue);
+  }, [totalValue]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
     console.log(page, pageSize);
