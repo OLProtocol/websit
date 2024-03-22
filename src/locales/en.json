@@ -53,7 +53,8 @@
     "hint_connect": "Please connect your wallet first."
   },
   "toast": {
-    "system_error": "System Error"
+    "system_error": "System Error",
+    "insufficient_balance": "Insufficient balance"
   },
   "nav": {
     "home": "Home",
