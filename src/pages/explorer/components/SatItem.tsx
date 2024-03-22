@@ -38,7 +38,8 @@ export const SatItem = ({ sat }: SatItemProps) => {
       {/* {icon && <img src={icon} alt='' className='w-6 h-6 ml-4' />} */}
       <div className='flex'>
         <CopyButton text={sat.start} tooltip='Copy Sat' />&nbsp;&nbsp;
-        { (sat.canSplit || network.includes('testnet')) && (
+        {/* { (sat.canSplit || network.includes('testnet')) && ( */}
+        { (sat.canSplit) && (
         <SplitSatButton text={sat.start} tooltip='Split Sat' />
         )}
       </div>

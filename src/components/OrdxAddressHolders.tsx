@@ -442,7 +442,6 @@ export const OrdxAddressHolders = ({
   const dataSource = useMemo(() => {
     return generateData();
   }, [data])
-  console.log('dataSource = ', dataSource)
 
   const total = useMemo(() => data?.data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
