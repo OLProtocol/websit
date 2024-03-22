@@ -433,7 +433,7 @@ export const InscribingOrderModal = ({
                   </Button>
                 </div>
                 <div className='text-amber-400 text-base text-center'>
-                  t('pages.inscribe.order.continue')
+                  {t('pages.inscribe.order.continue')}
                 </div>
               </div>
             )}
@@ -457,7 +457,7 @@ export const InscribingOrderModal = ({
                   </Button>
                 </div>
                 <div className='text-amber-400 text-base text-center'>
-                  t('pages.inscribe.order.continue')
+                  {t('pages.inscribe.order.continue')}
                 </div>
               </div>
             )}
