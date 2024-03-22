@@ -25,7 +25,8 @@ export const getOrdxStatusList = async (
 ): Promise<any> => {
   const { data } = await axios.get(
     generateUrl(
-      `v1/indexer/ordx/status?start=${params.start}&limit=${params.limit}`,
+      // `v1/indexer/ordx/status?start=${params.start}&limit=${params.limit}`,
+      `status?start=${params.start}&limit=${params.limit}`,
       params.network,
     ),
   );
@@ -34,7 +35,8 @@ export const getOrdxStatusList = async (
 
 export const getOrdxInfo = async ({ tick, network }: Ord2InfoParams) => {
   const { data } = await axios.get(
-    generateUrl(`v1/indexer/ordx/${tick}/info`, network),
+    // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
+    generateUrl(`tick/info/${tick}`, network),
     {
       timeout: 10000,
     },
@@ -47,13 +49,15 @@ export const getOrdxSummary = async ({
   network,
 }: OrdXSummaryParams) => {
   const { data } = await axios.get(
-    generateUrl(`query-v4/address/${address}/ordx/summary`, network),
+    // generateUrl(`query-v4/address/${address}/ordx/summary`, network),
+    generateUrl(`address/summary/${address}`, network),
   );
   return data;
 };
 export const getOrdxTickHolders = async ({ tick, network }: Ord2InfoParams) => {
   const { data } = await axios.get(
-    generateUrl(`v1/indexer/ordx/${tick}/holders`, network),
+    // generateUrl(`v1/indexer/ordx/${tick}/holders`, network),
+    generateUrl(`tick/holders/${tick}`, network),
   );
   return data;
 };
@@ -67,7 +71,8 @@ export const getOrdxAddressHistory = async ({
 }: OrdXHistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      `query-v4/address/${address}/ordx/${ticker}/history?start=${start}&limit=${limit}`,
+      // `query-v4/address/${address}/ordx/${ticker}/history?start=${start}&limit=${limit}`,
+      `address/history/${address}/${ticker}?start=${start}&limit=${limit}`,
       network,
     ),
   );
@@ -83,7 +88,8 @@ export const getOrdxAddressHolders = async ({
 }: OrdXHistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      `query-v4/address/${address}/ordx/${ticker}/holderlist?start=${start}&limit=${limit}`,
+      // `query-v4/address/${address}/ordx/${ticker}/holderlist?start=${start}&limit=${limit}`,
+      `address/utxolist/${address}/${ticker}?start=${start}&limit=${limit}`,
       network,
     ),
   );
@@ -97,38 +103,14 @@ export const getOrdxTickHistory = async ({
 }: OrdXHistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      `query-v4/ordx/${ticker}/history?start=${start}&limit=${limit}`,
+      // `query-v4/ordx/${ticker}?start=${start}&limit=${limit}`,
+      `tick/history/${ticker}?start=${start}&limit=${limit}`,
       network,
     ),
   );
   return data;
 };
 
-export const getAvailableUtxos = async ({ address, ticker, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `query-v4/address/${address}/ordx/${ticker}/getAvailableUtxo`,
-      network,
-    ),
-  );
-  return data;
-};
-export const getUtxoByConditon = async ({
-  address,
-  satNumber,
-  network,
-  limit = 330,
-}: any) => {
-  const { data } = await axios.post(
-    generateUrl(`utxo/getUtxoByConditon`, network),
-    {
-      address,
-      satIndex: satNumber,
-      value: limit,
-    },
-  );
-  return data;
-};
 export const getUtxoByValue = async ({
   address,
   value = 600,
@@ -144,6 +126,7 @@ export const getUtxoByValue = async ({
   return data;
 };
 
+// server端无此接口
 export const savePaidOrder = async ({ key, content, network }: any) => {
   const { data } = await axios.post(
     generateUrl(`v1/indexer/tx/putkv/${key}`, network),
@@ -154,15 +137,17 @@ export const savePaidOrder = async ({ key, content, network }: any) => {
   );
   return data;
 };
+
 export const getMintInfo = async ({ inscribId, network }: any) => {
   const { data } = await axios.get(
-    generateUrl(`v1/indexer/inscription/${inscribId}/mintinfo`, network),
+    generateUrl(`mint/info/${inscribId}`, network),
   );
   return data;
 };
+
 export const getInscriptiontInfo = async ({ inscribNum, network }: any) => {
   const { data } = await axios.get(
-    generateUrl(`v1/indexer/inscription/${inscribNum}/mintdetails`, network),
+    generateUrl(`mint/details/${inscribNum}`, network),
   );
   return data;
 };
@@ -187,7 +172,8 @@ export const getSats = async ({ address, network }: any) => {
 
 export const getSplittedSats = async ({ ticker, network }: any) => {
   const { data } = await axios.get(
-    generateUrl(`v1/indexer/ordx/${ticker}/splittedInscriptions`, network),
+    // generateUrl(`v1/indexer/ordx/${ticker}/splittedInscriptions`, network),
+    generateUrl(`splittedInscriptions/${ticker}`, network),
   );
   return data;
 };

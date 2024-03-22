@@ -50,7 +50,8 @@
     "height_alert": "The current BTC height is ",
     "founder": "Founder",
     "inscribe": "Inscribe",
-    "hint_connect": "Please connect your wallet first."
+    "hint_connect": "Please connect your wallet first.",
+    "available_utxo": "Available Utxo"
   },
   "toast": {
     "system_error": "System Error",

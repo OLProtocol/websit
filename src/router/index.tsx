@@ -9,7 +9,6 @@ import OrdxInscription from '@/pages/explorer/inscription';
 import InscribeCheck from '@/pages/inscribe_check';
 import Tools from '@/pages/tools';
 import Account from '@/pages/account';
-import SplitSats from '@/pages/tools/splitSats';
 import SplittedInscription from '@/pages/tools/splittedInscription';
 import Utxo from '@/pages/tools/utxo';
 import Transaction from '@/pages/tools/transaction';

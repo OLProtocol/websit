@@ -195,19 +195,6 @@ export const useOrdxTickHistory = ({
     isLoading: isMutating,
   };
 };
-export const useAvailableUtxos = ({ address, ticker, network }: any) => {
-  const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ordx-history-${address}-${ticker}`,
-    () => request.getAvailableUtxos({ address, ticker, network }),
-  );
-  return {
-    data,
-    trigger,
-    reset,
-    error,
-    isLoading: isMutating,
-  };
-};
 
 export const useBtcHeight = (network: string) => {
   const { data, error, isLoading } = useSWR(
