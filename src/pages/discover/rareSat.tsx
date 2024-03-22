@@ -27,7 +27,8 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   const [rareSatList, setRareSatList] = useState<any[]>();
   const [satList, setSatList] = useState<any[]>();
   const [satFilterList, setSatFilterList] = useState<any[]>();
-  const { network } = useUnisatConnect();
+  // const { network } = useUnisatConnect();
+  const { network, currentAccount } = useUnisatConnect();
   const toast = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -125,7 +126,12 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   //     doSearch();
   //   }
   // }, [address]);
-  
+  useEffect(() => {
+    if (canSplit) {
+      setAddress(currentAccount);
+      doSearch();
+    }
+  }, [canSplit, address]);
   return (
     // <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
