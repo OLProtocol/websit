@@ -29,7 +29,7 @@ export const ROUTE_PATH = {
   ORDX_INSCRIPTION: '/explorer/inscription/:inscriptionnum',
   INSCRIBE_CHECK: '/inscribe_check',
   TOOLS: '/tools',
-  TOOLS_SPLIT_SATS: '/tools/split-sats',
+  // TOOLS_SPLIT_SATS: '/tools/split-sats',
   TOOLS_UTXO: '/tools/utxo',
   // TOOLS_UTXO_ASSET: '/tools/utxo-asset',
   // TOOLS_GET_UTXO: '/tools/get-utxo',
@@ -93,10 +93,10 @@ export const routes: RouteObject[] = [
       //   path: ROUTE_PATH.RARE_SAT,
       //   element: <RareSat canSplit={false} />,
       // },
-      {
-        path: ROUTE_PATH.TOOLS_SPLIT_SATS,
-        element: <SplitSats />,
-      },
+      // {
+      //   path: ROUTE_PATH.TOOLS_SPLIT_SATS,
+      //   element: <SplitSats />,
+      // },
       // {
       //   path: ROUTE_PATH.TOOLS_UTXO_ASSET,
       //   element: <UtxoAsset />,

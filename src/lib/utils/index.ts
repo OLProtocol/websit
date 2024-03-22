@@ -56,15 +56,25 @@ export const calcTimeBetweenBlocks = async ({
 };
 export const hideStr = (
   str?: string,
-  num: number = 10,
+  num: number = 6,
   placeholder = '*****',
 ) => {
+  let ret = '';
   if (typeof str === 'string' && str) {
-    return `${str?.substring(0, num)}${placeholder}${str?.substring(
-      str?.length - num,
-    )}`;
+    if (str?.length <= num) {
+      ret = str;
+    } else if (str.includes(':')) {
+      const index = str.indexOf(':');
+      ret = `${str?.substring(0, num)}${placeholder}${str?.substring(
+        index - num,
+      )}`;
+    } else {
+      ret = `${str?.substring(0, num)}${placeholder}${str?.substring(
+        str?.length - num,
+      )}`;
+    }
   }
-  return '';
+  return ret;
 };
 export const isRegExp = (str: string) => {
   try {

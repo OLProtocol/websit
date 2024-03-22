@@ -236,10 +236,6 @@
       "card_header": "Rare Sats"
     },
     "tools": {
-      "split_sat": {
-        "title": "Split Sats",
-        "des": "Split a range of sats into segments."
-      },
       "splitted_inscription": {
         "title": "Splitted Inscriptions",
         "des": "Splitted Inscriptions",
