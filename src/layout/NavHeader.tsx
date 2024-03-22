@@ -59,13 +59,13 @@ export const NavHeader = () => {
       type: 'link',
     },
   ];
-  if (location.href.indexOf('test.ordx') < 1) {
-    // items.push({
-    //   key: ROUTE_PATH.TOOLS,
-    //   label: t('nav.tools'),
-    //   value: ROUTE_PATH.TOOLS,
-    //   type: 'route',
-    // });
+  if (['ordx.space'].every((v) => location.hostname !== v)) {
+    items.push({
+      key: ROUTE_PATH.TOOLS,
+      label: t('nav.tools'),
+      value: ROUTE_PATH.TOOLS,
+      type: 'route',
+    });
   }
   const options = [
     { value: 'en', label: 'EN' },

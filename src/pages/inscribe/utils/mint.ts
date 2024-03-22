@@ -2,6 +2,7 @@ import { Address, Signer, Tap, Tx, Script } from '@cmdcode/tapscript';
 import * as cbor from 'cbor-web';
 import * as bitcoin from 'bitcoinjs-lib';
 import { keys } from '@cmdcode/crypto-utils';
+import i18n from '@/locales';
 import {
   textToHex,
   encodeBase64,
@@ -544,8 +545,9 @@ export const sendBTC = async ({
   });
   const consumUtxos = data?.data || [];
   if (!consumUtxos.length) {
-    throw new Error('余额不足');
+    throw new Error(i18n.t('toast.insufficient_balance'));
   }
+  console.log(value)
   const fee = (180 * (hasOrdxUtxo ? 2 : 1) + 34 * 2 + 10) * feeRate;
   const filterTotalValue = hasOrdxUtxo ? 330 + fee : value + 330 + fee;
   const avialableUtxo: any[] = [];
@@ -557,6 +559,9 @@ export const sendBTC = async ({
     if (avialableValue >= filterTotalValue) {
       break;
     }
+  }
+  if (avialableValue < filterTotalValue) {
+    throw new Error(i18n.t('toast.insufficient_balance'));
   }
   // const btcUtxos = avialableUtxo.map((v) => {
   //   return {
