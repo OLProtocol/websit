@@ -188,6 +188,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
                           className='m-1'
                           onClick={() => setFilterType(item)}>
                           {item}
+                          {item !== 'all' && satList && satList.length > 0 && (' (' + satList.filter((sat) => item === '1st TX'  ? sat.type.includes('first_transaction') : sat.type.includes(item)).length + ')')}
                         </Button>
                       ))}
                       {satFilterList && satFilterList.length > 0 ? (
