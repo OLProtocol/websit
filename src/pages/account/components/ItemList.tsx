@@ -26,10 +26,10 @@ export const ItemList = () => {
       {ticker === t('pages.account.rare_sats') && (
         <RareSat canSplit={true} />
       )}
-      {ticker !== t('pages.account.rare_sats') && ticker === t('common.available_utxo') && (
+      {ticker === t('pages.account.available_utxo') && (
         <UtxoList address={currentAccount} tick={ticker} onTotalChange={onTotalChange} />
       )}
-      {ticker !== t('pages.account.rare_sats') && ticker !== t('common.available_utxo') && (
+      {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && ticker !== t('pages.account.ord_nft') && (
         <OrdxAddressHolders tick={ticker} address={currentAccount} />
       )}
     </div>

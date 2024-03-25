@@ -3,6 +3,7 @@ import { OrdXItem } from './OrdXItem';
 import { getSats, useOrdxSummary } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks';
 import { useTranslation } from 'react-i18next';
+import { Box, useToast } from '@chakra-ui/react';
 
 interface OrdxSummaryListProps {
   address: string;
@@ -20,10 +21,11 @@ export const OrdxAccountSummaryList = ({
   const { t } = useTranslation();
   const { data, trigger } = useOrdxSummary({ address, network });
   const [rareSatList, setRareSatList] = useState<any[]>();
+  const toast = useToast();
 
   const avialableTicker = useMemo(() => {
     return {
-      ticker: t('common.available_utxo'),
+      ticker: t('pages.account.available_utxo'),
       balance: utxosTotal,
     };
   }, [utxosTotal]);
@@ -44,6 +46,13 @@ export const OrdxAccountSummaryList = ({
     };
   }, [rareSatList]);
 
+
+  const ordNftTicker = useMemo(() => {
+    return {
+      ticker: t('pages.account.ord_nft'),
+      balance: 0,
+    };
+  }, [])
 
   const getRareSats = async () => {
     const data = await getSats({
@@ -70,9 +79,18 @@ export const OrdxAccountSummaryList = ({
   const [select, setSelect] = useState('');
   const arr = useMemo(() => data?.data?.detail || [], [data]);
   const list = useMemo(() => {
-    return [avialableTicker, ...arr, rareSatsTicker];
+    return [avialableTicker, rareSatsTicker, ordNftTicker, ...arr];
   }, [arr, avialableTicker, rareSatsTicker]);
   const onClick = (item) => {
+    if (item.ticker === t('pages.account.ord_nft')) {
+      toast({
+        title: 'Ordinals NFT is not supported yet',
+        status: 'info',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
     setSelect(item.ticker);
     onChange?.(item.ticker);
   };
@@ -90,7 +108,22 @@ export const OrdxAccountSummaryList = ({
   }, [address, network]);
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
-      {list.map((item) => (
+
+      <Box className='flex gap-4' borderRadius='lg' bgColor={'gray.200'}>
+        {list.slice(0, 3).map((item) => (
+          <OrdXItem key={item.ticker}
+            selected={select === item.ticker}
+            onClick={() => {
+              onClick(item);
+            }}
+            item={{
+              tick: item.ticker,
+              balance: item.balance,
+            }}
+          />
+        ))}
+      </Box>
+      {list.slice(3).map((item) => (
         <OrdXItem key={item.ticker}
           selected={select === item.ticker}
           onClick={() => {

@@ -262,8 +262,9 @@
       "not_support": "暂时不支持查看转移后的余额。"
     },
     "account": {
-      "my_items": "My Items",
-      "rare_sats": "Rare Sats"
+      "available_utxo": "可花费 Utxo",
+      "rare_sats": "Rare Sats",
+      "ord_nft": "Ordinals NFT"
     }
   }
 }
