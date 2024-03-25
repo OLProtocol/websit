@@ -43,7 +43,6 @@ export default function Ord2Index() {
   }, [summaryEmptyStatus, historyEmptyStatus]);
   useEffect(() => {
     if (search === '') {
-      console.log(search);
       setAddress('');
       // history.replaceState(null, '', `/#/explorer`);
       // nav(`${ROUTE_PATH.ORDX_INDEX}`);

@@ -1,19 +1,16 @@
 import { Button, message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { useUtxoByValue, getUtxoByValue } from '@/api';
-import { Address, Script } from '@cmdcode/tapscript';
 import { CopyButton } from '@/components/CopyButton';
 import * as bitcoin from 'bitcoinjs-lib';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
 import type { ColumnsType } from 'antd/es/table';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   hideStr,
   filterUtxosByValue,
   addressToScriptPublicKey,
 } from '@/lib/utils';
-import { sortBy, reverse } from 'lodash';
 import { useCommonStore } from '@/store';
 
 interface Ord2HistoryProps {
@@ -23,9 +20,8 @@ interface Ord2HistoryProps {
   onTransfer?: () => void;
   onTotalChange?: (total: number) => void;
 }
-export const UtxoList = ({ address, onEmpty, tick, onTotalChange }: Ord2HistoryProps) => {
+export const UtxoList = ({ address, onEmpty, tick, onTransfer, onTotalChange }: Ord2HistoryProps) => {
   const { t } = useTranslation();
-  const nav = useNavigate();
   const { network, currentAccount, currentPublicKey } = useUnisatConnect();
   const { feeRate } = useCommonStore((state) => state);
   const addressRef = useRef<any>();
@@ -40,19 +36,18 @@ export const UtxoList = ({ address, onEmpty, tick, onTotalChange }: Ord2HistoryP
     network,
     value: 10,
   });
-  const toInscriptionInfo = (inscriptionNumber) => {
-    nav(`/explorer/inscription/${inscriptionNumber}`);
-  };
+  // const toInscriptionInfo = (inscriptionNumber) => {
+  //   nav(`/explorer/inscription/${inscriptionNumber}`);
+  // };
   const unisat = useUnisat();
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const signAndPushPsbt = async (inputs, outputs) => {
-    const psbtNetwork =
-      network === 'testnet'
-        ? bitcoin.networks.testnet
-        : bitcoin.networks.bitcoin;
+  const signAndPushPsbt = async (inputs, outputs, network) => {
+    const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
     const psbt = new bitcoin.Psbt({
       network: psbtNetwork,
     });
@@ -66,6 +61,7 @@ export const UtxoList = ({ address, onEmpty, tick, onTotalChange }: Ord2HistoryP
     const pushedTxId = await unisat.pushPsbt(signed);
     return pushedTxId;
   };
+
   const fastClick = async () => {
     setLoading(true);
     const virtualFee = (160 * 10 + 34 * 10 + 10) * feeRate.value;
@@ -140,7 +136,7 @@ export const UtxoList = ({ address, onEmpty, tick, onTotalChange }: Ord2HistoryP
       ];
       console.log(inputs);
       console.log(outputs);
-      await signAndPushPsbt(inputs, outputs);
+      await signAndPushPsbt(inputs, outputs, network);
       message.success('切割成功');
       setLoading(false);
     } catch (error: any) {
@@ -149,6 +145,105 @@ export const UtxoList = ({ address, onEmpty, tick, onTotalChange }: Ord2HistoryP
       setLoading(false);
     }
   };
+
+
+  const handleOk = async () => {
+    if (!transferAddress) {
+      message.error('请输入地址');
+      return;
+    }
+    await transferHander();
+    setSelectItem(undefined);
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setLoading(false);
+  };
+
+  const transferHander = async () => {
+    try {
+      const inscriptionUtxo = selectItem.utxo;
+      const inscriptionValue = selectItem.amount;
+      const inscriptionTxid = inscriptionUtxo.split(':')[0];
+      const inscriptionVout = inscriptionUtxo.split(':')[1];
+      const firstUtxo = {
+        txid: inscriptionTxid,
+        vout: Number(inscriptionVout),
+        value: Number(inscriptionValue),
+      };
+      const data = await getUtxoByValue({
+        address: currentAccount,
+        value: 600,
+        network,
+      });
+      const virtualFee = (180 * 10 + 34 * 10 + 10) * feeRate.value;
+      const consumUtxos = data?.data || [];
+      if (!consumUtxos.length) {
+        message.error('余额不足');
+        return;
+      }
+      const { utxos: filterConsumUtxos } = filterUtxosByValue(consumUtxos, virtualFee);
+      const utxos: any[] = [firstUtxo, ...filterConsumUtxos];
+      const btcUtxos = utxos.map((v) => {
+        return {
+          txid: v.txid,
+          vout: v.vout,
+          satoshis: v.value,
+          scriptPk: addressToScriptPublicKey(currentAccount),
+          addressType: 2,
+          inscriptions: [],
+          pubkey: currentPublicKey,
+          atomicals: [],
+        };
+      });
+      const inputs: any[] = btcUtxos.map((v) => {
+        return {
+          hash: v.txid,
+          index: v.vout,
+          witnessUtxo: {
+            script: Buffer.from(v.scriptPk, 'hex'),
+            value: v.satoshis,
+          },
+        };
+      });
+      const psbtNetwork = network === "testnet"
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
+      const psbt = new bitcoin.Psbt({
+        network: psbtNetwork,
+      });
+      inputs.forEach((input) => {
+        psbt.addInput(input);
+      });
+      const total = inputs.reduce((acc, cur) => {
+        return acc + cur.witnessUtxo.value;
+      }, 0);
+      const realityFee = (180 * inputs.length + 34 * 2 + 10) * feeRate.value;
+      const firstOutputValue = firstUtxo.value;
+      const secondOutputValue = total - firstOutputValue - realityFee;
+      const outputs = [
+        {
+          address: transferAddress,
+          value: firstOutputValue,
+        },
+        {
+          address: currentAccount,
+          value: secondOutputValue,
+        },
+      ];
+      await signAndPushPsbt(inputs, outputs, network);
+      message.success('发送成功');
+      onTransfer?.();
+      setLoading(false);
+    } catch (error: any) {
+      console.error(error.message || 'Split failed');
+      message.error(error.message || 'Transfer failed');
+      setLoading(false);
+    }
+  };
+
   const splitHandler = useCallback(
     async (item: any) => {
       setLoading(true);
@@ -220,7 +315,7 @@ export const UtxoList = ({ address, onEmpty, tick, onTotalChange }: Ord2HistoryP
           value: secondOutputValue,
         },
       ];
-      await signAndPushPsbt(inputs, outputs);
+      await signAndPushPsbt(inputs, outputs, network);
       message.success('拆分成功');
       setLoading(false);
     },
@@ -267,6 +362,15 @@ export const UtxoList = ({ address, onEmpty, tick, onTotalChange }: Ord2HistoryP
         render: (record) => {
           return (
             <div className='flex gap-2 justify-center'>
+              <Button
+                type='link'
+                loading={loading}
+                onClick={() => {
+                  setSelectItem(record);
+                  setIsModalOpen(true);
+                }}>
+                {t('buttons.send')}
+              </Button>
               <Button
                 type='link'
                 loading={loading}
@@ -342,6 +446,18 @@ export const UtxoList = ({ address, onEmpty, tick, onTotalChange }: Ord2HistoryP
           //   };
           // }}
         />
+        <Modal
+          title='发送'
+          centered
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}>
+          <Input
+            placeholder='请输入地址'
+            value={transferAddress}
+            onChange={(e) => setTransferAddress(e.target.value)}
+          />
+        </Modal>
       </div>
     </div>
   );

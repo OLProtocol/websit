@@ -11,7 +11,6 @@ export const ItemList = () => {
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
   const [ticker, setTicker] = useState('');
   const onTotalChange = (total: number) => {
-    console.log('total:', total);
     setUtxosTotal(total);
   }
   return (

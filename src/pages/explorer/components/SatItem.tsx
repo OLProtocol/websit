@@ -18,7 +18,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
       : `https://mempool.space/tx/${txid}`;
 
   return (
-    <div className='group max-w-full mx-auto flex'>
+    <div className='group max-w-full mx-auto flex' key={sat.id + '-' + sat.start}>
       {/* <Tag color='gray'>{format(new Date(sat.time), 'yyyy-MM-dd')}</Tag> */}
       <div className='flex item-center justify-center'>
         <a

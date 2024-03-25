@@ -1,14 +1,13 @@
 import { Button, message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxAddressHolders, getUtxoByValue } from '@/api';
-import { Address, Script } from '@cmdcode/tapscript';
 import * as bitcoin from 'bitcoinjs-lib';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
 import { useCommonStore } from '@/store';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { hideStr, filterUtxosByValue } from '@/lib/utils';
+import { hideStr, filterUtxosByValue, addressToScriptPublicKey } from '@/lib/utils';
 import { CopyButton } from './CopyButton';
 
 interface Ord2HistoryProps {
@@ -51,14 +50,6 @@ export const OrdxAddressHolders = ({
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const addresToScriptPublicKey = (address: string) => {
-    const scriptPublicKey = Script.fmt.toAsm(
-      Address.toScriptPubKey(address),
-    )?.[0];
-    // const asmScript = Address.toScriptPubKey(currentAccount) as string[];
-    // const scriptPubKey = bitcoin.script.fromASM(asmScript.join(' '));
-    return scriptPublicKey;
-  };
 
   const signAndPushPsbt = async (inputs, outputs, network) => {
     const psbtNetwork = network === "testnet"
@@ -107,7 +98,7 @@ export const OrdxAddressHolders = ({
           txid: v.txid,
           vout: v.vout,
           satoshis: v.value,
-          scriptPk: addresToScriptPublicKey(currentAccount),
+          scriptPk: addressToScriptPublicKey(currentAccount),
           addressType: 2,
           inscriptions: [],
           pubkey: currentPublicKey,
@@ -213,7 +204,7 @@ export const OrdxAddressHolders = ({
           txid: v.txid,
           vout: v.vout,
           satoshis: v.value,
-          scriptPk: addresToScriptPublicKey(currentAccount),
+          scriptPk: addressToScriptPublicKey(currentAccount),
           addressType: 2,
           inscriptions: [],
           pubkey: currentPublicKey,
