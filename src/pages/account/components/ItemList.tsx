@@ -4,6 +4,7 @@ import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
 import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
 import { UtxoList } from './UtxoList';
 import { useTranslation } from 'react-i18next';
+import { RareSat } from '@/pages/discover/rareSat';
 
 export const ItemList = () => {
   const { network, currentAccount } = useUnisatConnect();
@@ -22,9 +23,13 @@ export const ItemList = () => {
           onChange={(tick) => setTicker(tick)}
         />
       </div>
-      {ticker === t('common.available_utxo') ? (
+      {ticker === t('pages.account.rare_sats') && (
+        <RareSat canSplit={true} />
+      )}
+      {ticker !== t('pages.account.rare_sats') && ticker === t('common.available_utxo') && (
         <UtxoList address={currentAccount} tick={ticker} onTotalChange={onTotalChange} />
-      ) : (
+      )}
+      {ticker !== t('pages.account.rare_sats') && ticker !== t('common.available_utxo') && (
         <OrdxAddressHolders tick={ticker} address={currentAccount} />
       )}
     </div>

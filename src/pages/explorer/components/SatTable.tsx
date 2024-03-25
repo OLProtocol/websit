@@ -36,7 +36,7 @@ export const SatTable = ({ sats, canSplit }: SatTableProps) => {
         sats.length > 10
           ? {
               position: ['bottomCenter'],
-              pageSize: 20,
+              pageSize: 10,
             }
           : false
       }
