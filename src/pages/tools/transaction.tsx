@@ -103,34 +103,19 @@ export default function Transaction() {
   const handleTickerSelectChange = (itemId, ticker) => {
     inputList.items[itemId - 1].value.ticker = ticker;
     inputList.items[itemId - 1].value.sats = 0;
-    inputList.items[itemId - 1].value.utxo = 'sat';
+    inputList.items[itemId - 1].value.unit = 'sat';
 
     const selectTicker = tickerList?.find((item) => item.ticker === ticker) || [];
-    // let utxos : any[] = [];
-    // if (inputList.items.length === 1) {
-    //   utxos = selectTicker.utxos;
-    // } else {
-    //   for (let i = 0; i < inputList.items.length-1; i++) {
-    //     const inItem = inputList.items[i];
-    //     if (ticker === inItem.value.ticker) {
-    //       selectTicker.utxos.forEach((utxo) => {
-    //         if (inItem.value.utxo !== utxo.txid + ':' + utxo.vout) {
-    //           utxos.push(utxo);
-    //         }
-    //       })
-    //     }
-    //   }
-    // }
-    // inputList.items[itemId - 1].options.utxos = utxos.map((utxo) => {
-    //   return {
-    //     txid: utxo.txid,
-    //     vout: utxo.vout,
-    //     value: utxo.value
-    //   }
-    // });
+    let utxos = selectTicker.utxos;
+    if (inputList.items.length > 1) {
+      for (let i = 0; i < inputList.items.length-1; i++) {
+        const inItem = inputList.items[i];
+        utxos = utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inItem.value.utxo)
+      }
+    }
 
-    inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inputList.items[itemId - 1].value.utxo) || [];
-
+    // inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inputList.items[itemId - 1].value.utxo) || [];
+    inputList.items[itemId - 1].options.utxos = utxos
     setInputList('items', inputList.items);
   }
 
