@@ -3,6 +3,7 @@ import { OrdXItem } from './OrdXItem';
 import { useOrdxSummary, useUtxoByValue } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks';
 import { on } from 'events';
+import { useTranslation } from 'react-i18next';
 interface OrdxSummaryListProps {
   address: string;
   utxosTotal?: number;
@@ -16,11 +17,12 @@ export const OrdxAccountSummaryList = ({
   utxosTotal,
 }: OrdxSummaryListProps) => {
   const { network } = useUnisatConnect();
+  const { t } = useTranslation();
   const { data, trigger } = useOrdxSummary({ address, network });
 
   const avialableTicker = useMemo(() => {
     return {
-      ticker: '可花费utxo',
+      ticker: t('common.available_utxo'),
       balance: utxosTotal,
     };
   }, [utxosTotal]);
@@ -47,7 +49,7 @@ export const OrdxAccountSummaryList = ({
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.map((item) => (
-        <OrdXItem
+        <OrdXItem key={item.ticker}
           selected={select === item.ticker}
           onClick={() => {
             onClick(item);

@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Pagination, Spin } from 'antd';
+import { useState } from 'react';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
 import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
 import { UtxoList } from './UtxoList';
-import { ListTypes } from './ListTypes';
+import { useTranslation } from 'react-i18next';
 
 export const ItemList = () => {
   const { network, currentAccount } = useUnisatConnect();
+  const { t } = useTranslation();
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
   const [ticker, setTicker] = useState('');
   const onTotalChange = (total: number) => {
@@ -23,7 +23,7 @@ export const ItemList = () => {
           onChange={(tick) => setTicker(tick)}
         />
       </div>
-      {ticker === '可花费utxo' ? (
+      {ticker === t('common.available_utxo') ? (
         <UtxoList address={currentAccount} tick={ticker} onTotalChange={onTotalChange} />
       ) : (
         <OrdxAddressHolders tick={ticker} address={currentAccount} />

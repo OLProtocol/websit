@@ -25,7 +25,7 @@
     "account": "Account",
     "address": "Address",
     "holder": "holder",
-    "holders": "holders",
+    "holders": "Holders",
     "minted": "minted",
     "minting": "Minting",
     "minted_total": "Minted Amount",
@@ -50,7 +50,8 @@
     "height_alert": "The current BTC height is ",
     "founder": "Founder",
     "inscribe": "Inscribe",
-    "hint_connect": "Please connect your wallet first."
+    "hint_connect": "Please connect your wallet first.",
+    "available_utxo": "Available Utxo"
   },
   "toast": {
     "system_error": "System Error",
@@ -236,10 +237,6 @@
       "card_header": "Rare Sats"
     },
     "tools": {
-      "split_sat": {
-        "title": "Split Sats",
-        "des": "Split a range of sats into segments."
-      },
       "splitted_inscription": {
         "title": "Splitted Inscriptions",
         "des": "Splitted Inscriptions",

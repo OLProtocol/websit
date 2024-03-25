@@ -1,16 +1,17 @@
-import { getOrdxSummary, useOrdxSummary, getUtxoByValue, getOrdxAddressHolders } from "@/api";
+import { getOrdxSummary, getUtxoByValue, getOrdxAddressHolders } from "@/api";
 import { useUnisat, useUnisatConnect } from "@/lib/hooks";
 import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Heading, IconButton, Input, InputGroup, InputRightAddon, Select, Spacer, Stack, useToast } from "@chakra-ui/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMap } from "react-use";
-import { Address, Script } from '@cmdcode/tapscript';
 import { message } from "antd";
 import * as bitcoin from 'bitcoinjs-lib';
 import { addressToScriptPublicKey } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 export default function Transaction() {
-
+  const { t } = useTranslation();
+  
   const [inputList, { set: setInputList }] = useMap<any>({
     items: [{
       id: 1,
@@ -102,34 +103,19 @@ export default function Transaction() {
   const handleTickerSelectChange = (itemId, ticker) => {
     inputList.items[itemId - 1].value.ticker = ticker;
     inputList.items[itemId - 1].value.sats = 0;
-    inputList.items[itemId - 1].value.utxo = 'sat';
+    inputList.items[itemId - 1].value.unit = 'sat';
 
     const selectTicker = tickerList?.find((item) => item.ticker === ticker) || [];
-    // let utxos : any[] = [];
-    // if (inputList.items.length === 1) {
-    //   utxos = selectTicker.utxos;
-    // } else {
-    //   for (let i = 0; i < inputList.items.length-1; i++) {
-    //     const inItem = inputList.items[i];
-    //     if (ticker === inItem.value.ticker) {
-    //       selectTicker.utxos.forEach((utxo) => {
-    //         if (inItem.value.utxo !== utxo.txid + ':' + utxo.vout) {
-    //           utxos.push(utxo);
-    //         }
-    //       })
-    //     }
-    //   }
-    // }
-    // inputList.items[itemId - 1].options.utxos = utxos.map((utxo) => {
-    //   return {
-    //     txid: utxo.txid,
-    //     vout: utxo.vout,
-    //     value: utxo.value
-    //   }
-    // });
+    let utxos = selectTicker.utxos;
+    if (inputList.items.length > 1) {
+      for (let i = 0; i < inputList.items.length-1; i++) {
+        const inItem = inputList.items[i];
+        utxos = utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inItem.value.utxo)
+      }
+    }
 
-    inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inputList.items[itemId - 1].value.utxo) || [];
-
+    // inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inputList.items[itemId - 1].value.utxo) || [];
+    inputList.items[itemId - 1].options.utxos = utxos
     setInputList('items', inputList.items);
   }
 
@@ -290,7 +276,7 @@ export default function Transaction() {
     }
 
     return {
-      ticker: '可花费utxo',
+      ticker: t('common.available_utxo'),
       utxos: data.data
     };
   }

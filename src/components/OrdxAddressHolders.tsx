@@ -274,7 +274,7 @@ export const OrdxAddressHolders = ({
   const columns: ColumnsType<any> = useMemo(() => {
     const defaultColumn: any[] = [
       {
-        title: 'utxo',
+        title: 'Utxo',
         dataIndex: 'utxo',
         key: 'utxo',
         width: 100,
@@ -379,7 +379,7 @@ export const OrdxAddressHolders = ({
         width: 100,
         render: (record) => {
           return (
-            <div className='flex gap-2 justify-center'>
+            <div className='flex justify-center'>
               <Button
                 type='link'
                 loading={loading}
@@ -488,7 +488,7 @@ export const OrdxAddressHolders = ({
             loading={isLoading}
             columns={columns}
             dataSource={dataSource}
-            scroll={{ x: 1100 }}
+            scroll={{ x: 1000 }}
             pagination={{
               position: ['bottomCenter'],
               defaultPageSize: 10,

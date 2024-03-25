@@ -1,10 +1,7 @@
-import { useCopyToClipboard } from 'react-use';
-import { useRef, useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Icon } from '@iconify/react';
 import { Tooltip } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { ROUTE_PATH } from '@/router';
+import { useToast } from '@chakra-ui/react';
+
 export const SplitSatButton = ({
   text,
   tooltip,
@@ -12,9 +9,16 @@ export const SplitSatButton = ({
   text: string;
   tooltip?: string;
 }) => {
-  const nav = useNavigate();
+  const toast = useToast();
+  console.log(text)
   const clickHandler = () => { 
-    nav(ROUTE_PATH.TOOLS_SPLIT_SATS + '?q='+text);
+    // nav(ROUTE_PATH.TOOLS_SPLIT_SATS + '?q='+text);
+    toast({
+      title: 'Comming soon!',
+      status: 'info',
+      duration: 3000,
+      isClosable: true,
+    });
   };
   
   return (

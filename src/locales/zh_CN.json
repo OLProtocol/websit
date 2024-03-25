@@ -50,7 +50,8 @@
     "height_alert": "当前 BTC 高度为 ",
     "founder": "铸造者",
     "inscribe": "铭文",
-    "hint_connect": "请连接钱包以继续。"
+    "hint_connect": "请连接钱包以继续。",
+    "available_utxo": "可花费Utxo"
   },
   "toast": {
     "system_error": "系统异常，请稍后再试。",
@@ -236,10 +237,6 @@
       "card_header": "Rare Sats"
     },
     "tools": {
-      "split_sat": {
-        "title": "Split Sats",
-        "des": "Split a range of sats into segments."
-      },
       "splitted_inscription": {
         "title": "Splitted Inscriptions",
         "des": "Splitted Inscriptions",

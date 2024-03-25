@@ -46,9 +46,7 @@ export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
       },
     },
   ];
-  // useEffect(() => {
-  //   savePaidOrder(currentAccount, network);
-  // }, [list]);
+
   const dataSource: DataType[] = useMemo(
     () =>
       list.map((item) => ({

@@ -82,10 +82,14 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       return;
     }
     // setSats(data.data);
-    let tmpSats: any[] | undefined = [];
+    let tmpSats: any[] = [];
     for (let i = 0; i < data.data.length; i++) {
       if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
-        tmpSats.push(...data.data[i].sats);
+        data.data[i].sats.forEach((item) => {
+          item.id = data.data[i].id;
+          tmpSats.push(item);
+        })
+        // tmpSats.push(...data.data[i].sats);
       }
     }
     tmpSats.sort(

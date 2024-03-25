@@ -45,33 +45,6 @@ export default function Test() {
   //   return scriptPublicKey;
   // };
 
-  // const getBtcUtxos = async () => {
-  //   const data = await getAvailableUtxos({
-  //     address: 'tb1prcc8rp5wn0y9vp434kchl3aag8r8hz699006ufvczwnneuqx0wdsfmvq4y',
-  //     ticker: 'test3',
-  //     network: 'testnet',
-  //   });
-  //   const utxos = data?.data?.detail;
-  //   const btcUtxos = utxos
-  //     .filter(
-  //       (v) =>
-  //         v.txid ===
-  //         'c21b429bec03ed0cd0d54c3683034f07f52d251a8a97ee5c96a659bd6dbf1886',
-  //     )
-  //     .map((v) => {
-  //       return {
-  //         txid: v.txid,
-  //         vout: v.vout,
-  //         satoshis: v.value,
-  //         scriptPk: addressToScriptPublicKey(currentAccount),
-  //         addressType: 2,
-  //         inscriptions: [],
-  //         pubkey: currentPublicKey,
-  //         atomicals: [],
-  //       };
-  //     });
-  //   return btcUtxos;
-  // };
   const testHandler = async () => {
     const find = findBetweenByValue(1, 546, [
       {
