@@ -10,7 +10,7 @@ export const SplitSatButton = ({
   tooltip?: string;
 }) => {
   const toast = useToast();
-  console.log(text)
+  console.log(text);
   const clickHandler = () => { 
     // nav(ROUTE_PATH.TOOLS_SPLIT_SATS + '?q='+text);
     toast({

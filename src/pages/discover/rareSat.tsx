@@ -45,6 +45,9 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   }
 
   function setFilterType(satType: string): void {
+    if (satType === '1st TX') {
+      satType = 'first_transaction';
+    }
     if (satType === 'all') {
       setSatFilterList([]);
     } else {
@@ -123,13 +126,19 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     setLoading(false);
   };
 
-  // useEffect(() => {
-  //   let tmpAddress = localStorage.getItem('address-4-search-rare-sats')
-  //   if (tmpAddress != null && tmpAddress !== '') {
-  //     setAddress(tmpAddress);
-  //     doSearch();
-  //   }
-  // }, [address]);
+  const countSats = (sats: any[], satType: string) => {
+    let total = 0;
+    if (satType === '1st TX') {
+      satType = 'first_transaction';
+    }
+    sats.forEach((sat) => {
+      if (sat.type.includes(satType)) {
+        total += sat.size;
+      }
+    })
+    return total;
+  }
+
   useEffect(() => {
     if (canSplit) {
       setAddress(currentAccount);
@@ -188,7 +197,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
                           className='m-1'
                           onClick={() => setFilterType(item)}>
                           {item}
-                          {item !== 'all' && satList && satList.length > 0 && (' (' + satList.filter((sat) => item === '1st TX'  ? sat.type.includes('first_transaction') : sat.type.includes(item)).length + ')')}
+                          {item !== 'all' && satList && satList.length > 0 && (' (' + countSats(satList, item) + ')')}
                         </Button>
                       ))}
                       {satFilterList && satFilterList.length > 0 ? (

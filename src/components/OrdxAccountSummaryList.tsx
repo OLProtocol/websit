@@ -3,7 +3,7 @@ import { OrdXItem } from './OrdXItem';
 import { getSats, useOrdxSummary } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks';
 import { useTranslation } from 'react-i18next';
-import { Box, useToast } from '@chakra-ui/react';
+import { Box, Wrap, WrapItem, useToast } from '@chakra-ui/react';
 
 interface OrdxSummaryListProps {
   address: string;
@@ -107,22 +107,24 @@ export const OrdxAccountSummaryList = ({
     getRareSats();
   }, [address, network]);
   return (
-    <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
-
-      <Box className='flex gap-4' borderRadius='lg' bgColor={'gray.200'}>
+    <div className='w-6/12'>
+      <Wrap border={'1px'} borderColor={'gray.300'} borderRadius={'lg'}>
         {list.slice(0, 3).map((item) => (
-          <OrdXItem key={item.ticker}
-            selected={select === item.ticker}
-            onClick={() => {
-              onClick(item);
-            }}
-            item={{
-              tick: item.ticker,
-              balance: item.balance,
-            }}
-          />
+          <WrapItem>
+            <OrdXItem key={item.ticker}
+              selected={select === item.ticker}
+              onClick={() => {
+                onClick(item);
+              }}
+              item={{
+                tick: item.ticker,
+                balance: item.balance,
+              }}
+            />
+          </WrapItem>
         ))}
-      </Box>
+      </Wrap>
+      <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.slice(3).map((item) => (
         <OrdXItem key={item.ticker}
           selected={select === item.ticker}
@@ -135,6 +137,7 @@ export const OrdxAccountSummaryList = ({
           }}
         />
       ))}
+      </div>
     </div>
   );
 };
