@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Input, Empty } from 'antd';
 import { useSearchParams } from 'react-router-dom';
-import { useCommonStore } from '@/store';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Ord2FullList } from './components/OrdxFullList';
 import { OrdxSummaryList } from '../../components/OrdxSummaryList';
@@ -11,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 const { Search } = Input;
 
 export default function Ord2Index() {
-  const { btcHeight } = useCommonStore((state) => state);
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [address, setAddress] = useState('');
@@ -41,6 +39,7 @@ export default function Ord2Index() {
   const empty = useMemo(() => {
     return summaryEmptyStatus && historyEmptyStatus;
   }, [summaryEmptyStatus, historyEmptyStatus]);
+  
   useEffect(() => {
     if (search === '') {
       setAddress('');

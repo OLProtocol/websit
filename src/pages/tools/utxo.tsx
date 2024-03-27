@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useToast, Input, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, InputGroup, InputRightElement, IconButton } from '@chakra-ui/react';
+import { useToast, Input, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, InputGroup, InputRightElement, IconButton, CardFooter, Button } from '@chakra-ui/react';
 import { getAssetByUtxo, getUtxoRanges } from '@/api';
 import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks';
@@ -141,9 +141,18 @@ export default function Utxo() {
     setAssetList(data.data);
     setLoading(false);
   };
-  const toInscriptionInfo = (inscriptionNumber) => {
-    nav(`/explorer/inscription/${inscriptionNumber}`);
+  // const toInscriptionInfo = (inscriptionNumber) => {
+  //   nav(`/explorer/inscription/${inscriptionNumber}`);
+  // };
+  const splitHandler = async () => {
+    toast({
+      title: 'Coming soon!',
+      status: 'info',
+      duration: 3000,
+      isClosable: true,
+    });
   };
+
   return (
     <div className='flex flex-col max-w-[56rem] mx-auto pt-8'>
       <Card>
@@ -175,10 +184,10 @@ export default function Utxo() {
           </InputGroup>
         </CardHeader>
         <CardBody pt={0}>
-          <Tabs isFitted>
+          <Tabs colorScheme='teal' isFitted>
             <TabList>
-              <Tab>{t('pages.tools.utxo.card_header_asset')}</Tab>
-              <Tab>{t('pages.tools.utxo.card_header_sat')}</Tab>
+              <Tab _selected={{ color: 'white', bg: 'teal.500' }}>{t('pages.tools.utxo.card_header_asset')}</Tab>
+              <Tab _selected={{ color: 'white', bg: 'teal.500' }}>{t('pages.tools.utxo.card_header_sat')}</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -254,6 +263,10 @@ export default function Utxo() {
             </TabPanels>
           </Tabs>
         </CardBody>
+        <Divider borderColor={'teal.500'} />
+        <CardFooter>
+          <Button variant='solid' colorScheme='teal' onClick={splitHandler} isLoading={loading}>Split</Button>
+        </CardFooter>
       </Card>
     </div>
   );

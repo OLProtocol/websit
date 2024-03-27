@@ -35,21 +35,21 @@ export const useAppVersion = () => {
     isLoading,
   };
 };
-export const useOrd2Status = ({
-  start,
-  limit,
-  network,
-}: Ord2ListStatusParams) => {
-  const { data, error, isLoading } = useSWR(
-    `ord2-status-${start}-${limit}-${network}`,
-    () => request.getOrdxStatusList({ start, limit, network }),
-  );
-  return {
-    data,
-    error,
-    isLoading,
-  };
-};
+// export const useOrd2Status = ({
+//   start,
+//   limit,
+//   network,
+// }: Ord2ListStatusParams) => {
+//   const { data, error, isLoading } = useSWR(
+//     `ord2-status-${start}-${limit}-${network}`,
+//     () => request.getOrdxStatusList({ start, limit, network }),
+//   );
+//   return {
+//     data,
+//     error,
+//     isLoading,
+//   };
+// };
 
 export const useOrdxInfo = ({ tick, network }: Ord2InfoParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(

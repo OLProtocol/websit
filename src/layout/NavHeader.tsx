@@ -83,7 +83,6 @@ export const NavHeader = () => {
         }
         window.open(url, '_blank');
       } else if (type === 'route') {
-        localStorage.setItem('address-4-search-rare-sats', '');
         nav(value);
       }
     }
