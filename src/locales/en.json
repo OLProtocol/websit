@@ -85,7 +85,8 @@
     "select_lang": "Select Language",
     "send": "Send",
     "toHistory": "Tx History",
-    "split": "Split"
+    "split": "Split",
+    "fresh": "Fresh"
   },
   "pages": {
     "home": {

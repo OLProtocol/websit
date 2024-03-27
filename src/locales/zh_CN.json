@@ -85,7 +85,8 @@
     "select_lang": "选择语言",
     "send": "发送",
     "toHistory": "交易历史",
-    "split": "拆分"
+    "split": "拆分",
+    "fresh": "刷新"
   },
   "pages": {
     "home": {

@@ -286,7 +286,7 @@ export const Ord2FullList = () => {
       <Card>
         <CardHeader className='text-center flex justify-between'>
           <Heading size='md'>{t('pages.explorer.list_title')}</Heading>
-          <Button onClick={getAllOrdxs}>刷新</Button>
+          <Button onClick={getAllOrdxs}>{t('buttons.fresh')}</Button>
         </CardHeader>
         <CardBody>
           <Table bordered

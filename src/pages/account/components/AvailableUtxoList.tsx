@@ -1,6 +1,6 @@
 import { Button, message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
-import { useUtxoByValue, getUtxoByValue } from '@/api';
+import { getUtxoByValue } from '@/api';
 import { CopyButton } from '@/components/CopyButton';
 import * as bitcoin from 'bitcoinjs-lib';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
@@ -13,16 +13,15 @@ import {
 } from '@/lib/utils';
 import { useCommonStore } from '@/store';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
-import { useToast } from '@chakra-ui/react';
+import { Card, CardBody, CardHeader, useToast } from '@chakra-ui/react';
 
-interface Ord2HistoryProps {
+interface AvailableUtxoListProps {
   address: string;
-  tick: string;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
   onTotalChange?: (total: number) => void;
 }
-export const AvailableUtxoList = ({ address, onEmpty, tick, onTransfer, onTotalChange }: Ord2HistoryProps) => {
+export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange }: AvailableUtxoListProps) => {
   const { t } = useTranslation();
   const { network, currentAccount, currentPublicKey } = useUnisatConnect();
   const { feeRate } = useCommonStore((state) => state);
@@ -458,48 +457,42 @@ export const AvailableUtxoList = ({ address, onEmpty, tick, onTransfer, onTotalC
   }, [address, network, start, limit]);
 
   return (
-    <div>
-      <div className='rounded-2xl bg-gray-200 p-4'>
-        <div className='mb-2'>
-          <span className='text-orange-500'> {tick}</span>
-          <span className='text-gray-500'>, {t('common.holder')}: </span>
-          <span>{address}</span>
-        </div>
-
-        <div className='mb-4'>
+    // <div className='rounded-2xl bg-gray-200 p-4'>
+      <Card>
+        <CardHeader className='text-center flex justify-between'>
           <Button onClick={fastClick}>快速切割生成2个600Utxo</Button>
-        </div>
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={dataSource}
-          scroll={{ x: 800 }}
-          pagination={{
-            position: ['bottomCenter'],
-            defaultPageSize: 100,
-            total: total,
-            onChange: paginationChange,
-            showSizeChanger: false,
-          }}
-          // onRow={(record) => {
-          //   return {
-          //     onClick: () => clickHandler(record), // 点击行
-          //   };
-          // }}
-        />
-        <Modal
-          title={t('buttons.send')}
-          centered
-          open={isModalOpen}
-          onOk={handleOk}
-          onCancel={handleCancel}>
-          <Input
-            placeholder='请输入地址'
-            value={transferAddress}
-            onChange={(e) => setTransferAddress(e.target.value)}
+          <Button onClick={getAvailableUtxos}>{t('buttons.fresh')}</Button>
+        </CardHeader>
+        <CardBody>
+          <Table bordered
+            loading={loading}
+            columns={columns}
+            dataSource={dataSource}
+            scroll={{ x: 800 }}
+            pagination={{
+              position: ['bottomCenter'],
+              defaultPageSize: 100,
+              total: total,
+              onChange: paginationChange,
+              showSizeChanger: false,
+            }}
           />
-        </Modal>
-      </div>
-    </div>
+          <Modal
+            title={t('buttons.send')}
+            centered
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={handleCancel}>
+            <Input
+              placeholder='请输入地址'
+              value={transferAddress}
+              onChange={(e) => setTransferAddress(e.target.value)}
+            />
+          </Modal>
+        </CardBody>
+      </Card>
+
+      
+    // </div>
   );
 };

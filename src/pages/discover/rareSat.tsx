@@ -163,10 +163,16 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     // <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
       <Card>
+        <CardHeader className='text-center flex justify-between'>
+          <Heading size='md' className='text-orange-500 font-bold'>{t('pages.rare_sat.des')}</Heading>
+          {canSplit && (
+            <Button onClick={doSearch}>{t('buttons.fresh')}</Button>
+          )}
+        </CardHeader>
         <CardBody>
-          <h1 className='text-lg font-bold text-orange-500 text-center mb-4'>
+          {/* <h1 className='text-lg font-bold text-orange-500 text-center mb-4'>
           {t('pages.rare_sat.des')}
-          </h1>
+          </h1> */}
           <div>
             {!canSplit && (
             <div className='flex justify-center mb-12 max-w-7xl mx-auto px-4'>
