@@ -278,7 +278,7 @@ export const Ord2FullList = () => {
     //   cacheData('all_ordx_list_' + currentAccount, null);
     // }, 600000); // 每10min清除一次
     // return () => clearInterval(intervalId); // 清除定时器
-  }, []);
+  }, [network, currentAccount]);
 
   return (
     // <div className='rounded-3xl p-4 mx-auto bg-gray-200'>
