@@ -1,5 +1,4 @@
 import { Tag } from 'antd';
-import { format } from 'date-fns';
 import { CopyButton } from '@/components/CopyButton';
 import { SplitSatButton } from './SplitSatButton';
 import { useUnisatConnect } from '@/lib/hooks';
@@ -18,7 +17,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
       : `https://mempool.space/tx/${txid}`;
 
   return (
-    <div className='group max-w-full mx-auto flex'>
+    <div className='group max-w-full mx-auto flex' key={sat.id + '-' + sat.start}>
       {/* <Tag color='gray'>{format(new Date(sat.time), 'yyyy-MM-dd')}</Tag> */}
       <div className='flex item-center justify-center'>
         <a
@@ -52,14 +51,11 @@ export const SatItem = ({ sat }: SatItemProps) => {
         <img src={setSatIcon(item)} className='w-6 h-6 ml-1'/>
       ))}
       &nbsp;&nbsp;&nbsp;&nbsp;
-      {/* {icon && <img src={icon} alt='' className='w-6 h-6 ml-4' />} */}
       <div className='flex'>
         <CopyButton text={sat.start} tooltip='Copy Sat' className='pt-1' />&nbsp;&nbsp;
-        {/* { (sat.canSplit || network.includes('testnet')) && ( */}
-        {sat.canSplit &&
-          ['ordx.space'].every((v) => location.hostname !== v) && (
-            <SplitSatButton text={sat.start} tooltip='Split Sat' />
-          )}
+        {sat.canSplit && ['ordx.space'].every((v) => location.hostname !== v) && (
+          <SplitSatButton sat={sat} tooltip='Split Sat'/>
+        )}
       </div>
     </div>
   );

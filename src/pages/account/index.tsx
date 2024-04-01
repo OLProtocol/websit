@@ -1,78 +1,42 @@
-// import { Tabs } from 'antd';
-import { getSats } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks';
-import { ItemList } from './components/ItemList';
-import { useEffect, useState } from 'react';
-import {
-  Card,
-  CardBody,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  useToast,
-} from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
 import { RareSat } from '../discover/rareSat';
+import { AvailableUtxoList } from './components/AvailableUtxoList';
+import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
 
 export default function Account() {
   const { t } = useTranslation();
-  const toast = useToast();
-  // const [rareSatList, setRareSatList] = useState<any[]>();
   const { network, currentAccount } = useUnisatConnect();
-  // const { data, isLoading } = useCurUserRareSats({ currentAccount, network });
-
-  // useEffect(() => {
-  //   localStorage.setItem('address-4-search-rare-sats', currentAccount);
-  //   setAddress(currentAccount)
-  // }, [address]);
+  const [utxosTotal, setUtxosTotal] = useState<number>(0);
+  const [ticker, setTicker] = useState('');
+  const onTotalChange = (total: number) => {
+    setUtxosTotal(total);
+  }
 
   return (
-    <div className='max-w-6xl mx-auto p-2'>
+    <div className='max-w-6xl mx-auto pt-4'>
       {currentAccount !== '' ? (
-        <Card>
-          <CardBody>
-            <Tabs>
-              <TabList>
-                <Tab>{t('pages.account.my_items')}</Tab>
-                <Tab>{t('pages.account.rare_sats')}</Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel>
-                  <ItemList />
-                </TabPanel>
-                <TabPanel>
-                  <RareSat canSplit={true} />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </CardBody>
-        </Card>
+        <div>
+          <OrdxAccountSummaryList
+            address={currentAccount}
+            utxosTotal={utxosTotal}
+            onChange={(tick) => setTicker(tick)}
+          />
+          {ticker === t('pages.account.rare_sats') && (
+            <RareSat canSplit={true} />
+          )}
+          {ticker === t('pages.account.available_utxo') && (
+            <AvailableUtxoList address={currentAccount} onTotalChange={onTotalChange} />
+          )}
+          {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && (
+            <OrdxAddressHolders tick={ticker} address={currentAccount} />
+          )}
+        </div>
       ) : (
         <div className='text-xl text-center mt-20'>{t('common.hint_connect')}</div>
       )}
-      {/* <Tabs
-        defaultActiveKey='1'
-        size='large'
-        items={[
-          {
-            label: t('pages.account.my_items'),
-            key: '1',
-            children: <ItemList />,
-          },
-          {
-            label: t('pages.account.rare_sats'),
-            key: '2',
-            children: <RareSat canSplit={true}/>,
-          },
-          // {
-          //   label: '可花费Utxo',
-          //   key: '3',
-          //   children: <UtxoList address={currentAccount} />,
-          // },
-        ]}
-      /> */}
     </div>
   );
 }

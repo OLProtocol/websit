@@ -1,149 +1,31 @@
-import { getUtxoByValue } from "@/api";
-import { useUnisat, useUnisatConnect } from "@/lib/hooks";
-import { AddIcon, MinusIcon } from "@chakra-ui/icons";
-import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Heading, IconButton, Input, InputGroup, InputRightAddon, Select, Spacer, Stack, useToast } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { useMap } from "react-use";
-import { message } from "antd";
+import { getUtxo, getUtxoByValue } from '@/api';
+import { useUnisat, useUnisatConnect } from '@/lib/hooks';
+import { addressToScriptPublicKey } from '@/lib/utils';
+import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Grid, GridItem, Heading, Input, InputGroup, InputLeftAddon, InputRightAddon, Stack, useToast } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import * as bitcoin from 'bitcoinjs-lib';
-import { addressToScriptPublicKey } from "@/lib/utils";
 
 export default function SplitSat() {
-    const [utxoList, setUtxoList] = useState<any[]>();
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const utxo = params.get('utxo');
+    const start = Number(params.get('start'));
+    const size = Number(params.get('size'));
+    const offset = Number(params.get('offset'));
 
-    const [inputList, { set: setInputList }] = useMap<any>({
-        items: [{
-            id: 1,
-            value: {
-                utxo: '',
-                sats: 0,
-                unit: 'sat',
-            },
-            options: {
-                utxos: utxoList,
-            }
-        }]
-    });
-    const [outputList, { set: setOutputList }] = useMap<any>({
-        items: [{
-            id: 1,
-            value: {
-                sats: 0,
-                unit: 'sat',
-                address: '',
-            }
-        }]
-    })
-
-    const { currentAccount, network, currentPublicKey } = useUnisatConnect();
     const [loading, setLoading] = useState(false);
-    const [messageApi] = message.useMessage();
-    const unisat = useUnisat();
+    const { network, currentAccount } = useUnisatConnect();
+    const [address, setAddress] = useState('');
     const toast = useToast();
-
-    const addInputItem = () => {
-        const newId = inputList.items.length + 1;
-        const newItem = {
-            id: newId,
-            value: {
-                utxo: '',
-                sats: 0,
-                unit: 'sat',
-            },
-            options: {
-                utxos: utxoList,
-            }
-        };
-
-        setInputList('items', [...inputList.items, newItem]);
-    };
-
-    const removeInputItem = (id: number) => {
-        if (inputList.items.length > 1) {
-            let tmpItems = inputList.items.filter((item) => item.id !== id)
-            tmpItems.forEach((item, index) => {
-                item.id = index + 1
-            })
-            setInputList('items', tmpItems);
-        }
-    };
-
-    const addOuputItem = () => {
-        const newId = outputList.items.length + 1;
-        const newItem = {
-            id: newId,
-            value: {
-                sats: 0,
-                unit: 'sat',
-                address: '',
-            }
-        };
-
-        setOutputList('items', [...outputList.items, newItem]);
-    };
-
-    const removeOutputItem = (id: number) => {
-        if (outputList.items.length > 1) {
-            let tmpItems = outputList.items.filter((item) => item.id !== id)
-            tmpItems.forEach((item, index) => {
-                item.id = index + 1
-            })
-            setOutputList('items', tmpItems);
-        }
-    };
-
-    const handleUtxoSelectChange = (itemId, utxo) => {
-        const txid = utxo.split(':')[0];
-        const vout = Number(utxo.split(':')[1]);
-        inputList.items[itemId - 1].value.sats = inputList.items[itemId - 1].options.utxos.find((item) => item.txid === txid && item.vout === vout)?.value || 0;
-        inputList.items[itemId - 1].value.utxo = utxo;
-        setInputList('items', inputList.items);
-    }
-
-    const setBtcAddress = (itemId: number, address: string) => {
-        outputList.items[itemId - 1].value.address = address;
-        setOutputList('items', outputList.items);
-    }
-
-    const handleInputUnitSelectChange = (itemId: number, unit: string) => {
-        inputList.items[itemId - 1].value.unit = unit;
-        setInputList('items', inputList.items);
-    }
-
-    const handleOutputUnitSelectChange = (itemId: number, unit: string) => {
-        inputList.items[itemId - 1].value.unit = unit;
-        setInputList('items', inputList.items);
-    }
-
-    // const setInputSats = (itemId: number, sats: string) => {
-    //   const item = inputList.items[itemId - 1]
-    //   const total = inputList.items[itemId - 1].options.utxos.find((v) => v.txid + ':' + v.vout === item.value.utxo)?.value
-    //   if (total < Number(sats)) {
-    //     toast({
-    //       title: 'Not enough sats. This utxo has ' + total + ' sats',
-    //       status: 'error',
-    //       duration: 3000,
-    //       isClosable: true,
-    //     });
-    //     return
-    //   }
-    //   inputList.items[itemId - 1].value.sats = Number(sats);
-    //   setInputList('items', inputList.items);
-    // }
-
-    const setOutputSats = (itemId: number, sats: string) => {
-        const unit = outputList.items[itemId - 1].value.unit;
-        if (unit === 'sat') {
-            outputList.items[itemId - 1].value.sats = Number(sats);
-        } else {
-            outputList.items[itemId - 1].value.sats = Number(sats) * 100000000;
-        }
-
-        setOutputList('items', outputList.items);
-    }
+    const [availableUtxos, setAvailableUtxos] = useState<any[]>();
+    const [inputList, setInputList] = useState<any[]>() || [];
+    const [outputList, setOutputList] = useState<any[]>() || [];
+    const [utxoValue, setUtxoValue] = useState(0);
+    const unisat = useUnisat();
+    const fee = 600;
 
     const splitHandler = async () => {
-        console.log(inputList.items);
         if (!currentAccount) {
             return;
         }
@@ -151,17 +33,12 @@ export default function SplitSat() {
 
         try {
             const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+                ? bitcoin.networks.testnet
+                : bitcoin.networks.bitcoin;
             const psbt = new bitcoin.Psbt({
                 network: psbtNetwork,
             });
-            const fee = 600;
-            let inTotal = 0
-            let outTotal = 0;
-            inputList.items.map((v) => {
-                inTotal += v.value.sats;
-
+            inputList?.map((v) => {
                 psbt.addInput({
                     hash: v.value.utxo.split(':')[0],
                     index: Number(v.value.utxo.split(':')[1]),
@@ -172,31 +49,12 @@ export default function SplitSat() {
                 })
             })
 
-            outputList.items.map((v) => {
-                outTotal += v.value.sats;
+            outputList?.map((v) => {
                 psbt.addOutput({
                     address: v.value.address,
                     value: v.value.sats,
                 })
             })
-
-            if (inTotal - outTotal - fee < 0) {
-                setLoading(false);
-                toast({
-                    title: 'Not enough sats',
-                    status: 'error',
-                    duration: 3000,
-                    isClosable: true,
-                });
-                return
-            }
-
-            if (inTotal - outTotal - fee > 0) {
-                psbt.addOutput({
-                    address: currentAccount,
-                    value: inTotal - outTotal - fee,
-                })
-            }
 
             const signed = await unisat.signPsbt(psbt.toHex());
             const pushedTxId = await unisat.pushPsbt(signed);
@@ -207,7 +65,7 @@ export default function SplitSat() {
             const txHex = signedToPsbt.extractTransaction().toHex();
             setLoading(false);
             toast({
-                title: 'Split & Send success',
+                title: 'Split success',
                 status: 'success',
                 duration: 3000,
                 isClosable: true,
@@ -216,46 +74,155 @@ export default function SplitSat() {
             console.log('error = ', error);
             setLoading(false);
             toast({
-                title: error.message || 'Split & Send failed',
+                title: error.message || 'Split failed',
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
             });
         }
-    }
+    };
 
-    const getAvialableUtxos = async () => {
-        let data = await getUtxoByValue({
-            address: currentAccount,
-            value: 600,
+    const getValueOfUtxo = async () => {
+        setLoading(true);
+        const resp = await getUtxo({
+            utxo,
             network,
         });
-
-        if (data.code !== 0) {
+        if (resp.code !== 0) {
+            toast({
+                title: resp.msg,
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            });
             setLoading(false);
-            messageApi.error(data.msg);
-            return;
+            return
         }
-        const totalValue = (data?.data || []).reduce((acc, cur) => {
-            return acc + cur.value;
-        }, 0);
-
-        data = await getUtxoByValue({
-            address: currentAccount,
-            value: 600,
-            network,
-        });
-        if (data.code !== 0) {
-            setLoading(false);
-            messageApi.error(data.msg);
-            return;
-        }
-        setUtxoList(data.data);
+        setLoading(false);
+        setUtxoValue(Number(resp.data.detail.value));
     }
+
+    const getAvailableUtxos = async () => {
+        if (!address) {
+            return
+        }
+
+        setLoading(true);
+        const resp = await getUtxoByValue({
+            address,
+            network,
+            value: 10,
+        });
+        if (resp.code !== 0) {
+            toast({
+                title: resp.msg,
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            });
+            setLoading(false);
+            return
+        }
+        setLoading(false);
+        setAvailableUtxos(resp.data.filter((v) => v.value >= 330).sort((a, b) => a.value - b.value));// 排序：小->大
+    };
 
     useEffect(() => {
-        getAvialableUtxos();
-    }, []);
+        if (utxoValue === undefined || utxoValue === 0) {
+            return
+        }
+        if (availableUtxos === undefined) {
+            return
+        }
+
+        let availableUtxoIndex = 0;
+        let tmpInputList: any[] = [];
+        let tmpOutputList: any[] = [];
+
+        if (offset === 0) {
+            tmpInputList.push({
+                utxo: utxo,
+                sats: utxoValue,
+            })
+
+            tmpOutputList.push({ // 输出：包含稀有聪
+                sats: size > 330 ? size : 330,
+            });
+
+            if (utxoValue < 330) {
+                tmpInputList.push({
+                    utxo: availableUtxos?.[availableUtxoIndex].txid + ':' + availableUtxos?.[availableUtxoIndex].vout,
+                    sats: availableUtxos?.[availableUtxoIndex].value,
+                })
+            }
+        } else if (offset < 330) {
+            tmpInputList.push({
+                utxo: availableUtxos?.[availableUtxoIndex].txid + ':' + availableUtxos?.[availableUtxoIndex].vout,
+                sats: availableUtxos?.[availableUtxoIndex].value,
+            })
+
+            tmpOutputList.push({
+                sats: availableUtxos?.[availableUtxoIndex].value + offset,
+            })
+
+            tmpInputList.push({
+                utxo: utxo,
+                sats: utxoValue,
+            })
+
+            tmpOutputList.push({ // 输出：包含稀有聪
+                sats: size > 330 ? size : 330,
+            })
+            if (utxoValue < 330) {
+                availableUtxoIndex += 1;
+                tmpInputList.push({
+                    utxo: availableUtxos?.[availableUtxoIndex].txid + ':' + availableUtxos?.[availableUtxoIndex].vout,
+                    sats: availableUtxos?.[availableUtxoIndex].value,
+                })
+            }
+        } else if (offset >= 330) {
+            tmpInputList.push({
+                utxo: utxo,
+                sats: utxoValue,
+            })
+
+            tmpOutputList.push({
+                sats: offset,
+            });
+
+            tmpOutputList.push({ // 输出：包含稀有聪
+                sats: size > 330 ? size : 330,
+            })
+
+            if (utxoValue < 330) {
+                tmpInputList.push({
+                    utxo: availableUtxos?.[availableUtxoIndex].txid + ':' + availableUtxos?.[availableUtxoIndex].vout,
+                    sats: availableUtxos?.[availableUtxoIndex].value,
+                })
+            }
+        }
+        let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+        let outTotal = tmpOutputList.reduce((total, item) => total + item.sats, 0);
+        while (inTotal - outTotal - fee < 0) {
+            availableUtxoIndex += 1;
+            tmpInputList.push({
+                utxo: availableUtxos?.[availableUtxoIndex].txid + ':' + availableUtxos?.[availableUtxoIndex].vout,
+                sats: availableUtxos?.[availableUtxoIndex].value,
+            })
+            inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+        }
+        tmpOutputList.push({
+            sats: inTotal - outTotal - fee,
+        })
+        setInputList(tmpInputList);
+        setOutputList(tmpOutputList);
+    }, [utxoValue, availableUtxos]);
+
+    useEffect(() => {
+        setAddress(currentAccount);
+        getAvailableUtxos();
+        getValueOfUtxo();
+    }, [address]);
 
     return (
         <div className='flex flex-col max-w-7xl mx-auto pt-8'>
@@ -270,40 +237,22 @@ export default function SplitSat() {
                             <Heading flex={8} as='h6' size='sm'>Input</Heading>
                         </Flex>
                         <FormControl>
-                            {inputList.items.map((item) => (
-                                <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
-                                    <Select placeholder='Select UTXO' onChange={(e) => handleUtxoSelectChange(item.id, e.target.value)}>
-                                        {item.options.utxos.map((utxo) => (
-                                            <option key={utxo.txid + '-' + item.id} value={utxo.txid + ':' + utxo.vout}>{utxo.txid + ':' + utxo.vout}</option>
-                                        ))}
-                                    </Select>
+                            {inputList?.map((item) => (
+                                <Grid key={Math.random()} templateColumns='repeat(5, 1fr)' gap={6} pt={2}>
+                                    <GridItem colSpan={3}>
+                                        <InputGroup>
+                                            <InputLeftAddon>Utxo</InputLeftAddon>
+                                            <Input key={Math.random()} value={item.utxo} readOnly />
+                                        </InputGroup>
+                                    </GridItem>
 
-                                    <InputGroup>
-                                        <Input key={'input-sat-' + item.id} placeholder='0' size='md' value={item.value.unit === 'sat' ? item.value.sats : item.value.sats / 100000000} readOnly />
-                                        {/* <InputRightAddon>sat</InputRightAddon> */}
-                                        <Select variant='filled' w={24} onChange={(e) => handleInputUnitSelectChange(item.id, e.target.value)}>
-                                            <option value='sat'>sat</option>
-                                            <option value='btc'>btc</option>
-                                        </Select>
-                                    </InputGroup>
-
-                                    <ButtonGroup gap='1'>
-                                        <IconButton size='sm' mt={1} onClick={addInputItem}
-                                            isRound={true}
-                                            variant='outline'
-                                            colorScheme='teal'
-                                            aria-label='Add'
-                                            icon={<AddIcon />}
-                                        />
-                                        <IconButton size='sm' mt={1} onClick={() => removeInputItem(item.id)}
-                                            isRound={true}
-                                            variant='outline'
-                                            colorScheme='teal'
-                                            aria-label='Delete'
-                                            icon={<MinusIcon />}
-                                        />
-                                    </ButtonGroup>
-                                </Flex>
+                                    <GridItem colSpan={2}>
+                                        <InputGroup>
+                                            <Input key={Math.random()} size='md' value={item.sats} readOnly />
+                                            <InputRightAddon>sat</InputRightAddon>
+                                        </InputGroup>
+                                    </GridItem>
+                                </Grid>
                             ))}
                         </FormControl>
                     </Stack>
@@ -313,42 +262,29 @@ export default function SplitSat() {
                             <Heading flex={8} as='h6' size='sm'>Output</Heading>
                         </Flex>
                         <FormControl>
-                            {outputList.items.map((item) => (
-                                <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
-                                    <Input placeholder='Btc address' size='md' value={item.value.address} onChange={(e) => setBtcAddress(item.id, e.target.value)} />
-
-                                    <InputGroup>
-                                        <Input key={'output-sat-' + item.id} placeholder='0' size='md' value={item.value.unit === 'sat' ? item.value.sats : item.value.sats / 100000000} onChange={(e) => setOutputSats(item.id, e.target.value)} />
-                                        <Select variant='filled' w={24} onChange={(e) => handleOutputUnitSelectChange(item.id, e.target.value)}>
-                                            <option value='sat'>sat</option>
-                                            <option value='btc'>btc</option>
-                                        </Select>
-                                    </InputGroup>
-
-                                    <ButtonGroup gap='1'>
-                                        <IconButton size='sm' mt={1} onClick={addOuputItem}
-                                            isRound={true}
-                                            variant='outline'
-                                            colorScheme='teal'
-                                            aria-label='Add'
-                                            icon={<AddIcon />}
-                                        />
-                                        <IconButton size='sm' mt={1} onClick={() => removeOutputItem(item.id)}
-                                            isRound={true}
-                                            variant='outline'
-                                            colorScheme='teal'
-                                            aria-label='Delete'
-                                            icon={<MinusIcon />}
-                                        />
-                                    </ButtonGroup>
-                                </Flex>
+                            {outputList?.map((item) => (
+                                <Grid key={Math.random()} templateColumns='repeat(5, 1fr)' gap={6} pt={2}>
+                                    <GridItem colSpan={3}>
+                                        <InputGroup>
+                                            <InputLeftAddon>Btc Address</InputLeftAddon>
+                                            <Input key={Math.random()} size='md' value={currentAccount} readOnly />
+                                        </InputGroup>
+                                    </GridItem>
+                                    <GridItem colSpan={2}>
+                                        <InputGroup>
+                                            <Input key={Math.random()} size='md' value={item.sats} readOnly />
+                                            <InputRightAddon>sat</InputRightAddon>
+                                        </InputGroup>
+                                    </GridItem>
+                                </Grid>
                             ))}
                         </FormControl>
                     </Stack>
                 </CardBody>
                 <Divider borderColor={'teal.500'} />
                 <CardFooter>
-                    <Button variant='solid' colorScheme='teal' onClick={splitHandler} isLoading={loading}>Send</Button>
+                    <Button variant='solid' colorScheme='teal' onClick={splitHandler} isLoading={loading}>Split</Button>
+                    <Button variant='ghost' colorScheme='teal'>({'Fee: ' + fee + ' sat'})</Button>
                 </CardFooter>
             </Card>
         </div>

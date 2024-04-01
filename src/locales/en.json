@@ -85,7 +85,8 @@
     "select_lang": "Select Language",
     "send": "Send",
     "toHistory": "Tx History",
-    "split": "Split"
+    "split": "Split",
+    "fresh": "Fresh"
   },
   "pages": {
     "home": {
@@ -263,8 +264,9 @@
       "not_support": "Viewing the transferred balance is temporarily unavailable."
     },
     "account": {
-      "my_items": "My Items",
-      "rare_sats": "Rare Sats"
+      "available_utxo": "Available Utxo",
+      "rare_sats": "Rare Sats",
+      "ord_nft": "Ordinals NFT"
     }
   }
 }

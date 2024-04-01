@@ -184,6 +184,7 @@ export const getAssetByUtxo = async ({ utxo, network }: any) => {
   );
   return data;
 };
+
 export const getUtxoByType = async ({
   address,
   type,
@@ -214,6 +215,13 @@ export const getUtxoRanges = async ({ utxos, excludeCommonRanges, network }: any
 
 export const getSatTypes = async ({ network }: any) => {
   const { data } = await axios.get(generateUrl(`info/satributes`, network));
+  return data;
+};
+
+export const getUtxo = async ({ utxo, network }: any) => {
+  const { data } = await axios.get(
+    generateUrl(`utxo/assets/${utxo}`, network),
+  );
   return data;
 };
 

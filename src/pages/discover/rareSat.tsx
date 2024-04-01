@@ -4,9 +4,6 @@ import {
   CardBody,
   CardHeader,
   Heading,
-  Input,
-  InputGroup,
-  InputRightElement,
   useToast,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +13,10 @@ import { getSats } from '@/api';
 import { SatTable } from '../explorer/components/SatTable';
 import { SatTypeBox } from '../explorer/components/SatTypeBox';
 import { useUnisatConnect } from '@/lib/hooks';
+import { cacheData, getCachedData } from '@/lib/utils/cache';
+import { Input } from 'antd';
+
+const { Search } = Input;
 
 interface RareSatProps {
   canSplit: boolean;
@@ -24,7 +25,8 @@ interface RareSatProps {
 export const RareSat = ({ canSplit }: RareSatProps) => {
   const { t } = useTranslation();
   const [address, setAddress] = useState('');
-  const [rareSatList, setRareSatList] = useState<any[]>();
+  const [allSatList, setAllSatList] = useState<any[]>();
+  // const [rareSatList, setRareSatList] = useState<any[]>();
   const [satList, setSatList] = useState<any[]>();
   const [satFilterList, setSatFilterList] = useState<any[]>();
   // const { network } = useUnisatConnect();
@@ -45,6 +47,9 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   }
 
   function setFilterType(satType: string): void {
+    if (satType === '1st TX') {
+      satType = 'first_transaction';
+    }
     if (satType === 'all') {
       setSatFilterList([]);
     } else {
@@ -65,7 +70,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       return;
     }
     setLoading(true);
-    setRareSatList([]);
+    setAllSatList([]);
     setSatList([]);
     const data = await getSats({
       address: address,
@@ -81,7 +86,8 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       setLoading(false);
       return;
     }
-    // setSats(data.data);
+    
+
     let tmpSats: any[] = [];
     for (let i = 0; i < data.data.length; i++) {
       if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
@@ -95,9 +101,8 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     tmpSats.sort(
       (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
     );
-    setRareSatList(tmpSats);
-
-    localStorage.setItem('address-4-search-rare-sats', address);
+    setAllSatList(tmpSats);
+    cacheData('all_sat_list_' + address, tmpSats);
     
     tmpSats.forEach((item) => {
       if (item.type.length === 1) {
@@ -123,59 +128,70 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     setLoading(false);
   };
 
-  // useEffect(() => {
-  //   let tmpAddress = localStorage.getItem('address-4-search-rare-sats')
-  //   if (tmpAddress != null && tmpAddress !== '') {
-  //     setAddress(tmpAddress);
-  //     doSearch();
-  //   }
-  // }, [address]);
+  const countSats = (sats: any[], satType: string) => {
+    let total = 0;
+    if (satType === '1st TX') {
+      satType = 'first_transaction';
+    }
+    sats.forEach((sat) => {
+      if (satType === 'all') {
+        total += sat.size;
+      } else if (sat.type.includes(satType)) {
+        total += sat.size;
+      }
+      
+    })
+    return total;
+  }
+
   useEffect(() => {
     if (canSplit) {
       setAddress(currentAccount);
-      doSearch();
+      // doSearch();
+      const cachedData = getCachedData('all_sat_list_' + address);
+      if (cachedData === null) {
+        doSearch();
+      } else {
+        setAllSatList(cachedData);
+      }
+      
+      // 设置定时器每隔一定时间清除缓存数据
+      const intervalId = setInterval(() => {
+        cacheData('all_sat_list_' + address, null);
+      }, 600000); // 每10min清除缓存数据
+      return () => clearInterval(intervalId); // 清除定时器
     }
   }, [canSplit, address]);
   return (
-    // <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
       <Card>
+        <CardHeader className='text-center flex justify-between'>
+          <Heading size='md' className='text-orange-500 font-bold'>{t('pages.rare_sat.des')}</Heading>
+          {canSplit && (
+            <Button bgColor={'white'} border='1px' borderColor='gray.400' size='sm' color='gray.600' onClick={doSearch}>{t('buttons.fresh')}</Button>
+          )}
+        </CardHeader>
         <CardBody>
-          <h1 className='text-lg font-bold text-orange-500 text-center mb-4'>
-            {t('pages.rare_sat.des')}
-          </h1>
           <div>
             {!canSplit && (
             <div className='flex justify-center mb-12 max-w-7xl mx-auto px-4'>
-              <InputGroup  size='md'>
-                <Input
-                  fontSize={'md'}
-                  pr='4.5rem'
-                  placeholder={t('pages.rare_sat.search_placeholder')}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                />
-                <InputRightElement width='4.5rem'>
-                  <Button
-                    isLoading={loading}
-                    size={'md'}
-                    onClick={doSearch}
-                    variant='solid'
-                    colorScheme='blue'>
-                    Check
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
+              <Search
+                allowClear
+                placeholder={t('pages.rare_sat.search_placeholder')}
+                size='large'
+                value={address}
+                onChange={(e) => setAddress(e.target.value)} onKeyDown={handleKeyDown}
+                onSearch={doSearch}
+              />
             </div>
             )}
             <div className='max-w-7xl mx-auto px-4 pb-4'>
               <SatTypeBox />
             </div>
             <div className='max-w-7xl mx-auto px-4'>
-              {rareSatList !== undefined && satList !== undefined ? (
+              {allSatList !== undefined && satList !== undefined ? (
                 <div>
-                  <SatRareBox sats={rareSatList} canSplit={canSplit}/>
+                  <SatRareBox sats={allSatList} canSplit={canSplit}/>
                   <div className='pt-4' />
                   <Card>
                     <CardHeader>
@@ -188,6 +204,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
                           className='m-1'
                           onClick={() => setFilterType(item)}>
                           {item}
+                          {satList && satList.length > 0 && (' (' + countSats(satList, item) + ')')}
                         </Button>
                       ))}
                       {satFilterList && satFilterList.length > 0 ? (
