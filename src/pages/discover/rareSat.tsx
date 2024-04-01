@@ -147,19 +147,19 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   useEffect(() => {
     if (canSplit) {
       setAddress(currentAccount);
-      // doSearch();
-      const cachedData = getCachedData('all_sat_list_' + address);
-      if (cachedData === null) {
-        doSearch();
-      } else {
-        setAllSatList(cachedData);
-      }
+      doSearch();
+      // const cachedData = getCachedData('all_sat_list_' + address);
+      // if (cachedData === null) {
+      //   doSearch();
+      // } else {
+      //   setAllSatList(cachedData);
+      // }
       
-      // 设置定时器每隔一定时间清除缓存数据
-      const intervalId = setInterval(() => {
-        cacheData('all_sat_list_' + address, null);
-      }, 600000); // 每10min清除缓存数据
-      return () => clearInterval(intervalId); // 清除定时器
+      // // 设置定时器每隔一定时间清除缓存数据
+      // const intervalId = setInterval(() => {
+      //   cacheData('all_sat_list_' + address, null);
+      // }, 600000); // 每10min清除缓存数据
+      // return () => clearInterval(intervalId); // 清除定时器
     }
   }, [canSplit, address]);
   return (

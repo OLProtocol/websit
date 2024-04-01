@@ -265,18 +265,19 @@ export const Ord2FullList = () => {
   };
 
   useEffect(() => {
-    const cachedData = getCachedData('all_ordx_list_' + currentAccount);
-    if (cachedData === null) {
-      getAllOrdxs();
-    } else {
-      setData(cachedData);
-    }
+    getAllOrdxs();
+    // const cachedData = getCachedData('all_ordx_list_' + currentAccount);
+    // if (cachedData === null) {
+    //   getAllOrdxs();
+    // } else {
+    //   setData(cachedData);
+    // }
     
-    // 设置定时器每隔一定时间清除缓存数据
-    const intervalId = setInterval(() => {
-      cacheData('all_ordx_list_' + currentAccount, null);
-    }, 600000); // 每10min清除一次
-    return () => clearInterval(intervalId); // 清除定时器
+    // // 设置定时器每隔一定时间清除缓存数据
+    // const intervalId = setInterval(() => {
+    //   cacheData('all_ordx_list_' + currentAccount, null);
+    // }, 600000); // 每10min清除一次
+    // return () => clearInterval(intervalId); // 清除定时器
   }, []);
 
   return (

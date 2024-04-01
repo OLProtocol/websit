@@ -435,12 +435,15 @@ export const OrdxAddressHolders = ({
     setStart((page - 1) * pageSize);
     console.log(page, pageSize);
   };
+
   const toInfo = () => {
     nav(`/explorer/${tick}`);
   };
+
   useEffect(() => {
     onEmpty?.(dataSource !== undefined && dataSource.length === 0);
   }, [dataSource]);
+
   useEffect(() => {
     if (address && tick) {
       trigger();
@@ -461,16 +464,6 @@ export const OrdxAddressHolders = ({
               {t('buttons.view')} {tick}
             </Button>
           </div>
-          {/* <Segmented
-      options={[
-        'all',
-        'inscribe-mint',
-        'inscribe-transfer',
-        'send',
-        'receive',
-      ]}
-      block
-    /> */}
           <Table
             loading={isLoading}
             columns={columns}
@@ -483,11 +476,6 @@ export const OrdxAddressHolders = ({
               onChange: paginationChange,
               showSizeChanger: false,
             }}
-            // onRow={(record) => {
-            //   return {
-            //     onClick: () => clickHandler(record), // 点击行
-            //   };
-            // }}
           />
           <Modal
             title='发送'

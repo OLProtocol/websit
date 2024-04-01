@@ -102,7 +102,7 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
       align: 'center',
     },
   ];
-  const dataSource = useMemo(() => data?.data?.detail || [], [data]);
+  const dataSource = useMemo(() => data?.data?.detail.items || [], [data]);
   const total = useMemo(() => data?.data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
@@ -119,16 +119,6 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
 
   return (
     <div className=''>
-      {/* <Segmented
-        options={[
-          'all',
-          'inscribe-mint',
-          'inscribe-transfer',
-          'send',
-          'receive',
-        ]}
-        block
-      /> */}
       <Table
         loading={isLoading}
         columns={columns}
