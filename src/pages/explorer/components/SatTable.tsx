@@ -40,11 +40,6 @@ export const SatTable = ({ sats, canSplit }: SatTableProps) => {
             }
           : false
       }
-      // onRow={(record) => {
-      //   return {
-      //     onClick: () => clickHandler(record), // 点击行
-      //   };
-      // }}
     />
   );
 };

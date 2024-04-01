@@ -5,8 +5,6 @@ import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
 import { RareSat } from '../discover/rareSat';
 import { AvailableUtxoList } from './components/AvailableUtxoList';
 import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
-import { Card, CardBody } from '@chakra-ui/react';
-import { Divider } from 'antd';
 
 export default function Account() {
   const { t } = useTranslation();

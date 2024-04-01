@@ -33,11 +33,9 @@ export const OrdxAccountSummaryList = ({
   const rareSatsTicker = useMemo(() => {
     let balance = 0;
     if (rareSatList) {
-      balance = rareSatList?.filter((item) => item.type.includes('uncommon')).length
-        + rareSatList.filter((item) => item.type.includes('rare')).length
-        + rareSatList.filter((item) => item.type.includes('epic')).length
-        + rareSatList.filter((item) => item.type.includes('legendary')).length
-        + rareSatList.filter((item) => item.type.includes('mythic')).length;
+      balance = rareSatList.reduce((acc, sat) => {
+        return acc + sat.size;
+      }, 0);
     }
     
     return {

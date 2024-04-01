@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Input, Button, InputGroup, InputRightElement, useToast, Card, CardHeader, CardBody, IconButton, Tabs, Tab, TabList, TabPanels, TabPanel } from '@chakra-ui/react';
+import { Button, useToast, Card, CardHeader, CardBody, Tabs, Tab, TabList, TabPanels, TabPanel } from '@chakra-ui/react';
 import { getSplittedSats } from '@/api';
 import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks';
-import { CloseIcon, SearchIcon } from '@chakra-ui/icons';
+import { Input } from 'antd';
+
+const { Search } = Input;
 
 export default function SplittedInscription() {
   const { t } = useTranslation();
@@ -19,10 +21,6 @@ export default function SplittedInscription() {
     if (event.key === 'Enter') {
       doSearch();
     }
-  }
-
-  function doClearSearchInput() {
-    setTicker('');
   }
   
   const doSearch = async () => {
@@ -63,31 +61,14 @@ export default function SplittedInscription() {
     <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
       <Card>
         <CardHeader>
-          <InputGroup size='md'>
-            <Input 
-              fontSize={'xs'}
-              pr='4.5rem'
-              placeholder={t('pages.tools.utxo.search_placeholder')} 
-              value={ticker} 
-              onChange={(e) => setTicker(e.target.value)} onKeyDown={handleKeyDown}
-            />
-            <InputRightElement className='mr-3'>
-              <IconButton isLoading={loading}
-                variant={'ghost'}
-                color="gray.300"
-                size={'xs'}
-                aria-label='Clear UTXO'
-                icon={<CloseIcon />}
-                onClick={doClearSearchInput}
-              />
-              <IconButton isLoading={loading}
-                size={'md'}
-                aria-label='Search UTXO'
-                icon={<SearchIcon />}
-                onClick={doSearch} 
-              />
-            </InputRightElement>
-          </InputGroup>
+          <Search
+            allowClear
+            placeholder={t('pages.tools.splitted_inscription.search_placeholder')} 
+            size='large'
+            value={ticker}
+            onChange={(e) => setTicker(e.target.value)} onKeyDown={handleKeyDown}
+            onSearch={doSearch}
+          />
         </CardHeader>
         <CardBody pt={0}>
           <Tabs>

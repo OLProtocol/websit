@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useToast, Input, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, InputGroup, InputRightElement, IconButton, CardFooter, Button } from '@chakra-ui/react';
+import { useToast, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, InputGroup, InputRightElement, IconButton, CardFooter, Button } from '@chakra-ui/react';
 import { getAssetByUtxo, getUtxoRanges } from '@/api';
 import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks';
 import { UtxoAssetTable } from './components/UtxoAssetTable';
 import { setSatIcon } from '@/lib/utils/sat';
-import { CloseIcon, SearchIcon } from '@chakra-ui/icons';
+import { Input } from 'antd';
+
+const { Search } = Input;
 
 export default function Utxo() {
   const { t } = useTranslation();
@@ -26,10 +28,6 @@ export default function Utxo() {
     if (event.key === 'Enter') {
       doSearch();
     }
-  }
-
-  function doClearSearchInput() {
-    setUtxo('');
   }
 
   const doSearch = async () => {
@@ -157,31 +155,14 @@ export default function Utxo() {
     <div className='flex flex-col max-w-[56rem] mx-auto pt-8'>
       <Card>
         <CardHeader>
-          <InputGroup size='md'>
-            <Input
-              fontSize={'md'}
-              pr='4.5rem'
-              placeholder={t('pages.tools.utxo.search_placeholder')}
-              value={utxo}
-              onChange={(e) => setUtxo(e.target.value)} onKeyDown={handleKeyDown}
-            />
-            <InputRightElement className='mr-3'>
-              <IconButton isLoading={loading}
-                variant={'ghost'}
-                color="gray.300"
-                size={'xs'}
-                aria-label='Clear UTXO'
-                icon={<CloseIcon />}
-                onClick={doClearSearchInput}
-              />
-              <IconButton isLoading={loading}
-                size={'md'}
-                aria-label='Search UTXO'
-                icon={<SearchIcon />}
-                onClick={doSearch}
-              />
-            </InputRightElement>
-          </InputGroup>
+          <Search
+            allowClear
+            placeholder={t('pages.tools.utxo.search_placeholder')}
+            size='large'
+            value={utxo}
+            onChange={(e) => setUtxo(e.target.value)} onKeyDown={handleKeyDown}
+            onSearch={doSearch}
+          />
         </CardHeader>
         <CardBody pt={0}>
           <Tabs colorScheme='teal' isFitted>
@@ -222,7 +203,7 @@ export default function Utxo() {
                       rareSatList.map((item: any) => (
                         <div className='max-w-max flex border border-teal-500 rounded-md mt-2'>
                           <Box as='text' borderRadius='md' bg='white' color='teal' px={4} h={8} mt={2}>
-                            {item.start + '-' + item.end + '  (' + item.size + ' sats)'}
+                            {item.start}
                           </Box>
                           {item.type.map((t, _) => (
                             <Tooltip label={t}>

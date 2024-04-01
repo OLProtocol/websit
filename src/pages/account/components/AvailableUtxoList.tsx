@@ -1,4 +1,4 @@
-import { Button, message, Table, Modal, Input } from 'antd';
+import { message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { getUtxoByValue } from '@/api';
 import { CopyButton } from '@/components/CopyButton';
@@ -13,7 +13,7 @@ import {
 } from '@/lib/utils';
 import { useCommonStore } from '@/store';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
-import { Card, CardBody, CardHeader, useToast } from '@chakra-ui/react';
+import { Button, Card, CardBody, CardHeader, Tooltip, useToast } from '@chakra-ui/react';
 
 interface AvailableUtxoListProps {
   address: string;
@@ -73,6 +73,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
     }, 0);
     if (totalValue < 1530 + virtualFee) {
       message.warning('utxo数量不足，无法切割');
+      setLoading(false);
       return;
     }
 
@@ -252,6 +253,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
       // const utxos = await getUtxo();
       if (item.value < 930 + virtualFee) {
         message.warning('utxo数量不足，无法切割');
+        setLoading(false);
         return;
       }
       console.log(network);
@@ -363,23 +365,19 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
         render: (record) => {
           return (
             <div className='flex gap-2 justify-center'>
-              <Button
-                type='link'
-                loading={loading}
+              <a className='text-blue-500 cursor-pointer mr-2'
                 onClick={() => {
                   setSelectItem(record);
                   setIsModalOpen(true);
                 }}>
                 {t('buttons.send')}
-              </Button>
-              <Button
-                type='link'
-                loading={loading}
+              </a>
+              <a className='text-blue-500 cursor-pointer mr-2'
                 onClick={() => {
                   splitHandler(record);
                 }}>
                 切割
-              </Button>
+              </a>
             </div>
           );
         },
@@ -450,49 +448,47 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
       
       // 设置定时器每隔一定时间清除缓存数据
       const intervalId = setInterval(() => {
-        cacheData('all_sat_available_ordx_list_list_' + address, null);
+        cacheData('available_ordx_list_' + address, null);
       }, 600000); // 每10min清除缓存
       return () => clearInterval(intervalId); // 清除定时器
     }
   }, [address, network, start, limit]);
 
   return (
-    // <div className='rounded-2xl bg-gray-200 p-4'>
-      <Card>
-        <CardHeader className='text-center flex justify-between'>
-          <Button onClick={fastClick}>快速切割生成2个600Utxo</Button>
-          <Button onClick={getAvailableUtxos}>{t('buttons.fresh')}</Button>
-        </CardHeader>
-        <CardBody>
-          <Table bordered
-            loading={loading}
-            columns={columns}
-            dataSource={dataSource}
-            scroll={{ x: 800 }}
-            pagination={{
-              position: ['bottomCenter'],
-              defaultPageSize: 100,
-              total: total,
-              onChange: paginationChange,
-              showSizeChanger: false,
-            }}
+    <Card>
+      <CardHeader className='text-center flex justify-between'>
+        <Tooltip label='快速切割生成2个600Utxo'>
+          <Button bgColor={'white'} border='1px' borderColor='gray.400' size='sm' color='gray.600' onClick={fastClick}>快速切割</Button>
+        </Tooltip>
+        <Button bgColor={'white'} border='1px' borderColor='gray.400' size='sm' color='gray.600' onClick={getAvailableUtxos}>{t('buttons.fresh')}</Button>
+      </CardHeader>
+      <CardBody>
+        <Table bordered
+          loading={loading}
+          columns={columns}
+          dataSource={dataSource}
+          scroll={{ x: 800 }}
+          pagination={{
+            position: ['bottomCenter'],
+            defaultPageSize: 100,
+            total: total,
+            onChange: paginationChange,
+            showSizeChanger: false,
+          }}
+        />
+        <Modal
+          title={t('buttons.send')}
+          centered
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}>
+          <Input
+            placeholder='请输入地址'
+            value={transferAddress}
+            onChange={(e) => setTransferAddress(e.target.value)}
           />
-          <Modal
-            title={t('buttons.send')}
-            centered
-            open={isModalOpen}
-            onOk={handleOk}
-            onCancel={handleCancel}>
-            <Input
-              placeholder='请输入地址'
-              value={transferAddress}
-              onChange={(e) => setTransferAddress(e.target.value)}
-            />
-          </Modal>
-        </CardBody>
-      </Card>
-
-      
-    // </div>
+        </Modal>
+      </CardBody>
+    </Card>
   );
 };

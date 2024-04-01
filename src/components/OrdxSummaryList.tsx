@@ -38,7 +38,7 @@ export const OrdxSummaryList = ({
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.map((item) => (
-        <OrdXItem
+        <OrdXItem key={Math.random()}
           selected={select === item.ticker}
           onClick={() => {
             onClick(item);

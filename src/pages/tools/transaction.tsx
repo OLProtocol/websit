@@ -1,16 +1,17 @@
 import { getOrdxSummary, getUtxoByValue, getOrdxAddressHolders } from "@/api";
 import { useUnisat, useUnisatConnect } from "@/lib/hooks";
 import { AddIcon, MinusIcon } from "@chakra-ui/icons";
-import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Heading, IconButton, Input, InputGroup, InputRightAddon, Select, Spacer, Stack, useToast } from "@chakra-ui/react";
+import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Heading, IconButton, Image, Input, InputGroup, Select, Spacer, Stack, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useMap } from "react-use";
 import { message } from "antd";
 import * as bitcoin from 'bitcoinjs-lib';
-import { addressToScriptPublicKey } from "@/lib/utils";
+import { addressToScriptPublicKey, hideStr } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
 export default function Transaction() {
   const { t } = useTranslation();
+  const fee = 600;
   
   const [inputList, { set: setInputList }] = useMap<any>({
     items: [{
@@ -27,9 +28,10 @@ export default function Transaction() {
       }
     }]
   });
+
   const [outputList, { set: setOutputList }] = useMap<any>({
     items: [{
-    id: 1,
+      id: 1,
       value: {
         sats: 0,
         unit: 'sat',
@@ -38,13 +40,18 @@ export default function Transaction() {
     }]
   })
 
+  const [balance, {set: setBalance}] = useMap<any>({
+    sats: 0,
+    unit: 'sat',
+  })
+
   const { currentAccount, network, currentPublicKey } = useUnisatConnect();
   const [tickerList, setTickerList] = useState<any[]>();
   const [loading, setLoading] = useState(false);
   const [messageApi] = message.useMessage();
   const unisat = useUnisat();
   const toast = useToast();
-
+  
   const addInputItem = () => {
     const tickers = tickerList?.map((item) => item.ticker) || [];
     
@@ -125,6 +132,7 @@ export default function Transaction() {
     inputList.items[itemId - 1].value.sats = inputList.items[itemId - 1].options.utxos.find((item) => item.txid === txid && item.vout === vout)?.value || 0;
     inputList.items[itemId - 1].value.utxo = utxo;
     setInputList('items', inputList.items);
+    calculateBalance();
   }
 
   const setBtcAddress = (itemId: number, address: string) => {
@@ -142,6 +150,23 @@ export default function Transaction() {
     setInputList('items', inputList.items);
   }
 
+  const handleBalanceUnitSelectChange = (unit: string) => {
+    setBalance('unit', unit);
+  }
+
+  const calculateBalance = () => {
+    let inTotal = 0
+    let outTotal = 0;
+    inputList.items.map((v) => {
+      inTotal += v.value.sats;
+    })
+
+    outputList.items.map((v) => {
+      outTotal += v.value.sats;
+    })
+
+    setBalance('sats', inTotal - outTotal - fee);
+  }
   // const setInputSats = (itemId: number, sats: string) => {
   //   const item = inputList.items[itemId - 1]
   //   const total = inputList.items[itemId - 1].options.utxos.find((v) => v.txid + ':' + v.vout === item.value.utxo)?.value
@@ -167,10 +192,10 @@ export default function Transaction() {
     }
     
     setOutputList('items', outputList.items);
+    calculateBalance();
   }
 
   const splitHandler = async () => {
-    console.log(inputList.items);
     if (!currentAccount) {
       return;
     }
@@ -183,7 +208,7 @@ export default function Transaction() {
       const psbt = new bitcoin.Psbt({
         network: psbtNetwork,
       });
-      const fee = 600;
+      
       let inTotal = 0
       let outTotal = 0;
       inputList.items.map((v) => {
@@ -360,7 +385,7 @@ export default function Transaction() {
 
                   <Select placeholder='Select UTXO' onChange={(e) => handleUtxoSelectChange(item.id, e.target.value)}>
                     {item.options.utxos.map((utxo) => (
-                      <option key={item.value.ticker + '-' + utxo.txid + '-' + item.id} value={utxo.txid + ':' + utxo.vout}>{utxo.txid + ':' + utxo.vout}</option>
+                      <option key={item.value.ticker + '-' + utxo.txid + '-' + item.id} value={utxo.txid + ':' + utxo.vout}>{utxo.value + ' sats - ' + hideStr(utxo.txid + ':' + utxo.vout)}</option>
                     ))}
                   </Select>
 
@@ -402,7 +427,6 @@ export default function Transaction() {
               {outputList.items.map((item) => (
                 <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
                   <Input placeholder='Btc address' size='md' value={item.value.address} onChange={(e) => setBtcAddress(item.id, e.target.value)} />
-
                   <InputGroup>
                     <Input key={'output-sat-' + item.id} placeholder='0' size='md' value={item.value.unit === 'sat' ? item.value.sats : item.value.sats / 100000000} onChange={(e) => setOutputSats(item.id, e.target.value)} />
                     <Select variant='filled' w={24} onChange={(e) => handleOutputUnitSelectChange(item.id, e.target.value)}>
@@ -431,10 +455,36 @@ export default function Transaction() {
               ))}
             </FormControl>
           </Stack>
+          <Divider borderColor={'teal.500'} mt={4} mb={4} />
+          <Stack>
+            <Flex>
+              <Heading flex={8} as='h6' size='sm'>余额</Heading>
+            </Flex>
+            <FormControl>
+              {outputList.items.length === 0 ? (
+                <div className='max-w-max mx-auto p-2'>
+                  <Image src='/images/no_data.svg' className='w-10 h-10 ml-1' />
+                  <span className='text-gray-300'>No data</span>
+                </div>
+              ):(
+                <Flex key={Math.random()} whiteSpace={'nowrap'} gap={4} pt={2}>
+                  <InputGroup>
+                    <Input key={'balance-sat'} placeholder='0' size='md' value={balance.unit === 'sat' ? balance.sats : balance.sats / 100000000} readOnly/>
+                    <Select variant='filled' w={24} onChange={(e) => handleBalanceUnitSelectChange(e.target.value)}>
+                      <option value='sat'>sat</option>
+                      <option value='btc'>btc</option>
+                    </Select>
+                  </InputGroup>
+                </Flex>
+              )}
+              
+            </FormControl>
+          </Stack>
         </CardBody>
         <Divider borderColor={'teal.500'} />
         <CardFooter>
           <Button variant='solid' colorScheme='teal' onClick={splitHandler} isLoading={loading}>Send</Button>
+          <Button variant='ghost' colorScheme='teal'>({'Fee: ' + fee + ' sat'})</Button>
         </CardFooter>
       </Card>
     </div>

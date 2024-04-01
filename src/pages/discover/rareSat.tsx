@@ -4,9 +4,6 @@ import {
   CardBody,
   CardHeader,
   Heading,
-  Input,
-  InputGroup,
-  InputRightElement,
   useToast,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +14,9 @@ import { SatTable } from '../explorer/components/SatTable';
 import { SatTypeBox } from '../explorer/components/SatTypeBox';
 import { useUnisatConnect } from '@/lib/hooks';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
+import { Input } from 'antd';
+
+const { Search } = Input;
 
 interface RareSatProps {
   canSplit: boolean;
@@ -134,9 +134,12 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       satType = 'first_transaction';
     }
     sats.forEach((sat) => {
-      if (sat.type.includes(satType)) {
+      if (satType === 'all') {
+        total += sat.size;
+      } else if (sat.type.includes(satType)) {
         total += sat.size;
       }
+      
     })
     return total;
   }
@@ -160,42 +163,26 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     }
   }, [canSplit, address]);
   return (
-    // <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
       <Card>
         <CardHeader className='text-center flex justify-between'>
           <Heading size='md' className='text-orange-500 font-bold'>{t('pages.rare_sat.des')}</Heading>
           {canSplit && (
-            <Button onClick={doSearch}>{t('buttons.fresh')}</Button>
+            <Button bgColor={'white'} border='1px' borderColor='gray.400' size='sm' color='gray.600' onClick={doSearch}>{t('buttons.fresh')}</Button>
           )}
         </CardHeader>
         <CardBody>
-          {/* <h1 className='text-lg font-bold text-orange-500 text-center mb-4'>
-          {t('pages.rare_sat.des')}
-          </h1> */}
           <div>
             {!canSplit && (
             <div className='flex justify-center mb-12 max-w-7xl mx-auto px-4'>
-              <InputGroup  size='md'>
-                <Input
-                  fontSize={'md'}
-                  pr='4.5rem'
-                  placeholder={t('pages.rare_sat.search_placeholder')}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                />
-                <InputRightElement width='4.5rem'>
-                  <Button
-                    isLoading={loading}
-                    size={'md'}
-                    onClick={doSearch}
-                    variant='solid'
-                    colorScheme='blue'>
-                    Check
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
+              <Search
+                allowClear
+                placeholder={t('pages.rare_sat.search_placeholder')}
+                size='large'
+                value={address}
+                onChange={(e) => setAddress(e.target.value)} onKeyDown={handleKeyDown}
+                onSearch={doSearch}
+              />
             </div>
             )}
             <div className='max-w-7xl mx-auto px-4 pb-4'>
@@ -217,7 +204,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
                           className='m-1'
                           onClick={() => setFilterType(item)}>
                           {item}
-                          {item !== 'all' && satList && satList.length > 0 && (' (' + countSats(satList, item) + ')')}
+                          {satList && satList.length > 0 && (' (' + countSats(satList, item) + ')')}
                         </Button>
                       ))}
                       {satFilterList && satFilterList.length > 0 ? (
