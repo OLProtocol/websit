@@ -70,15 +70,15 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
               target='_blank'>
               {hideStr(t)}
             </a>&nbsp;&nbsp;
-            <CopyButton text={t} tooltip='Copy Btc Address' />
+            <CopyButton text={t} tooltip='Copy Inscription ID' />
           </div>
         );
       },
     },
     {
       title: t('common.address'),
-      dataIndex: 'wallet',
-      key: 'wallet',
+      dataIndex: 'address',
+      key: 'address',
       width: 120,
       align: 'center',
       render: (t) => (
