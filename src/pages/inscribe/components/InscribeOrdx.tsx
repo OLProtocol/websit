@@ -93,7 +93,8 @@ export const InscribeOrdx = ({
     useState(false);
   const [originFiles, setOriginFiles] = useState<any[]>([]);
   const [utxoList, setUtxoList] = useState<any[]>([]);
-
+  const [selectedUtxo, setSelectedUtxo] = useState('');
+  
   const filesChange: UploadProps['onChange'] = async ({ fileList }) => {
     const originFiles = fileList.map((f) => f.originFileObj);
     // onChange?.(originFiles);
@@ -118,13 +119,13 @@ export const InscribeOrdx = ({
   };
   const getOrdxUtxoByType = async (type: string, amount: number) => {
     try {
-      const { data } = await getUtxoByType({
+      const resp = await getUtxoByType({
         address: currentAccount,
         type,
         amount,
         network,
       });
-      return data;
+      return resp;
     } catch (error) {
       toast.error(t('toast.system_error'));
       console.error('Failed to fetch ordxUtxo:', error);
@@ -171,7 +172,6 @@ export const InscribeOrdx = ({
       return checkStatus;
     }
 
-    console.log(data.repeatMint);
     const textSize = clacTextSize(data.tick);
     if (textSize < 3 || textSize == 4 || textSize > 32) {
       checkStatus = false;
@@ -211,7 +211,7 @@ export const InscribeOrdx = ({
           setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
           return checkStatus;
         }
-        console.log(status);
+        
         if (status === 'Completed') {
           checkStatus = false;
           setErrorText(t('pages.inscribe.ordx.error_7', { tick: data.tick }));
@@ -228,7 +228,7 @@ export const InscribeOrdx = ({
           set('amount', Number(limit));
           set('mintRarity', rarity);
         } else if (isSpecial) {
-          const resp = await getOrdxUtxoByType(rarity, data.amount);
+          const resp = await getOrdxUtxoByType(rarity, 1);
           if (resp.code !== 0) {
             checkStatus = false;
             setErrorText(resp.msg);
@@ -241,30 +241,108 @@ export const InscribeOrdx = ({
             return checkStatus;
           }
 
-          const utxoList = resp?.data;
-          setUtxoList(utxoList);
-          const satData = utxoList?.[utxoList?.length - 1];
-          set('sat', satData?.sats?.[0].start);
+          // let aaa = [
+          //   {
+          //     utxo: '289d4c11a4f2b4aece170b5ac35ddf303860dd45b5e547f02cb517bea748ec65:0',
+          //     value: 1000,
+          //     type: 'customized',
+          //     amount: 200,
+          //     sats:[
+          //       {
+          //         start: 111111,
+          //         size: 100,
+          //         offset: 1
+          //       },
+          //       {
+          //         start: 222222,
+          //         size: 100,
+          //         offset: 2
+          //       },
+          //       {
+          //         start: 333333,
+          //         size: 100,
+          //         offset: 3
+          //       }
+          //     ],
+          //   },
+          //   {
+          //     utxo: '289d4c11a4f2b4aece170b5ac35ddf303860dd45b5e547f02cb517bea748ec88:0',
+          //     value: 1000,
+          //     type: 'customized',
+          //     amount: 200,
+          //     sats:[
+          //       {
+          //         start: 444444,
+          //         size: 200,
+          //         offset: 4
+          //       },
+          //       {
+          //         start: 555555,
+          //         size: 400,
+          //         offset: 5
+          //       },
+          //       {
+          //         start: 666666,
+          //         size: 600,
+          //         offset: 6
+          //       }
+          //     ],
+          //   },
+          //   {
+          //     utxo: '289d4c11a4f2b4aece170b5ac35ddf303860dd45b5e547f02cb517bea748ec99:0',
+          //     value: 1000,
+          //     type: 'customized',
+          //     amount: 200,
+          //     sats:[
+          //       {
+          //         start: 777777,
+          //         size: 50,
+          //         offset: 1
+          //       },
+          //       {
+          //         start: 888888,
+          //         size: 100,
+          //         offset: 2
+          //       },
+          //       {
+          //         start: 999999,
+          //         size: 100,
+          //         offset: 3
+          //       }
+          //     ],
+          //   },
+          // ]
+          // resp.data = resp?.data || [];
+          // aaa.map((item) => resp?.data.push(item));
+          resp.data = resp.data.sort((a, b) => 
+          b.sats?.reduce((acc, cur) => {return acc + cur.size;}, 0) - a.sats?.reduce((acc, cur) => {return acc + cur.size;}, 0));
+
+          setUtxoList(resp.data);
           set('rarity', rarity);
-          if (satData) {
-            onUtxoChange?.(satData);
-            if (satData.amount > data.amount) {
-              if (!allowSpecialBeyondStatus) {
-                Modal.confirm({
-                  centered: true,
-                  content: `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
-                  okText: '继续',
-                  cancelText: '取消',
-                  onOk() {
-                    setAllowSpecialBeyondStatus(true);
-                    setTickChecked(true);
-                  },
-                });
-              }
-              checkStatus = allowSpecialBeyondStatus;
-              return checkStatus;
-            }
-          }
+          checkStatus = true;
+          return checkStatus;
+          // const satData = utxoList?.[utxoList?.length - 1];
+          // set('sat', satData?.sats?.[0].start);
+          // set('rarity', rarity);
+          // if (satData) {
+          //   onUtxoChange?.(satData);
+          //   if (satData.amount > data.amount) {
+          //     if (!allowSpecialBeyondStatus) {
+          //       Modal.confirm({
+          //         centered: true,
+          //         content: `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
+          //         okText: '继续',
+          //         cancelText: '取消',
+          //         onOk() {
+          //           setAllowSpecialBeyondStatus(true);
+          //           setTickChecked(true);
+          //         },
+          //       });
+          //     }
+          //     checkStatus = allowSpecialBeyondStatus;
+          //     return checkStatus;
+          //   }
+          // }
         }
         // if (isSpecial) {
         //   checkStatus = false;
@@ -325,12 +403,7 @@ export const InscribeOrdx = ({
       set('blockChecked', !data.rarityChecked && !data.cnChecked);
     }
   };
-  const getHeight = async () => {
-    const height = await fetchTipHeight(network as any);
-    console.log('height', height);
-    set('block_start', height);
-    set('block_end', height + 4320);
-  };
+
   const showSat = useMemo(() => {
     return (
       data.mintRarity !== 'common' &&
@@ -359,12 +432,65 @@ export const InscribeOrdx = ({
     setTime(res);
   };
 
+  const handleUtxoChange = (utxo: any) => {
+    console.log(utxo.utxo);
+    if (utxo.offset >= 546) {
+      toast.error('请先拆分，再铸造。');
+      return;
+    }
+    setSelectedUtxo(utxo.utxo);
+    
+    const satData = utxoList.filter((item) => item.utxo === utxo.utxo)[0];
+    satData.sats = satData.sats.sort((a, b) => {
+      return b.size - a.size
+    })
+    set('sat', satData?.sats?.[0].start);
+    if (satData) {
+      onUtxoChange?.(satData);
+      if (satData.amount > data.amount) {
+        if (!allowSpecialBeyondStatus) {
+          Modal.confirm({
+            centered: true,
+            content: `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
+            okText: '继续',
+            cancelText: '取消',
+            onOk() {
+              setAllowSpecialBeyondStatus(true);
+              setTickChecked(true);
+            },
+          });
+        }
+      }
+    }
+  }
+
   const utxoColumns: ColumnsType<any> = [
+    {
+      title: '',
+      dataIndex: '',
+      key: '',
+      align: 'center',
+      render: (t) => {
+        return (
+          <div className='flex item-center justify-center'>
+            <input
+              type="radio"
+              id={t.utxo}
+              name="utxo-select"
+              value={t.utxo}
+              checked={selectedUtxo === t.utxo}
+              onChange={() => handleUtxoChange(t)}
+            />
+          </div>
+        );
+      },
+    },
     {
       title: 'Utxo',
       dataIndex: 'utxo',
       key: 'utxo',
       align: 'center',
+      width: '40%',
       render: (t) => {
         const txid = t.replace(/:0$/m, '');
         const href =
@@ -373,12 +499,14 @@ export const InscribeOrdx = ({
             : `https://mempool.space/tx/${txid}`;
         return (
           <div className='flex item-center justify-center'>
-            <a
-              className='text-blue-500 cursor-pointer mr-2'
-              href={href}
-              target='_blank'>
-              {hideStr(t)}
-            </a>
+            <Tooltip title={t}>
+              <a
+                className='text-blue-500 cursor-pointer mr-2'
+                href={href}
+                target='_blank'>
+                {hideStr(t)}
+              </a>
+            </Tooltip>
             <CopyButton text={t} tooltip='Copy Tick' />
           </div>
         );
@@ -388,20 +516,35 @@ export const InscribeOrdx = ({
       title: 'Sats',
       dataIndex: 'value',
       key: 'value',
-      width: 80,
       align: 'center',
-      render: (value) => {
-        return <div className='cursor-pointer'>{value}</div>;
+      render: (r) => {
+        return <div className='cursor-pointer'>{r}</div>;
       },
     },
     {
       title: 'Rare Sats',
-      dataIndex: 'rareSats',
-      key: 'sats',
-      width: 80,
+      key: 'rareSatSize',
       align: 'center',
-      render: (sats) => {
-        return <div className='cursor-pointer'>{sats}</div>;
+      render: (r) => {
+        let size = 0;
+        if (r !== undefined) {
+          size = r.sats.reduce((acc, cur) => {
+            return acc + cur.size;
+          }, 0)
+        }
+        return <div className='cursor-pointer'>{size}</div>;
+      },
+    },
+    {
+      title: 'Offset',
+      key: 'offset',
+      align: 'center',
+      render: (r) => {
+        let offset = 0;
+        if (r !== undefined) {
+          offset = r.sats[0].offset;
+        }
+        return <div className='cursor-pointer'>{offset}</div>;
       },
     },
   ];
@@ -409,7 +552,6 @@ export const InscribeOrdx = ({
   useEffect(() => {
     if (state?.type === 'ordx') {
       const { item } = state;
-      console.log(item);
       set('type', 'mint');
       set('tick', item.tick);
       set('amount', item.limit);
@@ -417,7 +559,6 @@ export const InscribeOrdx = ({
     }
   }, [state]);
   useEffect(() => {
-    console.log(btcHeight);
     if (btcHeight) {
       set('block_start', btcHeight);
       set('block_end', btcHeight + 4320);
@@ -477,6 +618,14 @@ export const InscribeOrdx = ({
                 </NumberInput>
               </div>
             </div>
+            {tickChecked && utxoList.length > 0 && (
+              <Table bordered
+                columns={utxoColumns}
+                dataSource={utxoList}
+                pagination={false}
+              />
+            )}
+            
           </FormControl>
         )}
 
@@ -727,13 +876,6 @@ export const InscribeOrdx = ({
                 </Flex>
               </div>
             </div>
-
-            <Table
-              bordered
-              columns={utxoColumns}
-              dataSource={utxoList}
-              scroll={{ x: 1000 }}
-            />
           </FormControl>
         )}
       </div>
@@ -750,6 +892,7 @@ export const InscribeOrdx = ({
           </Button>
         </BusButton>
       </div>
+
     </div>
   );
 };
