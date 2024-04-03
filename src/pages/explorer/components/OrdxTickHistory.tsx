@@ -122,7 +122,7 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
       <Table
         loading={isLoading}
         columns={columns}
-        dataSource={dataSource.filter((item) => item.inscriptionNumber !== '9223372036854776000')}
+        dataSource={dataSource.filter((item) => item.inscriptionNumber !== 9223372036854775807)}
         pagination={{
           position: ['bottomCenter'],
           defaultPageSize: 10,

@@ -4,6 +4,7 @@ import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import { Modal, Card, Button, Input, message } from 'antd';
 import * as bitcoin from 'bitcoinjs-lib';
 import { addressToScriptPublicKey } from '@/lib/utils';
+import { useCommonStore } from '@/store';
 
 const { Meta } = Card;
 
@@ -26,6 +27,7 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { feeRate } = useCommonStore((state) => state);
 
   const { VITE_TESTNET_TIP_ADDRESS, VITE_MAIN_TIP_ADDRESS } = import.meta.env;
   const tipAddress =
@@ -108,9 +110,11 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const fee = 600;
+      // const fee = 600;
+      const realityFee = (160 * inputs.length + 34 * 3 + 10) * feeRate.value;
+
       const firstOutputValue = firstUtxo.value;
-      const secondOutputValue = total - firstOutputValue - fee;
+      const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [
         {
           address: transferAddress,
@@ -184,9 +188,10 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const fee = 600;
+      // const fee = 600;
+      const realityFee = (160 * inputs.length + 34 * 3 + 10) * feeRate.value;
       const firstOutputValue = 330;
-      const secondOutputValue = total - firstOutputValue - fee;
+      const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [
         {
           address: tipAddress,
@@ -251,7 +256,6 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
             拆分
           </Button>,
         ]}>
-        {/* #{item.inscriptionNumber} */}
       </Card>
       <Modal
         title='发送'

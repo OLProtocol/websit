@@ -22,18 +22,20 @@ import type { UploadProps } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Tooltip, Upload, Modal } from 'antd';
+import { Button, Tooltip, Upload, Modal, Table } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
 import { BusButton } from '@/components/BusButton';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMap } from 'react-use';
-import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
+import { fetchTipHeight, calcTimeBetweenBlocks, hideStr } from '@/lib/utils';
 import { clacTextSize, encodeBase64, base64ToHex } from '../utils';
 import { useTranslation } from 'react-i18next';
 import { getOrdxInfo, useSatTypes, getUtxoByType } from '@/api';
 import toast from 'react-hot-toast';
 import { useCommonStore } from '@/store';
+import { ColumnsType } from 'antd/es/table';
+import { CopyButton } from '@/components/CopyButton';
 
 const { Dragger } = Upload;
 
@@ -87,13 +89,13 @@ export const InscribeOrdx = ({
   const [tickChecked, setTickChecked] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
   const [specialBeyondStatus, setSpecialBeyondStatus] = useState(false);
-  const [allowSpecialBeyondStatus, setAllowSpecialBeyondStatus] =
-    useState(false);
+  const [allowSpecialBeyondStatus, setAllowSpecialBeyondStatus] = useState(false);
   const [originFiles, setOriginFiles] = useState<any[]>([]);
+  const [utxoList, setUtxoList] = useState<any[]>([]);
+  
   const filesChange: UploadProps['onChange'] = async ({ fileList }) => {
     const originFiles = fileList.map((f) => f.originFileObj);
     // onChange?.(originFiles);
-    console.log(12313);
     const file = originFiles[0];
     if (file) {
       const b64 = (await encodeBase64(file as any)) as string;
@@ -225,14 +227,22 @@ export const InscribeOrdx = ({
           set('amount', Number(limit));
           set('mintRarity', rarity);
         } else if (isSpecial) {
-          const satsData = await getOrdxUtxoByType(rarity, data.amount);
-          console.log(satsData);
-          if (!satsData?.length) {
+          const resp = await getOrdxUtxoByType(rarity, data.amount);
+          if (resp.code !== 0) {
+            checkStatus = false;
+            setErrorText(resp.msg);
+            return checkStatus;
+          }
+
+          if (!resp?.data.length) {
             checkStatus = false;
             setErrorText(`${rarity}类型的特殊聪数量不够`);
             return checkStatus;
           }
-          const satData = satsData?.[satsData?.length - 1];
+
+          const utxoList = resp?.data;
+          setUtxoList(utxoList);
+          const satData = utxoList?.[utxoList?.length - 1];
           set('sat', satData?.sats?.[0].start);
           set('rarity', rarity);
           if (satData) {
@@ -275,6 +285,7 @@ export const InscribeOrdx = ({
     }
     return checkStatus;
   };
+
   const rarityChange = (value: string) => {
     set('rarity', value);
     if (value !== 'common' || !value) {
@@ -326,9 +337,11 @@ export const InscribeOrdx = ({
       data.mintRarity
     );
   }, [data.mintRarity]);
+
   const buttonDisabled = useMemo(() => {
     return !data.tick;
   }, [data]);
+
   // const time = useBlockHeightTime({
   //   height: btcHeight,
   //   start: data.block_start,
@@ -344,6 +357,54 @@ export const InscribeOrdx = ({
     });
     setTime(res);
   };
+
+  const utxoColumns: ColumnsType<any> = [
+    {
+      title: 'Utxo',
+      dataIndex: 'utxo',
+      key: 'utxo',
+      align: 'center',
+      render: (t) => {
+        const txid = t.replace(/:0$/m, '');
+        const href =
+          network === 'testnet'
+            ? `https://mempool.space/testnet/tx/${txid}`
+            : `https://mempool.space/tx/${txid}`;
+        return (
+          <div className='flex item-center justify-center'>
+            <a
+              className='text-blue-500 cursor-pointer mr-2'
+              href={href}
+              target='_blank'>
+              {hideStr(t)}
+            </a>
+            <CopyButton text={t} tooltip='Copy Tick' />
+          </div>
+        );
+      },
+    },
+    {
+      title: 'Sats',
+      dataIndex: 'value',
+      key: 'value',
+      width: 80,
+      align: 'center',
+      render: (value) => {
+        return <div className='cursor-pointer'>{value}</div>;
+      },
+    },
+    {
+      title: 'Rare Sats',
+      dataIndex: 'rareSats',
+      key: 'sats',
+      width: 80,
+      align: 'center',
+      render: (sats) => {
+        return <div className='cursor-pointer'>{sats}</div>;
+      },
+    },
+  ];
+
   useEffect(() => {
     if (state?.type === 'ordx') {
       const { item } = state;
@@ -632,7 +693,7 @@ export const InscribeOrdx = ({
         )}
         {data.type === 'mint' && tickChecked && !showSat && (
           <FormControl>
-            <div className='flex items-center  mb-4'>
+            <div className='flex items-center mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
                 {t('common.repeat_mint')}
               </FormLabel>
@@ -668,6 +729,13 @@ export const InscribeOrdx = ({
                 </Flex>
               </div>
             </div>
+            
+            <Table bordered
+              columns={utxoColumns}
+              dataSource={utxoList}
+              scroll={{ x: 1000 }}
+            />
+
           </FormControl>
         )}
       </div>
@@ -684,6 +752,7 @@ export const InscribeOrdx = ({
           </Button>
         </BusButton>
       </div>
+
     </div>
   );
 };

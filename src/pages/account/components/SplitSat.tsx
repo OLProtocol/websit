@@ -5,6 +5,7 @@ import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormCont
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import * as bitcoin from 'bitcoinjs-lib';
+import { useCommonStore } from '@/store';
 
 export default function SplitSat() {
     const location = useLocation();
@@ -23,7 +24,8 @@ export default function SplitSat() {
     const [outputList, setOutputList] = useState<any[]>() || [];
     const [utxoValue, setUtxoValue] = useState(0);
     const unisat = useUnisat();
-    const fee = 600;
+    const { feeRate } = useCommonStore((state) => state);
+    const [ fee, setFee] = useState(0);
 
     const splitHandler = async () => {
         if (!currentAccount) {
@@ -203,6 +205,8 @@ export default function SplitSat() {
         }
         let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
         let outTotal = tmpOutputList.reduce((total, item) => total + item.sats, 0);
+        const realityFee = (160 * tmpInputList.length + 34 * 3 + 10) * feeRate.value;
+
         while (inTotal - outTotal - fee < 0) {
             availableUtxoIndex += 1;
             tmpInputList.push({
@@ -212,10 +216,11 @@ export default function SplitSat() {
             inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
         }
         tmpOutputList.push({
-            sats: inTotal - outTotal - fee,
+            sats: inTotal - outTotal - realityFee,
         })
         setInputList(tmpInputList);
         setOutputList(tmpOutputList);
+        setFee(realityFee);
     }, [utxoValue, availableUtxos]);
 
     useEffect(() => {

@@ -8,10 +8,12 @@ import { message } from "antd";
 import * as bitcoin from 'bitcoinjs-lib';
 import { addressToScriptPublicKey, hideStr } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { useCommonStore } from "@/store";
 
 export default function Transaction() {
   const { t } = useTranslation();
-  const fee = 600;
+  const { feeRate } = useCommonStore((state) => state);
+  const [ fee, setFee] = useState(0);
   
   const [inputList, { set: setInputList }] = useMap<any>({
     items: [{
@@ -165,7 +167,9 @@ export default function Transaction() {
       outTotal += v.value.sats;
     })
 
-    setBalance('sats', inTotal - outTotal - fee);
+    const realityFee = (160 * inputList.items.length + 34 * 3 + 10) * feeRate.value;
+    setFee(realityFee);
+    setBalance('sats', inTotal - outTotal - realityFee);
   }
   // const setInputSats = (itemId: number, sats: string) => {
   //   const item = inputList.items[itemId - 1]
@@ -192,6 +196,10 @@ export default function Transaction() {
     }
     
     setOutputList('items', outputList.items);
+  }
+
+  const outputSatsOnBlur = (e) => {
+    console.log(e);
     calculateBalance();
   }
 
@@ -231,8 +239,9 @@ export default function Transaction() {
           value: v.value.sats,
         })
       })
+      const realityFee = (160 * inputList.items.length + 34 * 3 + 10) * feeRate.value;
 
-      if (inTotal - outTotal - fee < 0) {
+      if (inTotal - outTotal - realityFee < 0) {
         setLoading(false);
         toast({
           title: 'Not enough sats',
@@ -243,10 +252,10 @@ export default function Transaction() {
         return
       }
 
-      if (inTotal - outTotal - fee > 0) {
+      if (inTotal - outTotal - realityFee > 0) {
         psbt.addOutput({
           address: currentAccount,
-          value: inTotal - outTotal - fee,
+          value: inTotal - outTotal - realityFee,
         })
       }
 
@@ -428,7 +437,7 @@ export default function Transaction() {
                 <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
                   <Input placeholder='Btc address' size='md' value={item.value.address} onChange={(e) => setBtcAddress(item.id, e.target.value)} />
                   <InputGroup>
-                    <Input key={'output-sat-' + item.id} placeholder='0' size='md' value={item.value.unit === 'sat' ? item.value.sats : item.value.sats / 100000000} onChange={(e) => setOutputSats(item.id, e.target.value)} />
+                    <Input key={'output-sat-' + item.id} placeholder='0' size='md' value={item.value.unit === 'sat' ? item.value.sats : item.value.sats / 100000000} onChange={(e) => setOutputSats(item.id, e.target.value)} onBlur={(e) => outputSatsOnBlur(e)}/>
                     <Select variant='filled' w={24} onChange={(e) => handleOutputUnitSelectChange(item.id, e.target.value)}>
                       <option value='sat'>sat</option>
                       <option value='btc'>btc</option>

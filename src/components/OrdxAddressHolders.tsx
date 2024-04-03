@@ -339,7 +339,7 @@ export const OrdxAddressHolders = ({
                 <a className='text-blue-500 cursor-pointer'
                   href={href + r.id}
                   target='_blank'>
-                  #{hideStr(r.id)}
+                  {hideStr(r.id)}
                 </a>
               ) : (
                 // <span
