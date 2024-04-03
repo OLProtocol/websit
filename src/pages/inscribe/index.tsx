@@ -235,7 +235,7 @@ export default function Inscribe() {
           }),
         ),
       ];
-      if (ordxData.file) {
+      if (ordxData.file && attr) {
         value.push({
           type: 'file',
           name: ordxData.fileName,

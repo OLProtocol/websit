@@ -89,10 +89,11 @@ export const InscribeOrdx = ({
   const [tickChecked, setTickChecked] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
   const [specialBeyondStatus, setSpecialBeyondStatus] = useState(false);
-  const [allowSpecialBeyondStatus, setAllowSpecialBeyondStatus] = useState(false);
+  const [allowSpecialBeyondStatus, setAllowSpecialBeyondStatus] =
+    useState(false);
   const [originFiles, setOriginFiles] = useState<any[]>([]);
   const [utxoList, setUtxoList] = useState<any[]>([]);
-  
+
   const filesChange: UploadProps['onChange'] = async ({ fileList }) => {
     const originFiles = fileList.map((f) => f.originFileObj);
     // onChange?.(originFiles);
@@ -538,7 +539,6 @@ export const InscribeOrdx = ({
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
-                    disabled
                     checked={data.rarityChecked}
                     onChange={onRarityChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
@@ -568,7 +568,6 @@ export const InscribeOrdx = ({
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
-                    disabled
                     checked={data.cnChecked}
                     onChange={onCnChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
@@ -597,7 +596,6 @@ export const InscribeOrdx = ({
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
-                    disabled
                     checked={data.trzChecked}
                     onChange={onTrzChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
@@ -663,7 +661,7 @@ export const InscribeOrdx = ({
             </div>
           </FormControl>
         )} */}
-        {data.type === 'test' && (
+        {data.type === 'deploy' && !data.blockChecked && (
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
@@ -729,13 +727,13 @@ export const InscribeOrdx = ({
                 </Flex>
               </div>
             </div>
-            
-            <Table bordered
+
+            <Table
+              bordered
               columns={utxoColumns}
               dataSource={utxoList}
               scroll={{ x: 1000 }}
             />
-
           </FormControl>
         )}
       </div>
@@ -752,7 +750,6 @@ export const InscribeOrdx = ({
           </Button>
         </BusButton>
       </div>
-
     </div>
   );
 };
