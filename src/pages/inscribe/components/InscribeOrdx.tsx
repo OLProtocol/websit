@@ -196,7 +196,7 @@ export const InscribeOrdx = ({
       const info = await getOrdXInfo(data.tick);
       setTickLoading(false);
 
-      const { rarity, trz, cn, startBlock, endBlock, limit } = info.data || {};
+      const { rarity, trz, cn, startBlock, endBlock, limit, imgtype, inscriptionId } = info.data || {};
       const isSpecial = rarity !== 'unknow' && rarity !== 'common' && !!rarity;
       let status = 'Completed';
       if (isSpecial) {
@@ -247,8 +247,8 @@ export const InscribeOrdx = ({
             setErrorText(resp.msg);
             return checkStatus;
           }
-          if (resp?.data.imgtype) {
-            set('relateInscriptionId', resp?.data.inscriptionId);
+          if (imgtype) {
+            set('relateInscriptionId', inscriptionId);
           }
           if (!resp?.data.length) {
             checkStatus = false;
