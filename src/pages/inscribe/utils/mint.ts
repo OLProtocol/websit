@@ -9,6 +9,7 @@ import {
   base64ToHex,
   hexToBytes,
   fileToSha256Hex,
+  serializeInscriptionId,
 } from './index';
 import { getUtxoByValue, pushBTCpmt } from '@/api';
 import { addressToScriptPublicKey } from '@/lib/utils';
@@ -236,6 +237,8 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
       }
     } else if (file.relateInscriptionId) {
       const offset = ordxUtxo?.satas?.[0]?.offset || 0;
+      const detaConent = serializeInscriptionId(file.relateInscriptionId, 0);
+      console.log('detaConent', detaConent);
       if (ordxUtxo && offset > 0) {
         script = [
           pubkey,
@@ -250,7 +253,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           'OP_0',
           content,
           '11',
-          ec.encode(file.relateInscriptionId),
+          ec.encode(detaConent),
           'OP_ENDIF',
         ];
       } else {
@@ -265,7 +268,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           'OP_0',
           content,
           '11',
-          ec.encode(file.relateInscriptionId),
+          ec.encode(detaConent),
           'OP_ENDIF',
         ];
       }
@@ -522,9 +525,8 @@ export const pushCommitTx = async ({
 };
 
 const signAndPushPsbt = async (inputs, outputs, network) => {
-  const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+  const psbtNetwork =
+    network === 'testnet' ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
   const psbt = new bitcoin.Psbt({
     network: psbtNetwork,
   });
@@ -569,7 +571,7 @@ export const sendBTC = async ({
   if (!consumUtxos.length) {
     throw new Error(i18n.t('toast.insufficient_balance'));
   }
-  console.log(value)
+  console.log(value);
   const fee = (180 * (hasOrdxUtxo ? 2 : 1) + 34 * 2 + 10) * feeRate;
   const filterTotalValue = hasOrdxUtxo ? 330 + fee : value + 330 + fee;
   const avialableUtxo: any[] = [];
@@ -624,9 +626,8 @@ export const sendBTC = async ({
     });
   }
   console.log(inputs);
-  const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+  const psbtNetwork =
+    network === 'testnet' ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
   const psbt = new bitcoin.Psbt({
     network: psbtNetwork,
   });

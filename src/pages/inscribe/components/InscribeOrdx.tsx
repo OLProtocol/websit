@@ -29,7 +29,12 @@ import { BusButton } from '@/components/BusButton';
 import { useEffect, useMemo, useState } from 'react';
 import { useMap } from 'react-use';
 import { fetchTipHeight, calcTimeBetweenBlocks, hideStr } from '@/lib/utils';
-import { clacTextSize, encodeBase64, base64ToHex } from '../utils';
+import {
+  clacTextSize,
+  encodeBase64,
+  base64ToHex,
+  serializeInscriptionId,
+} from '../utils';
 import { useTranslation } from 'react-i18next';
 import { getOrdxInfo, useSatTypes, getUtxoByType } from '@/api';
 import toast from 'react-hot-toast';
@@ -95,7 +100,7 @@ export const InscribeOrdx = ({
   const [originFiles, setOriginFiles] = useState<any[]>([]);
   const [utxoList, setUtxoList] = useState<any[]>([]);
   const [selectedUtxo, setSelectedUtxo] = useState('');
-  
+
   const filesChange: UploadProps['onChange'] = async ({ fileList }) => {
     const originFiles = fileList.map((f) => f.originFileObj);
     // onChange?.(originFiles);
@@ -167,6 +172,13 @@ export const InscribeOrdx = ({
   };
   const checkTick = async (blur: boolean = false) => {
     setErrorText('');
+    // const ec = new TextEncoder();
+    // const seris = serializeInscriptionId(
+    //   'db0c19557a6bd2ffd5830adf04e6bdbebd21c5b2506ff7fea4db2b4666247e90i0',
+    //   0,
+    // );
+    // console.log('seris', seris);
+    // console.log('seris', ec.encode(seris));
     let checkStatus = true;
     if (data.tick === undefined || data.tick === '') {
       checkStatus = false;
@@ -212,7 +224,7 @@ export const InscribeOrdx = ({
           setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
           return checkStatus;
         }
-        
+
         if (status === 'Completed') {
           checkStatus = false;
           setErrorText(t('pages.inscribe.ordx.error_7', { tick: data.tick }));
@@ -235,8 +247,8 @@ export const InscribeOrdx = ({
             setErrorText(resp.msg);
             return checkStatus;
           }
-          if (resp?.data.relateInscriptionId) {
-            set('relateInscriptionId', resp?.data.relateInscriptionId);
+          if (resp?.data.imgtype) {
+            set('relateInscriptionId', resp?.data.inscriptionId);
           }
           if (!resp?.data.length) {
             checkStatus = false;
@@ -317,8 +329,15 @@ export const InscribeOrdx = ({
           // ]
           // resp.data = resp?.data || [];
           // aaa.map((item) => resp?.data.push(item));
-          resp.data = resp.data.sort((a, b) => 
-          b.sats?.reduce((acc, cur) => {return acc + cur.size;}, 0) - a.sats?.reduce((acc, cur) => {return acc + cur.size;}, 0));
+          resp.data = resp.data.sort(
+            (a, b) =>
+              b.sats?.reduce((acc, cur) => {
+                return acc + cur.size;
+              }, 0) -
+              a.sats?.reduce((acc, cur) => {
+                return acc + cur.size;
+              }, 0),
+          );
 
           setUtxoList(resp.data);
           set('rarity', rarity);
@@ -442,11 +461,11 @@ export const InscribeOrdx = ({
       return;
     }
     setSelectedUtxo(utxo.utxo);
-    
+
     const satData = utxoList.filter((item) => item.utxo === utxo.utxo)[0];
     satData.sats = satData.sats.sort((a, b) => {
-      return b.size - a.size
-    })
+      return b.size - a.size;
+    });
     set('sat', satData?.sats?.[0].start);
     if (satData) {
       onUtxoChange?.(satData);
@@ -465,7 +484,7 @@ export const InscribeOrdx = ({
         }
       }
     }
-  }
+  };
 
   const utxoColumns: ColumnsType<any> = [
     {
@@ -477,9 +496,9 @@ export const InscribeOrdx = ({
         return (
           <div className='flex item-center justify-center'>
             <input
-              type="radio"
+              type='radio'
               id={t.utxo}
-              name="utxo-select"
+              name='utxo-select'
               value={t.utxo}
               checked={selectedUtxo === t.utxo}
               onChange={() => handleUtxoChange(t)}
@@ -533,7 +552,7 @@ export const InscribeOrdx = ({
         if (r !== undefined) {
           size = r.sats.reduce((acc, cur) => {
             return acc + cur.size;
-          }, 0)
+          }, 0);
         }
         return <div className='cursor-pointer'>{size}</div>;
       },
@@ -622,13 +641,13 @@ export const InscribeOrdx = ({
               </div>
             </div>
             {tickChecked && utxoList.length > 0 && (
-              <Table bordered
+              <Table
+                bordered
                 columns={utxoColumns}
                 dataSource={utxoList}
                 pagination={false}
               />
             )}
-            
           </FormControl>
         )}
 
@@ -895,7 +914,6 @@ export const InscribeOrdx = ({
           </Button>
         </BusButton>
       </div>
-
     </div>
   );
 };

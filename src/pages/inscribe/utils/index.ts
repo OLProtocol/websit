@@ -10,6 +10,28 @@ export const waitSomeSeconds = async (num: number) => {
     }, num);
   });
 };
+export const serializeInscriptionId = (inscriptionId: string, index: number) => {
+  // 将txid反转并转换为字节数组
+  const txid = inscriptionId.split('i0')[0]
+  const txidReverse = txid.split('').reverse().join('');
+  // const txidBytes = txid
+  //   .match(/.{2}/g)
+  //   .reverse()
+  //   .map((byte) => parseInt(byte, 16));
+
+  // // 将index转换为小端序的字节数组
+  // const indexBytes = new ArrayBuffer(4);
+  // const indexView = new DataView(indexBytes);
+  // indexView.setUint32(0, index, true); // true表示使用小端序
+
+  // // 合并txid和index的字节数组，并转换为十六进制字符串
+  // const inscriptionId = [...txidBytes, ...new Uint8Array(indexBytes)]
+  //   .map((b) => b.toString(16).padStart(2, '0'))
+  //   .join('');
+
+  return txidReverse;
+};
+
 export const removeObjectEmptyValue = (obj: any) => {
   const _obj = { ...obj };
   Object.keys(_obj).forEach((key) => {
