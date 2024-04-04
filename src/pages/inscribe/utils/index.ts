@@ -10,10 +10,14 @@ export const waitSomeSeconds = async (num: number) => {
     }, num);
   });
 };
-export const serializeInscriptionId = (inscriptionId: string, index: number) => {
+export const serializeInscriptionId = (
+  inscriptionId: string,
+  index: number,
+) => {
   // 将txid反转并转换为字节数组
-  const txid = inscriptionId.split('i0')[0]
+  const txid = inscriptionId.split('i0')[0];
   const txidReverse = txid.split('').reverse().join('');
+  console.log(index);
   // const txidBytes = txid
   //   .match(/.{2}/g)
   //   .reverse()
