@@ -20,6 +20,7 @@ interface FileItem {
   hex: string;
   amt?: number;
   op?: string;
+  relateInscriptionId?: string;
   type: string;
   sha256: string;
   fileHex: string;
@@ -71,15 +72,20 @@ export const generteFiles = async (list: any[]) => {
       file.originValue = value[0];
       file.hex = textToHex(value[0]);
       if (value.length > 1) {
+        const fileData = value.find((v) => v.type === 'file');
         if (ordxType === 'mint') {
-          file.parent = value[1]?.value;
-          file.parentHex = textToHex(value[1]?.value);
-          file.parentMimeType = value[1]?.mimeType;
+          file.parent = fileData?.value;
+          file.parentHex = textToHex(fileData?.value);
+          file.parentMimeType = fileData?.mimeType;
         } else {
-          file.fileHex = value[1]?.value;
-          file.fileMimeType = value[1]?.mimeType;
-          file.fileName = value[1]?.name;
-          file.show += `;${value[1]?.name}`;
+          file.fileHex = fileData?.value;
+          file.fileMimeType = fileData?.mimeType;
+          file.fileName = fileData?.name;
+          file.show += `;${fileData?.name}`;
+        }
+        const relateData = value.find((v) => v.type === 'relateInscriptionId');
+        if (relateData) {
+          file.relateInscriptionId = relateData.value;
         }
       }
       file.sha256 = '';
@@ -164,25 +170,6 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
     const fileMimeType = ec.encode(file.fileMimeType);
     const metaData = cbor.encode(JSON.parse(file.originValue));
     console.log(metaData);
-    // script = [
-    //   pubkey,
-    //   'OP_CHECKSIG',
-    //   'OP_0',
-    //   'OP_IF',
-    //   ec.encode('ord'),
-    //   '01',
-    //   fileMimeType,
-    //   'OP_0',
-    //   fileContent,
-    //   'OP_0',
-    //   '07',
-    //   ec.encode('ordx'),
-    //   '01',
-    //   mimetype,
-    //   'OP_0',
-    //   content,
-    //   'OP_ENDIF',
-    // ];
     script = [
       pubkey,
       'OP_CHECKSIG',
@@ -244,6 +231,41 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           metaData,
           'OP_0',
           parentConent,
+          'OP_ENDIF',
+        ];
+      }
+    } else if (file.relateInscriptionId) {
+      const offset = ordxUtxo?.satas?.[0]?.offset || 0;
+      if (ordxUtxo && offset > 0) {
+        script = [
+          pubkey,
+          'OP_CHECKSIG',
+          'OP_0',
+          'OP_IF',
+          ec.encode('ord'),
+          '01',
+          mimetype,
+          '02',
+          ec.encode(offset),
+          'OP_0',
+          content,
+          '11',
+          ec.encode(file.relateInscriptionId),
+          'OP_ENDIF',
+        ];
+      } else {
+        script = [
+          pubkey,
+          'OP_CHECKSIG',
+          'OP_0',
+          'OP_IF',
+          ec.encode('ord'),
+          '01',
+          mimetype,
+          'OP_0',
+          content,
+          '11',
+          ec.encode(file.relateInscriptionId),
           'OP_ENDIF',
         ];
       }

@@ -69,6 +69,7 @@ export const InscribeOrdx = ({
     cn: 0,
     trz: 0,
     file: '',
+    relateInscriptionId: '',
     fileName: '',
     fileType: '',
     blockChecked: true,
@@ -234,7 +235,9 @@ export const InscribeOrdx = ({
             setErrorText(resp.msg);
             return checkStatus;
           }
-
+          if (resp?.data.relateInscriptionId) {
+            set('relateInscriptionId', resp?.data.relateInscriptionId);
+          }
           if (!resp?.data.length) {
             checkStatus = false;
             setErrorText(`${rarity}类型的特殊聪数量不够`);

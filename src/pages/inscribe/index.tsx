@@ -61,6 +61,7 @@ export default function Inscribe() {
     repeatMint: 1,
     limitPerMint: 10000,
     block: '',
+    relateInscriptionId: '',
     cn: 0,
     trz: 0,
     des: '',
@@ -101,6 +102,7 @@ export default function Inscribe() {
     setOrd2Data('tick', data.tick);
     setOrd2Data('amount', data.amount);
     setOrd2Data('file', data.file);
+    setOrd2Data('relateInscriptionId', data.relateInscriptionId);
     setOrd2Data('fileName', data.fileName);
     setOrd2Data('fileType', data.fileType);
     setOrd2Data('repeatMint', data.repeatMint);
@@ -195,6 +197,11 @@ export default function Inscribe() {
                 sat: ordxData.sat > 0 ? ordxData.sat.toString() : undefined,
               }),
             ),
+            {
+              type: 'relateInscriptionId',
+              name: 'relateInscriptionId',
+              value: ordxData.relateInscriptionId,
+            }
             // {
             //   type: 'file',
             //   name: 'test.png',
