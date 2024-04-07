@@ -10,18 +10,42 @@ export const waitSomeSeconds = async (num: number) => {
     }, num);
   });
 };
+export const createLittleEndianInteger = (value: number) => {
+  // Create a new ArrayBuffer with a size of 4 bytes
+  const buffer = new ArrayBuffer(4);
+  const view = new DataView(buffer);
+
+  // Set the value as a little endian integer
+  view.setUint32(0, value, true);
+
+  // Convert the ArrayBuffer to a hexadecimal string
+  let hex = Array.from(new Uint8Array(buffer))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  // Remove trailing zeroes
+  hex = hex.replace(/0+$/, '');
+
+  return hex;
+};
+
 export const serializeInscriptionId = (
   inscriptionId: string,
   index: number,
 ) => {
   // 将txid反转并转换为字节数组
   const txid = inscriptionId.split('i0')[0];
-  const txidReverse = txid.split('').reverse().join('');
-  console.log(index);
-  // const txidBytes = txid
-  //   .match(/.{2}/g)
-  //   .reverse()
-  //   .map((byte) => parseInt(byte, 16));
+  // const txidReverse = txid
+  //   ? txid
+  //       .match(/.{1,2}/g)
+  //       ?.map((block) => block.split('').reverse().join(''))
+  //       .join('')
+  //   : '';
+  // console.log(index);
+  const txidBytes = txid
+    .match(/.{2}/g)
+    ?.reverse()
+    .map((byte) => parseInt(byte, 16));
 
   // // 将index转换为小端序的字节数组
   // const indexBytes = new ArrayBuffer(4);
@@ -29,9 +53,9 @@ export const serializeInscriptionId = (
   // indexView.setUint32(0, index, true); // true表示使用小端序
 
   // // 合并txid和index的字节数组，并转换为十六进制字符串
-  // const inscriptionId = [...txidBytes, ...new Uint8Array(indexBytes)]
-  //   .map((b) => b.toString(16).padStart(2, '0'))
-  //   .join('');
+  const txidReverse = txidBytes
+    ?.map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
 
   return txidReverse;
 };

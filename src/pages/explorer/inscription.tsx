@@ -3,9 +3,10 @@ import { useInscriptiontInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { serializeInscriptionId } from '@/pages/inscribe/utils';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
-
+// const detaConent = serializeInscriptionId(file.relateInscriptionId, 0);
 export default function OrdxInscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
@@ -34,7 +35,14 @@ export default function OrdxInscription() {
       return `https://ordinals.com/inscription/${detail?.inscriptionId}`;
     }
   }, [network, detail]);
-
+  const delegateInscriptionId = useMemo(() => {
+    if (!detail?.delegate) {
+      return;
+    } else {
+      return `${detail?.delegate}i0`;
+    }
+  }, [detail?.delegate]);
+  console.log(delegateInscriptionId);
   const txid = useMemo(() => {
     return detail?.inscriptionId?.replace(/i0$/m, '');
   }, [detail]);
@@ -62,9 +70,10 @@ export default function OrdxInscription() {
             {detail.inscriptionNumber === 9223372036854775807 ? (
               <span className='text-orange-400'>{detail.inscriptionId}</span>
             ) : (
-              <span className='text-orange-400'>#{detail.inscriptionNumber}</span>
+              <span className='text-orange-400'>
+                #{detail.inscriptionNumber}
+              </span>
             )}
-            
           </a>
         </div>
         <div className='border-[1px] border-gray-200 rounded-xl mb-4'>

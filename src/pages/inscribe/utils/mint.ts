@@ -10,6 +10,7 @@ import {
   hexToBytes,
   fileToSha256Hex,
   serializeInscriptionId,
+  createLittleEndianInteger,
 } from './index';
 import { getUtxoByValue, pushBTCpmt } from '@/api';
 import { addressToScriptPublicKey } from '@/lib/utils';
@@ -208,7 +209,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           '01',
           parentMimeType,
           '02',
-          offset,
+          createLittleEndianInteger(offset),
           '07',
           ec.encode('ordx'),
           '05',
@@ -250,13 +251,13 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           '01',
           mimetype,
           '02',
-          offset,
+          createLittleEndianInteger(offset),
           '07',
           ec.encode('ordx'),
           '05',
           metaData,
           '0B',
-          ec.encode(detaConent),
+          detaConent,
           'OP_ENDIF',
         ];
       } else {
@@ -273,7 +274,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           '05',
           metaData,
           '0B',
-          ec.encode(detaConent),
+          detaConent,
           'OP_ENDIF',
         ];
       }
@@ -289,7 +290,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           '01',
           mimetype,
           '02',
-          offset,
+          createLittleEndianInteger(offset),
           'OP_0',
           content,
           'OP_ENDIF',
@@ -323,7 +324,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
       'OP_ENDIF',
     ];
   }
-  console.log('script', script)
+  console.log('script', script);
   return script;
 };
 /*
