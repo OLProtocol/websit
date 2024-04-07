@@ -196,7 +196,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
       const parentMimeType = ec.encode(file.parentMimeType);
       const parentConent = hexToBytes(file.parentHex);
       const metaData = cbor.encode(JSON.parse(file.originValue));
-      const offset = ordxUtxo?.satas?.[0]?.offset || 0;
+      const offset = ordxUtxo?.sats?.[0]?.offset || 0;
       console.log('offset', offset);
       if (ordxUtxo && offset > 0) {
         script = [
@@ -236,7 +236,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
         ];
       }
     } else if (file.relateInscriptionId) {
-      const offset = ordxUtxo?.satas?.[0]?.offset || 0;
+      const offset = ordxUtxo?.sats?.[0]?.offset || 0;
       const detaConent = serializeInscriptionId(file.relateInscriptionId, 0);
       console.log('detaConent', detaConent);
       if (ordxUtxo && offset > 0) {
@@ -273,7 +273,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
         ];
       }
     } else {
-      const offset = ordxUtxo?.satas?.[0]?.offset || 0;
+      const offset = ordxUtxo?.sats?.[0]?.offset || 0;
       console.log('offset', offset);
       if (ordxUtxo && offset > 0) {
         script = [

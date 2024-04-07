@@ -491,7 +491,7 @@ export const InscribeOrdx = ({
       align: 'center',
       render: (r) => {
         let offset = 0;
-        if (r !== undefined) {
+        if (r) {
           offset = r.sats[0].offset;
         }
         return <div className='cursor-pointer'>{offset}</div>;
