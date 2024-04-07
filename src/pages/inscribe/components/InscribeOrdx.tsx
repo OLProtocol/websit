@@ -93,6 +93,7 @@ export const InscribeOrdx = ({
   const [loading, setLoading] = useState(false);
   const [tickLoading, setTickLoading] = useState(false);
   const [tickChecked, setTickChecked] = useState(false);
+  const [specialStatus, setSpecialStatus] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
   const [specialBeyondStatus, setSpecialBeyondStatus] = useState(false);
   const [allowSpecialBeyondStatus, setAllowSpecialBeyondStatus] =
@@ -172,6 +173,7 @@ export const InscribeOrdx = ({
   };
   const checkTick = async (blur: boolean = false) => {
     setErrorText('');
+    setSpecialStatus(false);
     // const ec = new TextEncoder();
     // const seris = serializeInscriptionId(
     //   'db0c19557a6bd2ffd5830adf04e6bdbebd21c5b2506ff7fea4db2b4666247e90i0',
@@ -196,7 +198,16 @@ export const InscribeOrdx = ({
       const info = await getOrdXInfo(data.tick);
       setTickLoading(false);
 
-      const { rarity, trz, cn, startBlock, endBlock, limit, imgtype, inscriptionId } = info.data || {};
+      const {
+        rarity,
+        trz,
+        cn,
+        startBlock,
+        endBlock,
+        limit,
+        imgtype,
+        inscriptionId,
+      } = info.data || {};
       const isSpecial = rarity !== 'unknow' && rarity !== 'common' && !!rarity;
       let status = 'Completed';
       if (isSpecial) {
@@ -241,6 +252,7 @@ export const InscribeOrdx = ({
           set('amount', Number(limit));
           set('mintRarity', rarity);
         } else if (isSpecial) {
+          setSpecialStatus(true);
           const resp = await getOrdxUtxoByType(rarity, 1);
           if (resp.code !== 0) {
             checkStatus = false;
@@ -256,7 +268,6 @@ export const InscribeOrdx = ({
             return checkStatus;
           }
 
-          
           resp.data = resp.data.sort(
             (a, b) =>
               b.sats?.reduce((acc, cur) => {
@@ -269,7 +280,7 @@ export const InscribeOrdx = ({
 
           setUtxoList(resp.data);
           set('rarity', rarity);
-          checkStatus = true;
+          checkStatus = false;
           return checkStatus;
         }
         // if (isSpecial) {
@@ -361,8 +372,9 @@ export const InscribeOrdx = ({
   };
 
   const handleUtxoChange = (utxo: any) => {
-    console.log(utxo.utxo);
-    if (utxo.offset >= 546) {
+    setTickChecked(false);
+    const firstOffset = utxo.sats[0].offset;
+    if (firstOffset >= 546) {
       toast.error('请先拆分，再铸造。');
       return;
     }
@@ -372,6 +384,10 @@ export const InscribeOrdx = ({
     satData.sats = satData.sats.sort((a, b) => {
       return b.size - a.size;
     });
+    const satSize = satData.sats.reduce((acc, cur) => {
+      return acc + cur.size;
+    }, 0);
+    console.log('satSize', satSize);
     set('sat', satData?.sats?.[0].start);
     if (satData) {
       onUtxoChange?.(satData);
@@ -388,6 +404,10 @@ export const InscribeOrdx = ({
             },
           });
         }
+      } else if (data.amount > satData.amount) {
+        toast.error('Utxo包含的特殊聪数量不够');
+      } else {
+        setTickChecked(true);
       }
     }
   };
@@ -546,7 +566,7 @@ export const InscribeOrdx = ({
                 </NumberInput>
               </div>
             </div>
-            {tickChecked && utxoList.length > 0 && (
+            {specialStatus && utxoList.length > 0 && (
               <Table
                 bordered
                 columns={utxoColumns}
