@@ -93,6 +93,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
         data.data[i].sats.forEach((item) => {
           item.id = data.data[i].id;
+          item.value = data.data[i].value;
           tmpSats.push(item);
         })
         // tmpSats.push(...data.data[i].sats);

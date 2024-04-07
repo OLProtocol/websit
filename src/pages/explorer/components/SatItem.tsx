@@ -25,7 +25,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
           href={href}
           target='_blank'>
           {hideStr(sat.id)}
-        </a>
+        </a>{'(' + sat.value + ' sats)'}
         &nbsp;&nbsp;
         <CopyButton text={sat.id} tooltip='Copy' className='pt-1'/>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
