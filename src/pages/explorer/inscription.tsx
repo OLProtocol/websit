@@ -8,18 +8,12 @@ import { useTranslation } from 'react-i18next';
 
 export default function OrdxInscription() {
   const { t } = useTranslation();
-  const { inscriptionnum } = useParams();
+  const { inscriptionId } = useParams();
   const [tabText, setTabText] = useState(t('common.holders'));
   const { network } = useUnisatConnect();
 
-  const handleTabsChange = (type: any) => {
-    if (type !== tabText) {
-      setTabText(type);
-    }
-  };
-
   const { data, trigger, isLoading } = useInscriptiontInfo({
-    inscribNum: inscriptionnum,
+    inscriptionId: inscriptionId,
     network,
   });
 
@@ -54,10 +48,10 @@ export default function OrdxInscription() {
   }, [network, txid]);
 
   useEffect(() => {
-    if (inscriptionnum) {
+    if (inscriptionId) {
       trigger();
     }
-  }, [inscriptionnum, network]);
+  }, [inscriptionId, network]);
 
   return (
     <Spin spinning={isLoading}>

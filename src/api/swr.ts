@@ -148,10 +148,10 @@ export const useSatTypes = ({ network }: any) => {
     isLoading: isLoading,
   };
 };
-export const useInscriptiontInfo = ({ inscribNum, network }: any) => {
+export const useInscriptiontInfo = ({ inscriptionId, network }: any) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ordx-inscription-${inscribNum}-${network}`,
-    () => request.getInscriptiontInfo({ inscribNum, network }),
+    `ordx-inscription-${inscriptionId}-${network}`,
+    () => request.getInscriptiontInfo({ inscriptionId, network }),
   );
   1;
   return {

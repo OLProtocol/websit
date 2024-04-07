@@ -30,11 +30,11 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
       key: 'inscriptionNumber',
       width: 100,
       align: 'center',
-      render: (t: any) => {
+      render: (t: any, record) => {
         const href =
           network === 'testnet'
-            ? `https://testnet.ordinals.com/inscription/${t}`
-            : `https://ordinals.com/inscription/${t}`;
+            ? `https://testnet.ordinals.com/inscription/${record.inscriptionId}`
+            : `https://ordinals.com/inscription/${record.inscriptionId}`;
         return (
           <div>
             { t === 9223372036854775807 ? (
