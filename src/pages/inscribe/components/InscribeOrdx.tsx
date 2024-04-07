@@ -256,79 +256,7 @@ export const InscribeOrdx = ({
             return checkStatus;
           }
 
-          // let aaa = [
-          //   {
-          //     utxo: '289d4c11a4f2b4aece170b5ac35ddf303860dd45b5e547f02cb517bea748ec65:0',
-          //     value: 1000,
-          //     type: 'customized',
-          //     amount: 200,
-          //     sats:[
-          //       {
-          //         start: 111111,
-          //         size: 100,
-          //         offset: 1
-          //       },
-          //       {
-          //         start: 222222,
-          //         size: 100,
-          //         offset: 2
-          //       },
-          //       {
-          //         start: 333333,
-          //         size: 100,
-          //         offset: 3
-          //       }
-          //     ],
-          //   },
-          //   {
-          //     utxo: '289d4c11a4f2b4aece170b5ac35ddf303860dd45b5e547f02cb517bea748ec88:0',
-          //     value: 1000,
-          //     type: 'customized',
-          //     amount: 200,
-          //     sats:[
-          //       {
-          //         start: 444444,
-          //         size: 200,
-          //         offset: 4
-          //       },
-          //       {
-          //         start: 555555,
-          //         size: 400,
-          //         offset: 5
-          //       },
-          //       {
-          //         start: 666666,
-          //         size: 600,
-          //         offset: 6
-          //       }
-          //     ],
-          //   },
-          //   {
-          //     utxo: '289d4c11a4f2b4aece170b5ac35ddf303860dd45b5e547f02cb517bea748ec99:0',
-          //     value: 1000,
-          //     type: 'customized',
-          //     amount: 200,
-          //     sats:[
-          //       {
-          //         start: 777777,
-          //         size: 50,
-          //         offset: 1
-          //       },
-          //       {
-          //         start: 888888,
-          //         size: 100,
-          //         offset: 2
-          //       },
-          //       {
-          //         start: 999999,
-          //         size: 100,
-          //         offset: 3
-          //       }
-          //     ],
-          //   },
-          // ]
-          // resp.data = resp?.data || [];
-          // aaa.map((item) => resp?.data.push(item));
+          
           resp.data = resp.data.sort(
             (a, b) =>
               b.sats?.reduce((acc, cur) => {
@@ -343,28 +271,6 @@ export const InscribeOrdx = ({
           set('rarity', rarity);
           checkStatus = true;
           return checkStatus;
-          // const satData = utxoList?.[utxoList?.length - 1];
-          // set('sat', satData?.sats?.[0].start);
-          // set('rarity', rarity);
-          // if (satData) {
-          //   onUtxoChange?.(satData);
-          //   if (satData.amount > data.amount) {
-          //     if (!allowSpecialBeyondStatus) {
-          //       Modal.confirm({
-          //         centered: true,
-          //         content: `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
-          //         okText: '继续',
-          //         cancelText: '取消',
-          //         onOk() {
-          //           setAllowSpecialBeyondStatus(true);
-          //           setTickChecked(true);
-          //         },
-          //       });
-          //     }
-          //     checkStatus = allowSpecialBeyondStatus;
-          //     return checkStatus;
-          //   }
-          // }
         }
         // if (isSpecial) {
         //   checkStatus = false;
