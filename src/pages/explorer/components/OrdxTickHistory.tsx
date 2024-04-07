@@ -23,6 +23,11 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
     start,
     limit,
   });
+
+  const toInscriptionInfo = (inscriptionId) => {
+    nav(`/explorer/inscription/${inscriptionId}`);
+  };
+
   const columns: ColumnsType<any> = [
     {
       title: t('common.inscriptionNumber'),
@@ -40,12 +45,17 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
             { t === 9223372036854775807 ? (
               <span>-</span>
             ) : (
-              <a
+              // <a
+              //   className='text-blue-500 cursor-pointer'
+              //   href={href}
+              //   target='_blank'>
+              //   #{t}
+              // </a>
+              <span
                 className='text-blue-500 cursor-pointer'
-                href={href}
-                target='_blank'>
+                onClick={() => toInscriptionInfo(record.inscriptionId)}>
                 #{t}
-              </a>
+              </span>
             )}
           </div>
         );
@@ -64,12 +74,17 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
             : `https://ordinals.com/inscription/${t}`;
         return (
           <div className='flex item-center justify-center'>
-            <a
+            <span
+              className='text-blue-500 cursor-pointer'
+              onClick={() => toInscriptionInfo(t)}>
+              {hideStr(t)}
+            </span>&nbsp;&nbsp;
+            {/* <a
               className='text-blue-500 cursor-pointer'
               href={href}
               target='_blank'>
               {hideStr(t)}
-            </a>&nbsp;&nbsp;
+            </a>&nbsp;&nbsp; */}
             <CopyButton text={t} tooltip='Copy Inscription ID' />
           </div>
         );
@@ -122,7 +137,8 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
       <Table
         loading={isLoading}
         columns={columns}
-        dataSource={dataSource.filter((item) => item.inscriptionNumber !== 9223372036854775807)}
+        // dataSource={dataSource.filter((item) => item.inscriptionNumber !== 9223372036854775807)}
+        dataSource={dataSource}
         pagination={{
           position: ['bottomCenter'],
           defaultPageSize: 10,
