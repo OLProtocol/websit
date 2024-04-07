@@ -266,7 +266,7 @@ export const OrdxAddressHolders = ({
   const columns: ColumnsType<any> = useMemo(() => {
     const defaultColumn: any[] = [
       {
-        title: 'Utxo',
+        title: 'UTXO',
         dataIndex: 'utxo',
         key: 'utxo',
         width: 100,

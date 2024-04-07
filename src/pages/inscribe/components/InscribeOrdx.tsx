@@ -135,7 +135,7 @@ export const InscribeOrdx = ({
       return resp;
     } catch (error) {
       toast.error(t('toast.system_error'));
-      console.error('Failed to fetch ordxUtxo:', error);
+      console.error('Failed to fetch ordxUTXO:', error);
       throw error;
     }
   };
@@ -399,7 +399,7 @@ export const InscribeOrdx = ({
         // if (!allowSpecialBeyondStatus) {
           Modal.confirm({
             centered: true,
-            content: `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
+            content: `找到的UTXO包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
             okText: '继续',
             cancelText: '取消',
             onOk() {
@@ -440,7 +440,7 @@ export const InscribeOrdx = ({
       },
     },
     {
-      title: 'Utxo',
+      title: 'UTXO',
       dataIndex: 'utxo',
       key: 'utxo',
       align: 'center',

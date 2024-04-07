@@ -328,7 +328,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
   const columns: ColumnsType<any> = useMemo(() => {
     const defaultColumn: any[] = [
       {
-        title: 'Utxo',
+        title: 'UTXO',
         dataIndex: 'utxo',
         key: 'utxo',
         align: 'center',
@@ -457,7 +457,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
   return (
     <Card>
       <CardHeader className='text-center flex justify-between'>
-        <Tooltip label='快速切割生成2个600Utxo'>
+        <Tooltip label='快速切割生成2个600UTXO'>
           <Button bgColor={'white'} border='1px' borderColor='gray.400' size='sm' color='gray.600' onClick={fastClick}>快速切割</Button>
         </Tooltip>
         <Button bgColor={'white'} border='1px' borderColor='gray.400' size='sm' color='gray.600' onClick={getAvailableUtxos}>{t('buttons.fresh')}</Button>

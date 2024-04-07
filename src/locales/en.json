@@ -52,7 +52,7 @@
     "founder": "Founder",
     "inscribe": "Inscribe",
     "hint_connect": "Please connect your wallet first.",
-    "available_utxo": "Available Utxo"
+    "available_utxo": "Available UTXO"
   },
   "toast": {
     "system_error": "System Error",
@@ -246,7 +246,7 @@
         "card_header": "Splitted Inscriptions"
       },
       "utxo": {
-        "title": "Utxo",
+        "title": "UTXO",
         "des": "Get assets and sats by UTXO",
         "search_placeholder": "UTXO ...",
         "card_header_asset": "Assets",
@@ -265,7 +265,7 @@
       "not_support": "Viewing the transferred balance is temporarily unavailable."
     },
     "account": {
-      "available_utxo": "Available Utxo",
+      "available_utxo": "Available UTXO",
       "rare_sats": "Rare Sats",
       "ord_nft": "Ordinals NFT"
     }
