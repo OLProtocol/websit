@@ -7,6 +7,7 @@
     "mint": "Mint",
     "deploy": "Deploy",
     "block": "Block",
+    "content": "Content",
     "rarity": "Rarity",
     "deploy_time": "Deploy Time",
     "deploy_height": "Deploy Height",

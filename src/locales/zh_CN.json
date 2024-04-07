@@ -7,6 +7,7 @@
     "mint": "铸造",
     "deploy": "部署",
     "block": "区块",
+    "content": "内容",
     "rarity": "稀有度",
     "deploy_time": "部署时间",
     "deploy_height": "部署高度",

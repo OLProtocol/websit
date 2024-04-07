@@ -208,7 +208,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           '01',
           parentMimeType,
           '02',
-          ec.encode(offset),
+          offset,
           '07',
           ec.encode('ordx'),
           '05',
@@ -238,6 +238,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
     } else if (file.relateInscriptionId) {
       const offset = ordxUtxo?.sats?.[0]?.offset || 0;
       const detaConent = serializeInscriptionId(file.relateInscriptionId, 0);
+      const metaData = cbor.encode(JSON.parse(file.originValue));
       console.log('detaConent', detaConent);
       if (ordxUtxo && offset > 0) {
         script = [
@@ -249,11 +250,13 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           '01',
           mimetype,
           '02',
-          ec.encode(offset),
+          offset,
+          '07',
+          ec.encode('ordx'),
+          '05',
+          metaData,
           '0B',
           ec.encode(detaConent),
-          'OP_0',
-          content,
           'OP_ENDIF',
         ];
       } else {
@@ -265,16 +268,17 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           ec.encode('ord'),
           '01',
           mimetype,
+          '07',
+          ec.encode('ordx'),
+          '05',
+          metaData,
           '0B',
           ec.encode(detaConent),
-          'OP_0',
-          content,
           'OP_ENDIF',
         ];
       }
     } else {
       const offset = ordxUtxo?.sats?.[0]?.offset || 0;
-      console.log('offset', offset);
       if (ordxUtxo && offset > 0) {
         script = [
           pubkey,
@@ -285,7 +289,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           '01',
           mimetype,
           '02',
-          ec.encode(offset),
+          offset,
           'OP_0',
           content,
           'OP_ENDIF',
@@ -319,6 +323,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
       'OP_ENDIF',
     ];
   }
+  console.log('script', script)
   return script;
 };
 /*

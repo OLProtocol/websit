@@ -9,7 +9,13 @@ import { useNavigate } from 'react-router-dom';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
-import { Card, CardBody, CardHeader, Heading, useToast } from '@chakra-ui/react';
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Heading,
+  useToast,
+} from '@chakra-ui/react';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
 
 interface DataType {
@@ -73,6 +79,27 @@ export const Ord2FullList = () => {
       align: 'center',
       render: (tick) => {
         return <div className='cursor-pointer'>{tick}</div>;
+      },
+    },
+    {
+      title: t('common.content'),
+      dataIndex: 'inscriptionId',
+      key: 'inscriptionId',
+      width: 80,
+      align: 'center',
+      render: (inscriptionId, record) => {
+        console.log(record);
+        return record.imgtype ? (
+          <div>
+            <img
+              src={`https://${
+                network === 'testnet' ? 'testnet.' : ''
+              }ordinals.com/content/${inscriptionId}`}
+              className='max-w-full'></img>
+          </div>
+        ) : (
+          '-'
+        );
       },
     },
     {
@@ -179,7 +206,11 @@ export const Ord2FullList = () => {
     () =>
       list.map((item) => {
         let status;
-        if (item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity) {
+        if (
+          item.rarity !== 'unknow' &&
+          item.rarity !== 'common' &&
+          !!item.rarity
+        ) {
           status = 'Minting';
         } else if (
           item.startBlock &&
@@ -193,9 +224,14 @@ export const Ord2FullList = () => {
         } else {
           status = 'Completed';
         }
-        const special = item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
+        const special =
+          item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         const attrArr: string[] = [];
-        if (item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity) {
+        if (
+          item.rarity !== 'unknow' &&
+          item.rarity !== 'common' &&
+          !!item.rarity
+        ) {
           attrArr.push(`rar=${item.rarity}`);
         }
         if (item.cn) {
@@ -213,18 +249,19 @@ export const Ord2FullList = () => {
             p: 'ordx',
             op: 'deploy',
             tick: item.ticker?.toString(),
-            block: item.blockChecked
-              ? item.block?.toString()
-              : undefined,
+            block: item.blockChecked ? item.block?.toString() : undefined,
             lim: item.limit?.toString(),
             attr,
             des: item.description?.toString(),
           }),
         );
         return {
-          id: item.id+1,
+          id: item.id + 1,
           tick: item.ticker,
-          block: !special && item.startBlock > 0 ? `${item.startBlock}-${item.endBlock}` : '-',
+          block:
+            !special && item.startBlock > 0
+              ? `${item.startBlock}-${item.endBlock}`
+              : '-',
           startBlock: item.startBlock,
           endBlock: item.endBlock,
           rarity: item.rarity,
@@ -232,6 +269,8 @@ export const Ord2FullList = () => {
           reg: item.reg,
           content: value,
           holders: item.holdersCount,
+          imgtype: item.imgtype,
+          inscriptionId: item.inscriptionId,
           deployHeight: item.deployHeight,
           minted: item.totalMinted,
           limit: item.limit,
@@ -245,9 +284,9 @@ export const Ord2FullList = () => {
   const getAllOrdxs = async () => {
     setLoading(true);
     const resp = await getOrdxStatusList({
-      start: start, 
-      limit: limit, 
-      network: network
+      start: start,
+      limit: limit,
+      network: network,
     });
     if (resp.code !== 0) {
       toast({
@@ -257,7 +296,7 @@ export const Ord2FullList = () => {
         isClosable: true,
       });
       setLoading(false);
-      return
+      return;
     }
     setLoading(false);
     setData(resp);
@@ -272,7 +311,7 @@ export const Ord2FullList = () => {
     // } else {
     //   setData(cachedData);
     // }
-    
+
     // // 设置定时器每隔一定时间清除缓存数据
     // const intervalId = setInterval(() => {
     //   cacheData('all_ordx_list_' + currentAccount, null);
@@ -289,7 +328,8 @@ export const Ord2FullList = () => {
           <Button onClick={getAllOrdxs}>{t('buttons.fresh')}</Button>
         </CardHeader>
         <CardBody>
-          <Table bordered
+          <Table
+            bordered
             columns={columns}
             dataSource={dataSource}
             pagination={{
@@ -310,4 +350,4 @@ export const Ord2FullList = () => {
       </Card>
     </div>
   );
-}
+};

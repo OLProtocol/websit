@@ -383,9 +383,9 @@ export const InscribeOrdx = ({
     setSelectedUtxo(utxo.utxo);
 
     const satData = utxoList.filter((item) => item.utxo === utxo.utxo)[0];
-    satData.sats = satData.sats.sort((a, b) => {
-      return b.size - a.size;
-    });
+    // satData.sats = satData.sats.sort((a, b) => {
+    //   return b.size - a.size;
+    // });
     const satSize = satData.sats.reduce((acc, cur) => {
       return acc + cur.size;
     }, 0);

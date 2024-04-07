@@ -29,7 +29,11 @@ export default function Ord2Info() {
 
   const status = useMemo(() => {
     let _status;
-    if (detail?.rarity !== 'unknow' && detail?.rarity !== 'common' && !!detail?.rarity) {
+    if (
+      detail?.rarity !== 'unknow' &&
+      detail?.rarity !== 'common' &&
+      !!detail?.rarity
+    ) {
       _status = 'Minting';
     } else if (
       detail?.startBlock &&
@@ -121,6 +125,19 @@ export default function Ord2Info() {
             <span> {t('common.overview')} </span>
           </div>
           <div className='p-4'>
+            {!!detail?.imgtype && (
+              <div className='mb-2'>
+                <p className='text-gray-400'>{t('common.content')}:</p>
+                <div>
+                  <img
+                    src={`https://${
+                      network === 'testnet' ? 'testnet.' : ''
+                    }ordinals.com/content/${detail?.inscriptionId}`}
+                    className='max-w-full w-80 h-80'></img>
+                </div>
+              </div>
+            )}
+
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.inscriptionId')}:</p>
               <a href={ordinalLink} className='indent-2' target='_blank'>
@@ -173,11 +190,27 @@ export default function Ord2Info() {
               <p className='text-gray-400'>{t('common.minted_total')}:</p>
               <p className='indent-2'>
                 {detail?.totalMinted}
-                {tick === 'Pearl'&& (
-                <><span>(</span><a href='https://gateway.pinata.cloud/ipfs/QmWwNrzrKVYyaEFCVrJEWC2pqsDSmVSkBmaYvmBoToAC3c' target='_blank'>{t('common.minted_history_data_file')}</a><span>)</span></>
+                {tick === 'Pearl' && (
+                  <>
+                    <span>(</span>
+                    <a
+                      href='https://gateway.pinata.cloud/ipfs/QmWwNrzrKVYyaEFCVrJEWC2pqsDSmVSkBmaYvmBoToAC3c'
+                      target='_blank'>
+                      {t('common.minted_history_data_file')}
+                    </a>
+                    <span>)</span>
+                  </>
                 )}
-                {tick === '龙'&& (
-                <><span>(</span><a href='https://gateway.pinata.cloud/ipfs/QmSM1y5evXoadcXNh4prKp31zgcV6bqxfPjkp9sRjyiszk' target='_blank'>{t('common.minted_history_data_file')}</a><span>)</span></>
+                {tick === '龙' && (
+                  <>
+                    <span>(</span>
+                    <a
+                      href='https://gateway.pinata.cloud/ipfs/QmSM1y5evXoadcXNh4prKp31zgcV6bqxfPjkp9sRjyiszk'
+                      target='_blank'>
+                      {t('common.minted_history_data_file')}
+                    </a>
+                    <span>)</span>
+                  </>
                 )}
               </p>
             </div>
@@ -221,7 +254,7 @@ export default function Ord2Info() {
           </div>
           {tabText === t('common.holders') && tick && detail?.totalMinted && (
             <div className='p-4'>
-              <InfoHolders tick={tick} totalQuantity={detail?.totalMinted}/>
+              <InfoHolders tick={tick} totalQuantity={detail?.totalMinted} />
             </div>
           )}
           {tabText === t('common.minted_history') && tick && (
