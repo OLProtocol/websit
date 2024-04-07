@@ -374,6 +374,7 @@ export const InscribeOrdx = ({
 
   const handleUtxoChange = (utxo: any) => {
     setTickChecked(false);
+    setAllowSpecialBeyondStatus(false);
     const firstOffset = utxo.sats[0].offset;
     if (firstOffset >= 546) {
       toast.error('请先拆分，再铸造。');
