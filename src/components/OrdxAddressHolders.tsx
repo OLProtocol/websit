@@ -258,6 +258,11 @@ export const OrdxAddressHolders = ({
     setIsModalOpen(false);
     setLoading(false);
   };
+
+  const toInscriptionInfo = (inscriptionId) => {
+    nav(`/explorer/inscription/${inscriptionId}`);
+  };
+
   const columns: ColumnsType<any> = useMemo(() => {
     const defaultColumn: any[] = [
       {
@@ -331,27 +336,27 @@ export const OrdxAddressHolders = ({
           inscriptionnums = t?.map((r: any) => 
             <div>
               {r.num === 9223372036854775807 ? (
-                // <span
-                //   className='text-blue-500 cursor-pointer'
-                //   onClick={() => toInscriptionInfo(r.id)}>
-                //   #{hideStr(r.id)}
-                // </span>
-                <a className='text-blue-500 cursor-pointer'
-                  href={href + r.id}
-                  target='_blank'>
-                  {hideStr(r.id)}
-                </a>
+                <span
+                  className='text-blue-500 cursor-pointer'
+                  onClick={() => toInscriptionInfo(r.id)}>
+                  #{hideStr(r.id)}
+                </span>
+                // <a className='text-blue-500 cursor-pointer'
+                //   href={href + r.id}
+                //   target='_blank'>
+                //   {hideStr(r.id)}
+                // </a>
               ) : (
-                // <span
-                //   className='text-blue-500 cursor-pointer'
-                //   onClick={() => toInscriptionInfo(r.num)}>
-                //    #{r.num}
-                // </span>
-                <a className='text-blue-500 cursor-pointer'
-                  href={href + r.num}
-                  target='_blank'>
-                  #{r.num}
-                </a>
+                <span
+                  className='text-blue-500 cursor-pointer'
+                  onClick={() => toInscriptionInfo(r.id)}>
+                   #{r.num}
+                </span>
+                // <a className='text-blue-500 cursor-pointer'
+                //   href={href + r.num}
+                //   target='_blank'>
+                //   #{r.num}
+                // </a>
               )}
             </div>
             );

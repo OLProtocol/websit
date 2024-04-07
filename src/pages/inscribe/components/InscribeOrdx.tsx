@@ -174,6 +174,7 @@ export const InscribeOrdx = ({
   const checkTick = async (blur: boolean = false) => {
     setErrorText('');
     setSpecialStatus(false);
+    setUtxoList([]);
     // const ec = new TextEncoder();
     // const seris = serializeInscriptionId(
     //   'db0c19557a6bd2ffd5830adf04e6bdbebd21c5b2506ff7fea4db2b4666247e90i0',
@@ -545,7 +546,10 @@ export const InscribeOrdx = ({
                 maxLength={32}
                 placeholder={t('pages.inscribe.ordx.tick_placeholder')}
                 value={data.tick}
-                onChange={(e) => set('tick', e.target.value)}
+                onChange={(e) => {
+                  setUtxoList([]);
+                  set('tick', e.target.value);
+                }}
               />
             </div>
           </div>

@@ -145,9 +145,9 @@ export const getMintInfo = async ({ inscribId, network }: any) => {
   return data;
 };
 
-export const getInscriptiontInfo = async ({ inscribNum, network }: any) => {
+export const getInscriptiontInfo = async ({ inscriptionId, network }: any) => {
   const { data } = await axios.get(
-    generateUrl(`mint/details/${inscribNum}`, network),
+    generateUrl(`mint/details/${inscriptionId}`, network),
   );
   return data;
 };

@@ -26,7 +26,7 @@ export const ROUTE_PATH = {
   INSCRIBE_TEST: '/inscribe_test',
   ORDX_INDEX: '/explorer',
   ORDX_INFO: '/explorer/:tick',
-  ORDX_INSCRIPTION: '/explorer/inscription/:inscriptionnum',
+  ORDX_INSCRIPTION: '/explorer/inscription/:inscriptionId',
   INSCRIBE_CHECK: '/inscribe_check',
   TOOLS: '/tools',
   TOOLS_SPLIT_SAT: '/tools/split-sat',
