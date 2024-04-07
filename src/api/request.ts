@@ -179,7 +179,7 @@ export const getSplittedSats = async ({ ticker, network }: any) => {
 };
 
 export const getAssetByUtxo = async ({ utxo, network }: any) => {
-  const { data } = await axios.post(
+  const { data } = await axios.get(
     generateUrl(`getAssetByUtxo/${utxo}`, network),
   );
   return data;
