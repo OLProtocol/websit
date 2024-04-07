@@ -411,7 +411,7 @@ export const InscribeOrdx = ({
         //   setTickChecked(true);
         // }
       } else if (data.amount > satSize) {
-        toast.error('Utxo包含的特殊聪数量不够');
+        toast.error('UTXO包含的特殊聪数量不够');
       } else {
         setTickChecked(true);
       }

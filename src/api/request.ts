@@ -138,13 +138,6 @@ export const savePaidOrder = async ({ key, content, network }: any) => {
   return data;
 };
 
-export const getMintInfo = async ({ inscribId, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`mint/info/${inscribId}`, network),
-  );
-  return data;
-};
-
 export const getInscriptiontInfo = async ({ inscriptionId, network }: any) => {
   const { data } = await axios.get(
     generateUrl(`mint/details/${inscriptionId}`, network),
