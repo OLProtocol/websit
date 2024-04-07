@@ -52,7 +52,7 @@
     "founder": "铸造者",
     "inscribe": "铭文",
     "hint_connect": "请连接钱包以继续。",
-    "available_utxo": "可花费Utxo"
+    "available_utxo": "可花费UTXO"
   },
   "toast": {
     "system_error": "系统异常，请稍后再试。",
@@ -246,7 +246,7 @@
         "card_header": "Splitted Inscriptions"
       },
       "utxo": {
-        "title": "Utxo",
+        "title": "UTXO",
         "des": "Get assets and sats by UTXO",
         "search_placeholder": "UTXO ...",
         "card_header_asset": "Assets",
@@ -264,7 +264,7 @@
       "not_support": "暂时不支持查看转移后的余额。"
     },
     "account": {
-      "available_utxo": "Available Utxo",
+      "available_utxo": "Available UTXO",
       "rare_sats": "Rare Sats",
       "ord_nft": "Ordinals NFT"
     }

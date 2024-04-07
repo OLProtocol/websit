@@ -41,7 +41,7 @@ export const serializeInscriptionId = (
   //       ?.map((block) => block.split('').reverse().join(''))
   //       .join('')
   //   : '';
-  // console.log(index);
+  console.log(index);
   const txidBytes = txid
     .match(/.{2}/g)
     ?.reverse()

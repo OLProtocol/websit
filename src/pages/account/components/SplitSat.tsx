@@ -246,7 +246,7 @@ export default function SplitSat() {
                                 <Grid key={Math.random()} templateColumns='repeat(5, 1fr)' gap={6} pt={2}>
                                     <GridItem colSpan={3}>
                                         <InputGroup>
-                                            <InputLeftAddon>Utxo</InputLeftAddon>
+                                            <InputLeftAddon>UTXO</InputLeftAddon>
                                             <Input key={Math.random()} value={item.utxo} readOnly />
                                         </InputGroup>
                                     </GridItem>
