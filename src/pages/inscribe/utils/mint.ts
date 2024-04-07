@@ -250,10 +250,10 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           mimetype,
           '02',
           ec.encode(offset),
-          'OP_0',
-          content,
           '11',
           ec.encode(detaConent),
+          'OP_0',
+          content,
           'OP_ENDIF',
         ];
       } else {
@@ -265,10 +265,10 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           ec.encode('ord'),
           '01',
           mimetype,
-          'OP_0',
-          content,
           '11',
           ec.encode(detaConent),
+          'OP_0',
+          content,
           'OP_ENDIF',
         ];
       }
