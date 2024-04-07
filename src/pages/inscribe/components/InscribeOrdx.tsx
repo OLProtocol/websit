@@ -393,8 +393,10 @@ export const InscribeOrdx = ({
     set('sat', satData?.sats?.[0].start);
     if (satData) {
       onUtxoChange?.(satData);
+      console.log('satData', satData);
+      console.log('satData', data.amount);
       if (satData.amount > data.amount) {
-        if (!allowSpecialBeyondStatus) {
+        // if (!allowSpecialBeyondStatus) {
           Modal.confirm({
             centered: true,
             content: `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
@@ -405,8 +407,10 @@ export const InscribeOrdx = ({
               setTickChecked(true);
             },
           });
-        }
-      } else if (data.amount > satData.amount) {
+        // } else {
+        //   setTickChecked(true);
+        // }
+      } else if (data.amount > satSize) {
         toast.error('Utxo包含的特殊聪数量不够');
       } else {
         setTickChecked(true);
