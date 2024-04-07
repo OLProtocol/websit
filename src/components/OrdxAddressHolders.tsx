@@ -339,7 +339,7 @@ export const OrdxAddressHolders = ({
                 <span
                   className='text-blue-500 cursor-pointer'
                   onClick={() => toInscriptionInfo(r.id)}>
-                  #{hideStr(r.id)}
+                  {hideStr(r.id)}
                 </span>
                 // <a className='text-blue-500 cursor-pointer'
                 //   href={href + r.id}
