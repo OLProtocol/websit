@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+  <script>
+    // VConsole will be exported to `window.VConsole` by default.
+    var vConsole = new window.VConsole();
+  </script>
+</head>
+
+<body>
+
+  <video id="video" width="640" height="480" autoplay></video>
+  <button id="snap">拍照</button>
+  <canvas id="canvas" width="640" height="480"></canvas>
+
+  <script>
+    // 获取页面上的元素
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const snap = document.getElementById('snap');
+
+    // 请求用户的媒体设备
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        alert(123)
+        video.srcObject = stream;
+      })
+      .catch((err) => {
+        alert(err)
+        console.log("An error occurred: " + err);
+      });
+
+    // 拍照功能
+    snap.addEventListener("click", function () {
+      context.drawImage(video, 0, 0, 640, 480);
+      // 这里可以添加代码，将canvas中的图片用于OCR
+      canvas.toBlob(function (blob) {
+        // Tesseract.recognize(
+        //   blob,
+        //   'eng', // 指定语言代码，比如中文是'chi_sim'
+        //   {
+        //     logger: m => console.log(m) // 日志输出进度
+        //   }
+        // ).then(({ data: { text } }) => {
+        //   console.log(text); // 输出识别结果
+        // });
+      });
+
+    });
+  </script>
+
+</body>
+
+</html>
