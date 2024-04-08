@@ -217,7 +217,7 @@ export const OrdxAddressHolders = ({
           },
         };
       });
-      const realityFee = (180 * inputs.length + 34 * 3 + 10) * feeRate.value;
+      const realityFee = (160 * inputs.length + 34 * 3 + 10) * feeRate.value;
       const serviceOutputValue = serviceUtxo.value + 1;
       const splitOutputValue = splitUtxo.value - 1;
       const balanceOutputValue = avialableValue - realityFee;
