@@ -206,7 +206,7 @@ export default function SplitSat() {
         
         let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
         let outTotal = tmpOutputList.reduce((total, item) => total + item.sats, 0);
-        let realityFee = (160 * tmpInputList.length + 34 * 3 + 10) * feeRate.value;
+        let realityFee = (148 * tmpInputList.length + 34 * 3 + 10) * feeRate.value;
 
         while (inTotal - outTotal - realityFee < 0) {
             availableUtxoIndex += 1;
@@ -215,7 +215,7 @@ export default function SplitSat() {
                 sats: availableUtxos?.[availableUtxoIndex].value,
             })
             inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
-            realityFee = (160 * tmpInputList.length + 34 * 3 + 10) * feeRate.value;
+            realityFee = (148 * tmpInputList.length + 34 * 3 + 10) * feeRate.value;
         }
 
         if (inTotal - outTotal - realityFee < 160) {

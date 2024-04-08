@@ -16,7 +16,7 @@ export default function Extract() {
     const funding = await getFundingAddress(secret, network);
     const seckey = keys.get_seckey(secret);
     const pubkey = keys.get_pubkey(seckey, true);
-    const fee = 160 * feeRate;
+    const fee = 148 * feeRate;
     const outputs = [
       {
         value: amount - fee,

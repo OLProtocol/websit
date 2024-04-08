@@ -111,7 +111,7 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
       // const fee = 600;
-      const realityFee = (160 * inputs.length + 34 * 3 + 10) * feeRate.value;
+      const realityFee = (148 * inputs.length + 34 * 3 + 10) * feeRate.value;
 
       const firstOutputValue = firstUtxo.value;
       const secondOutputValue = total - firstOutputValue - realityFee;
@@ -189,7 +189,7 @@ export const OrdxItem = ({ item, onTransfer }: Props) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
       // const fee = 600;
-      const realityFee = (160 * inputs.length + 34 * 3 + 10) * feeRate.value;
+      const realityFee = (148 * inputs.length + 34 * 3 + 10) * feeRate.value;
       const firstOutputValue = 330;
       const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [

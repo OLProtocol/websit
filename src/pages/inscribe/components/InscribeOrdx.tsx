@@ -166,6 +166,7 @@ export const InscribeOrdx = ({
       if (!checkStatus) {
         return;
       }
+      
       setTickChecked(true);
     } else {
       onNext?.();

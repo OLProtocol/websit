@@ -66,7 +66,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
 
   const fastClick = async () => {
     setLoading(true);
-    const virtualFee = (160 * 10 + 34 * 10 + 10) * feeRate.value;
+    const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
     const utxos = dataSource.filter((v) => v.value !== 600);
     const totalValue = utxos.reduce((acc, cur) => {
       return acc + cur.value;
@@ -117,7 +117,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const realityFee = (160 * inputs.length + 34 * 3 + 10) * feeRate.value;
+      const realityFee = (148 * inputs.length + 34 * 3 + 10) * feeRate.value;
       const firstOutputValue = 600;
       const secondOutputValue = 600;
       const thirdOutputValue =
@@ -249,7 +249,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
   const splitHandler = useCallback(
     async (item: any) => {
       setLoading(true);
-      const virtualFee = (160 * 1 + 34 * 2 + 10) * feeRate.value;
+      const virtualFee = (148 * 1 + 34 * 2 + 10) * feeRate.value;
       // const utxos = await getUtxo();
       if (item.value < 930 + virtualFee) {
         message.warning('utxo数量不足，无法切割');
@@ -305,7 +305,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const realityFee = (160 * inputs.length + 34 * 2 + 10) * feeRate.value;
+      const realityFee = (148 * inputs.length + 34 * 2 + 10) * feeRate.value;
       const firstOutputValue = 600;
       const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [

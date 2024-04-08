@@ -167,7 +167,7 @@ export default function Transaction() {
       outTotal += v.value.sats;
     })
 
-    const realityFee = (160 * inputList.items.length + 34 * 3 + 10) * feeRate.value;
+    const realityFee = (148 * inputList.items.length + 34 * 3 + 10) * feeRate.value;
     setFee(realityFee);
     setBalance('sats', inTotal - outTotal - realityFee);
   }
@@ -239,7 +239,7 @@ export default function Transaction() {
           value: v.value.sats,
         })
       })
-      const realityFee = (160 * inputList.items.length + 34 * 3 + 10) * feeRate.value;
+      const realityFee = (148 * inputList.items.length + 34 * 3 + 10) * feeRate.value;
 
       if (inTotal - outTotal - realityFee < 0) {
         setLoading(false);
