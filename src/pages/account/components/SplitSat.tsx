@@ -227,7 +227,7 @@ export default function SplitSat() {
         
         let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
         let outTotal = tmpOutputList.reduce((total, item) => total + item.sats, 0);
-        let realityFee = calculateRate(tmpInputList.length, feeRate.value);
+        let realityFee = calculateRate(tmpInputList.length, tmpOutputList.length, feeRate.value);
 
         while (inTotal - outTotal - realityFee < 0) {
             tmpInputList.push({
@@ -238,7 +238,7 @@ export default function SplitSat() {
             utxoLength = tmpAvailableUtxos.length;
             
             inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
-            realityFee = calculateRate(tmpInputList.length, feeRate.value);
+            realityFee = calculateRate(tmpInputList.length, tmpOutputList.length+1, feeRate.value);
         }
 
         tmpOutputList.push({
