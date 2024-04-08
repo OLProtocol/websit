@@ -254,7 +254,7 @@ export default function SplitSat() {
         setAddress(currentAccount);
         getAvailableUtxos();
         getValueOfUtxo();
-    }, [address]);
+    }, [address, feeRate]);
 
     return (
         <div className='flex flex-col max-w-7xl mx-auto pt-8'>

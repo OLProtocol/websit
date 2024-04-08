@@ -369,6 +369,11 @@ export default function Transaction() {
   }
 
   useEffect(() => {
+    const realityFee = calculateRate(inputList.items.length, outputList.items.length, feeRate.value);
+    setFee(realityFee);
+}, [feeRate]);
+
+  useEffect(() => {
     getAllTickers();
   }, []);
 
