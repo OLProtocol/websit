@@ -1,10 +1,10 @@
 import { getOrdxSummary, getUtxoByValue, getOrdxAddressHolders } from "@/api";
 import { useUnisat, useUnisatConnect } from "@/lib/hooks";
 import { AddIcon, MinusIcon } from "@chakra-ui/icons";
-import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Heading, IconButton, Image, Input, InputGroup, Select, Spacer, Stack, useToast } from "@chakra-ui/react";
+import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Heading, IconButton, Image, Input, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useMap } from "react-use";
-import { message } from "antd";
+import { Tooltip, message } from "antd";
 import * as bitcoin from 'bitcoinjs-lib';
 import { addressToScriptPublicKey, calculateRate, hideStr } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
@@ -397,7 +397,6 @@ export default function Transaction() {
                       <option key={utxo.ticker + '-' + item.id} value={(item.value.ticker !== '' && item.value.ticker === utxo.ticker) ? item.value.ticker : utxo.ticker}>{utxo.ticker}</option>
                     ))}
                   </Select>
-
                   <Select placeholder='Select UTXO' w={'40%'} onChange={(e) => handleUtxoSelectChange(item.id, e.target.value)}>
                     {item.options.utxos.map((utxo) => (
                       <option key={item.value.ticker + '-' + utxo.txid + '-' + item.id} value={utxo.txid + ':' + utxo.vout}>
@@ -446,7 +445,15 @@ export default function Transaction() {
             <FormControl>
               {outputList.items.map((item) => (
                 <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
-                  <Input placeholder='Btc address' w={'60%'} size='md' value={item.value.address} onChange={(e) => setBtcAddress(item.id, e.target.value)} />
+                  <InputGroup w={'60%'} >
+                    <Input placeholder='Btc address' size='md' value={item.value.address} onChange={(e) => setBtcAddress(item.id, e.target.value)} />
+                    <InputRightAddon onClick={() => setBtcAddress(item.id, currentAccount)}>
+                      <Tooltip title='Fill the BTC address of the current account'>
+                        <AddIcon color='gray.300' />
+                      </Tooltip>
+                    </InputRightAddon>
+                  </InputGroup>
+                  
                   <InputGroup w={'30%'}>
                     <Input key={'output-sat-' + item.id} placeholder='0' w={'70%'} size='md' value={item.value.unit === 'sats' ? item.value.sats : item.value.sats / 100000000} onChange={(e) => setOutputSats(item.id, e.target.value)} onBlur={(e) => outputSatsOnBlur(e)}/>
                     <Select variant='filled' w={'30%'} onChange={(e) => handleOutputUnitSelectChange(item.id, e.target.value)}>
@@ -487,17 +494,26 @@ export default function Transaction() {
                   <span className='text-gray-300'>No data</span>
                 </div>
               ):(
-                <Flex key={Math.random()} whiteSpace={'nowrap'} gap={4} pt={2} w={'50%'}>
-                  <InputGroup w={'100%'}>
-                    <Input key={'balance-sat'} placeholder='0' w={'80%'} size='md' value={balance.unit === 'sats' ? balance.sats : balance.sats / 100000000} readOnly/>
-                    <Select variant='filled' w={'20%'} onChange={(e) => handleBalanceUnitSelectChange(e.target.value)}>
+                <Flex key={Math.random()} whiteSpace={'nowrap'} gap={4} pt={2}>
+                  <InputGroup w={'60%'} >
+                    <InputLeftAddon>
+                      Current Address
+                    </InputLeftAddon>
+                    <Input size='md' value={currentAccount}/>
+                  </InputGroup>
+                  
+                  <InputGroup w={'30%'}>
+                    <Input key={'balance-sat'} placeholder='0' w={'70%'} size='md' value={balance.unit === 'sats' ? balance.sats : balance.sats / 100000000} readOnly/>
+                    <Select variant='filled' w={'30%'} onChange={(e) => handleBalanceUnitSelectChange(e.target.value)}>
                       <option value='sats'>sats</option>
                       <option value='btc'>btc</option>
                     </Select>
                   </InputGroup>
+                  <ButtonGroup gap='1' w={'10%'}>
+                    {/* 占位 */}
+                  </ButtonGroup>
                 </Flex>
               )}
-              
             </FormControl>
           </Stack>
         </CardBody>
