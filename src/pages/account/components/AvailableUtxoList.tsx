@@ -180,7 +180,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
         value: 600,
         network,
       });
-      const virtualFee = (180 * 10 + 34 * 10 + 10) * feeRate.value;
+      const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
         message.error('余额不足');
@@ -222,7 +222,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
       const total = inputs.reduce((acc, cur) => {
         return acc + cur.witnessUtxo.value;
       }, 0);
-      const realityFee = (180 * inputs.length + 34 * 2 + 10) * feeRate.value;
+      const realityFee = (148 * inputs.length + 34 * 2 + 10) * feeRate.value;
       const firstOutputValue = firstUtxo.value;
       const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [

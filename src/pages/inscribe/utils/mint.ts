@@ -578,7 +578,7 @@ export const sendBTC = async ({
     throw new Error(i18n.t('toast.insufficient_balance'));
   }
   console.log(value);
-  const fee = (180 * (hasOrdxUtxo ? 2 : 1) + 34 * 2 + 10) * feeRate;
+  const fee = (148 * (hasOrdxUtxo ? 2 : 1) + 34 * 2 + 10) * feeRate;
   const filterTotalValue = hasOrdxUtxo ? 330 + fee : value + 330 + fee;
   const avialableUtxo: any[] = [];
   let avialableValue = 0;
