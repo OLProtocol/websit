@@ -121,7 +121,6 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
   const total = useMemo(() => data?.data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
-    console.log(page, pageSize);
   };
   const toInfo = () => {
     nav(`/explorer/${tick}`);

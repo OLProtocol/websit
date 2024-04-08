@@ -32,3 +32,6 @@ export const addressToScriptPublicKey = (address: string) => {
   return scriptPublicKey;
 };
 
+export const calculateRate = (inputLength: number, feeRate: number) => {
+  return (148 * inputLength + 34 * 3 + 10) * feeRate;
+}
