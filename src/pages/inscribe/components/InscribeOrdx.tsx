@@ -175,6 +175,7 @@ export const InscribeOrdx = ({
     setErrorText('');
     setSpecialStatus(false);
     setUtxoList([]);
+    setSelectedUtxo('');
     // const ec = new TextEncoder();
     // const seris = serializeInscriptionId(
     //   'db0c19557a6bd2ffd5830adf04e6bdbebd21c5b2506ff7fea4db2b4666247e90i0',
