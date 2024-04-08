@@ -76,6 +76,7 @@ export default function OrdxInscription() {
             )}
           </a>
         </div>
+
         <div className='border-[1px] border-gray-200 rounded-xl mb-4'>
           <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-10 items-center'>
             <span> {t('common.overview')} </span>
@@ -86,6 +87,16 @@ export default function OrdxInscription() {
               <a href={ordinalLink} className='indent-2' target='_blank'>
                 {detail?.inscriptionId || '-'}
               </a>
+            </div>
+            <div className='mb-2'>
+              <p className='text-gray-400'>{t('common.content')}:</p>
+              <div>
+                <img
+                  src={`https://${
+                    network === 'testnet' ? 'testnet.' : ''
+                  }ordinals.com/content/${detail?.delegate}`}
+                  className='max-w-full w-80 h-80'></img>
+              </div>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.tick')}:</p>
