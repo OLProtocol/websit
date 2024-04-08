@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useMap } from "react-use";
 import { message } from "antd";
 import * as bitcoin from 'bitcoinjs-lib';
-import { addressToScriptPublicKey, hideStr } from "@/lib/utils";
+import { addressToScriptPublicKey, calculateRate, hideStr } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { useCommonStore } from "@/store";
 
@@ -22,7 +22,7 @@ export default function Transaction() {
         ticker: '',
         utxo: '',
         sats: 0,
-        unit: 'sat',
+        unit: 'sats',
       },
       options: {
         tickers: [],
@@ -36,7 +36,7 @@ export default function Transaction() {
       id: 1,
       value: {
         sats: 0,
-        unit: 'sat',
+        unit: 'sats',
         address: '',
       }
     }]
@@ -44,7 +44,7 @@ export default function Transaction() {
 
   const [balance, {set: setBalance}] = useMap<any>({
     sats: 0,
-    unit: 'sat',
+    unit: 'sats',
   })
 
   const { currentAccount, network, currentPublicKey } = useUnisatConnect();
@@ -64,7 +64,7 @@ export default function Transaction() {
         ticker: '',
         utxo: '',
         sats: 0,
-        unit: 'sat',
+        unit: 'sats',
       },
       options: {
         tickers: tickers,
@@ -91,7 +91,7 @@ export default function Transaction() {
       id: newId,
       value: {
         sats: 0,
-        unit: 'sat',
+        unit: 'sats',
         address: '',
       }
     };
@@ -112,7 +112,7 @@ export default function Transaction() {
   const handleTickerSelectChange = (itemId, ticker) => {
     inputList.items[itemId - 1].value.ticker = ticker;
     inputList.items[itemId - 1].value.sats = 0;
-    inputList.items[itemId - 1].value.unit = 'sat';
+    inputList.items[itemId - 1].value.unit = 'sats';
 
     const selectTicker = tickerList?.find((item) => item.ticker === ticker) || [];
     let utxos = selectTicker.utxos;
@@ -167,7 +167,7 @@ export default function Transaction() {
       outTotal += v.value.sats;
     })
 
-    const realityFee = (148 * inputList.items.length + 34 * 3 + 10) * feeRate.value;
+    const realityFee = calculateRate(inputList.items.length, outputList.items.length, feeRate.value);
     setFee(realityFee);
     setBalance('sats', inTotal - outTotal - realityFee);
   }
@@ -189,7 +189,7 @@ export default function Transaction() {
 
   const setOutputSats = (itemId: number, sats: string) => {
     const unit = outputList.items[itemId - 1].value.unit;
-    if (unit === 'sat') {
+    if (unit === 'sats') {
       outputList.items[itemId - 1].value.sats = Number(sats);
     } else {
       outputList.items[itemId - 1].value.sats = Number(sats)*100000000;
@@ -239,7 +239,8 @@ export default function Transaction() {
           value: v.value.sats,
         })
       })
-      const realityFee = (148 * inputList.items.length + 34 * 3 + 10) * feeRate.value;
+      
+      const realityFee = calculateRate(inputList.items.length, outputList.items.length, feeRate.value);
 
       if (inTotal - outTotal - realityFee < 0) {
         setLoading(false);
@@ -346,6 +347,7 @@ export default function Transaction() {
             txid: detail.utxo.split(':')[0],
             vout: Number(detail.utxo.split(':')[1]),
             value: detail.amount,
+            assetamount: detail.assetamount,
           }
           utxosOfTicker.push(utxo);
         })
@@ -364,8 +366,12 @@ export default function Transaction() {
     const avialableTicker = await getAvialableTicker();
     tickers?.push(avialableTicker);
     setTickerList(tickers);
-    console.log(tickerList)
   }
+
+  useEffect(() => {
+    const realityFee = calculateRate(inputList.items.length, outputList.items.length, feeRate.value);
+    setFee(realityFee);
+}, [feeRate]);
 
   useEffect(() => {
     getAllTickers();
@@ -386,28 +392,33 @@ export default function Transaction() {
             <FormControl>
               {inputList.items.map((item) => (
                 <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
-                  <Select placeholder='Select Ticker' onChange={(e) => handleTickerSelectChange(item.id, e.target.value)}>
+                  <Select placeholder='Select Ticker' w={'20%'} onChange={(e) => handleTickerSelectChange(item.id, e.target.value)}>
                     {tickerList !== undefined && tickerList.map((utxo) => (
                       <option key={utxo.ticker + '-' + item.id} value={(item.value.ticker !== '' && item.value.ticker === utxo.ticker) ? item.value.ticker : utxo.ticker}>{utxo.ticker}</option>
                     ))}
                   </Select>
 
-                  <Select placeholder='Select UTXO' onChange={(e) => handleUtxoSelectChange(item.id, e.target.value)}>
+                  <Select placeholder='Select UTXO' w={'40%'} onChange={(e) => handleUtxoSelectChange(item.id, e.target.value)}>
                     {item.options.utxos.map((utxo) => (
-                      <option key={item.value.ticker + '-' + utxo.txid + '-' + item.id} value={utxo.txid + ':' + utxo.vout}>{utxo.value + ' sats - ' + hideStr(utxo.txid + ':' + utxo.vout)}</option>
+                      <option key={item.value.ticker + '-' + utxo.txid + '-' + item.id} value={utxo.txid + ':' + utxo.vout}>
+                        {utxo.assetamount && (
+                          utxo.assetamount + ' Asset/'
+                        )}
+                        {utxo.value + ' sats - ' + hideStr(utxo.txid + ':' + utxo.vout)}
+                      </option>
                     ))}
                   </Select>
 
-                  <InputGroup>
-                    <Input key={'input-sat-' + item.id} placeholder='0' size='md' value={item.value.unit === 'sat' ? item.value.sats : item.value.sats / 100000000} readOnly/>
+                  <InputGroup w={'30%'}>
+                    <Input key={'input-sat-' + item.id} placeholder='0' w={'70%'} size='md' value={item.value.unit === 'sats' ? item.value.sats : item.value.sats / 100000000} readOnly/>
                     {/* <InputRightAddon>sat</InputRightAddon> */}
-                    <Select variant='filled' w={24} onChange={(e) => handleInputUnitSelectChange(item.id, e.target.value)}>
-                      <option value='sat'>sat</option>
+                    <Select variant='filled' w={'30%'} onChange={(e) => handleInputUnitSelectChange(item.id, e.target.value)}>
+                      <option value='sats'>sats</option>
                       <option value='btc'>btc</option>
                     </Select>
                   </InputGroup>
 
-                  <ButtonGroup gap='1'>
+                  <ButtonGroup w={'10%'} gap='1'>
                     <IconButton size='sm' mt={1} onClick={addInputItem}
                       isRound={true}
                       variant='outline'
@@ -435,16 +446,16 @@ export default function Transaction() {
             <FormControl>
               {outputList.items.map((item) => (
                 <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
-                  <Input placeholder='Btc address' size='md' value={item.value.address} onChange={(e) => setBtcAddress(item.id, e.target.value)} />
-                  <InputGroup>
-                    <Input key={'output-sat-' + item.id} placeholder='0' size='md' value={item.value.unit === 'sat' ? item.value.sats : item.value.sats / 100000000} onChange={(e) => setOutputSats(item.id, e.target.value)} onBlur={(e) => outputSatsOnBlur(e)}/>
-                    <Select variant='filled' w={24} onChange={(e) => handleOutputUnitSelectChange(item.id, e.target.value)}>
-                      <option value='sat'>sat</option>
+                  <Input placeholder='Btc address' w={'60%'} size='md' value={item.value.address} onChange={(e) => setBtcAddress(item.id, e.target.value)} />
+                  <InputGroup w={'30%'}>
+                    <Input key={'output-sat-' + item.id} placeholder='0' w={'70%'} size='md' value={item.value.unit === 'sats' ? item.value.sats : item.value.sats / 100000000} onChange={(e) => setOutputSats(item.id, e.target.value)} onBlur={(e) => outputSatsOnBlur(e)}/>
+                    <Select variant='filled' w={'30%'} onChange={(e) => handleOutputUnitSelectChange(item.id, e.target.value)}>
+                      <option value='sats'>sats</option>
                       <option value='btc'>btc</option>
                     </Select>
                   </InputGroup>
 
-                  <ButtonGroup gap='1'>
+                  <ButtonGroup gap='1' w={'10%'}>
                     <IconButton size='sm' mt={1} onClick={addOuputItem}
                       isRound={true}
                       variant='outline'
@@ -476,11 +487,11 @@ export default function Transaction() {
                   <span className='text-gray-300'>No data</span>
                 </div>
               ):(
-                <Flex key={Math.random()} whiteSpace={'nowrap'} gap={4} pt={2}>
-                  <InputGroup>
-                    <Input key={'balance-sat'} placeholder='0' size='md' value={balance.unit === 'sat' ? balance.sats : balance.sats / 100000000} readOnly/>
-                    <Select variant='filled' w={24} onChange={(e) => handleBalanceUnitSelectChange(e.target.value)}>
-                      <option value='sat'>sat</option>
+                <Flex key={Math.random()} whiteSpace={'nowrap'} gap={4} pt={2} w={'50%'}>
+                  <InputGroup w={'100%'}>
+                    <Input key={'balance-sat'} placeholder='0' w={'80%'} size='md' value={balance.unit === 'sats' ? balance.sats : balance.sats / 100000000} readOnly/>
+                    <Select variant='filled' w={'20%'} onChange={(e) => handleBalanceUnitSelectChange(e.target.value)}>
+                      <option value='sats'>sats</option>
                       <option value='btc'>btc</option>
                     </Select>
                   </InputGroup>
@@ -493,7 +504,7 @@ export default function Transaction() {
         <Divider borderColor={'teal.500'} />
         <CardFooter>
           <Button variant='solid' colorScheme='teal' onClick={splitHandler} isLoading={loading}>Send</Button>
-          <Button variant='ghost' colorScheme='teal'>({'Fee: ' + fee + ' sat'})</Button>
+          <Button variant='ghost' colorScheme='teal'>({'Fee: ' + fee + ' sats'})</Button>
         </CardFooter>
       </Card>
     </div>

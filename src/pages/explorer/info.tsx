@@ -249,7 +249,7 @@ export default function Ord2Info() {
               options={[t('common.holders'), t('common.minted_history')]}
               block
               onChange={handleTabsChange}
-              className='w-52'
+              className='w-72'
             />
           </div>
           {tabText === t('common.holders') && tick && detail?.totalMinted && (

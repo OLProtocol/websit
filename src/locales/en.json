@@ -52,7 +52,7 @@
     "founder": "Founder",
     "inscribe": "Inscribe",
     "hint_connect": "Please connect your wallet first.",
-    "available_utxo": "Available UTXO"
+    "available_utxo": "Plain UTXO"
   },
   "toast": {
     "system_error": "System Error",
@@ -265,7 +265,7 @@
       "not_support": "Viewing the transferred balance is temporarily unavailable."
     },
     "account": {
-      "available_utxo": "Available UTXO",
+      "available_utxo": "Plain UTXO",
       "rare_sats": "Rare Sats",
       "ord_nft": "Ordinals NFT"
     }
