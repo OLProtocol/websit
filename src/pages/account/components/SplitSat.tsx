@@ -203,9 +203,10 @@ export default function SplitSat() {
                 })
             }
         }
+        
         let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
         let outTotal = tmpOutputList.reduce((total, item) => total + item.sats, 0);
-        const realityFee = (160 * tmpInputList.length + 34 * 3 + 10) * feeRate.value;
+        let realityFee = (160 * tmpInputList.length + 34 * 3 + 10) * feeRate.value;
 
         while (inTotal - outTotal - realityFee < 0) {
             availableUtxoIndex += 1;
@@ -214,10 +215,15 @@ export default function SplitSat() {
                 sats: availableUtxos?.[availableUtxoIndex].value,
             })
             inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+            realityFee = (160 * tmpInputList.length + 34 * 3 + 10) * feeRate.value;
         }
-        tmpOutputList.push({
-            sats: inTotal - outTotal - realityFee,
-        })
+
+        if (inTotal - outTotal - realityFee < 160) {
+            tmpOutputList.push({
+                sats: inTotal - outTotal - realityFee,
+            })
+        }
+        
         setInputList(tmpInputList);
         setOutputList(tmpOutputList);
         setFee(realityFee);
