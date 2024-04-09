@@ -349,4 +349,4 @@ export const Ord2FullList = () => {
       </Card>
     </div>
   );
-}
+};
