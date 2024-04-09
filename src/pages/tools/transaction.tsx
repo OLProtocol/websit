@@ -117,10 +117,12 @@ export default function Transaction() {
     const selectTicker = tickerList?.find((item) => item.ticker === ticker) || [];
     let utxos = selectTicker.utxos;
     if (inputList.items.length > 1) {
-      for (let i = 0; i < inputList.items.length-1; i++) {
-        const inItem = inputList.items[i];
-        utxos = utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inItem.value.utxo)
-      }
+      inputList.items.forEach((inItem, index) => {
+        if (index !== itemId-1) {
+          utxos = utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inItem.value.utxo)
+          utxos = [...new Set(utxos)];
+        }
+      })
     }
 
     // inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inputList.items[itemId - 1].value.utxo) || [];
@@ -220,25 +222,51 @@ export default function Transaction() {
       let inTotal = 0
       let outTotal = 0;
       inputList.items.map((v) => {
-        inTotal += v.value.sats;
+        if (v.value.sats !== 0) {
+          inTotal += v.value.sats;
         
-        psbt.addInput({
-          hash: v.value.utxo.split(':')[0],
-          index: Number(v.value.utxo.split(':')[1]),
-          witnessUtxo: {
-            script: Buffer.from(addressToScriptPublicKey(currentAccount), 'hex'),
-            value: v.value.sats,
-          },
-        })
+          psbt.addInput({
+            hash: v.value.utxo.split(':')[0],
+            index: Number(v.value.utxo.split(':')[1]),
+            witnessUtxo: {
+              script: Buffer.from(addressToScriptPublicKey(currentAccount), 'hex'),
+              value: v.value.sats,
+            },
+          })
+        }
       })
 
+      if (psbt.txInputs.length === 0) {
+        setLoading(false);
+        toast({
+          title: 'There is not enough input.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        return
+      }
+
       outputList.items.map((v) => {
-        outTotal += v.value.sats;
-        psbt.addOutput({
-          address: v.value.address,
-          value: v.value.sats,
-        })
+        if (v.value.sats !== 0) {
+          outTotal += v.value.sats;
+          psbt.addOutput({
+            address: v.value.address,
+            value: v.value.sats,
+          })
+        }
       })
+
+      if (psbt.txOutputs.length === 0) {
+        setLoading(false);
+        toast({
+          title: 'There is not enough output.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        return
+      }
       
       const realityFee = calculateRate(inputList.items.length, outputList.items.length, feeRate.value);
 
@@ -499,7 +527,7 @@ export default function Transaction() {
                     <InputLeftAddon>
                       Current Address
                     </InputLeftAddon>
-                    <Input size='md' value={currentAccount}/>
+                    <Input size='md' value={currentAccount} readOnly/>
                   </InputGroup>
                   
                   <InputGroup w={'30%'}>
