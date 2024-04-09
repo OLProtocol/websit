@@ -137,7 +137,7 @@ export default function Transaction() {
     inputList.items[itemId - 1].value.ticker = ticker;
     inputList.items[itemId - 1].value.sats = 0;
     inputList.items[itemId - 1].value.unit = 'sats';
-
+    inputList.items[itemId - 1].value.utxo = '';
     const selectTicker =
       tickerList?.find((item) => item.ticker === ticker) || [];
     let utxos = selectTicker.utxos;
@@ -528,7 +528,7 @@ export default function Transaction() {
               </Heading>
             </Flex>
             <FormControl>
-              {inputList.items.map((item) => (
+              {inputList.items.map((item, i) => (
                 <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
                   <Select
                     placeholder='Select Ticker'
@@ -553,6 +553,7 @@ export default function Transaction() {
                   <Select
                     placeholder='Select UTXO'
                     w={'40%'}
+                    value={inputList.items[i]?.value?.utxo}
                     onChange={(e) =>
                       handleUtxoSelectChange(item.id, e.target.value)
                     }>
