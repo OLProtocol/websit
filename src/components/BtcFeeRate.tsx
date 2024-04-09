@@ -103,7 +103,7 @@ export const BtcFeeRate = ({ onChange, feeRateData }: BtcFeeRate) => {
               size='sm'
               value={customValue}
               onChange={(_, e) => setCustomValue(e)}
-              min={minFee}
+              min={1}
               max={maxFee}>
               <NumberInputField />
               <NumberInputStepper>
@@ -115,7 +115,7 @@ export const BtcFeeRate = ({ onChange, feeRateData }: BtcFeeRate) => {
               flex='1'
               focusThumbOnChange={false}
               value={customValue}
-              min={minFee}
+              min={1}
               max={maxFee}
               direction='rtl'
               onChange={(e) => setCustomValue(e)}>
