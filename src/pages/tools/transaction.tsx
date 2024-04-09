@@ -1,4 +1,4 @@
-import { getOrdxSummary, getUtxoByValue, getOrdxAddressHolders } from '@/api';
+import { getOrdxSummary, getUtxoByValue, getOrdxAddressHolders, getSats } from '@/api';
 import { useUnisat, useUnisatConnect } from '@/lib/hooks';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import {
@@ -25,15 +25,10 @@ import {
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
 import { Tooltip, message } from 'antd';
-import * as bitcoin from 'bitcoinjs-lib';
-import {
-  calcNetworkFee,
-  buildTransaction,
-  signAndPushPsbt,
-  hideStr,
-} from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
+import { buildTransaction, calcNetworkFee, signAndPushPsbt } from '@/lib/utils/btc';
+import { hideStr } from '@/lib/utils';
 
 export default function Transaction() {
   const { t } = useTranslation();
@@ -199,10 +194,16 @@ export default function Transaction() {
     inputList.items.map((v) => {
       inTotal += v.value.sats;
     });
+    if (inTotal === 0) {
+      return;
+    }
 
     outputList.items.map((v) => {
       outTotal += v.value.sats;
     });
+    if (outTotal === 0) {
+      return;
+    }
 
     // const realityFee = calculateRate(
     //   inputList.items.length,
@@ -230,22 +231,7 @@ export default function Transaction() {
     setFee(fee);
     setBalance('sats', inTotal - outTotal - fee);
   };
-  // const setInputSats = (itemId: number, sats: string) => {
-  //   const item = inputList.items[itemId - 1]
-  //   const total = inputList.items[itemId - 1].options.utxos.find((v) => v.txid + ':' + v.vout === item.value.utxo)?.value
-  //   if (total < Number(sats)) {
-  //     toast({
-  //       title: 'Not enough sats. This utxo has ' + total + ' sats',
-  //       status: 'error',
-  //       duration: 3000,
-  //       isClosable: true,
-  //     });
-  //     return
-  //   }
-  //   inputList.items[itemId - 1].value.sats = Number(sats);
-  //   setInputList('items', inputList.items);
-  // }
-
+  
   const setOutputSats = (itemId: number, sats: string) => {
     const unit = outputList.items[itemId - 1].value.unit;
     if (unit === 'sats') {
@@ -361,7 +347,46 @@ export default function Transaction() {
         isClosable: true,
       });
     }
-  };
+  }
+
+  const getRareSatTicker = async () => {
+    const data = await getSats({
+      address: currentAccount,
+      network,
+    });
+
+    let tickers: any[] = [];
+    
+    if (data.code === 0) {
+      data.data.map((item) => {
+        if (item.hasRareStats) {
+          const utxo = {
+            txid: item.id.split(':')[0],
+            vout: Number(item.id.split(':')[1]),
+            value: item.value,
+          }
+          
+          if (tickers.some(obj => obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0])) {
+            tickers = tickers.map((obj) => {
+              if (obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0]) {
+                return {
+                  ...obj,
+                  utxos: [...obj.utxos, utxo]
+                }
+              }
+            })
+          } else {
+            tickers.push({
+              ticker: t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0],
+              utxos: [utxo]
+            })
+          }
+        }
+      })
+    }
+    
+    return tickers;
+  }
 
   const getAvialableTicker = async () => {
     let data = await getUtxoByValue({
@@ -388,8 +413,8 @@ export default function Transaction() {
     }
 
     return {
-      ticker: t('common.available_utxo'),
-      utxos: data.data,
+      ticker: t('pages.tools.transaction.available_utxo'),
+      utxos: data.data
     };
   };
 
@@ -442,8 +467,13 @@ export default function Transaction() {
     const tickers = await getTickers();
     const avialableTicker = await getAvialableTicker();
     tickers?.push(avialableTicker);
-    setTickerList(tickers);
-  };
+
+    const rareSatTickers = await getRareSatTicker();
+    
+    const combinedArray = tickers?.concat(rareSatTickers);
+
+    setTickerList(combinedArray);
+  }
 
   useEffect(() => {
     calculateBalance();
@@ -727,7 +757,7 @@ export default function Transaction() {
             isLoading={loading}>
             Send
           </Button>
-          {/* <Button variant='ghost' colorScheme='teal'>({'Fee: ' + fee + ' sats'})</Button> */}
+          <Button variant='ghost' colorScheme='teal'>({'Fee: ' + fee + ' sats'})</Button>
         </CardFooter>
       </Card>
     </div>

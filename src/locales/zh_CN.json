@@ -251,6 +251,10 @@
         "search_placeholder": "UTXO ...",
         "card_header_asset": "Assets",
         "card_header_sat": "Sats"
+      },
+      "transaction": {
+        "available_utxo": "Plain UTXO",
+        "rare_sats": "Rare Sats"
       }
     },
     "docs": {
