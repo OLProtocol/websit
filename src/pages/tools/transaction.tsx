@@ -255,10 +255,10 @@ export default function Transaction() {
     setLoading(true);
 
     try {
-      const inTotal = inputList.items.rerduce((acc, cur) => {
+      const inTotal = inputList.items.reduce((acc, cur) => {
         return acc + cur.value.sats;
       }, 0);
-      const outTotal = outputList.items.rerduce((acc, cur) => {
+      const outTotal = outputList.items.reduce((acc, cur) => {
         return acc + cur.value.sats;
       }, 0);
       const utxos = inputList.items.map((v) => {

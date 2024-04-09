@@ -39,7 +39,7 @@ export const calcNetworkFee = async ({
   outputs.forEach((v) => {
     tx.addOutput(v.address, v.value);
   });
-
+  console.log(btcUtxos);
   await tx.addSufficientUtxosForFee(btcUtxos);
   const fee = await tx.calNetworkFee();
   return fee;

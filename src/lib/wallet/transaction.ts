@@ -269,7 +269,7 @@ export class Transaction {
     });
     const psbt = tx.toPsbt();
 
-    const toSignInputs = tx.inputs.map((index) => ({
+    const toSignInputs = tx.inputs.map((_, index) => ({
       index,
       publicKey: estimateWallet.pubkey,
     }));
