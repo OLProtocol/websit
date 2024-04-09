@@ -1,4 +1,9 @@
-import { getOrdxSummary, getUtxoByValue, getOrdxAddressHolders, getSats } from '@/api';
+import {
+  getOrdxSummary,
+  getUtxoByValue,
+  getOrdxAddressHolders,
+  getSats,
+} from '@/api';
 import { useUnisat, useUnisatConnect } from '@/lib/hooks';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import {
@@ -24,10 +29,14 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
-import { Tooltip, message } from 'antd';
+import { Tooltip, message, Select as AntSelect } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
-import { buildTransaction, calcNetworkFee, signAndPushPsbt } from '@/lib/utils/btc';
+import {
+  buildTransaction,
+  calcNetworkFee,
+  signAndPushPsbt,
+} from '@/lib/utils/btc';
 import { hideStr } from '@/lib/utils';
 
 export default function Transaction() {
@@ -77,7 +86,7 @@ export default function Transaction() {
   const [messageApi] = message.useMessage();
   const unisat = useUnisat();
   const toast = useToast();
-  
+
   const addInputItem = () => {
     const tickers = tickerList?.map((item) => item.ticker) || [];
 
@@ -138,6 +147,7 @@ export default function Transaction() {
     inputList.items[itemId - 1].value.sats = 0;
     inputList.items[itemId - 1].value.unit = 'sats';
     inputList.items[itemId - 1].value.utxo = '';
+    inputList.items[itemId - 1].value.utxos = [];
     const selectTicker =
       tickerList?.find((item) => item.ticker === ticker) || [];
     let utxos = selectTicker.utxos;
@@ -154,10 +164,12 @@ export default function Transaction() {
 
     // inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inputList.items[itemId - 1].value.utxo) || [];
     inputList.items[itemId - 1].options.utxos = utxos;
+    console.log(inputList.items[itemId - 1].options.utxos);
     setInputList('items', inputList.items);
   };
 
   const handleUtxoSelectChange = (itemId, utxo) => {
+    console.log(itemId, utxo);
     const txid = utxo.split(':')[0];
     const vout = Number(utxo.split(':')[1]);
     inputList.items[itemId - 1].value.sats =
@@ -231,7 +243,7 @@ export default function Transaction() {
     setFee(fee);
     setBalance('sats', inTotal - outTotal - fee);
   };
-  
+
   const setOutputSats = (itemId: number, sats: string) => {
     const unit = outputList.items[itemId - 1].value.unit;
     if (unit === 'sats') {
@@ -347,7 +359,7 @@ export default function Transaction() {
         isClosable: true,
       });
     }
-  }
+  };
 
   const getRareSatTicker = async () => {
     const data = await getSats({
@@ -356,7 +368,7 @@ export default function Transaction() {
     });
 
     let tickers: any[] = [];
-    
+
     if (data.code === 0) {
       data.data.map((item) => {
         if (item.hasRareStats) {
@@ -364,29 +376,45 @@ export default function Transaction() {
             txid: item.id.split(':')[0],
             vout: Number(item.id.split(':')[1]),
             value: item.value,
-          }
-          
-          if (tickers.some(obj => obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0])) {
+          };
+
+          if (
+            tickers.some(
+              (obj) =>
+                obj['ticker'] ===
+                t('pages.tools.transaction.rare_sats') +
+                  '-' +
+                  item.sats[0].type[0],
+            )
+          ) {
             tickers = tickers.map((obj) => {
-              if (obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0]) {
+              if (
+                obj['ticker'] ===
+                t('pages.tools.transaction.rare_sats') +
+                  '-' +
+                  item.sats[0].type[0]
+              ) {
                 return {
                   ...obj,
-                  utxos: [...obj.utxos, utxo]
-                }
+                  utxos: [...obj.utxos, utxo],
+                };
               }
-            })
+            });
           } else {
             tickers.push({
-              ticker: t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0],
-              utxos: [utxo]
-            })
+              ticker:
+                t('pages.tools.transaction.rare_sats') +
+                '-' +
+                item.sats[0].type[0],
+              utxos: [utxo],
+            });
           }
         }
-      })
+      });
     }
-    
+
     return tickers;
-  }
+  };
 
   const getAvialableTicker = async () => {
     let data = await getUtxoByValue({
@@ -414,7 +442,7 @@ export default function Transaction() {
 
     return {
       ticker: t('pages.tools.transaction.available_utxo'),
-      utxos: data.data
+      utxos: data.data,
     };
   };
 
@@ -469,11 +497,11 @@ export default function Transaction() {
     tickers?.push(avialableTicker);
 
     const rareSatTickers = await getRareSatTicker();
-    
+
     const combinedArray = tickers?.concat(rareSatTickers);
 
     setTickerList(combinedArray);
-  }
+  };
 
   useEffect(() => {
     calculateBalance();
@@ -550,26 +578,27 @@ export default function Transaction() {
                         </option>
                       ))}
                   </Select>
-                  <Select
+                  <AntSelect
                     placeholder='Select UTXO'
-                    w={'40%'}
+                    className='w-[40%]'
                     value={inputList.items[i]?.value?.utxo}
+                    options={
+                      inputList.items[i]?.options?.utxos.map((utxo) => ({
+                        label: (
+                          <div>
+                            {utxo.assetamount && utxo.assetamount + ' Asset/'}
+                            {utxo.value +
+                              ' sats - ' +
+                              hideStr(utxo.txid + ':' + utxo.vout)}
+                          </div>
+                        ),
+                        value: utxo.txid + ':' + utxo.vout,
+                      })) || []
+                    }
                     onChange={(e) =>
-                      handleUtxoSelectChange(item.id, e.target.value)
+                      handleUtxoSelectChange(item.id, e)
                     }>
-                    {item.options.utxos.map((utxo) => (
-                      <option
-                        key={
-                          item.value.ticker + '-' + utxo.txid + '-' + item.id
-                        }
-                        value={utxo.txid + ':' + utxo.vout}>
-                        {utxo.assetamount && utxo.assetamount + ' Asset/'}
-                        {utxo.value +
-                          ' sats - ' +
-                          hideStr(utxo.txid + ':' + utxo.vout)}
-                      </option>
-                    ))}
-                  </Select>
+                  </AntSelect>
 
                   <InputGroup w={'30%'}>
                     <Input
@@ -758,7 +787,9 @@ export default function Transaction() {
             isLoading={loading}>
             Send
           </Button>
-          <Button variant='ghost' colorScheme='teal'>({'Fee: ' + fee + ' sats'})</Button>
+          <Button variant='ghost' colorScheme='teal'>
+            ({'Fee: ' + fee + ' sats'})
+          </Button>
         </CardFooter>
       </Card>
     </div>
