@@ -8,9 +8,10 @@ import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import {
   hideStr,
-  calcNetworkFee,
+  signAndPushPsbt,
   filterUtxosByValue,
   addressToScriptPublicKey,
+  buildTransaction,
 } from '@/lib/utils';
 import { useCommonStore } from '@/store';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
@@ -58,29 +59,9 @@ export const AvailableUtxoList = ({
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const signAndPushPsbt = async (inputs, outputs, network) => {
-    const psbtNetwork =
-      network === 'testnet'
-        ? bitcoin.networks.testnet
-        : bitcoin.networks.bitcoin;
-    const psbt = new bitcoin.Psbt({
-      network: psbtNetwork,
-    });
-    inputs.forEach((input) => {
-      psbt.addInput(input);
-    });
-    outputs.forEach((output) => {
-      psbt.addOutput(output);
-    });
-    const signed = await unisat.signPsbt(psbt.toHex());
-    const pushedTxId = await unisat.pushPsbt(signed);
-    return pushedTxId;
-  };
-
   const fastClick = async () => {
     setLoading(true);
-    const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
+    const virtualFee = (148 * 4 + 34 * 3 + 10) * feeRate.value;
     const utxos = dataSource.filter((v) => v.value !== 600);
     const totalValue = utxos.reduce((acc, cur) => {
       return acc + cur.value;
@@ -93,50 +74,11 @@ export const AvailableUtxoList = ({
 
     const { utxos: avialableUtxo, total: avialableValue } = filterUtxosByValue(
       utxos,
-      virtualFee + 330,
+      virtualFee + 546 + 600 * 2,
     );
     try {
-      const btcUtxos = avialableUtxo.map((v) => {
-        return {
-          txid: v.txid,
-          vout: v.vout,
-          satoshis: v.value,
-          scriptPk: addressToScriptPublicKey(currentAccount),
-          addressType: 2,
-          inscriptions: [],
-          pubkey: currentPublicKey,
-          atomicals: [],
-        };
-      });
-      const inputs: any[] = btcUtxos.map((v) => {
-        return {
-          hash: v.txid,
-          index: v.vout,
-          witnessUtxo: {
-            script: Buffer.from(v.scriptPk, 'hex'),
-            value: v.satoshis,
-          },
-        };
-      });
-      const psbtNetwork =
-        network === 'testnet'
-          ? bitcoin.networks.testnet
-          : bitcoin.networks.bitcoin;
-      const psbt = new bitcoin.Psbt({
-        network: psbtNetwork,
-      });
-      inputs.forEach((input) => {
-        psbt.addInput(input);
-      });
-      const total = inputs.reduce((acc, cur) => {
-        return acc + cur.witnessUtxo.value;
-      }, 0);
-      const realityFee = (148 * inputs.length + 34 * 3 + 10) * feeRate.value;
       const firstOutputValue = 600;
       const secondOutputValue = 600;
-      const thirdOutputValue =
-        total - firstOutputValue - secondOutputValue - realityFee;
-      console.log(realityFee);
       const outputs = [
         {
           address: currentAccount,
@@ -146,12 +88,8 @@ export const AvailableUtxoList = ({
           address: currentAccount,
           value: secondOutputValue,
         },
-        {
-          address: currentAccount,
-          value: thirdOutputValue,
-        },
       ];
-      await calcNetworkFee({
+      const psbt = await buildTransaction({
         utxos: avialableUtxo,
         outputs,
         feeRate: feeRate.value,
@@ -159,9 +97,7 @@ export const AvailableUtxoList = ({
         address: currentAccount,
         publicKey: currentPublicKey,
       });
-      console.log(inputs);
-      console.log(outputs);
-      await signAndPushPsbt(inputs, outputs, network);
+      await signAndPushPsbt(psbt);
       message.success('切割成功');
       setLoading(false);
     } catch (error: any) {
@@ -188,13 +124,12 @@ export const AvailableUtxoList = ({
 
   const transferHander = async () => {
     try {
+      console.log(selectItem)
       const inscriptionUtxo = selectItem.utxo;
-      const inscriptionValue = selectItem.amount;
-      const inscriptionTxid = inscriptionUtxo.split(':')[0];
-      const inscriptionVout = inscriptionUtxo.split(':')[1];
+      const inscriptionValue = selectItem.value;
       const firstUtxo = {
-        txid: inscriptionTxid,
-        vout: Number(inscriptionVout),
+        txid: selectItem.txid,
+        vout: selectItem.vout,
         value: Number(inscriptionValue),
       };
       const data = await getUtxoByValue({
@@ -202,7 +137,7 @@ export const AvailableUtxoList = ({
         value: 600,
         network,
       });
-      const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
+      const virtualFee = (148 * 4 + 34 * 3 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
         message.error('余额不足');
@@ -210,58 +145,27 @@ export const AvailableUtxoList = ({
       }
       const { utxos: filterConsumUtxos } = filterUtxosByValue(
         consumUtxos,
-        virtualFee,
+        virtualFee + 330,
       );
       const utxos: any[] = [firstUtxo, ...filterConsumUtxos];
-      const btcUtxos = utxos.map((v) => {
-        return {
-          txid: v.txid,
-          vout: v.vout,
-          satoshis: v.value,
-          scriptPk: addressToScriptPublicKey(currentAccount),
-          addressType: 2,
-          inscriptions: [],
-          pubkey: currentPublicKey,
-          atomicals: [],
-        };
-      });
-      const inputs: any[] = btcUtxos.map((v) => {
-        return {
-          hash: v.txid,
-          index: v.vout,
-          witnessUtxo: {
-            script: Buffer.from(v.scriptPk, 'hex'),
-            value: v.satoshis,
-          },
-        };
-      });
-      const psbtNetwork =
-        network === 'testnet'
-          ? bitcoin.networks.testnet
-          : bitcoin.networks.bitcoin;
-      const psbt = new bitcoin.Psbt({
-        network: psbtNetwork,
-      });
-      inputs.forEach((input) => {
-        psbt.addInput(input);
-      });
-      const total = inputs.reduce((acc, cur) => {
-        return acc + cur.witnessUtxo.value;
-      }, 0);
-      const realityFee = (148 * inputs.length + 34 * 2 + 10) * feeRate.value;
+
       const firstOutputValue = firstUtxo.value;
-      const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [
         {
           address: transferAddress,
           value: firstOutputValue,
         },
-        {
-          address: currentAccount,
-          value: secondOutputValue,
-        },
       ];
-      await signAndPushPsbt(inputs, outputs, network);
+      console.log(utxos)
+      const psbt = await buildTransaction({
+        utxos: utxos,
+        outputs,
+        feeRate: feeRate.value,
+        network,
+        address: currentAccount,
+        publicKey: currentPublicKey,
+      });
+      await signAndPushPsbt(psbt);
       message.success('发送成功');
       onTransfer?.();
       setLoading(false);
@@ -282,8 +186,6 @@ export const AvailableUtxoList = ({
         setLoading(false);
         return;
       }
-      console.log(network);
-      console.log(currentAccount, currentPublicKey);
       // try {
       const inscriptionUtxo = item.utxo;
       const inscriptionValue = item.value;
@@ -294,57 +196,24 @@ export const AvailableUtxoList = ({
         vout: Number(inscriptionVout),
         value: Number(inscriptionValue),
       };
-
       const utxos: any[] = [firstUtxo];
-      const btcUtxos = utxos.map((v) => {
-        return {
-          txid: v.txid,
-          vout: v.vout,
-          satoshis: v.value,
-          scriptPk: addressToScriptPublicKey(addressRef.current),
-          addressType: 2,
-          inscriptions: [],
-          pubkey: currentPublicKey,
-          atomicals: [],
-        };
-      });
-      const inputs: any[] = btcUtxos.map((v) => {
-        return {
-          hash: v.txid,
-          index: v.vout,
-          witnessUtxo: {
-            script: Buffer.from(v.scriptPk, 'hex'),
-            value: v.satoshis,
-          },
-        };
-      });
-      const psbtNetwork =
-        network === 'testnet'
-          ? bitcoin.networks.testnet
-          : bitcoin.networks.bitcoin;
-      const psbt = new bitcoin.Psbt({
-        network: psbtNetwork,
-      });
-      inputs.forEach((input) => {
-        psbt.addInput(input);
-      });
-      const total = inputs.reduce((acc, cur) => {
-        return acc + cur.witnessUtxo.value;
-      }, 0);
-      const realityFee = (148 * inputs.length + 34 * 2 + 10) * feeRate.value;
+
       const firstOutputValue = 600;
-      const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [
         {
           address: currentAccount,
           value: firstOutputValue,
         },
-        {
-          address: currentAccount,
-          value: secondOutputValue,
-        },
       ];
-      await signAndPushPsbt(inputs, outputs, network);
+      const psbt = await buildTransaction({
+        utxos: utxos,
+        outputs,
+        feeRate: feeRate.value,
+        network,
+        address: currentAccount,
+        publicKey: currentPublicKey,
+      });
+      await signAndPushPsbt(psbt);
       message.success('拆分成功');
       setLoading(false);
     },

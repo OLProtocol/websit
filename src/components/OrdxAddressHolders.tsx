@@ -7,7 +7,13 @@ import { useCommonStore } from '@/store';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { hideStr, filterUtxosByValue, addressToScriptPublicKey } from '@/lib/utils';
+import {
+  hideStr,
+  filterUtxosByValue,
+  addressToScriptPublicKey,
+  buildTransaction,
+  signAndPushPsbt,
+} from '@/lib/utils';
 import { CopyButton } from './CopyButton';
 
 interface Ord2HistoryProps {
@@ -47,24 +53,6 @@ export const OrdxAddressHolders = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const signAndPushPsbt = async (inputs, outputs, network) => {
-    const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
-    const psbt = new bitcoin.Psbt({
-      network: psbtNetwork,
-    });
-    inputs.forEach((input) => {
-      psbt.addInput(input);
-    });
-    outputs.forEach((output) => {
-      psbt.addOutput(output);
-    });
-    const signed = await unisat.signPsbt(psbt.toHex());
-    const pushedTxId = await unisat.pushPsbt(signed);
-    return pushedTxId;
-  };
-
   const transferHander = async () => {
     try {
       const inscriptionUtxo = selectItem.utxo;
@@ -87,56 +75,27 @@ export const OrdxAddressHolders = ({
         message.error('余额不足');
         return;
       }
-      const { utxos: filterConsumUtxos } = filterUtxosByValue(consumUtxos, virtualFee);
+      const { utxos: filterConsumUtxos } = filterUtxosByValue(
+        consumUtxos,
+        virtualFee,
+      );
       const utxos: any[] = [firstUtxo, ...filterConsumUtxos];
-      const btcUtxos = utxos.map((v) => {
-        return {
-          txid: v.txid,
-          vout: v.vout,
-          satoshis: v.value,
-          scriptPk: addressToScriptPublicKey(currentAccount),
-          addressType: 2,
-          inscriptions: [],
-          pubkey: currentPublicKey,
-          atomicals: [],
-        };
-      });
-      const inputs: any[] = btcUtxos.map((v) => {
-        return {
-          hash: v.txid,
-          index: v.vout,
-          witnessUtxo: {
-            script: Buffer.from(v.scriptPk, 'hex'),
-            value: v.satoshis,
-          },
-        };
-      });
-      const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
-      const psbt = new bitcoin.Psbt({
-        network: psbtNetwork,
-      });
-      inputs.forEach((input) => {
-        psbt.addInput(input);
-      });
-      const total = inputs.reduce((acc, cur) => {
-        return acc + cur.witnessUtxo.value;
-      }, 0);
-      const realityFee = (148 * inputs.length + 34 * 2 + 10) * feeRate.value;
       const firstOutputValue = firstUtxo.value;
-      const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [
         {
           address: transferAddress,
           value: firstOutputValue,
         },
-        {
-          address: currentAccount,
-          value: secondOutputValue,
-        },
       ];
-      await signAndPushPsbt(inputs, outputs, network);
+      const psbt = await buildTransaction({
+        utxos: utxos,
+        outputs,
+        feeRate: feeRate.value,
+        network,
+        address: currentAccount,
+        publicKey: currentPublicKey,
+      });
+      await signAndPushPsbt(psbt);
       message.success('发送成功');
       onTransfer?.();
       setLoading(false);
@@ -156,7 +115,7 @@ export const OrdxAddressHolders = ({
         splitHandler(item);
       },
     });
-  }
+  };
   const splitHandler = async (item: any) => {
     setLoading(true);
     // const utxos = await getUtxo();
@@ -187,40 +146,20 @@ export const OrdxAddressHolders = ({
         return;
       }
 
-      const { utxos: filterConsumUtxos, minUtxo: serviceUtxo, total: avialableValue } =
-        filterUtxosByValue(consumUtxos, virtualFee + 330);
+      const {
+        utxos: filterConsumUtxos,
+        minUtxo: serviceUtxo,
+        total: avialableValue,
+      } = filterUtxosByValue(consumUtxos, virtualFee + 330);
       if (serviceUtxo.value > 1000) {
         message.error('没有可用utxo,请先进行切割！');
         return;
       }
 
       const utxos: any[] = [serviceUtxo, splitUtxo, ...filterConsumUtxos];
-      const btcUtxos = utxos.map((v) => {
-        return {
-          txid: v.txid,
-          vout: v.vout,
-          satoshis: v.value,
-          scriptPk: addressToScriptPublicKey(currentAccount),
-          addressType: 2,
-          inscriptions: [],
-          pubkey: currentPublicKey,
-          atomicals: [],
-        };
-      });
-      const inputs: any[] = btcUtxos.map((v) => {
-        return {
-          hash: v.txid,
-          index: v.vout,
-          witnessUtxo: {
-            script: Buffer.from(v.scriptPk, 'hex'),
-            value: v.satoshis,
-          },
-        };
-      });
-      const realityFee = (148 * inputs.length + 34 * 3 + 10) * feeRate.value;
+
       const serviceOutputValue = serviceUtxo.value + 1;
       const splitOutputValue = splitUtxo.value - 1;
-      const balanceOutputValue = avialableValue - realityFee;
       const outputs = [
         {
           address: tipAddress,
@@ -230,13 +169,16 @@ export const OrdxAddressHolders = ({
           address: currentAccount,
           value: splitOutputValue,
         },
-        {
-          address: currentAccount,
-          value: balanceOutputValue,
-        },
       ];
-      console.log(inputs, outputs);
-      await signAndPushPsbt(inputs, outputs, network);
+      const psbt = await buildTransaction({
+        utxos: utxos,
+        outputs,
+        feeRate: feeRate.value,
+        network,
+        address: currentAccount,
+        publicKey: currentPublicKey,
+      });
+      await signAndPushPsbt(psbt);
       message.success('拆分成功');
       setLoading(false);
     } catch (error: any) {
@@ -312,13 +254,13 @@ export const OrdxAddressHolders = ({
         width: 300,
         align: 'center',
         render: (t) => {
-          const ranges = t?.map((r: any) =>
+          const ranges = t?.map((r: any) => (
             <div>
               <span>
                 {r.size === 1 ? r.start : `${r.start}-${r.start + r.size - 1}`}
               </span>
             </div>
-          );
+          ));
           return ranges;
         },
       },
@@ -329,11 +271,12 @@ export const OrdxAddressHolders = ({
         width: 100,
         align: 'center',
         render: (t) => {
-          let inscriptionnums : any
-          const href = network === 'testnet'
+          let inscriptionnums: any;
+          const href =
+            network === 'testnet'
               ? `https://testnet.ordinals.com/inscription/`
               : `https://ordinals.com/inscription/`;
-          inscriptionnums = t?.map((r: any) => 
+          inscriptionnums = t?.map((r: any) => (
             <div>
               {r.num === 9223372036854775807 ? (
                 <span
@@ -341,16 +284,16 @@ export const OrdxAddressHolders = ({
                   onClick={() => toInscriptionInfo(r.id)}>
                   {hideStr(r.id)}
                 </span>
+              ) : (
                 // <a className='text-blue-500 cursor-pointer'
                 //   href={href + r.id}
                 //   target='_blank'>
                 //   {hideStr(r.id)}
                 // </a>
-              ) : (
                 <span
                   className='text-blue-500 cursor-pointer'
                   onClick={() => toInscriptionInfo(r.id)}>
-                   #{r.num}
+                  #{r.num}
                 </span>
                 // <a className='text-blue-500 cursor-pointer'
                 //   href={href + r.num}
@@ -359,7 +302,7 @@ export const OrdxAddressHolders = ({
                 // </a>
               )}
             </div>
-            );
+          ));
           return inscriptionnums;
         },
       },
@@ -396,44 +339,43 @@ export const OrdxAddressHolders = ({
     }
     return defaultColumn;
   }, []);
-  
+
   // const [dataSource, setDataSource] = useState<any[]>();
   const generateData = () => {
-    const details = data?.data?.detail
-    let datas : any[] = []
-    if(details){
-      for (let detail of details){
-        let ranges : any[] = []
-        let inscriptionNums : any[] = []
+    const details = data?.data?.detail;
+    let datas: any[] = [];
+    if (details) {
+      for (let detail of details) {
+        let ranges: any[] = [];
+        let inscriptionNums: any[] = [];
         let item = {
           utxo: detail.utxo,
           amount: detail.amount,
           assetamount: detail.assetamount,
           ranges: ranges,
           inscriptionnums: inscriptionNums,
-        }
+        };
         if (Array.isArray(detail.assets)) {
           detail.assets.forEach((assetInfo) => {
-            ranges = item['ranges'].concat(assetInfo.ranges)
+            ranges = item['ranges'].concat(assetInfo.ranges);
             inscriptionNums.push({
               num: assetInfo.inscriptionnum,
-              id: assetInfo.inscriptionId
-            })
-          })
-          
-          item['ranges'] = ranges
-          item['inscriptionnums'] = inscriptionNums
+              id: assetInfo.inscriptionId,
+            });
+          });
+
+          item['ranges'] = ranges;
+          item['inscriptionnums'] = inscriptionNums;
         }
-        datas.push(item)
+        datas.push(item);
       }
-      
     }
     return datas;
-  }
+  };
   // const dataSource = useMemo(() => data?.data?.detail || [], []);
   const dataSource = useMemo(() => {
     return generateData();
-  }, [data])
+  }, [data]);
 
   const total = useMemo(() => data?.data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
@@ -457,7 +399,7 @@ export const OrdxAddressHolders = ({
 
   return (
     <>
-      {(dataSource !== undefined && dataSource.length) ? (
+      {dataSource !== undefined && dataSource.length ? (
         <div className='rounded-2xl bg-gray-200 p-4'>
           <div className='mb-2'>
             <span className='text-orange-500'> {tick}</span>

@@ -211,6 +211,7 @@ export const InscribeStepThree = ({
         <FeeShow
           inscriptionSize={inscriptionSize}
           serviceFee={clacFee.serviceFee}
+          feeRate={feeRate.value}
           serviceStatus={clacFee.serviceStatus}
           filesLength={files.length}
           totalFee={clacFee.totalFee}

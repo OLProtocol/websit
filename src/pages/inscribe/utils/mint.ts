@@ -1,5 +1,10 @@
 import { Address, Signer, Tap, Tx, Script } from '@cmdcode/tapscript';
 import * as cbor from 'cbor-web';
+import {
+  buildTransaction,
+  signAndPushPsbt,
+  filterUtxosByValue,
+} from '@/lib/utils';
 import * as bitcoin from 'bitcoinjs-lib';
 import { keys } from '@cmdcode/crypto-utils';
 import i18n from '@/locales';
@@ -526,23 +531,6 @@ export const pushCommitTx = async ({
   return result;
 };
 
-const signAndPushPsbt = async (inputs, outputs, network) => {
-  const psbtNetwork =
-    network === 'testnet' ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
-  const psbt = new bitcoin.Psbt({
-    network: psbtNetwork,
-  });
-  inputs.forEach((input) => {
-    psbt.addInput(input);
-  });
-  outputs.forEach((output) => {
-    psbt.addOutput(output);
-  });
-  const signed = await window.unisat.signPsbt(psbt.toHex());
-  const pushedTxId = await window.unisat.pushPsbt(signed);
-  return pushedTxId;
-};
-
 interface SendBTCProps {
   toAddress: string;
   network: string;
@@ -560,6 +548,7 @@ export const sendBTC = async ({
   value,
   feeRate = 1,
   fromAddress,
+  fromPubKey,
   ordxUtxo,
 }: SendBTCProps) => {
   const hasOrdxUtxo = !!ordxUtxo;
@@ -574,82 +563,43 @@ export const sendBTC = async ({
     throw new Error(i18n.t('toast.insufficient_balance'));
   }
   console.log(value);
+  console.log(hasOrdxUtxo);
   const fee = (148 * (hasOrdxUtxo ? 2 : 1) + 34 * 2 + 10) * feeRate;
-  const filterTotalValue = hasOrdxUtxo ? 330 + fee : value + 330 + fee;
-  const avialableUtxo: any[] = [];
-  let avialableValue = 0;
-  for (let i = 0; i < consumUtxos.length; i++) {
-    const utxo = consumUtxos[i];
-    avialableUtxo.push(utxo);
-    avialableValue += utxo.value;
-    if (avialableValue >= filterTotalValue) {
-      break;
-    }
-  }
-  if (avialableValue < filterTotalValue) {
+  console.log(fee);
+  const filterTotalValue = hasOrdxUtxo ? 546 + fee : value + 546 + fee;
+  const { utxos: avialableUtxos } = filterUtxosByValue(
+    consumUtxos,
+    filterTotalValue,
+  );
+  if (!avialableUtxos.length) {
     throw new Error(i18n.t('toast.insufficient_balance'));
   }
-  // const btcUtxos = avialableUtxo.map((v) => {
-  //   return {
-  //     txid: v.txid,
-  //     vout: v.vout,
-  //     satoshis: v.value,
-  //     scriptPk: addressToScriptPublicKey(fromAddress),
-  //     addressType: 2,
-  //     inscriptions: [],
-  //     pubkey: fromPubKey,
-  //     atomicals: [],
-  //   };
-  // });
-  console.log(avialableUtxo);
-  const inputs: any[] = avialableUtxo.map((v) => {
-    const scriptPk = addressToScriptPublicKey(fromAddress);
-    return {
-      hash: v.txid,
-      index: v.vout,
-      witnessUtxo: {
-        script: Buffer.from(scriptPk, 'hex'),
-        value: v.value,
-      },
-    };
-  });
+
   if (hasOrdxUtxo) {
-    const scriptPk = addressToScriptPublicKey(fromAddress);
     const { utxo, value } = ordxUtxo;
     const ordxTxid = utxo.split(':')[0];
     const ordxVout = utxo.split(':')[1];
-    inputs.unshift({
-      hash: ordxTxid,
-      index: Number(ordxVout),
-      witnessUtxo: {
-        script: Buffer.from(scriptPk, 'hex'),
-        value: value,
-      },
+    avialableUtxos.unshift({
+      txid: ordxTxid,
+      vout: Number(ordxVout),
+      value: value,
     });
   }
-  console.log(inputs);
-  const psbtNetwork =
-    network === 'testnet' ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
-  const psbt = new bitcoin.Psbt({
-    network: psbtNetwork,
-  });
-  inputs.forEach((input) => {
-    psbt.addInput(input);
-  });
-  const total = inputs.reduce((acc, cur) => {
-    return acc + cur.witnessUtxo.value;
-  }, 0);
   const toValue = value;
-  const fromValue = total - toValue - fee;
   const outputs = [
     {
       address: toAddress,
       value: toValue,
     },
-    {
-      address: fromAddress,
-      value: fromValue,
-    },
   ];
-  return await signAndPushPsbt(inputs, outputs, network);
+  const psbt = await buildTransaction({
+    utxos: avialableUtxos,
+    outputs,
+    feeRate,
+    network,
+    address: fromAddress,
+    publicKey: fromPubKey,
+  });
+  return await signAndPushPsbt(psbt);
+  // return await signAndPushPsbt(inputs, outputs, network);
 };

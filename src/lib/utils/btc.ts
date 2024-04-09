@@ -1,4 +1,4 @@
-import { transaction, wallet } from '@unisat/wallet-sdk';
+import { Transaction, NetworkType } from '../wallet';
 import { type Utxo, BtcUtxo, PsbtInput, PsbtOutput } from './utxo';
 import {
   converUtxosToInputs,
@@ -26,8 +26,11 @@ export const calcNetworkFee = async ({
     address,
     publicKey,
   });
-  const { Transaction } = transaction;
-  const tx = new Transaction();
+  const tx = new Transaction({
+    address,
+    network: network == 'testnet' ? NetworkType.TESTNET : NetworkType.MAINNET,
+    feeRate,
+  });
   tx.setNetworkType(network == 'testnet' ? 1 : 0);
   tx.setFeeRate(feeRate);
   tx.setEnableRBF(true);
@@ -49,6 +52,7 @@ export const buildTransaction = async ({
   network,
   address,
   publicKey,
+  suitable,
 }: {
   utxos: Utxo[];
   outputs: PsbtOutput[];
@@ -56,27 +60,35 @@ export const buildTransaction = async ({
   network: string;
   address: string;
   publicKey: string;
+  suitable?: boolean;
 }) => {
   const btcUtxos = convertUtxosToBtcUtxos({
     utxos,
     address,
     publicKey,
   });
-  // const inputs = convertBtcUtxosToInputs(btcUtxos);
 
-  const { Transaction } = transaction;
-  const tx = new Transaction();
-  tx.setNetworkType(network == 'testnet' ? 1 : 0);
-  tx.setFeeRate(feeRate);
+  const tx = new Transaction({
+    address,
+    network: network == 'testnet' ? NetworkType.TESTNET : NetworkType.MAINNET,
+    feeRate,
+  });
+  console.log(btcUtxos);
   tx.setEnableRBF(true);
-  tx.setChangeAddress(address);
 
   outputs.forEach((v) => {
     tx.addOutput(v.address, v.value);
   });
-
-  await tx.addSufficientUtxosForFee(btcUtxos);
+  await tx.addSufficientUtxosForFee(btcUtxos, {
+    suitable,
+  });
 
   const psbt = tx.toPsbt();
   return psbt;
+};
+
+export const signAndPushPsbt = async (psbt) => {
+  const signed = await window.unisat.signPsbt(psbt.toHex());
+  const pushedTxId = await window.unisat.pushPsbt(signed);
+  return pushedTxId;
 };
