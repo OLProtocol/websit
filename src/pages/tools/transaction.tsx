@@ -399,11 +399,37 @@ export default function Transaction() {
   useEffect(() => {
     const realityFee = calculateRate(inputList.items.length, outputList.items.length, feeRate.value);
     setFee(realityFee);
-}, [feeRate]);
+  }, [feeRate]);
 
   useEffect(() => {
+    setTickerList([]);
+    setInputList('items', [{
+      id: 1,
+      value: {
+        ticker: '',
+        utxo: '',
+        sats: 0,
+        unit: 'sats',
+      },
+      options: {
+        tickers: [],
+        utxos: [],
+      }
+    }])
+    setBalance('sats', 0);
+    setBalance('unit', 'sats');
+    
+    setFee(0);
+    setOutputList('items', [{
+      id: 1,
+      value: {
+        sats: 0,
+        unit: 'sats',
+        address: '',
+      }
+    }])
     getAllTickers();
-  }, []);
+  }, [currentAccount]);
 
   return (
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
