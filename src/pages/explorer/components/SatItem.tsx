@@ -17,7 +17,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
       : `https://mempool.space/tx/${txid}`;
 
   return (
-    <div className='group max-w-full mx-auto flex' key={sat.id + '-' + sat.start}>
+    <div className='group max-w-full mx-auto flex' key={Math.random()}>
       {/* <Tag color='gray'>{format(new Date(sat.time), 'yyyy-MM-dd')}</Tag> */}
       <div className='flex item-center justify-center'>
         <a
@@ -25,7 +25,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
           href={href}
           target='_blank'>
           {hideStr(sat.id)}
-        </a>
+        </a>{'(' + sat.value + ' sats)'}
         &nbsp;&nbsp;
         <CopyButton text={sat.id} tooltip='Copy' className='pt-1'/>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
@@ -53,9 +53,9 @@ export const SatItem = ({ sat }: SatItemProps) => {
       &nbsp;&nbsp;&nbsp;&nbsp;
       <div className='flex'>
         <CopyButton text={sat.start} tooltip='Copy Sat' className='pt-1' />&nbsp;&nbsp;
-        {sat.canSplit && ['ordx.space'].every((v) => location.hostname !== v) && (
+        {/* {sat.canSplit && ['ordx.space'].every((v) => location.hostname !== v) && (
           <SplitSatButton sat={sat} tooltip='Split Sat'/>
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ export default function Test() {
         break;
       }
     }
+    console.log(outAmt, realAmt);
     if (outAmt < realAmt) {
       outAmt += realAmt - outAmt;
     }
@@ -46,7 +47,7 @@ export default function Test() {
   // };
 
   const testHandler = async () => {
-    const find = findBetweenByValue(1, 546, [
+    const find = findBetweenByValue(100, 546, [
       {
         start: 999,
         offset: 30,

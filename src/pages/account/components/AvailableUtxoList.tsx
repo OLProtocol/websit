@@ -8,12 +8,21 @@ import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import {
   hideStr,
+  signAndPushPsbt,
   filterUtxosByValue,
   addressToScriptPublicKey,
+  buildTransaction,
 } from '@/lib/utils';
 import { useCommonStore } from '@/store';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
-import { Button, Card, CardBody, CardHeader, Tooltip, useToast } from '@chakra-ui/react';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Tooltip,
+  useToast,
+} from '@chakra-ui/react';
 
 interface AvailableUtxoListProps {
   address: string;
@@ -21,7 +30,12 @@ interface AvailableUtxoListProps {
   onTransfer?: () => void;
   onTotalChange?: (total: number) => void;
 }
-export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange }: AvailableUtxoListProps) => {
+export const AvailableUtxoList = ({
+  address,
+  onEmpty,
+  onTransfer,
+  onTotalChange,
+}: AvailableUtxoListProps) => {
   const { t } = useTranslation();
   const { network, currentAccount, currentPublicKey } = useUnisatConnect();
   const { feeRate } = useCommonStore((state) => state);
@@ -40,33 +54,13 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
   // });
   const toast = useToast();
   const [data, setData] = useState<any>();
-  
   const unisat = useUnisat();
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const signAndPushPsbt = async (inputs, outputs, network) => {
-    const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
-    const psbt = new bitcoin.Psbt({
-      network: psbtNetwork,
-    });
-    inputs.forEach((input) => {
-      psbt.addInput(input);
-    });
-    outputs.forEach((output) => {
-      psbt.addOutput(output);
-    });
-    const signed = await unisat.signPsbt(psbt.toHex());
-    const pushedTxId = await unisat.pushPsbt(signed);
-    return pushedTxId;
-  };
-
   const fastClick = async () => {
     setLoading(true);
-    const virtualFee = (160 * 10 + 34 * 10 + 10) * feeRate.value;
+    const virtualFee = (148 * 4 + 34 * 3 + 10) * feeRate.value;
     const utxos = dataSource.filter((v) => v.value !== 600);
     const totalValue = utxos.reduce((acc, cur) => {
       return acc + cur.value;
@@ -79,50 +73,11 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
 
     const { utxos: avialableUtxo, total: avialableValue } = filterUtxosByValue(
       utxos,
-      virtualFee + 330,
+      virtualFee + 546 + 600 * 2,
     );
     try {
-      const btcUtxos = avialableUtxo.map((v) => {
-        return {
-          txid: v.txid,
-          vout: v.vout,
-          satoshis: v.value,
-          scriptPk: addressToScriptPublicKey(currentAccount),
-          addressType: 2,
-          inscriptions: [],
-          pubkey: currentPublicKey,
-          atomicals: [],
-        };
-      });
-      const inputs: any[] = btcUtxos.map((v) => {
-        return {
-          hash: v.txid,
-          index: v.vout,
-          witnessUtxo: {
-            script: Buffer.from(v.scriptPk, 'hex'),
-            value: v.satoshis,
-          },
-        };
-      });
-      const psbtNetwork =
-        network === 'testnet'
-          ? bitcoin.networks.testnet
-          : bitcoin.networks.bitcoin;
-      const psbt = new bitcoin.Psbt({
-        network: psbtNetwork,
-      });
-      inputs.forEach((input) => {
-        psbt.addInput(input);
-      });
-      const total = inputs.reduce((acc, cur) => {
-        return acc + cur.witnessUtxo.value;
-      }, 0);
-      const realityFee = (160 * inputs.length + 34 * 3 + 10) * feeRate.value;
       const firstOutputValue = 600;
       const secondOutputValue = 600;
-      const thirdOutputValue =
-        total - firstOutputValue - secondOutputValue - realityFee;
-      console.log(realityFee);
       const outputs = [
         {
           address: currentAccount,
@@ -132,14 +87,16 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
           address: currentAccount,
           value: secondOutputValue,
         },
-        {
-          address: currentAccount,
-          value: thirdOutputValue,
-        },
       ];
-      console.log(inputs);
-      console.log(outputs);
-      await signAndPushPsbt(inputs, outputs, network);
+      const psbt = await buildTransaction({
+        utxos: avialableUtxo,
+        outputs,
+        feeRate: feeRate.value,
+        network,
+        address: currentAccount,
+        publicKey: currentPublicKey,
+      });
+      await signAndPushPsbt(psbt);
       message.success('切割成功');
       setLoading(false);
     } catch (error: any) {
@@ -166,13 +123,12 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
 
   const transferHander = async () => {
     try {
+      console.log(selectItem)
       const inscriptionUtxo = selectItem.utxo;
-      const inscriptionValue = selectItem.amount;
-      const inscriptionTxid = inscriptionUtxo.split(':')[0];
-      const inscriptionVout = inscriptionUtxo.split(':')[1];
+      const inscriptionValue = selectItem.value;
       const firstUtxo = {
-        txid: inscriptionTxid,
-        vout: Number(inscriptionVout),
+        txid: selectItem.txid,
+        vout: selectItem.vout,
         value: Number(inscriptionValue),
       };
       const data = await getUtxoByValue({
@@ -180,62 +136,35 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
         value: 600,
         network,
       });
-      const virtualFee = (180 * 10 + 34 * 10 + 10) * feeRate.value;
+      const virtualFee = (148 * 4 + 34 * 3 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
         message.error('余额不足');
         return;
       }
-      const { utxos: filterConsumUtxos } = filterUtxosByValue(consumUtxos, virtualFee);
+      const { utxos: filterConsumUtxos } = filterUtxosByValue(
+        consumUtxos,
+        virtualFee + 330,
+      );
       const utxos: any[] = [firstUtxo, ...filterConsumUtxos];
-      const btcUtxos = utxos.map((v) => {
-        return {
-          txid: v.txid,
-          vout: v.vout,
-          satoshis: v.value,
-          scriptPk: addressToScriptPublicKey(currentAccount),
-          addressType: 2,
-          inscriptions: [],
-          pubkey: currentPublicKey,
-          atomicals: [],
-        };
-      });
-      const inputs: any[] = btcUtxos.map((v) => {
-        return {
-          hash: v.txid,
-          index: v.vout,
-          witnessUtxo: {
-            script: Buffer.from(v.scriptPk, 'hex'),
-            value: v.satoshis,
-          },
-        };
-      });
-      const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
-      const psbt = new bitcoin.Psbt({
-        network: psbtNetwork,
-      });
-      inputs.forEach((input) => {
-        psbt.addInput(input);
-      });
-      const total = inputs.reduce((acc, cur) => {
-        return acc + cur.witnessUtxo.value;
-      }, 0);
-      const realityFee = (180 * inputs.length + 34 * 2 + 10) * feeRate.value;
+
       const firstOutputValue = firstUtxo.value;
-      const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [
         {
           address: transferAddress,
           value: firstOutputValue,
         },
-        {
-          address: currentAccount,
-          value: secondOutputValue,
-        },
       ];
-      await signAndPushPsbt(inputs, outputs, network);
+      console.log(utxos)
+      const psbt = await buildTransaction({
+        utxos: utxos,
+        outputs,
+        feeRate: feeRate.value,
+        network,
+        address: currentAccount,
+        publicKey: currentPublicKey,
+      });
+      await signAndPushPsbt(psbt);
       message.success('发送成功');
       onTransfer?.();
       setLoading(false);
@@ -249,15 +178,13 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
   const splitHandler = useCallback(
     async (item: any) => {
       setLoading(true);
-      const virtualFee = (160 * 1 + 34 * 2 + 10) * feeRate.value;
+      const virtualFee = (148 * 1 + 34 * 2 + 10) * feeRate.value;
       // const utxos = await getUtxo();
       if (item.value < 930 + virtualFee) {
         message.warning('utxo数量不足，无法切割');
         setLoading(false);
         return;
       }
-      console.log(network);
-      console.log(currentAccount, currentPublicKey);
       // try {
       const inscriptionUtxo = item.utxo;
       const inscriptionValue = item.value;
@@ -268,57 +195,24 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
         vout: Number(inscriptionVout),
         value: Number(inscriptionValue),
       };
-
       const utxos: any[] = [firstUtxo];
-      const btcUtxos = utxos.map((v) => {
-        return {
-          txid: v.txid,
-          vout: v.vout,
-          satoshis: v.value,
-          scriptPk: addressToScriptPublicKey(addressRef.current),
-          addressType: 2,
-          inscriptions: [],
-          pubkey: currentPublicKey,
-          atomicals: [],
-        };
-      });
-      const inputs: any[] = btcUtxos.map((v) => {
-        return {
-          hash: v.txid,
-          index: v.vout,
-          witnessUtxo: {
-            script: Buffer.from(v.scriptPk, 'hex'),
-            value: v.satoshis,
-          },
-        };
-      });
-      const psbtNetwork =
-        network === 'testnet'
-          ? bitcoin.networks.testnet
-          : bitcoin.networks.bitcoin;
-      const psbt = new bitcoin.Psbt({
-        network: psbtNetwork,
-      });
-      inputs.forEach((input) => {
-        psbt.addInput(input);
-      });
-      const total = inputs.reduce((acc, cur) => {
-        return acc + cur.witnessUtxo.value;
-      }, 0);
-      const realityFee = (160 * inputs.length + 34 * 2 + 10) * feeRate.value;
+
       const firstOutputValue = 600;
-      const secondOutputValue = total - firstOutputValue - realityFee;
       const outputs = [
         {
           address: currentAccount,
           value: firstOutputValue,
         },
-        {
-          address: currentAccount,
-          value: secondOutputValue,
-        },
       ];
-      await signAndPushPsbt(inputs, outputs, network);
+      const psbt = await buildTransaction({
+        utxos: utxos,
+        outputs,
+        feeRate: feeRate.value,
+        network,
+        address: currentAccount,
+        publicKey: currentPublicKey,
+      });
+      await signAndPushPsbt(psbt);
       message.success('拆分成功');
       setLoading(false);
     },
@@ -328,7 +222,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
   const columns: ColumnsType<any> = useMemo(() => {
     const defaultColumn: any[] = [
       {
-        title: 'Utxo',
+        title: 'UTXO',
         dataIndex: 'utxo',
         key: 'utxo',
         align: 'center',
@@ -365,14 +259,16 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
         render: (record) => {
           return (
             <div className='flex gap-2 justify-center'>
-              <a className='text-blue-500 cursor-pointer mr-2'
+              <a
+                className='text-blue-500 cursor-pointer mr-2'
                 onClick={() => {
                   setSelectItem(record);
                   setIsModalOpen(true);
                 }}>
                 {t('buttons.send')}
               </a>
-              <a className='text-blue-500 cursor-pointer mr-2'
+              <a
+                className='text-blue-500 cursor-pointer mr-2'
                 onClick={() => {
                   splitHandler(record);
                 }}>
@@ -416,7 +312,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
         isClosable: true,
       });
       setLoading(false);
-      return
+      return;
     }
     setLoading(false);
     setData(resp);
@@ -445,7 +341,6 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
       } else {
         setData(cachedData);
       }
-      
       // 设置定时器每隔一定时间清除缓存数据
       const intervalId = setInterval(() => {
         cacheData('available_ordx_list_' + address, null);
@@ -457,13 +352,30 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
   return (
     <Card>
       <CardHeader className='text-center flex justify-between'>
-        <Tooltip label='快速切割生成2个600Utxo'>
-          <Button bgColor={'white'} border='1px' borderColor='gray.400' size='sm' color='gray.600' onClick={fastClick}>快速切割</Button>
+        <Tooltip label='快速切割生成2个600UTXO'>
+          <Button
+            bgColor={'white'}
+            border='1px'
+            borderColor='gray.400'
+            size='sm'
+            color='gray.600'
+            onClick={fastClick}>
+            快速切割
+          </Button>
         </Tooltip>
-        <Button bgColor={'white'} border='1px' borderColor='gray.400' size='sm' color='gray.600' onClick={getAvailableUtxos}>{t('buttons.fresh')}</Button>
+        <Button
+          bgColor={'white'}
+          border='1px'
+          borderColor='gray.400'
+          size='sm'
+          color='gray.600'
+          onClick={getAvailableUtxos}>
+          {t('buttons.fresh')}
+        </Button>
       </CardHeader>
       <CardBody>
-        <Table bordered
+        <Table
+          bordered
           loading={loading}
           columns={columns}
           dataSource={dataSource}

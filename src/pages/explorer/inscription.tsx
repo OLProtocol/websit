@@ -3,27 +3,21 @@ import { useInscriptiontInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { serializeInscriptionId } from '@/pages/inscribe/utils';
 import { Spin } from 'antd';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useCommonStore } from '@/store';
-
+// const detaConent = serializeInscriptionId(file.relateInscriptionId, 0);
 export default function OrdxInscription() {
   const { t } = useTranslation();
-  const { inscriptionnum } = useParams();
-  const { btcHeight } = useCommonStore((state) => state);
+  const { inscriptionId } = useParams();
   const [tabText, setTabText] = useState(t('common.holders'));
-  const nav = useNavigate();
   const { network } = useUnisatConnect();
-  const handleTabsChange = (type: any) => {
-    if (type !== tabText) {
-      setTabText(type);
-    }
-  };
+
   const { data, trigger, isLoading } = useInscriptiontInfo({
-    inscribNum: inscriptionnum,
+    inscriptionId: inscriptionId,
     network,
   });
+
   const detail = useMemo(() => data?.data || {}, [data]);
 
   const satsText = useMemo(() => {
@@ -33,6 +27,7 @@ export default function OrdxInscription() {
       ) || [];
     return ranges.join(', ');
   }, [detail]);
+
   const ordinalLink = useMemo(() => {
     if (network === 'testnet') {
       return `https://testnet.ordinals.com/inscription/${detail?.inscriptionId}`;
@@ -40,10 +35,18 @@ export default function OrdxInscription() {
       return `https://ordinals.com/inscription/${detail?.inscriptionId}`;
     }
   }, [network, detail]);
-
+  const delegateInscriptionId = useMemo(() => {
+    if (!detail?.delegate) {
+      return;
+    } else {
+      return `${detail?.delegate}i0`;
+    }
+  }, [detail?.delegate]);
+  console.log(delegateInscriptionId);
   const txid = useMemo(() => {
     return detail?.inscriptionId?.replace(/i0$/m, '');
   }, [detail]);
+
   const txLink = useMemo(() => {
     if (network === 'testnet') {
       return `https://mempool.space/testnet/tx/${txid}`;
@@ -51,20 +54,29 @@ export default function OrdxInscription() {
       return `https://mempool.space/tx/${txid}`;
     }
   }, [network, txid]);
+
   useEffect(() => {
-    if (inscriptionnum) {
+    if (inscriptionId) {
       trigger();
     }
-  }, [inscriptionnum, network]);
+  }, [inscriptionId, network]);
+
   return (
     <Spin spinning={isLoading}>
       <BtcHeightAlert />
       <div className='max-w-4xl mx-auto mt-8'>
         <div className='flex justify-between mb-4 items-center'>
           <a href={ordinalLink} className=' text-2xl' target='_blank'>
-            <span className='text-orange-400'>#{detail.inscriptionNumber}</span>
+            {detail.inscriptionNumber === 9223372036854775807 ? (
+              <span className='text-orange-400'>{detail.inscriptionId}</span>
+            ) : (
+              <span className='text-orange-400'>
+                #{detail.inscriptionNumber}
+              </span>
+            )}
           </a>
         </div>
+
         <div className='border-[1px] border-gray-200 rounded-xl mb-4'>
           <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-10 items-center'>
             <span> {t('common.overview')} </span>
@@ -76,6 +88,19 @@ export default function OrdxInscription() {
                 {detail?.inscriptionId || '-'}
               </a>
             </div>
+            {!!detail?.delegate && (
+              <div className='mb-2'>
+                <p className='text-gray-400'>{t('common.content')}:</p>
+                <div>
+                  <img
+                    src={`https://${
+                      network === 'testnet' ? 'testnet.' : ''
+                    }ordinals.com/content/${detail?.delegate}`}
+                    className='max-w-full w-80 h-80'></img>
+                </div>
+              </div>
+            )}
+
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.tick')}:</p>
               <p className='indent-2'>{detail?.ticker || '-'}</p>

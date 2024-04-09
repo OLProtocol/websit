@@ -61,6 +61,7 @@ export default function Inscribe() {
     repeatMint: 1,
     limitPerMint: 10000,
     block: '',
+    relateInscriptionId: '',
     cn: 0,
     trz: 0,
     des: '',
@@ -101,6 +102,8 @@ export default function Inscribe() {
     setOrd2Data('tick', data.tick);
     setOrd2Data('amount', data.amount);
     setOrd2Data('file', data.file);
+    console.log(data.relateInscriptionId);
+    setOrd2Data('relateInscriptionId', data.relateInscriptionId);
     setOrd2Data('fileName', data.fileName);
     setOrd2Data('fileType', data.fileType);
     setOrd2Data('repeatMint', data.repeatMint);
@@ -118,7 +121,7 @@ export default function Inscribe() {
   };
   const onOrdxUtxoChange = (utxo: any) => {
     ordxUtxoRef.current = utxo;
-  } 
+  };
   const brc20Next = async () => {
     const list: any = [];
     if (brc20Data.type === 'mint') {
@@ -181,6 +184,7 @@ export default function Inscribe() {
         if (attrArr.length) {
           attr = attrArr.join(';');
         }
+        console.log(ordxData);
         list.push({
           type: 'ordx',
           name: `mint_${i}`,
@@ -195,6 +199,11 @@ export default function Inscribe() {
                 sat: ordxData.sat > 0 ? ordxData.sat.toString() : undefined,
               }),
             ),
+            {
+              type: 'relateInscriptionId',
+              name: 'relateInscriptionId',
+              value: ordxData.relateInscriptionId,
+            },
             // {
             //   type: 'file',
             //   name: 'test.png',
@@ -235,7 +244,7 @@ export default function Inscribe() {
           }),
         ),
       ];
-      if (ordxData.file) {
+      if (ordxData.file && attr) {
         value.push({
           type: 'file',
           name: ordxData.fileName,
@@ -394,7 +403,11 @@ export default function Inscribe() {
                   <InscribeBrc20 onChange={brc20Change} onNext={brc20Next} />
                 )}
                 {tab === 'ordx' && (
-                  <InscribeOrdx onChange={ordxChange} onNext={ordxNext} onUtxoChange={onOrdxUtxoChange}/>
+                  <InscribeOrdx
+                    onChange={ordxChange}
+                    onNext={ordxNext}
+                    onUtxoChange={onOrdxUtxoChange}
+                  />
                 )}
               </>
             )}

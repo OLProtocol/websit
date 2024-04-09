@@ -1,10 +1,11 @@
 import { getUtxo, getUtxoByValue } from '@/api';
 import { useUnisat, useUnisatConnect } from '@/lib/hooks';
-import { addressToScriptPublicKey } from '@/lib/utils';
+import { addressToScriptPublicKey, calculateRate } from '@/lib/utils';
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Grid, GridItem, Heading, Input, InputGroup, InputLeftAddon, InputRightAddon, Stack, useToast } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import * as bitcoin from 'bitcoinjs-lib';
+import { useCommonStore } from '@/store';
 
 export default function SplitSat() {
     const location = useLocation();
@@ -23,7 +24,8 @@ export default function SplitSat() {
     const [outputList, setOutputList] = useState<any[]>() || [];
     const [utxoValue, setUtxoValue] = useState(0);
     const unisat = useUnisat();
-    const fee = 600;
+    const { feeRate } = useCommonStore((state) => state);
+    const [ fee, setFee] = useState(0);
 
     const splitHandler = async () => {
         if (!currentAccount) {
@@ -135,12 +137,15 @@ export default function SplitSat() {
             return
         }
 
-        let availableUtxoIndex = 0;
+        // let availableUtxoIndex = 0;
         let tmpInputList: any[] = [];
         let tmpOutputList: any[] = [];
 
+        let tmpAvailableUtxos = availableUtxos;
+        let utxoLength = tmpAvailableUtxos?.length;
+
         if (offset === 0) {
-            tmpInputList.push({
+            tmpInputList.push({ // 第一个输入
                 utxo: utxo,
                 sats: utxoValue,
             })
@@ -149,20 +154,30 @@ export default function SplitSat() {
                 sats: size > 330 ? size : 330,
             });
 
-            if (utxoValue < 330) {
+            let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+            while (inTotal < 330) {// 输入的sats小于330，需要额外添加utxo
                 tmpInputList.push({
-                    utxo: availableUtxos?.[availableUtxoIndex].txid + ':' + availableUtxos?.[availableUtxoIndex].vout,
-                    sats: availableUtxos?.[availableUtxoIndex].value,
+                    utxo: tmpAvailableUtxos?.[utxoLength-1].txid + ':' + tmpAvailableUtxos?.[utxoLength-1].vout,
+                    sats: tmpAvailableUtxos?.[utxoLength-1].value,
                 })
+                tmpAvailableUtxos.splice(utxoLength-1, 1);// 删除utxo
+                utxoLength = tmpAvailableUtxos.length;
+                inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
             }
         } else if (offset < 330) {
-            tmpInputList.push({
-                utxo: availableUtxos?.[availableUtxoIndex].txid + ':' + availableUtxos?.[availableUtxoIndex].vout,
-                sats: availableUtxos?.[availableUtxoIndex].value,
-            })
+            let inTotal = offset
+            while (inTotal < 330) {
+                tmpInputList.push({
+                    utxo: tmpAvailableUtxos?.[0].txid + ':' + tmpAvailableUtxos?.[0].vout,
+                    sats: tmpAvailableUtxos?.[0].value,
+                })
+                tmpAvailableUtxos.splice(0, 1);// 删除utxo
+                utxoLength = tmpAvailableUtxos.length;
+                inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0) + offset;
+            }
 
             tmpOutputList.push({
-                sats: availableUtxos?.[availableUtxoIndex].value + offset,
+                sats: tmpInputList.reduce((total, item) => total + item.sats, 0) + offset,
             })
 
             tmpInputList.push({
@@ -173,13 +188,17 @@ export default function SplitSat() {
             tmpOutputList.push({ // 输出：包含稀有聪
                 sats: size > 330 ? size : 330,
             })
-            if (utxoValue < 330) {
-                availableUtxoIndex += 1;
+
+            inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+            while (inTotal < 330) {// 输入的sats小于330，需要额外添加utxo
                 tmpInputList.push({
-                    utxo: availableUtxos?.[availableUtxoIndex].txid + ':' + availableUtxos?.[availableUtxoIndex].vout,
-                    sats: availableUtxos?.[availableUtxoIndex].value,
+                    utxo: tmpAvailableUtxos?.[utxoLength-1].txid + ':' + tmpAvailableUtxos?.[utxoLength-1].vout,
+                    sats: tmpAvailableUtxos?.[utxoLength-1].value,
                 })
+                tmpAvailableUtxos.splice(utxoLength-1, 1);// 删除utxo
+                utxoLength = tmpAvailableUtxos.length;
             }
+
         } else if (offset >= 330) {
             tmpInputList.push({
                 utxo: utxo,
@@ -194,35 +213,48 @@ export default function SplitSat() {
                 sats: size > 330 ? size : 330,
             })
 
-            if (utxoValue < 330) {
+            let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+            while (inTotal < 330) {// 输入的sats小于330，需要额外添加utxo
                 tmpInputList.push({
-                    utxo: availableUtxos?.[availableUtxoIndex].txid + ':' + availableUtxos?.[availableUtxoIndex].vout,
-                    sats: availableUtxos?.[availableUtxoIndex].value,
+                    utxo: tmpAvailableUtxos?.[utxoLength-1].txid + ':' + tmpAvailableUtxos?.[utxoLength-1].vout,
+                    sats: tmpAvailableUtxos?.[utxoLength-1].value,
                 })
+                tmpAvailableUtxos.splice(utxoLength-1, 1);// 删除utxo
+                utxoLength = tmpAvailableUtxos.length;
+                inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
             }
         }
+        
         let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
         let outTotal = tmpOutputList.reduce((total, item) => total + item.sats, 0);
-        while (inTotal - outTotal - fee < 0) {
-            availableUtxoIndex += 1;
+        let realityFee = calculateRate(tmpInputList.length, tmpOutputList.length, feeRate.value);
+
+        while (inTotal - outTotal - realityFee < 0) {
             tmpInputList.push({
-                utxo: availableUtxos?.[availableUtxoIndex].txid + ':' + availableUtxos?.[availableUtxoIndex].vout,
-                sats: availableUtxos?.[availableUtxoIndex].value,
+                utxo: tmpAvailableUtxos?.[utxoLength-1].txid + ':' + availableUtxos?.[utxoLength-1].vout,
+                sats: tmpAvailableUtxos?.[utxoLength-1].value,
             })
+            tmpAvailableUtxos.splice(utxoLength-1, 1);// 删除utxo
+            utxoLength = tmpAvailableUtxos.length;
+            
             inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+            realityFee = calculateRate(tmpInputList.length, tmpOutputList.length+1, feeRate.value);
         }
+
         tmpOutputList.push({
-            sats: inTotal - outTotal - fee,
+            sats: inTotal - outTotal - realityFee,
         })
+        
         setInputList(tmpInputList);
         setOutputList(tmpOutputList);
+        setFee(realityFee);
     }, [utxoValue, availableUtxos]);
 
     useEffect(() => {
         setAddress(currentAccount);
         getAvailableUtxos();
         getValueOfUtxo();
-    }, [address]);
+    }, [address, feeRate]);
 
     return (
         <div className='flex flex-col max-w-7xl mx-auto pt-8'>
@@ -241,7 +273,7 @@ export default function SplitSat() {
                                 <Grid key={Math.random()} templateColumns='repeat(5, 1fr)' gap={6} pt={2}>
                                     <GridItem colSpan={3}>
                                         <InputGroup>
-                                            <InputLeftAddon>Utxo</InputLeftAddon>
+                                            <InputLeftAddon>UTXO</InputLeftAddon>
                                             <Input key={Math.random()} value={item.utxo} readOnly />
                                         </InputGroup>
                                     </GridItem>
@@ -249,7 +281,7 @@ export default function SplitSat() {
                                     <GridItem colSpan={2}>
                                         <InputGroup>
                                             <Input key={Math.random()} size='md' value={item.sats} readOnly />
-                                            <InputRightAddon>sat</InputRightAddon>
+                                            <InputRightAddon>sats</InputRightAddon>
                                         </InputGroup>
                                     </GridItem>
                                 </Grid>
@@ -273,7 +305,7 @@ export default function SplitSat() {
                                     <GridItem colSpan={2}>
                                         <InputGroup>
                                             <Input key={Math.random()} size='md' value={item.sats} readOnly />
-                                            <InputRightAddon>sat</InputRightAddon>
+                                            <InputRightAddon>sats</InputRightAddon>
                                         </InputGroup>
                                     </GridItem>
                                 </Grid>
@@ -284,7 +316,7 @@ export default function SplitSat() {
                 <Divider borderColor={'teal.500'} />
                 <CardFooter>
                     <Button variant='solid' colorScheme='teal' onClick={splitHandler} isLoading={loading}>Split</Button>
-                    <Button variant='ghost' colorScheme='teal'>({'Fee: ' + fee + ' sat'})</Button>
+                    <Button variant='ghost' colorScheme='teal'>({'Fee: ' + fee + ' sats'})</Button>
                 </CardFooter>
             </Card>
         </div>

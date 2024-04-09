@@ -22,18 +22,25 @@ import type { UploadProps } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Tooltip, Upload, Modal } from 'antd';
+import { Button, Tooltip, Upload, Modal, Table } from 'antd';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { Checkbox } from 'antd';
 import { BusButton } from '@/components/BusButton';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMap } from 'react-use';
-import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
-import { clacTextSize, encodeBase64, base64ToHex } from '../utils';
+import { fetchTipHeight, calcTimeBetweenBlocks, hideStr } from '@/lib/utils';
+import {
+  clacTextSize,
+  encodeBase64,
+  base64ToHex,
+  serializeInscriptionId,
+} from '../utils';
 import { useTranslation } from 'react-i18next';
 import { getOrdxInfo, useSatTypes, getUtxoByType } from '@/api';
 import toast from 'react-hot-toast';
 import { useCommonStore } from '@/store';
+import { ColumnsType } from 'antd/es/table';
+import { CopyButton } from '@/components/CopyButton';
 
 const { Dragger } = Upload;
 
@@ -67,6 +74,7 @@ export const InscribeOrdx = ({
     cn: 0,
     trz: 0,
     file: '',
+    relateInscriptionId: '',
     fileName: '',
     fileType: '',
     blockChecked: true,
@@ -85,15 +93,18 @@ export const InscribeOrdx = ({
   const [loading, setLoading] = useState(false);
   const [tickLoading, setTickLoading] = useState(false);
   const [tickChecked, setTickChecked] = useState(false);
+  const [specialStatus, setSpecialStatus] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
   const [specialBeyondStatus, setSpecialBeyondStatus] = useState(false);
   const [allowSpecialBeyondStatus, setAllowSpecialBeyondStatus] =
     useState(false);
   const [originFiles, setOriginFiles] = useState<any[]>([]);
+  const [utxoList, setUtxoList] = useState<any[]>([]);
+  const [selectedUtxo, setSelectedUtxo] = useState('');
+
   const filesChange: UploadProps['onChange'] = async ({ fileList }) => {
     const originFiles = fileList.map((f) => f.originFileObj);
     // onChange?.(originFiles);
-    console.log(12313);
     const file = originFiles[0];
     if (file) {
       const b64 = (await encodeBase64(file as any)) as string;
@@ -115,16 +126,16 @@ export const InscribeOrdx = ({
   };
   const getOrdxUtxoByType = async (type: string, amount: number) => {
     try {
-      const { data } = await getUtxoByType({
+      const resp = await getUtxoByType({
         address: currentAccount,
         type,
         amount,
         network,
       });
-      return data;
+      return resp;
     } catch (error) {
       toast.error(t('toast.system_error'));
-      console.error('Failed to fetch ordxUtxo:', error);
+      console.error('Failed to fetch ordxUTXO:', error);
       throw error;
     }
   };
@@ -155,6 +166,7 @@ export const InscribeOrdx = ({
       if (!checkStatus) {
         return;
       }
+      
       setTickChecked(true);
     } else {
       onNext?.();
@@ -162,13 +174,22 @@ export const InscribeOrdx = ({
   };
   const checkTick = async (blur: boolean = false) => {
     setErrorText('');
+    setSpecialStatus(false);
+    setUtxoList([]);
+    setSelectedUtxo('');
+    // const ec = new TextEncoder();
+    // const seris = serializeInscriptionId(
+    //   'db0c19557a6bd2ffd5830adf04e6bdbebd21c5b2506ff7fea4db2b4666247e90i0',
+    //   0,
+    // );
+    // console.log('seris', seris);
+    // console.log('seris', ec.encode(seris));
     let checkStatus = true;
     if (data.tick === undefined || data.tick === '') {
       checkStatus = false;
       return checkStatus;
     }
 
-    console.log(data.repeatMint);
     const textSize = clacTextSize(data.tick);
     if (textSize < 3 || textSize == 4 || textSize > 32) {
       checkStatus = false;
@@ -180,7 +201,16 @@ export const InscribeOrdx = ({
       const info = await getOrdXInfo(data.tick);
       setTickLoading(false);
 
-      const { rarity, trz, cn, startBlock, endBlock, limit } = info.data || {};
+      const {
+        rarity,
+        trz,
+        cn,
+        startBlock,
+        endBlock,
+        limit,
+        imgtype,
+        inscriptionId,
+      } = info.data || {};
       const isSpecial = rarity !== 'unknow' && rarity !== 'common' && !!rarity;
       let status = 'Completed';
       if (isSpecial) {
@@ -208,7 +238,7 @@ export const InscribeOrdx = ({
           setErrorText(t('pages.inscribe.ordx.error_6', { tick: data.tick }));
           return checkStatus;
         }
-        console.log(status);
+
         if (status === 'Completed') {
           checkStatus = false;
           setErrorText(t('pages.inscribe.ordx.error_7', { tick: data.tick }));
@@ -225,35 +255,36 @@ export const InscribeOrdx = ({
           set('amount', Number(limit));
           set('mintRarity', rarity);
         } else if (isSpecial) {
-          const satsData = await getOrdxUtxoByType(rarity, data.amount);
-          console.log(satsData);
-          if (!satsData?.length) {
+          setSpecialStatus(true);
+          const resp = await getOrdxUtxoByType(rarity, 1);
+          if (resp.code !== 0) {
+            checkStatus = false;
+            setErrorText(resp.msg);
+            return checkStatus;
+          }
+          if (imgtype) {
+            set('relateInscriptionId', inscriptionId);
+          }
+          if (!resp?.data.length) {
             checkStatus = false;
             setErrorText(`${rarity}类型的特殊聪数量不够`);
             return checkStatus;
           }
-          const satData = satsData?.[satsData?.length - 1];
-          set('sat', satData?.sats?.[0].start);
+
+          resp.data = resp.data.sort(
+            (a, b) =>
+              b.sats?.reduce((acc, cur) => {
+                return acc + cur.size;
+              }, 0) -
+              a.sats?.reduce((acc, cur) => {
+                return acc + cur.size;
+              }, 0),
+          );
+
+          setUtxoList(resp.data);
           set('rarity', rarity);
-          if (satData) {
-            onUtxoChange?.(satData);
-            if (satData.amount > data.amount) {
-              if (!allowSpecialBeyondStatus) {
-                Modal.confirm({
-                  centered: true,
-                  content: `找到的Utxo包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
-                  okText: '继续',
-                  cancelText: '取消',
-                  onOk() {
-                    setAllowSpecialBeyondStatus(true);
-                    setTickChecked(true);
-                  },
-                });
-              }
-              checkStatus = allowSpecialBeyondStatus;
-              return checkStatus;
-            }
-          }
+          checkStatus = false;
+          return checkStatus;
         }
         // if (isSpecial) {
         //   checkStatus = false;
@@ -275,6 +306,7 @@ export const InscribeOrdx = ({
     }
     return checkStatus;
   };
+
   const rarityChange = (value: string) => {
     set('rarity', value);
     if (value !== 'common' || !value) {
@@ -313,12 +345,7 @@ export const InscribeOrdx = ({
       set('blockChecked', !data.rarityChecked && !data.cnChecked);
     }
   };
-  const getHeight = async () => {
-    const height = await fetchTipHeight(network as any);
-    console.log('height', height);
-    set('block_start', height);
-    set('block_end', height + 4320);
-  };
+
   const showSat = useMemo(() => {
     return (
       data.mintRarity !== 'common' &&
@@ -326,9 +353,11 @@ export const InscribeOrdx = ({
       data.mintRarity
     );
   }, [data.mintRarity]);
+
   const buttonDisabled = useMemo(() => {
     return !data.tick;
   }, [data]);
+
   // const time = useBlockHeightTime({
   //   height: btcHeight,
   //   start: data.block_start,
@@ -344,10 +373,141 @@ export const InscribeOrdx = ({
     });
     setTime(res);
   };
+
+  const handleUtxoChange = (utxo: any) => {
+    setTickChecked(false);
+    setAllowSpecialBeyondStatus(false);
+    const firstOffset = utxo.sats[0].offset;
+    if (firstOffset >= 546) {
+      toast.error('请先拆分，再铸造。');
+      return;
+    }
+    setSelectedUtxo(utxo.utxo);
+
+    const satData = utxoList.filter((item) => item.utxo === utxo.utxo)[0];
+    // satData.sats = satData.sats.sort((a, b) => {
+    //   return b.size - a.size;
+    // });
+    const satSize = satData.sats.reduce((acc, cur) => {
+      return acc + cur.size;
+    }, 0);
+    console.log('satSize', satSize);
+    set('sat', satData?.sats?.[0].start);
+    if (satData) {
+      onUtxoChange?.(satData);
+      console.log('satData', satData);
+      console.log('satData', data.amount);
+      if (satData.amount > data.amount) {
+        // if (!allowSpecialBeyondStatus) {
+        Modal.confirm({
+          centered: true,
+          content: `找到的UTXO包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
+          okText: '继续',
+          cancelText: '取消',
+          onOk() {
+            setAllowSpecialBeyondStatus(true);
+            setTickChecked(true);
+          },
+        });
+        // } else {
+        //   setTickChecked(true);
+        // }
+      } else if (data.amount > satSize) {
+        toast.error('UTXO包含的特殊聪数量不够');
+      } else {
+        setTickChecked(true);
+      }
+    }
+  };
+
+  const utxoColumns: ColumnsType<any> = [
+    {
+      title: '',
+      dataIndex: '',
+      key: '',
+      align: 'center',
+      render: (t) => {
+        return (
+          <div className='flex item-center justify-center'>
+            <input
+              type='radio'
+              id={t.utxo}
+              name='utxo-select'
+              value={t.utxo}
+              checked={selectedUtxo === t.utxo}
+              onChange={() => handleUtxoChange(t)}
+            />
+          </div>
+        );
+      },
+    },
+    {
+      title: 'UTXO',
+      dataIndex: 'utxo',
+      key: 'utxo',
+      align: 'center',
+      width: '40%',
+      render: (t) => {
+        const txid = t.replace(/:0$/m, '');
+        const href =
+          network === 'testnet'
+            ? `https://mempool.space/testnet/tx/${txid}`
+            : `https://mempool.space/tx/${txid}`;
+        return (
+          <div className='flex item-center justify-center'>
+            <Tooltip title={t}>
+              <a
+                className='text-blue-500 cursor-pointer mr-2'
+                href={href}
+                target='_blank'>
+                {hideStr(t)}
+              </a>
+            </Tooltip>
+            <CopyButton text={t} tooltip='Copy Tick' />
+          </div>
+        );
+      },
+    },
+    {
+      title: 'Sats',
+      dataIndex: 'value',
+      key: 'value',
+      align: 'center',
+      render: (r) => {
+        return <div className='cursor-pointer'>{r}</div>;
+      },
+    },
+    {
+      title: 'Rare Sats',
+      key: 'rareSatSize',
+      align: 'center',
+      render: (r) => {
+        let size = 0;
+        if (r !== undefined) {
+          size = r.sats.reduce((acc, cur) => {
+            return acc + cur.size;
+          }, 0);
+        }
+        return <div className='cursor-pointer'>{size}</div>;
+      },
+    },
+    {
+      title: 'Offset',
+      key: 'offset',
+      align: 'center',
+      render: (r) => {
+        let offset = 0;
+        if (r) {
+          offset = r.sats[0].offset;
+        }
+        return <div className='cursor-pointer'>{offset}</div>;
+      },
+    },
+  ];
+
   useEffect(() => {
     if (state?.type === 'ordx') {
       const { item } = state;
-      console.log(item);
       set('type', 'mint');
       set('tick', item.tick);
       set('amount', item.limit);
@@ -355,7 +515,6 @@ export const InscribeOrdx = ({
     }
   }, [state]);
   useEffect(() => {
-    console.log(btcHeight);
     if (btcHeight) {
       set('block_start', btcHeight);
       set('block_end', btcHeight + 4320);
@@ -394,7 +553,10 @@ export const InscribeOrdx = ({
                 maxLength={32}
                 placeholder={t('pages.inscribe.ordx.tick_placeholder')}
                 value={data.tick}
-                onChange={(e) => set('tick', e.target.value)}
+                onChange={(e) => {
+                  setUtxoList([]);
+                  set('tick', e.target.value);
+                }}
               />
             </div>
           </div>
@@ -409,12 +571,23 @@ export const InscribeOrdx = ({
                 <NumberInput
                   value={data.amount}
                   isDisabled={tickLoading}
-                  onChange={(_, e) => set('amount', isNaN(e) ? 0 : e)}
+                  onChange={(_, e) => {
+                    set('amount', isNaN(e) ? 0 : e);
+                    setSelectedUtxo('');
+                  }}
                   min={1}>
                   <NumberInputField />
                 </NumberInput>
               </div>
             </div>
+            {specialStatus && utxoList.length > 0 && (
+              <Table
+                bordered
+                columns={utxoColumns}
+                dataSource={utxoList}
+                pagination={false}
+              />
+            )}
           </FormControl>
         )}
 
@@ -477,7 +650,6 @@ export const InscribeOrdx = ({
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
-                    disabled
                     checked={data.rarityChecked}
                     onChange={onRarityChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
@@ -507,7 +679,6 @@ export const InscribeOrdx = ({
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
-                    disabled
                     checked={data.cnChecked}
                     onChange={onCnChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
@@ -536,7 +707,6 @@ export const InscribeOrdx = ({
                 </FormLabel>
                 <div className='flex-1 flex items-center'>
                   <Checkbox
-                    disabled
                     checked={data.trzChecked}
                     onChange={onTrzChecked}></Checkbox>
                   <div className='ml-2 flex-1'>
@@ -602,7 +772,7 @@ export const InscribeOrdx = ({
             </div>
           </FormControl>
         )} */}
-        {data.type === 'test' && (
+        {data.type === 'deploy' && !data.blockChecked && (
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
@@ -632,7 +802,7 @@ export const InscribeOrdx = ({
         )}
         {data.type === 'mint' && tickChecked && !showSat && (
           <FormControl>
-            <div className='flex items-center  mb-4'>
+            <div className='flex items-center mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
                 {t('common.repeat_mint')}
               </FormLabel>

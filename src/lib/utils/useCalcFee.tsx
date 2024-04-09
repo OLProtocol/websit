@@ -12,7 +12,7 @@ export const useCalcFee = ({
 }) => {
   const { VITE_TIP_MIN = 1000 } = import.meta.env;
   const clacFee = useMemo(() => {
-    const base_size = 180;
+    const base_size = 190;
     const feeObj: any = {
       networkFee: 0,
       serviceFee: 0,

@@ -30,7 +30,7 @@ export default function Account() {
           {ticker === t('pages.account.available_utxo') && (
             <AvailableUtxoList address={currentAccount} onTotalChange={onTotalChange} />
           )}
-          {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && ticker !== t('pages.account.ord_nft') && (
+          {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && (
             <OrdxAddressHolders tick={ticker} address={currentAccount} />
           )}
         </div>

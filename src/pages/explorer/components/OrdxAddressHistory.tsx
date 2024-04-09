@@ -1,4 +1,4 @@
-import { Button, Segmented, Table } from 'antd';
+import { Button, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxAddressHistory } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
@@ -32,18 +32,25 @@ export const OrdxAddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps)
       key: 'inscriptionNumber',
       width: 100,
       align: 'center',
-      render: (t) => {
+      render: (t, record) => {
         const href =
           network === 'testnet'
-            ? `https://testnet.ordinals.com/inscription/${t}`
-            : `https://ordinals.com/inscription/${t}`;
+            ? `https://testnet.ordinals.com/inscription/${record.inscriptionId}`
+            : `https://ordinals.com/inscription/${record.inscriptionId}`;
         return (
-          <a
-            className='text-blue-500 cursor-pointer'
-            href={href}
-            target='_blank'>
-            #{t}
-          </a>
+          <div>
+            {t === 9223372036854775807 ? (
+              <span>-</span>
+            ) : (
+              <a
+                className='text-blue-500 cursor-pointer'
+                href={href}
+                target='_blank'>
+                #{t}
+              </a>
+            )}
+          </div>
+          
         );
       },
     },

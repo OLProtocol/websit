@@ -138,16 +138,9 @@ export const savePaidOrder = async ({ key, content, network }: any) => {
   return data;
 };
 
-export const getMintInfo = async ({ inscribId, network }: any) => {
+export const getInscriptiontInfo = async ({ inscriptionId, network }: any) => {
   const { data } = await axios.get(
-    generateUrl(`mint/info/${inscribId}`, network),
-  );
-  return data;
-};
-
-export const getInscriptiontInfo = async ({ inscribNum, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`mint/details/${inscribNum}`, network),
+    generateUrl(`mint/details/${inscriptionId}`, network),
   );
   return data;
 };
@@ -179,7 +172,7 @@ export const getSplittedSats = async ({ ticker, network }: any) => {
 };
 
 export const getAssetByUtxo = async ({ utxo, network }: any) => {
-  const { data } = await axios.post(
+  const { data } = await axios.get(
     generateUrl(`getAssetByUtxo/${utxo}`, network),
   );
   return data;

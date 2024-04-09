@@ -39,6 +39,7 @@ export const InscribeStepThree = ({
   onRemoveAll,
 }: Brc20SetpOneProps) => {
   const { t } = useTranslation();
+  const { feeRate } = useCommonStore((state) => state);
   const { network, currentAccount } = useUnisatConnect();
   const [data, { set }] = useMap({
     toSingleAddress: currentAccount,
@@ -47,11 +48,11 @@ export const InscribeStepThree = ({
   const [loading, setLoading] = useState(false);
   const { add: addOrder, changeStatus } = useOrderStore((state) => state);
   const { serviceStatus } = useCommonStore((state) => state);
-  const [feeRate, setFeeRate] = useState(1);
-  const feeRateChange = (value: number) => {
-    console.log('value', value);
-    setFeeRate(value);
-  };
+  // const [feeRate, setFeeRate] = useState(1);
+  // const feeRateChange = (value: number) => {
+  //   console.log('value', value);
+  //   setFeeRate(value);
+  // };
 
   const files = useMemo(() => {
     return list;
@@ -102,7 +103,7 @@ export const InscribeStepThree = ({
     }
   }, [type, list, ordxUtxo]);
   const clacFee = useCalcFee({
-    feeRate,
+    feeRate: feeRate.value,
     inscriptionSize,
     files,
     serviceStatus,
@@ -115,7 +116,7 @@ export const InscribeStepThree = ({
       secret,
       files,
       network,
-      feeRate,
+      feeRate: feeRate.value,
       ordxUtxo,
     });
     const orderId = uuidV4();
@@ -126,7 +127,7 @@ export const InscribeStepThree = ({
       secret,
       fee: clacFee,
       toAddress: [data.toSingleAddress],
-      feeRate,
+      feeRate: feeRate.value,
       files,
       network,
       ordxUtxo,
@@ -190,19 +191,19 @@ export const InscribeStepThree = ({
           />
         </div>
       </div>
-      <div className='mb-4'>
+      {/* <div className='mb-4'>
         <div className='mb-3'>{t('pages.inscribe.step_three.select_fee')}</div>
         <BtcFeeRate onChange={feeRateChange} />
-      </div>
-      <div className='mb-4'>
-        {/* <BtcFeeCalc
+      </div> */}
+      {/*<div className='mb-4'>
+        <BtcFeeCalc
           feeRate={feeRate}
           padding={padding}
           networkFee={networkFee}
           total={totalFees}
           overheadFee={overhead}
-        /> */}
-      </div>
+        />
+      </div> */}
       <div className='mb-4'>
         <p>{t('pages.inscribe.step_three.address_hint')}</p>
       </div>
@@ -210,6 +211,7 @@ export const InscribeStepThree = ({
         <FeeShow
           inscriptionSize={inscriptionSize}
           serviceFee={clacFee.serviceFee}
+          feeRate={feeRate.value}
           serviceStatus={clacFee.serviceStatus}
           filesLength={files.length}
           totalFee={clacFee.totalFee}

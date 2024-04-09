@@ -20,6 +20,7 @@ export const OrdxAccountSummaryList = ({
   const { network } = useUnisatConnect();
   const { t } = useTranslation();
   const { data, trigger } = useOrdxSummary({ address, network });
+  const otherTickers = useMemo(() => data?.data?.detail || [], [data]);
   const [rareSatList, setRareSatList] = useState<any[]>();
   const toast = useToast();
 
@@ -46,9 +47,15 @@ export const OrdxAccountSummaryList = ({
 
 
   const ordNftTicker = useMemo(() => {
+    // ordinals nft的ticker名称为“o”
+    const tmpTickes = otherTickers.filter((item) => item.ticker === 'o');
+    let balance = 0;
+    if (tmpTickes.length > 0) {
+      balance = tmpTickes[0].balance;
+    }
     return {
       ticker: t('pages.account.ord_nft'),
-      balance: 0,
+      balance: balance,
     };
   }, [])
 
@@ -75,23 +82,18 @@ export const OrdxAccountSummaryList = ({
   }
 
   const [select, setSelect] = useState('');
-  const arr = useMemo(() => data?.data?.detail || [], [data]);
+
   const tickers = useMemo(() => {
-    return [avialableTicker, rareSatsTicker, ordNftTicker, ...arr];
-  }, [arr, avialableTicker, rareSatsTicker]);
+    return [avialableTicker, rareSatsTicker, ordNftTicker, ...otherTickers];
+  }, [otherTickers, avialableTicker, rareSatsTicker]);
 
   const onClick = (item) => {
+    let ticker = item.ticker
     if (item.ticker === t('pages.account.ord_nft')) {
-      toast({
-        title: 'Ordinals NFT is not supported yet',
-        status: 'info',
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
+      ticker = 'o';
     }
-    setSelect(item.ticker);
-    onChange?.(item.ticker);
+    setSelect(ticker);
+    onChange?.(ticker);
   };
 
   useEffect(() => {

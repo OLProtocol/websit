@@ -23,6 +23,11 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
     start,
     limit,
   });
+
+  const toInscriptionInfo = (inscriptionId) => {
+    nav(`/explorer/inscription/${inscriptionId}`);
+  };
+
   const columns: ColumnsType<any> = [
     {
       title: t('common.inscriptionNumber'),
@@ -30,22 +35,27 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
       key: 'inscriptionNumber',
       width: 100,
       align: 'center',
-      render: (t: any) => {
+      render: (t: any, record) => {
         const href =
           network === 'testnet'
-            ? `https://testnet.ordinals.com/inscription/${t}`
-            : `https://ordinals.com/inscription/${t}`;
+            ? `https://testnet.ordinals.com/inscription/${record.inscriptionId}`
+            : `https://ordinals.com/inscription/${record.inscriptionId}`;
         return (
           <div>
             { t === 9223372036854775807 ? (
               <span>-</span>
             ) : (
-              <a
+              // <a
+              //   className='text-blue-500 cursor-pointer'
+              //   href={href}
+              //   target='_blank'>
+              //   #{t}
+              // </a>
+              <span
                 className='text-blue-500 cursor-pointer'
-                href={href}
-                target='_blank'>
+                onClick={() => toInscriptionInfo(record.inscriptionId)}>
                 #{t}
-              </a>
+              </span>
             )}
           </div>
         );
@@ -64,21 +74,26 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
             : `https://ordinals.com/inscription/${t}`;
         return (
           <div className='flex item-center justify-center'>
-            <a
+            <span
+              className='text-blue-500 cursor-pointer'
+              onClick={() => toInscriptionInfo(t)}>
+              {hideStr(t)}
+            </span>&nbsp;&nbsp;
+            {/* <a
               className='text-blue-500 cursor-pointer'
               href={href}
               target='_blank'>
               {hideStr(t)}
-            </a>&nbsp;&nbsp;
-            <CopyButton text={t} tooltip='Copy Btc Address' />
+            </a>&nbsp;&nbsp; */}
+            <CopyButton text={t} tooltip='Copy Inscription ID' />
           </div>
         );
       },
     },
     {
       title: t('common.address'),
-      dataIndex: 'wallet',
-      key: 'wallet',
+      dataIndex: 'address',
+      key: 'address',
       width: 120,
       align: 'center',
       render: (t) => (
@@ -102,11 +117,10 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
       align: 'center',
     },
   ];
-  const dataSource = useMemo(() => data?.data?.detail || [], [data]);
+  const dataSource = useMemo(() => data?.data?.detail.items || [], [data]);
   const total = useMemo(() => data?.data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
-    console.log(page, pageSize);
   };
   const toInfo = () => {
     nav(`/explorer/${tick}`);
@@ -119,20 +133,11 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
 
   return (
     <div className=''>
-      {/* <Segmented
-        options={[
-          'all',
-          'inscribe-mint',
-          'inscribe-transfer',
-          'send',
-          'receive',
-        ]}
-        block
-      /> */}
       <Table
         loading={isLoading}
         columns={columns}
-        dataSource={dataSource.filter((item) => item.inscriptionNumber !== '9223372036854776000')}
+        // dataSource={dataSource.filter((item) => item.inscriptionNumber !== 9223372036854775807)}
+        dataSource={dataSource}
         pagination={{
           position: ['bottomCenter'],
           defaultPageSize: 10,

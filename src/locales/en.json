@@ -7,6 +7,7 @@
     "mint": "Mint",
     "deploy": "Deploy",
     "block": "Block",
+    "content": "Content",
     "rarity": "Rarity",
     "deploy_time": "Deploy Time",
     "deploy_height": "Deploy Height",
@@ -51,7 +52,7 @@
     "founder": "Founder",
     "inscribe": "Inscribe",
     "hint_connect": "Please connect your wallet first.",
-    "available_utxo": "Available Utxo"
+    "available_utxo": "Plain UTXO"
   },
   "toast": {
     "system_error": "System Error",
@@ -245,11 +246,15 @@
         "card_header": "Splitted Inscriptions"
       },
       "utxo": {
-        "title": "Utxo",
+        "title": "UTXO",
         "des": "Get assets and sats by UTXO",
         "search_placeholder": "UTXO ...",
         "card_header_asset": "Assets",
         "card_header_sat": "Sats"
+      },
+      "transaction": {
+        "available_utxo": "Plain UTXO",
+        "rare_sats": "Rare Sats"
       }
     },
    
@@ -264,7 +269,7 @@
       "not_support": "Viewing the transferred balance is temporarily unavailable."
     },
     "account": {
-      "available_utxo": "Available Utxo",
+      "available_utxo": "Plain UTXO",
       "rare_sats": "Rare Sats",
       "ord_nft": "Ordinals NFT"
     }

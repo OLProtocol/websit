@@ -54,8 +54,8 @@ export default function SplittedInscription() {
     setInscriptionList(data.data);
     setLoading(false);
   };
-  const toInscriptionInfo = (inscriptionNumber) => {
-    nav(`/explorer/inscription/${inscriptionNumber}`);
+  const toInscriptionInfo = (inscriptionId) => {
+    nav(`/explorer/inscription/${inscriptionId}`);
   };
   return (
     <div className='flex flex-col max-w-[48rem] mx-auto pt-8'>

@@ -203,7 +203,7 @@ export default function Utxo() {
                       rareSatList.map((item: any) => (
                         <div className='max-w-max flex border border-teal-500 rounded-md mt-2'>
                           <Box as='text' borderRadius='md' bg='white' color='teal' px={4} h={8} mt={2}>
-                            {item.start}
+                            {item.size > 1 ? item.start + '-' + item.end + '(' + item.size + ' sats)' : item.start}
                           </Box>
                           {item.type.map((t, _) => (
                             <Tooltip label={t}>

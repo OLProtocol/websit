@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Card, Input } from 'antd';
 import { useState } from 'react';
-import { getMintInfo } from '@/api';
+import { getInscriptiontInfo } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks';
 
 const { Search } = Input;
@@ -19,7 +19,7 @@ export default function InscribeCheck() {
   const toast = useToast();
 
   const doSearch = async () => {
-    const data = await getMintInfo({
+    const data = await getInscriptiontInfo({
       inscribId: inscribId,
       network,
     });

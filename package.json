@@ -24,7 +24,7 @@
     "@iconify/react": "^4.1.1",
     "@mempool/mempool.js": "^2.3.0",
     "@tanstack/react-table": "^8.11.6",
-    "@unisat/wallet-sdk": "^1.1.2",
+    "@unisat/wallet-sdk": "^1.4.1",
     "antd": "^5.12.6",
     "axios": "^1.6.0",
     "bitcoinjs-lib": "^6.1.5",
