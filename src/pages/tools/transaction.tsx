@@ -137,6 +137,7 @@ export default function Transaction() {
     inputList.items[itemId - 1].value.ticker = ticker;
     inputList.items[itemId - 1].value.sats = 0;
     inputList.items[itemId - 1].value.unit = 'sats';
+    inputList.items[itemId - 1].options.utxos = [];
 
     const selectTicker =
       tickerList?.find((item) => item.ticker === ticker) || [];

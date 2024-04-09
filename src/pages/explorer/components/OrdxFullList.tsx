@@ -88,7 +88,6 @@ export const Ord2FullList = () => {
       width: 80,
       align: 'center',
       render: (inscriptionId, record) => {
-        console.log(record);
         return record.imgtype ? (
           <div>
             <img
