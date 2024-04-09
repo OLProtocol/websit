@@ -54,6 +54,7 @@ export const AvailableUtxoList = ({
   // });
   const toast = useToast();
   const [data, setData] = useState<any>();
+
   const unisat = useUnisat();
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -272,7 +273,7 @@ export const AvailableUtxoList = ({
                 onClick={() => {
                   splitHandler(record);
                 }}>
-                切割
+                {t('pages.account.cut')}
               </a>
             </div>
           );
@@ -341,6 +342,7 @@ export const AvailableUtxoList = ({
       } else {
         setData(cachedData);
       }
+
       // 设置定时器每隔一定时间清除缓存数据
       const intervalId = setInterval(() => {
         cacheData('available_ordx_list_' + address, null);
@@ -352,7 +354,7 @@ export const AvailableUtxoList = ({
   return (
     <Card>
       <CardHeader className='text-center flex justify-between'>
-        <Tooltip label='快速切割生成2个600UTXO'>
+        <Tooltip label={t('pages.account.quick_cut_des')}>
           <Button
             bgColor={'white'}
             border='1px'
@@ -360,7 +362,7 @@ export const AvailableUtxoList = ({
             size='sm'
             color='gray.600'
             onClick={fastClick}>
-            快速切割
+            {t('pages.account.quick_cut')}
           </Button>
         </Tooltip>
         <Button
@@ -395,7 +397,7 @@ export const AvailableUtxoList = ({
           onOk={handleOk}
           onCancel={handleCancel}>
           <Input
-            placeholder='请输入地址'
+            placeholder={t('pages.account.tip_enter_address')}
             value={transferAddress}
             onChange={(e) => setTransferAddress(e.target.value)}
           />

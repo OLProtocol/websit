@@ -109,8 +109,8 @@ export const OrdxAddressHolders = ({
     Modal.confirm({
       centered: true,
       content: `该工具仅用于ordx资产的拆分演示，会收取一个聪的ordx资产加上至少546个普通聪作为拆分费用支付给协议开发团队。请确认是否继续拆分？`,
-      okText: '继续',
-      cancelText: '取消',
+      okText: t('common.continue'),
+      cancelText: t('common.cancel'),
       onOk() {
         splitHandler(item);
       },
@@ -157,6 +157,7 @@ export const OrdxAddressHolders = ({
       }
 
       const utxos: any[] = [serviceUtxo, splitUtxo, ...filterConsumUtxos];
+
       const serviceOutputValue = serviceUtxo.value + 1;
       const splitOutputValue = splitUtxo.value - 1;
       const outputs = [

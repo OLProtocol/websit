@@ -77,7 +77,7 @@ export default function Transaction() {
   const [messageApi] = message.useMessage();
   const unisat = useUnisat();
   const toast = useToast();
-  
+
   const addInputItem = () => {
     const tickers = tickerList?.map((item) => item.ticker) || [];
 
