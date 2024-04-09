@@ -26,7 +26,12 @@ import { useEffect, useState } from 'react';
 import { useMap } from 'react-use';
 import { Tooltip, message } from 'antd';
 import * as bitcoin from 'bitcoinjs-lib';
-import { calcNetworkFee, buildTransaction, hideStr } from '@/lib/utils';
+import {
+  calcNetworkFee,
+  buildTransaction,
+  signAndPushPsbt,
+  hideStr,
+} from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
 
@@ -142,12 +147,14 @@ export default function Transaction() {
       tickerList?.find((item) => item.ticker === ticker) || [];
     let utxos = selectTicker.utxos;
     if (inputList.items.length > 1) {
-      for (let i = 0; i < inputList.items.length - 1; i++) {
-        const inItem = inputList.items[i];
-        utxos = utxos.filter(
-          (utxo) => utxo.txid + ':' + utxo.vout !== inItem.value.utxo,
-        );
-      }
+      inputList.items.forEach((inItem, index) => {
+        if (index !== itemId - 1) {
+          utxos = utxos.filter(
+            (utxo) => utxo.txid + ':' + utxo.vout !== inItem.value.utxo,
+          );
+          utxos = [...new Set(utxos)];
+        }
+      });
     }
 
     // inputList.items[itemId - 1].options.utxos = selectTicker.utxos.map((utxo) => ({ txid: utxo.txid, vout: utxo.vout, value: utxo.value })) || inputList.items[itemId - 1].options.utxos.filter((utxo) => utxo.txid + ':' + utxo.vout !== inputList.items[itemId - 1].value.utxo) || [];
@@ -262,14 +269,6 @@ export default function Transaction() {
     setLoading(true);
 
     try {
-      const psbtNetwork =
-        network === 'testnet'
-          ? bitcoin.networks.testnet
-          : bitcoin.networks.bitcoin;
-      const psbt = new bitcoin.Psbt({
-        network: psbtNetwork,
-      });
-
       const inTotal = inputList.items.rerduce((acc, cur) => {
         return acc + cur.value.sats;
       }, 0);
@@ -333,14 +332,18 @@ export default function Transaction() {
       //     value: inTotal - outTotal - realityFee,
       //   })
       // }
-
-      const signed = await unisat.signPsbt(psbt.toHex());
-      const pushedTxId = await unisat.pushPsbt(signed);
-      const signedToPsbt = bitcoin.Psbt.fromHex(signed, {
-        network: psbtNetwork,
+      const psbt = await buildTransaction({
+        utxos,
+        outputs: outputList.items.map((v) => ({
+          address: v.value.address,
+          value: v.value.sats,
+        })),
+        feeRate: feeRate.value,
+        network,
+        address: currentAccount,
+        publicKey: currentPublicKey,
       });
-
-      const txHex = signedToPsbt.extractTransaction().toHex();
+      await signAndPushPsbt(psbt);
       setLoading(false);
       toast({
         title: 'Split & Send success',
@@ -447,8 +450,38 @@ export default function Transaction() {
   }, [feeRate]);
 
   useEffect(() => {
+    setTickerList([]);
+    setInputList('items', [
+      {
+        id: 1,
+        value: {
+          ticker: '',
+          utxo: '',
+          sats: 0,
+          unit: 'sats',
+        },
+        options: {
+          tickers: [],
+          utxos: [],
+        },
+      },
+    ]);
+    setBalance('sats', 0);
+    setBalance('unit', 'sats');
+
+    setFee(0);
+    setOutputList('items', [
+      {
+        id: 1,
+        value: {
+          sats: 0,
+          unit: 'sats',
+          address: '',
+        },
+      },
+    ]);
     getAllTickers();
-  }, []);
+  }, [currentAccount]);
 
   return (
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
@@ -651,7 +684,7 @@ export default function Transaction() {
                 <Flex key={Math.random()} whiteSpace={'nowrap'} gap={4} pt={2}>
                   <InputGroup w={'60%'}>
                     <InputLeftAddon>Current Address</InputLeftAddon>
-                    <Input size='md' value={currentAccount} />
+                    <Input size='md' value={currentAccount} readOnly />
                   </InputGroup>
 
                   <InputGroup w={'30%'}>

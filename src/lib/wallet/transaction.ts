@@ -269,14 +269,14 @@ export class Transaction {
     });
     const psbt = tx.toPsbt();
 
-    const toSignInputs = tx.inputs.map((v, index) => ({
+    const toSignInputs = tx.inputs.map((index) => ({
       index,
       publicKey: estimateWallet.pubkey,
     }));
 
     await estimateWallet.signPsbt(psbt, {
       autoFinalized: true,
-      toSignInputs: toSignInputs,
+      toSignInputs: toSignInputs as any[],
     });
     return psbt;
   }
