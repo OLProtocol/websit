@@ -8,12 +8,20 @@ import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import {
   hideStr,
+  calcNetworkFee,
   filterUtxosByValue,
   addressToScriptPublicKey,
 } from '@/lib/utils';
 import { useCommonStore } from '@/store';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
-import { Button, Card, CardBody, CardHeader, Tooltip, useToast } from '@chakra-ui/react';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Tooltip,
+  useToast,
+} from '@chakra-ui/react';
 
 interface AvailableUtxoListProps {
   address: string;
@@ -21,7 +29,12 @@ interface AvailableUtxoListProps {
   onTransfer?: () => void;
   onTotalChange?: (total: number) => void;
 }
-export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange }: AvailableUtxoListProps) => {
+export const AvailableUtxoList = ({
+  address,
+  onEmpty,
+  onTransfer,
+  onTotalChange,
+}: AvailableUtxoListProps) => {
   const { t } = useTranslation();
   const { network, currentAccount, currentPublicKey } = useUnisatConnect();
   const { feeRate } = useCommonStore((state) => state);
@@ -40,16 +53,17 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
   // });
   const toast = useToast();
   const [data, setData] = useState<any>();
-  
+
   const unisat = useUnisat();
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const signAndPushPsbt = async (inputs, outputs, network) => {
-    const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+    const psbtNetwork =
+      network === 'testnet'
+        ? bitcoin.networks.testnet
+        : bitcoin.networks.bitcoin;
     const psbt = new bitcoin.Psbt({
       network: psbtNetwork,
     });
@@ -137,6 +151,14 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
           value: thirdOutputValue,
         },
       ];
+      await calcNetworkFee({
+        utxos: avialableUtxo,
+        outputs,
+        feeRate: feeRate.value,
+        network,
+        address: currentAccount,
+        publicKey: currentPublicKey,
+      });
       console.log(inputs);
       console.log(outputs);
       await signAndPushPsbt(inputs, outputs, network);
@@ -186,7 +208,10 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
         message.error('余额不足');
         return;
       }
-      const { utxos: filterConsumUtxos } = filterUtxosByValue(consumUtxos, virtualFee);
+      const { utxos: filterConsumUtxos } = filterUtxosByValue(
+        consumUtxos,
+        virtualFee,
+      );
       const utxos: any[] = [firstUtxo, ...filterConsumUtxos];
       const btcUtxos = utxos.map((v) => {
         return {
@@ -210,9 +235,10 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
           },
         };
       });
-      const psbtNetwork = network === "testnet"
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+      const psbtNetwork =
+        network === 'testnet'
+          ? bitcoin.networks.testnet
+          : bitcoin.networks.bitcoin;
       const psbt = new bitcoin.Psbt({
         network: psbtNetwork,
       });
@@ -365,14 +391,16 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
         render: (record) => {
           return (
             <div className='flex gap-2 justify-center'>
-              <a className='text-blue-500 cursor-pointer mr-2'
+              <a
+                className='text-blue-500 cursor-pointer mr-2'
                 onClick={() => {
                   setSelectItem(record);
                   setIsModalOpen(true);
                 }}>
                 {t('buttons.send')}
               </a>
-              <a className='text-blue-500 cursor-pointer mr-2'
+              <a
+                className='text-blue-500 cursor-pointer mr-2'
                 onClick={() => {
                   splitHandler(record);
                 }}>
@@ -416,7 +444,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
         isClosable: true,
       });
       setLoading(false);
-      return
+      return;
     }
     setLoading(false);
     setData(resp);
@@ -445,7 +473,7 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
       } else {
         setData(cachedData);
       }
-      
+
       // 设置定时器每隔一定时间清除缓存数据
       const intervalId = setInterval(() => {
         cacheData('available_ordx_list_' + address, null);
@@ -458,12 +486,29 @@ export const AvailableUtxoList = ({ address, onEmpty, onTransfer, onTotalChange 
     <Card>
       <CardHeader className='text-center flex justify-between'>
         <Tooltip label='快速切割生成2个600UTXO'>
-          <Button bgColor={'white'} border='1px' borderColor='gray.400' size='sm' color='gray.600' onClick={fastClick}>快速切割</Button>
+          <Button
+            bgColor={'white'}
+            border='1px'
+            borderColor='gray.400'
+            size='sm'
+            color='gray.600'
+            onClick={fastClick}>
+            快速切割
+          </Button>
         </Tooltip>
-        <Button bgColor={'white'} border='1px' borderColor='gray.400' size='sm' color='gray.600' onClick={getAvailableUtxos}>{t('buttons.fresh')}</Button>
+        <Button
+          bgColor={'white'}
+          border='1px'
+          borderColor='gray.400'
+          size='sm'
+          color='gray.600'
+          onClick={getAvailableUtxos}>
+          {t('buttons.fresh')}
+        </Button>
       </CardHeader>
       <CardBody>
-        <Table bordered
+        <Table
+          bordered
           loading={loading}
           columns={columns}
           dataSource={dataSource}
