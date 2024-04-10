@@ -3,7 +3,8 @@ import { OrdXItem } from './OrdXItem';
 import { getSats, useOrdxSummary } from '@/api';
 import { useUnisatConnect } from '@/lib/hooks';
 import { useTranslation } from 'react-i18next';
-import { Wrap, WrapItem, useToast } from '@chakra-ui/react';
+import { Wrap, WrapItem } from '@chakra-ui/react';
+import { toast } from 'react-hot-toast';
 
 interface OrdxSummaryListProps {
   address: string;
@@ -22,7 +23,6 @@ export const OrdxAccountSummaryList = ({
   const { data, trigger } = useOrdxSummary({ address, network });
   const otherTickers = useMemo(() => data?.data?.detail || [], [data]);
   const [rareSatList, setRareSatList] = useState<any[]>();
-  const toast = useToast();
 
   const avialableTicker = useMemo(() => {
     return {
@@ -91,7 +91,9 @@ export const OrdxAccountSummaryList = ({
     let ticker = item.ticker
     if (item.ticker === t('pages.account.ord_nft')) {
       ticker = 'o';
+      toast(t('pages.account.toast_oridnals_support'))
     }
+    console.log('ticker:', ticker)
     setSelect(ticker);
     onChange?.(ticker);
   };
