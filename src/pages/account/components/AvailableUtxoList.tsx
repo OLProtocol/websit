@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { getUtxoByValue } from '@/api';
 import { CopyButton } from '@/components/CopyButton';
 import * as bitcoin from 'bitcoinjs-lib';
-import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import {
@@ -37,12 +38,12 @@ export const AvailableUtxoList = ({
   onTotalChange,
 }: AvailableUtxoListProps) => {
   const { t } = useTranslation();
-  const { network, currentAccount, currentPublicKey } = useUnisatConnect();
+  const { network, address: currentAccount, publicKey } = useReactWalletStore();
   const { feeRate } = useCommonStore((state) => state);
   const addressRef = useRef<any>();
   const publickkeyRef = useRef<any>();
   addressRef.current = currentAccount;
-  publickkeyRef.current = currentPublicKey;
+  publickkeyRef.current = publicKey;
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
   const [selectItem, setSelectItem] = useState<any>();
@@ -55,7 +56,6 @@ export const AvailableUtxoList = ({
   const toast = useToast();
   const [data, setData] = useState<any>();
 
-  const unisat = useUnisat();
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -95,7 +95,7 @@ export const AvailableUtxoList = ({
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey: publicKey,
       });
       await signAndPushPsbt(psbt);
       message.success('切割成功');
@@ -163,7 +163,7 @@ export const AvailableUtxoList = ({
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey: publicKey,
       });
       await signAndPushPsbt(psbt);
       message.success('发送成功');
@@ -211,13 +211,13 @@ export const AvailableUtxoList = ({
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey: publicKey,
       });
       await signAndPushPsbt(psbt);
       message.success('拆分成功');
       setLoading(false);
     },
-    [currentAccount, currentPublicKey, network],
+    [currentAccount, publicKey, network],
   );
 
   const columns: ColumnsType<any> = useMemo(() => {

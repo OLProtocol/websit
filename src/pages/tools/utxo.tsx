@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useToast, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, InputGroup, InputRightElement, IconButton, CardFooter, Button } from '@chakra-ui/react';
 import { getAssetByUtxo, getUtxoRanges } from '@/api';
 import { useNavigate } from 'react-router-dom';
-import { useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { UtxoAssetTable } from './components/UtxoAssetTable';
 import { setSatIcon } from '@/lib/utils/sat';
 import { Input } from 'antd';
@@ -22,7 +22,7 @@ export default function Utxo() {
   const [rareSatList, setRareSatList] = useState<any[]>();
 
   const [loading, setLoading] = useState(false);
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
 
   function handleKeyDown(event) {
     if (event.key === 'Enter') {

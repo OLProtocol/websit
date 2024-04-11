@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { OrdXItem } from './OrdXItem';
 import { useOrdxSummary } from '@/api';
-import { useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { on } from 'events';
 interface OrdxSummaryListProps {
   address: string;
@@ -13,7 +13,7 @@ export const OrdxSummaryList = ({
   onChange,
   onEmpty,
 }: OrdxSummaryListProps) => {
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
   const { data, trigger } = useOrdxSummary({ address, network });
   const [select, setSelect] = useState('');
   const list = useMemo(() => data?.data?.detail || [], [data]);

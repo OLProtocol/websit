@@ -1,7 +1,7 @@
 import { Outlet, useSearchParams } from 'react-router-dom';
 import { NavHeader } from '@/layout/NavHeader';
 import { Alert, Layout, Menu, theme } from 'antd';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 const { Header, Content, Footer, Sider } = Layout;
 import { useCommonStore } from './store';
 import { UpdateVersionModal } from './components/UpdateVersionModal';
@@ -9,7 +9,7 @@ import { useBtcHeight, getBlockStatus } from '@/api';
 import { useEffect } from 'react';
 
 export default function Root() {
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore((state) => state);
   const { data: heightData } = useBtcHeight(network as any);
 
   const { setHeight, setServiceStatus, setAppVersion } = useCommonStore(

@@ -1,29 +1,30 @@
 import { Button } from 'antd';
+import { sort } from 'radash';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import { txHelpers } from '@unisat/wallet-sdk';
-console.log(txHelpers);
 export default function Test() {
-  const findBetweenByValue = (userAmt: number, realAmt, ranges: any[]) => {
-    let outAmt = 0;
-    let outValue = 0;
-    let preTotalSize = 0;
-    for (let i = 0; i < ranges.length; i++) {
-      const range = ranges[i];
-      outValue += range.size;
-      if (userAmt > outValue) {
-        preTotalSize += range.size;
-      }
-      if (userAmt <= outValue) {
-        const dis = userAmt - preTotalSize;
-        outAmt = range.offset + dis;
+  const filterUtxosByValue = (utxos: any[], value, reverseStatus = true) => {
+    const sortUtxos = sort(utxos, u => u.value);
+    const _utxoList = structuredClone(sortUtxos);
+    if (reverseStatus) {
+      _utxoList.reverse();
+    }
+    const avialableUtxo: any[] = [];
+    let avialableValue = 0;
+    for (let i = 0; i < _utxoList.length; i++) {
+      const utxo = _utxoList[i];
+      avialableUtxo.push(utxo);
+      avialableValue += utxo.value;
+      if (avialableValue >= value) {
         break;
       }
     }
-    console.log(outAmt, realAmt);
-    if (outAmt < realAmt) {
-      outAmt += realAmt - outAmt;
-    }
-    return outAmt;
+    return {
+      minUtxo: sortUtxos[0],
+      maxUtxo: sortUtxos[sortUtxos.length - 1],
+      utxos: avialableUtxo,
+      total: avialableValue,
+    };
   };
 
   const { currentAccount, currentPublicKey } = useUnisatConnect();
@@ -47,24 +48,26 @@ export default function Test() {
   // };
 
   const testHandler = async () => {
-    const find = findBetweenByValue(100, 546, [
-      {
-        start: 999,
-        offset: 30,
-        size: 120,
-      },
-      {
-        start: 8888,
-        offset: 800,
-        size: 300,
-      },
-      {
-        start: 123123123,
-        offset: 1200,
-        size: 298,
-      },
-    ]);
-    console.log(find);
+    console.log(filterUtxosByValue(
+      [
+        {
+          txid: 123123123,
+          vout: 0,
+          value: 10000,
+        },
+        {
+          txid: 12123223,
+          vout: 0,
+          value: 100200,
+        },
+        {
+          txid: 22222222,
+          vout: 0,
+          value: 1100,
+        },
+      ],
+      600,
+    ));
     // const btcUtxos = await getBtcUtxos();
     // console.log(btcUtxos);
     // console.log(Buffer.from(btcUtxos[0].scriptPk, 'hex'));
@@ -90,8 +93,8 @@ export default function Test() {
     // });
     // console.log(inputs);
     // const psbtNetwork = network === "testnet"
-      // ? bitcoin.networks.testnet
-      // : bitcoin.networks.bitcoin;
+    // ? bitcoin.networks.testnet
+    // : bitcoin.networks.bitcoin;
     // const psbt = new bitcoin.Psbt({
     //   network: psbtNetwork,
     // });

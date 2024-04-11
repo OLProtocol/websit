@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { Card, Steps, Divider, Button, Tag, Progress } from 'antd';
 import { InscribeOrderItem } from './InscribeOrderItem';
-import { useUnisat, useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { pollGetTxStatus } from '@/api';
 import { BusButton } from '@/components/BusButton';
 import { useOrderStore, OrderItemType } from '@/store';
@@ -49,7 +49,7 @@ export const InscribingOrderModal = ({
     { title: t('pages.inscribe.pay.step_three.name') },
     { title: t('pages.inscribe.pay.step_four.name') },
   ];
-  const { currentAccount, currentPublicKey } = useUnisatConnect();
+  const { address: currentAccount, publicKey } = useReactWalletStore();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const {
@@ -61,8 +61,6 @@ export const InscribingOrderModal = ({
     setFunding,
   } = useOrderStore((state) => state);
 
-  const unisat = useUnisat();
-  const [payStatus, setPayStatus] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const order = useMemo(() => {
     return findOrder(orderId);
@@ -85,7 +83,7 @@ export const InscribingOrderModal = ({
             feeRate: feeRate,
             network: network,
             fromAddress: currentAccount,
-            fromPubKey: currentPublicKey,
+            fromPubKey: publicKey,
             ordxUtxo: order.ordxUtxo,
           });
         } else {
@@ -95,7 +93,7 @@ export const InscribingOrderModal = ({
             feeRate: feeRate,
             network: network,
             fromAddress: currentAccount,
-            fromPubKey: currentPublicKey,
+            fromPubKey: publicKey,
           });
         }
         const commitTx = {
@@ -133,7 +131,7 @@ export const InscribingOrderModal = ({
             feeRate: feeRate,
             network: network,
             fromAddress: currentAccount,
-            fromPubKey: currentPublicKey,
+            fromPubKey: publicKey,
           });
           funding = {
             txid: fundingTxid,

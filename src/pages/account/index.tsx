@@ -1,4 +1,4 @@
-import { useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
@@ -8,7 +8,7 @@ import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
 
 export default function Account() {
   const { t } = useTranslation();
-  const { network, currentAccount } = useUnisatConnect();
+  const { network, address: currentAccount } = useReactWalletStore();
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
   const [ticker, setTicker] = useState('');
   const onTotalChange = (total: number) => {

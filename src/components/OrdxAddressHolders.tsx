@@ -1,8 +1,7 @@
 import { Button, message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxAddressHolders, getUtxoByValue } from '@/api';
-import * as bitcoin from 'bitcoinjs-lib';
-import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useCommonStore } from '@/store';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +30,7 @@ export const OrdxAddressHolders = ({
   const { t } = useTranslation();
   const nav = useNavigate();
   const { feeRate } = useCommonStore((state) => state);
-  const { network, currentAccount, currentPublicKey } = useUnisatConnect();
+  const { network, address: currentAccount, publicKey } = useReactWalletStore();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
   const [selectItem, setSelectItem] = useState<any>();
@@ -48,7 +47,6 @@ export const OrdxAddressHolders = ({
     limit,
   });
 
-  const unisat = useUnisat();
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -93,7 +91,7 @@ export const OrdxAddressHolders = ({
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey: publicKey,
       });
       await signAndPushPsbt(psbt);
       message.success('发送成功');
@@ -176,7 +174,7 @@ export const OrdxAddressHolders = ({
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey: publicKey,
       });
       await signAndPushPsbt(psbt);
       message.success('拆分成功');

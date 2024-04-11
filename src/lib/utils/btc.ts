@@ -5,6 +5,7 @@ import {
   convertUtxosToBtcUtxos,
   convertBtcUtxosToInputs,
 } from './utxo';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 
 export const calcNetworkFee = async ({
   utxos,
@@ -76,7 +77,7 @@ export const buildTransaction = async ({
   console.log(btcUtxos);
   tx.setEnableRBF(true);
 
-  outputs.forEach((v) => {
+   outputs.forEach((v) => {
     tx.addOutput(v.address, v.value);
   });
   await tx.addSufficientUtxosForFee(btcUtxos, {
@@ -88,7 +89,11 @@ export const buildTransaction = async ({
 };
 
 export const signAndPushPsbt = async (psbt) => {
-  const signed = await window.unisat.signPsbt(psbt.toHex());
-  const pushedTxId = await window.unisat.pushPsbt(signed);
+  const { btcWallet } = useReactWalletStore.getState();
+  if (!btcWallet) {
+    throw new Error('No wallet connected');
+  }
+  const signed = await btcWallet.signPsbt(psbt.toHex());
+  const pushedTxId = await btcWallet.pushPsbt(signed);
   return pushedTxId;
 };

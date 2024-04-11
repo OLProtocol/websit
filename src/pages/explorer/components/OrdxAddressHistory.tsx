@@ -1,7 +1,8 @@
 import { Button, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxAddressHistory } from '@/api';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +16,7 @@ interface Ord2HistoryProps {
 export const OrdxAddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
   const { data, isLoading, trigger } = useOrdxAddressHistory({

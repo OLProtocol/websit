@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Button } from 'antd';
-import { useUnisatConnect,  } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useToast } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,25 +10,15 @@ interface BusButtonProps {
 export const BusButton = ({ children }: BusButtonProps) => {
   const { t } = useTranslation();
   const toast = useToast();
-  const { connectWallet, isConnected, switchNetwork, isUnisatInstalled } =
-    useUnisatConnect();
-  const connect = async () => {
-    if (!isUnisatInstalled) {
-      console.log('UniSat Wallet is installed!');
-      toast({
-        title: 'UniSat Wallet is installed!',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-    await connectWallet();
+  const { connect, connected  } =
+  useReactWalletStore( state => state);
+  const connectHanler = async () => {
+    await connect();
   };
 
   return (
     <>
-      {isConnected ? (
+      {connected ? (
         <>{children}</>
       ) : (
         <div className='flex justify-center'>
@@ -36,7 +26,7 @@ export const BusButton = ({ children }: BusButtonProps) => {
             size='large'
             type='primary'
             className='mx-auto'
-            onClick={connect}>
+            onClick={connectHanler}>
             {t('buttons.connect')}
           </Button>
         </div>
