@@ -237,7 +237,7 @@ export default function Transaction() {
       feeRate: feeRate.value,
       network,
       address: currentAccount,
-      publicKey: currentPublicKey,
+      publicKey,
     });
     setFee(fee);
     setBalance('sats', inTotal - outTotal - fee);
@@ -310,7 +310,7 @@ export default function Transaction() {
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey,
       });
       if (inTotal - outTotal - fee < 0) {
         setLoading(false);
@@ -338,7 +338,7 @@ export default function Transaction() {
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey,
       });
       await signAndPushPsbt(psbt);
       setLoading(false);
@@ -377,36 +377,40 @@ export default function Transaction() {
             value: item.value,
           };
 
-          if (
-            tickers.some(
-              (obj) =>
-                obj['ticker'] ===
-                t('pages.tools.transaction.rare_sats') +
-                  '-' +
-                  item.sats[0].type[0],
-            )
-          ) {
-            tickers = tickers.map((obj) => {
-              if (
-                obj['ticker'] ===
-                t('pages.tools.transaction.rare_sats') +
-                  '-' +
-                  item.sats[0].type[0]
-              ) {
-                return {
-                  ...obj,
-                  utxos: [...obj.utxos, utxo],
-                };
-              }
-            });
-          } else {
+          if (tickers.length === 0) {
             tickers.push({
-              ticker:
-                t('pages.tools.transaction.rare_sats') +
-                '-' +
-                item.sats[0].type[0],
+              ticker: t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0],
               utxos: [utxo],
             });
+          } else {
+            let utxoExist = false;
+            tickers.map((obj) => {
+              obj.utxos.map((tmp) => {
+                if (tmp === utxo.txid + ':' + utxo.vout) {
+                  utxoExist = true;// utxo already exists
+                  return;
+                }
+              })
+            })
+            if (!utxoExist) {// utxo does not exist
+              if (tickers.some((obj) => obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0])) { // the type of rare sat already exists
+                tickers = tickers.map((obj) => {
+                  if ( obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0]) {
+                    return {
+                      ticker: obj['ticker'],
+                      utxos: [...obj.utxos, utxo],
+                    };
+                  } else {
+                    return obj;
+                  }
+                });
+              } else {
+                tickers.push({
+                  ticker: t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0],
+                  utxos: [utxo],
+                });
+              }
+            }
           }
         }
       });
@@ -579,8 +583,8 @@ export default function Transaction() {
                   </Select>
                   <AntSelect
                     placeholder='Select UTXO'
-                    className='w-[40%]'
-                    value={inputList.items[i]?.value?.utxo}
+                    className='w-[40%]' style={{ height: '40px' }}
+                    value={inputList.items[i]?.value?.utxo ? inputList.items[i]?.value?.utxo: undefined}
                     options={
                       inputList.items[i]?.options?.utxos.map((utxo) => ({
                         label: (

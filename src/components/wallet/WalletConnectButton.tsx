@@ -1,5 +1,5 @@
 import type { MenuProps } from 'antd';
-import {useMemo} from 'react';
+import { useMemo } from 'react';
 import { Button, Popover, Space, Divider, Tag } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -12,13 +12,22 @@ import 'btc-connect/dist/style/index.css';
 import { hideStr } from '@/lib/utils';
 import { notification } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { tryit } from 'radash';
 import { useCommonStore } from '@/store';
 
 export const WalletConnectButton = () => {
   const { t } = useTranslation();
   const router = useNavigate();
-  const { connected, check, address, disconnect, balance, btcWallet, network, switchNetwork } =
-    useReactWalletStore((state) => state);
+  const {
+    connected,
+    check,
+    address,
+    disconnect,
+    balance,
+    btcWallet,
+    network,
+    switchNetwork,
+  } = useReactWalletStore((state) => state);
   const items: MenuProps['items'] = [
     {
       label: '1st menu item',
@@ -57,9 +66,7 @@ export const WalletConnectButton = () => {
     console.log('check', connected);
     check();
   }, []);
-  const onConnectSuccess = async (wallet: any) => {
-
-  };
+  const onConnectSuccess = async () => {};
   const onConnectError = (error: any) => {
     console.error('Connect Wallet Failed', error);
     notification.error({
@@ -72,25 +79,8 @@ export const WalletConnectButton = () => {
     await disconnect();
   };
   const accountAndNetworkChange = async () => {
-    // console.log('accountAndNetworkChange');
-    // console.log('connected', connected);
-    // try {
-    //   if (process.env.NEXT_PUBLIC_SIGNATURE_TEXT && connected) {
-    //     try {
-    //       const _s = await btcWallet?.signMessage(
-    //         process.env.NEXT_PUBLIC_SIGNATURE_TEXT,
-    //       );
-    //       if (_s) {
-    //         setSignature(_s);
-    //       }
-    //     } catch (error) {
-    //       await disconnect();
-    //     }
-    //   }
-    //   await check();
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    const [err] = await tryit(check)();
+    console.error(err);
   };
   useEffect(() => {
     console.log('connected', connected);
@@ -117,10 +107,9 @@ export const WalletConnectButton = () => {
       }}
       theme='light'
       onConnectSuccess={onConnectSuccess}
-      onConnectError={onConnectError}
-    >
+      onConnectError={onConnectError}>
       <>
-      <Popover
+        <Popover
           content={
             <div>
               <div className='flex justify-center items-center'>
@@ -138,17 +127,13 @@ export const WalletConnectButton = () => {
               </div>  */}
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
-                <Button
-                  type='primary'
-                  className='w-32'
-                  onClick={switchNetwork}>
+                <Button type='primary' className='w-32' onClick={switchNetwork}>
                   {t('buttons.switchNetwork')}
                 </Button>
               </div>
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
                 <Button type='primary' className='w-32' onClick={toHistory}>
-                  
                   {t('buttons.toHistory')}
                 </Button>
               </div>
