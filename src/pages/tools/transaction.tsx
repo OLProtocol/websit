@@ -36,7 +36,7 @@ import {
   buildTransaction,
   calcNetworkFee,
   signAndPushPsbt,
-} from '@/lib/utils/btc';
+} from '@/lib/wallet/btc';
 import { hideStr } from '@/lib/utils';
 
 export default function Transaction() {

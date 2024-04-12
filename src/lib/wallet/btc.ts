@@ -1,4 +1,4 @@
-import { Transaction, NetworkType } from '../wallet';
+import { Transaction, NetworkType } from '.';
 import { type Utxo, BtcUtxo, PsbtInput, PsbtOutput } from './utxo';
 import {
   converUtxosToInputs,
