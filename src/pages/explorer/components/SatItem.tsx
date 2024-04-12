@@ -1,14 +1,14 @@
 import { Tag } from 'antd';
 import { CopyButton } from '@/components/CopyButton';
 import { SplitSatButton } from './SplitSatButton';
-import { useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { setSatIcon } from '@/lib/utils/sat';
 import { hideStr } from '@/lib/utils';
 interface SatItemProps {
   sat: any;
 }
 export const SatItem = ({ sat }: SatItemProps) => {
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
 
   const txid = sat.id.replace(/:0$/m, '');
   const href =

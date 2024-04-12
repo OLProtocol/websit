@@ -458,7 +458,6 @@ export const inscribe = async ({
   const isValid = Signer.taproot.verify(txdata, 0, { pubkey, throws: true });
   console.log('isValid', isValid);
   console.log('Your txhex:', Tx.encode(txdata).hex);
-  // const result = await window.unisat.pushTx({ rawtx: Tx.encode(txdata).hex });
   const result = await pushBTCpmt(Tx.encode(txdata).hex, network);
   return result;
 };

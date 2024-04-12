@@ -6,7 +6,8 @@ import { getOrdxStatusList } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import {
@@ -28,7 +29,7 @@ export const Ord2FullList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { btcHeight } = useCommonStore((state) => state);
-  const { network, currentAccount } = useUnisatConnect();
+  const { network, address: currentAccount } = useReactWalletStore();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
 

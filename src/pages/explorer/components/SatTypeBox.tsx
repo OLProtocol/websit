@@ -1,5 +1,5 @@
 import { getSatTypes } from "@/api";
-import { useUnisatConnect } from "@/lib/hooks";
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Card, CardBody, CardHeader, Heading, Tooltip, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
@@ -8,7 +8,7 @@ export const SatTypeBox = () => {
   
   const toast = useToast();
   const [satTypeList, setSatTypeList] = useState<any[]>();
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
 
   const typeMap = {
     mythic: {

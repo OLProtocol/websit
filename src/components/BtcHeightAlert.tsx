@@ -2,11 +2,11 @@ import { Alert } from 'antd';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 
 const MessageText = () => {
   const { t } = useTranslation();
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore(state => state);
   const { btcHeight } = useCommonStore((state) => state);
   const href = useMemo(
     () =>

@@ -1,18 +1,16 @@
 import { Menu, Tag } from 'antd';
 import { UnisatConnectButton } from '@/components/UnisatConnectButton';
+import { WalletConnectButton } from '@/components/wallet/WalletConnectButton';
 import { FeerateSelectButton } from '@/components/FeerateSelectButton';
 import { LanguageSelect } from '@/components/LanguageSelect';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from '@/router';
 import { useTranslation } from 'react-i18next';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { Select } from '@chakra-ui/react';
 
 export const NavHeader = () => {
   const nav = useNavigate();
   const { t, i18n } = useTranslation();
   const routerLocation = useLocation();
-  const { network } = useUnisatConnect();
   const { pathname } = routerLocation;
   const items: any[] = [
     {
@@ -77,7 +75,7 @@ export const NavHeader = () => {
     const { value, type } = items.find((i) => i.key === key) || {};
     if (value) {
       if (type === 'link') {
-        var url = value
+        let url = value
         if (i18n.language == 'en') {
          url = "https://docs.ordx.space/v/en/"
         }
@@ -129,7 +127,8 @@ export const NavHeader = () => {
 
         <div className='flex justify-center h-full items-center gap-2'>
           <FeerateSelectButton />
-          <UnisatConnectButton />
+          {/* <UnisatConnectButton /> */}
+          <WalletConnectButton />
           <LanguageSelect />
         </div>
       </div>

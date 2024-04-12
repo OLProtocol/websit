@@ -1,5 +1,6 @@
 import { getUtxo, getUtxoByValue } from '@/api';
-import { useUnisat, useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+
 import { addressToScriptPublicKey, calculateRate } from '@/lib/utils';
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Grid, GridItem, Heading, Input, InputGroup, InputLeftAddon, InputRightAddon, Stack, useToast } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
@@ -16,19 +17,18 @@ export default function SplitSat() {
     const offset = Number(params.get('offset'));
 
     const [loading, setLoading] = useState(false);
-    const { network, currentAccount } = useUnisatConnect();
+    const { network, address: currentAccount, btcWallet } = useReactWalletStore();
     const [address, setAddress] = useState('');
     const toast = useToast();
     const [availableUtxos, setAvailableUtxos] = useState<any[]>();
     const [inputList, setInputList] = useState<any[]>() || [];
     const [outputList, setOutputList] = useState<any[]>() || [];
     const [utxoValue, setUtxoValue] = useState(0);
-    const unisat = useUnisat();
     const { feeRate } = useCommonStore((state) => state);
     const [ fee, setFee] = useState(0);
 
     const splitHandler = async () => {
-        if (!currentAccount) {
+        if (!currentAccount || !btcWallet) {
             return;
         }
         setLoading(true);
@@ -58,8 +58,8 @@ export default function SplitSat() {
                 })
             })
 
-            const signed = await unisat.signPsbt(psbt.toHex());
-            const pushedTxId = await unisat.pushPsbt(signed);
+            const signed = await btcWallet.signPsbt(psbt.toHex());
+            const pushedTxId = await btcWallet.pushPsbt(signed);
             const signedToPsbt = bitcoin.Psbt.fromHex(signed, {
                 network: psbtNetwork,
             });

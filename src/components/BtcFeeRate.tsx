@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { useState, useMemo, useEffect } from 'react';
 import { BtcFeeRateItem } from './BtcFeeRateItem';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useBtcFeeRate } from '@/api';
 import { useTranslation } from 'react-i18next';
 
@@ -29,7 +29,7 @@ export const BtcFeeRate = ({ onChange, feeRateData }: BtcFeeRate) => {
   const [normalValue, setNormalValue] = useState(1);
   const [minFee, setMinFee] = useState(1);
   const [maxFee, setMaxFee] = useState(500);
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore(state => state);
   const clickHandler = (_type: string, value: number) => {
     if (type === _type) {
       return;

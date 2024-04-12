@@ -23,7 +23,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip, Upload, Modal, Table } from 'antd';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Checkbox } from 'antd';
 import { BusButton } from '@/components/BusButton';
 import { useEffect, useMemo, useState } from 'react';
@@ -56,11 +56,10 @@ export const InscribeOrdx = ({
   onChange,
   onUtxoChange,
 }: InscribeOrdxProps) => {
-  const { currentAccount } = useUnisatConnect();
+  const { address: currentAccount, network } = useReactWalletStore();
   const { btcHeight } = useCommonStore((state) => state);
   const { t } = useTranslation();
   const { state } = useLocation();
-  const { network } = useUnisatConnect();
   const [time, setTime] = useState({ start: undefined, end: undefined } as any);
   const [data, { set }] = useMap({
     type: 'mint',
@@ -166,7 +165,7 @@ export const InscribeOrdx = ({
       if (!checkStatus) {
         return;
       }
-      
+
       setTickChecked(true);
     } else {
       onNext?.();

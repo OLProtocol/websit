@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Address, Signer, Tap, Tx, Script } from '@cmdcode/tapscript';
 import { keys } from '@cmdcode/crypto-utils';
 import { getFundingAddress } from '@/pages/inscribe/utils';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { pollPushBTCpmt, pushBTCpmt } from '@/api';
 
 export default function Extract() {
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
   const [txid, setTxid] = useState('');
   const [secret, setSecret] = useState('');
   const [toAddress, setToAddress] = useState('');

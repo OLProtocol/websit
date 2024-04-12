@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, useToast, Card, CardHeader, CardBody, Tabs, Tab, TabList, TabPanels, TabPanel } from '@chakra-ui/react';
 import { getSplittedSats } from '@/api';
 import { useNavigate } from 'react-router-dom';
-import { useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Input } from 'antd';
 
 const { Search } = Input;
@@ -15,7 +15,7 @@ export default function SplittedInscription() {
   const [ticker, setTicker] = useState('');
   const [inscriptionList, setInscriptionList] = useState<any[]>();
   const [loading, setLoading] = useState(false);
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
 
   function handleKeyDown(event) {
     if (event.key === 'Enter') {

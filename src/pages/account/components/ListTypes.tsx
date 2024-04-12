@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxSummary } from '@/api';
 import { ListTypeItem } from './ListTypeItem';
-import { useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+
 
 interface ListTypesProps {
   onChange?: (tick: string) => void;
@@ -11,8 +12,8 @@ export const ListTypes = ({
   onChange,
   onEmpty,
 }: ListTypesProps) => {
-  const { network, currentAccount } = useUnisatConnect();
-  const { data, trigger } = useOrdxSummary({ address: currentAccount, network });
+  const { network, address } = useReactWalletStore();
+  const { data, trigger } = useOrdxSummary({ address: address, network });
   const [select, setSelect] = useState('');
   const list = useMemo(() => data?.data?.detail || [], [data]);
   const onClick = (item) => {
@@ -28,10 +29,10 @@ export const ListTypes = ({
     onEmpty?.(list.length === 0);
   }, [list]);
   useEffect(() => {
-    if (currentAccount) {
+    if (address) {
       trigger();
     }
-  }, [currentAccount, network]);
+  }, [address, network]);
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.map((item) => (

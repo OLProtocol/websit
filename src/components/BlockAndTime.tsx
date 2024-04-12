@@ -1,10 +1,11 @@
-import { calcTimeBetweenBlocks } from '@/lib/utils';
 import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useCommonStore } from '@/store';
 import { useEffect, useState } from 'react';
 
 export const BlockAndTime = ({ startBlock, endBlock }: any) => {
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore((state) => state);
   const [time, setTime] = useState({ start: undefined, end: undefined } as any);
   const { btcHeight } = useCommonStore((state) => state);
   useEffect(() => {

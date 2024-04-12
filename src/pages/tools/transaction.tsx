@@ -4,7 +4,7 @@ import {
   getOrdxAddressHolders,
   getSats,
 } from '@/api';
-import { useUnisat, useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -35,7 +35,7 @@ import {
   buildTransaction,
   calcNetworkFee,
   signAndPushPsbt,
-} from '@/lib/utils/btc';
+} from '@/lib/wallet/btc';
 import { hideStr } from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
 
@@ -88,11 +88,10 @@ export default function Transaction () {
     unit: 'sats',
   });
 
-  const { currentAccount, network, currentPublicKey } = useUnisatConnect();
+  const { address: currentAccount, network, publicKey } = useReactWalletStore();
   const [tickerList, setTickerList] = useState<any[]>();
   const [loading, setLoading] = useState(false);
   const [messageApi] = message.useMessage();
-  const unisat = useUnisat();
   const toast = useToast();
 
   const addInputItem = () => {
@@ -246,7 +245,7 @@ export default function Transaction () {
       feeRate: feeRate.value,
       network,
       address: currentAccount,
-      publicKey: currentPublicKey,
+      publicKey,
     });
     setFee(fee);
     setBalance('sats', inTotal - outTotal - fee);
@@ -319,7 +318,7 @@ export default function Transaction () {
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey,
       });
       if (inTotal - outTotal - fee < 0) {
         setLoading(false);
@@ -347,7 +346,7 @@ export default function Transaction () {
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey,
       });
       await signAndPushPsbt(psbt);
       setLoading(false);
