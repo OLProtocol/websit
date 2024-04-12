@@ -378,7 +378,17 @@ export default function Transaction () {
 
     if (data.code === 0) {
       data.data.map((item) => {
-        if (item.hasRareStats) {
+        let hasRareStats = false;
+        if (item.sats && item.sats.length > 0) {
+          item.sats.map((sat) => {
+            if (sat.satributes && sat.satributes.length > 0) {
+              hasRareStats = true;
+              return;
+            }
+          })
+        }
+        
+        if (hasRareStats) {
           const utxo = {
             txid: item.utxo.split(':')[0],
             vout: Number(item.utxo.split(':')[1]),
