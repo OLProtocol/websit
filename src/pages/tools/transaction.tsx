@@ -23,7 +23,6 @@ import {
   InputGroup,
   InputLeftAddon,
   InputRightAddon,
-  Select,
   Stack,
   useToast,
 } from '@chakra-ui/react';
@@ -38,8 +37,17 @@ import {
   signAndPushPsbt,
 } from '@/lib/wallet/btc';
 import { hideStr } from '@/lib/utils';
+import { useLocation } from 'react-router-dom';
 
-export default function Transaction() {
+export default function Transaction () {
+  
+  const location = useLocation();
+  const initInputList = location.state?.initInputList;
+  const initOutputList = location.state?.initOutputList;
+  console.log("initInputList = ", initInputList);
+  console.log("initOutputList = ", initOutputList);
+
+
   const { t } = useTranslation();
   const { feeRate } = useCommonStore((state) => state);
   const [fee, setFee] = useState(0);
@@ -372,14 +380,14 @@ export default function Transaction() {
       data.data.map((item) => {
         if (item.hasRareStats) {
           const utxo = {
-            txid: item.id.split(':')[0],
-            vout: Number(item.id.split(':')[1]),
+            txid: item.utxo.split(':')[0],
+            vout: Number(item.utxo.split(':')[1]),
             value: item.value,
           };
 
           if (tickers.length === 0) {
             tickers.push({
-              ticker: t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0],
+              ticker: t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0],
               utxos: [utxo],
             });
           } else {
@@ -393,9 +401,9 @@ export default function Transaction() {
               })
             })
             if (!utxoExist) {// utxo does not exist
-              if (tickers.some((obj) => obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0])) { // the type of rare sat already exists
+              if (tickers.some((obj) => obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0])) { // the type of rare sat already exists
                 tickers = tickers.map((obj) => {
-                  if ( obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0]) {
+                  if ( obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0]) {
                     return {
                       ticker: obj['ticker'],
                       utxos: [...obj.utxos, utxo],
@@ -406,7 +414,7 @@ export default function Transaction() {
                 });
               } else {
                 tickers.push({
-                  ticker: t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].type[0],
+                  ticker: t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0],
                   utxos: [utxo],
                 });
               }
@@ -422,19 +430,8 @@ export default function Transaction() {
   const getAvialableTicker = async () => {
     let data = await getUtxoByValue({
       address: currentAccount,
-      value: 600,
-      network,
-    });
-
-    if (data.code !== 0) {
-      setLoading(false);
-      messageApi.error(data.msg);
-      return;
-    }
-
-    data = await getUtxoByValue({
-      address: currentAccount,
-      value: 600,
+      // value: 600,
+      value: 0,
       network,
     });
     if (data.code !== 0) {
@@ -548,39 +545,37 @@ export default function Transaction() {
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
       <Card>
         <CardHeader>
-          <Heading size='md'>拆分&发送</Heading>
+          <Heading size='md'>{t('pages.tools.transaction.title')}</Heading>
         </CardHeader>
         <Divider borderColor={'teal.500'} />
         <CardBody>
           <Stack>
             <Flex>
               <Heading flex={8} as='h6' size='sm'>
-                Input
+              {t('pages.tools.transaction.input')}
               </Heading>
             </Flex>
             <FormControl>
               {inputList.items.map((item, i) => (
                 <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
-                  <Select
+                  <AntSelect
                     placeholder='Select Ticker'
-                    w={'20%'}
+                    className={'w-[20%]'} style={{ height: '40px' }}
+                    value={item.value?.ticker ? item.value?.ticker : undefined}
+                    options={
+                      tickerList?.map((utxo) => ({
+                        label: (
+                          <div>
+                            { utxo.ticker }
+                          </div>
+                        ),
+                        value: utxo.ticker,
+                      })) || []
+                    }
                     onChange={(e) =>
-                      handleTickerSelectChange(item.id, e.target.value)
+                      handleTickerSelectChange(item.id, e)
                     }>
-                    {tickerList !== undefined &&
-                      tickerList.map((utxo) => (
-                        <option
-                          key={utxo.ticker + '-' + item.id}
-                          value={
-                            item.value.ticker !== '' &&
-                            item.value.ticker === utxo.ticker
-                              ? item.value.ticker
-                              : utxo.ticker
-                          }>
-                          {utxo.ticker}
-                        </option>
-                      ))}
-                  </Select>
+                  </AntSelect>
                   <AntSelect
                     placeholder='Select UTXO'
                     className='w-[40%]' style={{ height: '40px' }}
@@ -590,9 +585,7 @@ export default function Transaction() {
                         label: (
                           <div>
                             {utxo.assetamount && utxo.assetamount + ' Asset/'}
-                            {utxo.value +
-                              ' sats - ' +
-                              hideStr(utxo.txid + ':' + utxo.vout)}
+                            {utxo.value + ' sats - ' + hideStr(utxo.txid + ':' + utxo.vout)}
                           </div>
                         ),
                         value: utxo.txid + ':' + utxo.vout,
@@ -617,15 +610,16 @@ export default function Transaction() {
                       readOnly
                     />
                     {/* <InputRightAddon>sat</InputRightAddon> */}
-                    <Select
+                    <AntSelect
                       variant='filled'
-                      w={'30%'}
+                      className={'w-[30%]'} style={{ height: '40px' }}
+                      value={item.value.unit}
+                      defaultValue='sats'
+                      options={[{ label: 'sats', value: 'sats' }, { label: 'btc', value: 'btc' }]}
                       onChange={(e) =>
-                        handleInputUnitSelectChange(item.id, e.target.value)
+                        handleInputUnitSelectChange(item.id, e)
                       }>
-                      <option value='sats'>sats</option>
-                      <option value='btc'>btc</option>
-                    </Select>
+                    </AntSelect>
                   </InputGroup>
 
                   <ButtonGroup w={'10%'} gap='1'>
@@ -658,7 +652,7 @@ export default function Transaction() {
           <Stack>
             <Flex>
               <Heading flex={8} as='h6' size='sm'>
-                Output
+              {t('pages.tools.transaction.output')}
               </Heading>
             </Flex>
             <FormControl>
@@ -671,8 +665,7 @@ export default function Transaction() {
                       value={item.value.address}
                       onChange={(e) => setBtcAddress(item.id, e.target.value)}
                     />
-                    <InputRightAddon
-                      onClick={() => setBtcAddress(item.id, currentAccount)}>
+                    <InputRightAddon onClick={() => setBtcAddress(item.id, currentAccount)}>
                       <Tooltip title='Fill the BTC address of the current account'>
                         <AddIcon color='gray.300' />
                       </Tooltip>
@@ -693,15 +686,18 @@ export default function Transaction() {
                       onChange={(e) => setOutputSats(item.id, e.target.value)}
                       onBlur={(e) => outputSatsOnBlur(e)}
                     />
-                    <Select
+                    <AntSelect
                       variant='filled'
-                      w={'30%'}
+                      className={'w-[30%]'} style={{ height: '40px' }}
+                      value={item.value.unit}
+                      defaultValue='sats'
+                      options={[{ label: 'sats', value: 'sats' }, { label: 'btc', value: 'btc' }]}
                       onChange={(e) =>
-                        handleOutputUnitSelectChange(item.id, e.target.value)
+                        handleOutputUnitSelectChange(item.id, e)
                       }>
                       <option value='sats'>sats</option>
                       <option value='btc'>btc</option>
-                    </Select>
+                    </AntSelect>
                   </InputGroup>
 
                   <ButtonGroup gap='1' w={'10%'}>
@@ -734,7 +730,7 @@ export default function Transaction() {
           <Stack>
             <Flex>
               <Heading flex={8} as='h6' size='sm'>
-                余额
+              {t('pages.tools.transaction.balance')}
               </Heading>
             </Flex>
             <FormControl>
@@ -763,15 +759,18 @@ export default function Transaction() {
                       }
                       readOnly
                     />
-                    <Select
+                    <AntSelect
                       variant='filled'
-                      w={'30%'}
+                      className={'w-[30%]'} style={{ height: '40px' }}
+                      value={balance.unit}
+                      defaultValue='sats'
+                      options={[{ label: 'sats', value: 'sats' }, { label: 'btc', value: 'btc' }]}
                       onChange={(e) =>
-                        handleBalanceUnitSelectChange(e.target.value)
+                        handleBalanceUnitSelectChange(e)
                       }>
                       <option value='sats'>sats</option>
                       <option value='btc'>btc</option>
-                    </Select>
+                    </AntSelect>
                   </InputGroup>
                   <ButtonGroup gap='1' w={'10%'}>
                     {/* 占位 */}

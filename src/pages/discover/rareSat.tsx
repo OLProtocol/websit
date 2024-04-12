@@ -27,7 +27,6 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   const { t } = useTranslation();
   const [address, setAddress] = useState('');
   const [allSatList, setAllSatList] = useState<any[]>();
-  // const [rareSatList, setRareSatList] = useState<any[]>();
   const [satList, setSatList] = useState<any[]>();
   const [satFilterList, setSatFilterList] = useState<any[]>();
   const { network, address: currentAccount } = useReactWalletStore();
@@ -38,11 +37,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   if (satList) {
     const uniqueTypeSet = new Set<string>();
     satList.forEach((item) =>
-      item.type.forEach((satType) =>
-        satType === 'first_transaction'
-          ? uniqueTypeSet.add('1st TX')
-          : uniqueTypeSet.add(satType),
-      ),
+      item.satributes.forEach((satType) => satType === 'first_transaction' ? uniqueTypeSet.add('1st TX') :uniqueTypeSet.add(satType)),
     );
     uniqueTypes = Array.from(uniqueTypeSet);
     if (uniqueTypes.length > 0) {
@@ -58,7 +53,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       setSatFilterList([]);
     } else {
       if (satList !== undefined) {
-        setSatFilterList(satList.filter((item) => item.type.includes(satType)));
+        setSatFilterList(satList.filter((item) => item.satributes.includes(satType)));
       }
     }
   }
@@ -95,11 +90,10 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     for (let i = 0; i < data.data.length; i++) {
       if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
         data.data[i].sats.forEach((item) => {
-          item.id = data.data[i].id;
+          item.id = data.data[i].utxo;
           item.value = data.data[i].value;
           tmpSats.push(item);
-        });
-        // tmpSats.push(...data.data[i].sats);
+        })
       }
     }
     tmpSats.sort(
@@ -109,27 +103,25 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     cacheData('all_sat_list_' + address, tmpSats);
 
     tmpSats.forEach((item) => {
-      if (item.type.length === 1) {
-        const satType = item.type[0];
-        if (
-          satType !== 'uncommon' &&
-          satType !== 'rare' &&
-          satType !== 'epic' &&
-          satType !== 'legendary' &&
-          satType !== 'mythic'
-        ) {
-          return item;
+      if (item.satributes.length === 1) {
+        const satType = item.satributes[0];
+        if (satType !== 'uncommon' 
+          && satType !== 'rare' 
+          && satType !== 'epic' 
+          && satType !== 'legendary' 
+          && satType !== 'mythic') {
+            return item;
         }
       } else {
         return item;
       }
     });
     // tmpSats = tmpSats
-    //   .filter((item) => !item.type.includes('uncommon') && item.type.length > 1)
-    //   .filter((item) => !item.type.includes('rare'))
-    //   .filter((item) => !item.type.includes('epic'))
-    //   .filter((item) => !item.type.includes('legendary'))
-    //   .filter((item) => !item.type.includes('mythic'));
+    //   .filter((item) => !item.satributes.includes('uncommon') && item.satributes.length > 1)
+    //   .filter((item) => !item.satributes.includes('rare'))
+    //   .filter((item) => !item.satributes.includes('epic'))
+    //   .filter((item) => !item.satributes.includes('legendary'))
+    //   .filter((item) => !item.satributes.includes('mythic'));
     setSatList(tmpSats);
     setLoading(false);
   };
@@ -142,7 +134,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     sats.forEach((sat) => {
       if (satType === 'all') {
         total += sat.size;
-      } else if (sat.type.includes(satType)) {
+      } else if (sat.satributes.includes(satType)) {
         total += sat.size;
       }
     });

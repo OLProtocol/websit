@@ -70,7 +70,7 @@ export const OrdxAccountSummaryList = ({
       for (let i = 0; i < data.data.length; i++) {
         if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
           data.data[i].sats.forEach((item) => {
-            item.id = data.data[i].id;
+            // item.id = data.data[i].utxo;
             tmpSats.push(item);
           });
         }

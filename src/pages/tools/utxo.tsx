@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, InputGroup, InputRightElement, IconButton, CardFooter, Button } from '@chakra-ui/react';
-import { getAssetByUtxo, getUtxoRanges } from '@/api';
+import { getAssetByUtxo, getSatsByUtxo } from '@/api';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { UtxoAssetTable } from './components/UtxoAssetTable';
@@ -47,9 +47,8 @@ export default function Utxo() {
   const getSats = async () => {
     setLoading(true);
     setSatList([]);
-    const data = await getUtxoRanges({
-      utxos: [utxo],
-      excludeCommonRanges: false,
+    const data = await getSatsByUtxo({
+      utxo: utxo,
       network,
     });
 
@@ -73,37 +72,42 @@ export default function Utxo() {
       });
       return
     }
-    let tmpSize: number = 0;
+    let tmpSatSize: number = 0;
     let tmpSatList: any[] = [];
-    if (data.data.ranges !== null && data.data.ranges.length > 0) {
-      data.data.ranges.map((item) => {
-        tmpSatList.push({
+    let tmpRareSatSize = 0
+    let tmpRareSatList: any[] = [];
+    if (data.data !== null && data.data.length > 0) {
+      data.data.map((item) => {
+        const sat = {
           start: item.start,
-          end: item.end,
+          end: item.start + item.size - 1,
           size: item.size,
-          type: item.satributes,
-        })
-        tmpSize += item.size;
+          satributes: item.satributes,
+        }
+        if (item.satributes && item.satributes.length > 0) {
+          tmpRareSatList.push(sat)
+          tmpRareSatSize += sat.size;
+        }
+        tmpSatList.push(sat)
+          tmpSatSize += sat.size;
       })
     }
     setSatList(tmpSatList);
-    setSatSize('(total: ' + tmpSize + ')')
+    setSatSize('(total: ' + tmpSatSize + ')')
 
-    tmpSize = 0;
-    let tmpRareSatList: any[] = [];
-    if (data.data.exoticRanges !== null && data.data.exoticRanges.length > 0) {
-      data.data.exoticRanges.map((item) => {
-        tmpRareSatList.push({
-          start: item.start,
-          end: item.end,
-          size: item.size,
-          type: item.satributes,
-        })
-        tmpSize += item.size;
-      })
-    }
+    // if (data.data.exoticRanges !== null && data.data.exoticRanges.length > 0) {
+    //   data.data.exoticRanges.map((item) => {
+    //     tmpRareSatList.push({
+    //       start: item.start,
+    //       end: item.end,
+    //       size: item.size,
+    //       satributes: item.satributes,
+    //     })
+    //     tmpSize += item.size;
+    //   })
+    // }
     setRareSatList(tmpRareSatList);
-    setRareSatSize('(total: ' + tmpSize + ')')
+    setRareSatSize('(total: ' + tmpRareSatSize + ')')
 
     setLoading(false);
   };
@@ -205,7 +209,7 @@ export default function Utxo() {
                           <Box as='text' borderRadius='md' bg='white' color='teal' px={4} h={8} mt={2}>
                             {item.size > 1 ? item.start + '-' + item.end + '(' + item.size + ' sats)' : item.start}
                           </Box>
-                          {item.type.map((t, _) => (
+                          {item.satributes.map((t, _) => (
                             <Tooltip label={t}>
                               <Image src={setSatIcon(t)} className='w-6 h-6' mt={2} mr={2} />
                             </Tooltip>

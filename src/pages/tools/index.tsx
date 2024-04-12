@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, message } from 'antd';
+import { Card } from 'antd';
 import { ROUTE_PATH } from '@/router';
 
 export default function InscribeCheck() {
@@ -16,7 +16,7 @@ export default function InscribeCheck() {
   }
 
   const toTransact = () => {
-    nav(ROUTE_PATH.TOOLS_TRANSACT);
+    nav(ROUTE_PATH.TOOLS_TRANSACT, { state: { initInputList: [], initOutputList: [] } });
   }
   
   return (
