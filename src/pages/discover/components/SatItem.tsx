@@ -56,7 +56,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
         {/* {sat.canSplit && ['ordx.space'].every((v) => location.hostname !== v) && (
           // <SplitSatButton sat={sat} tooltip='Split Sat'/>
         )} */}
-        {/* <SplitSatButton sat={sat} tooltip='Split Sat'/> */}
+        <SplitSatButton sat={sat} tooltip='Split Sat'/>
       </div>
     </div>
   );
