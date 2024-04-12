@@ -130,11 +130,11 @@ export default function Ord2Info() {
               <div className='mb-2'>
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>
-                  <img
+                  <iframe
                     src={`https://${
                       network === 'testnet' ? 'testnet.' : ''
                     }ordinals.com/content/${detail?.inscriptionId}`}
-                    className='max-w-full w-80 h-80'></img>
+                    className='max-w-full w-80 h-80'></iframe>
                 </div>
               </div>
             )}
