@@ -253,6 +253,8 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           'OP_0',
           'OP_IF',
           ec.encode('ord'),
+          '01',
+          mimetype,
           '02',
           createLittleEndianInteger(offset),
           '07',
@@ -261,6 +263,8 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           metaData,
           '0B',
           detaConent,
+          'OP_0',
+          content,
           'OP_ENDIF',
         ];
       } else {
@@ -270,12 +274,16 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           'OP_0',
           'OP_IF',
           ec.encode('ord'),
+          '01',
+          mimetype,
           '07',
           ec.encode('ordx'),
           '05',
           metaData,
           '0B',
           detaConent,
+          'OP_0',
+          content,
           'OP_ENDIF',
         ];
       }
