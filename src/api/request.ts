@@ -116,13 +116,6 @@ export const getUtxoByValue = async ({
   value = 600,
   network,
 }: any) => {
-  // const { data } = await axios.post(
-  //   generateUrl(`utxo/getUtxoByValue`, network),
-  //   {
-  //     address,
-  //     Value: value,
-  //   },
-  // );
   const { data } = await axios.get(
     generateUrl(
       `utxo/address/${address}/${value}`,

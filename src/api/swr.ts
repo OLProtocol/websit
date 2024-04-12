@@ -121,19 +121,7 @@ export const useOrdxAddressHolders = ({
     isLoading: isMutating,
   };
 };
-// export const useUtxoByValue = ({ address, network, value }: any) => {
-//   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-//     `ordx-utxo-${address}-${value}-${network}`,
-//     () => request.getUtxoByValue({ address, network, value }),
-//   );
-//   return {
-//     data,
-//     trigger,
-//     reset,
-//     error,
-//     isLoading: isMutating,
-//   };
-// };
+
 export const useSatTypes = ({ network }: any) => {
   const { data, error, isLoading } = useSWR(
     `ordx-utxo-satstype-${network}`,
