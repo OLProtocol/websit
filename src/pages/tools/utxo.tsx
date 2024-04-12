@@ -84,17 +84,12 @@ export default function Utxo() {
           size: item.size,
           satributes: item.satributes,
         }
-        if (item.satributes.includes('uncommon') 
-          || item.satributes.includes('rare')
-          || item.satributes.includes('epic')
-          || item.satributes.includes('legendary')
-          || item.satributes.includes('mythic')) {
+        if (item.satributes && item.satributes.length > 0) {
           tmpRareSatList.push(sat)
           tmpRareSatSize += sat.size;
-        } else {
-          tmpSatList.push(sat)
-          tmpSatSize += sat.size;
         }
+        tmpSatList.push(sat)
+          tmpSatSize += sat.size;
       })
     }
     setSatList(tmpSatList);
