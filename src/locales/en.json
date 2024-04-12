@@ -255,8 +255,12 @@
         "card_header_sat": "Sats"
       },
       "transaction": {
+        "title": "Split & Send",
         "available_utxo": "Plain UTXO",
-        "rare_sats": "Rare Sats"
+        "rare_sats": "Rare Sats",
+        "balance": "Balance",
+        "input": "Input",
+        "output": "Output"
       }
     },
    
