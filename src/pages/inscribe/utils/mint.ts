@@ -555,7 +555,8 @@ export const sendBTC = async ({
   console.log('hasOrdxUtxo', hasOrdxUtxo);
   const data = await getUtxoByValue({
     address: fromAddress,
-    value: 600,
+    // value: 600,
+    value: 0,
     network,
   });
   const consumUtxos = data?.data || [];

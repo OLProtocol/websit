@@ -431,19 +431,8 @@ export default function Transaction () {
   const getAvialableTicker = async () => {
     let data = await getUtxoByValue({
       address: currentAccount,
-      value: 600,
-      network,
-    });
-
-    if (data.code !== 0) {
-      setLoading(false);
-      messageApi.error(data.msg);
-      return;
-    }
-
-    data = await getUtxoByValue({
-      address: currentAccount,
-      value: 600,
+      // value: 600,
+      value: 0,
       network,
     });
     if (data.code !== 0) {

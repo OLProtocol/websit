@@ -66,7 +66,8 @@ export const OrdxAddressHolders = ({
       };
       const data = await getUtxoByValue({
         address: currentAccount,
-        value: 600,
+        // value: 600,
+        value: 0,
         network,
       });
       const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
@@ -137,7 +138,8 @@ export const OrdxAddressHolders = ({
       }
       const data = await getUtxoByValue({
         address: currentAccount,
-        value: 500,
+        // value: 500,
+        value: 0,
         network,
       });
       const consumUtxos = data?.data || [];

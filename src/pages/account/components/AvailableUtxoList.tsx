@@ -134,7 +134,8 @@ export const AvailableUtxoList = ({
       };
       const data = await getUtxoByValue({
         address: currentAccount,
-        value: 600,
+        // value: 600,
+        value: 0,
         network,
       });
       const virtualFee = (148 * 4 + 34 * 3 + 10) * feeRate.value;
@@ -303,7 +304,8 @@ export const AvailableUtxoList = ({
     const resp = await getUtxoByValue({
       address,
       network,
-      value: 10,
+      // value: 10,
+      value: 0,
     });
     if (resp.code !== 0) {
       toast({
