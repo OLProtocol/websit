@@ -1,4 +1,3 @@
-import { useUnisatConnect } from '@/lib/hooks/unisat';
 import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useCommonStore } from '@/store';

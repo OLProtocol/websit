@@ -44,9 +44,6 @@ export default function Transaction () {
   const location = useLocation();
   const initInputList = location.state?.initInputList;
   const initOutputList = location.state?.initOutputList;
-  console.log("initInputList = ", initInputList);
-  console.log("initOutputList = ", initOutputList);
-
 
   const { t } = useTranslation();
   const { feeRate } = useCommonStore((state) => state);
@@ -71,16 +68,7 @@ export default function Transaction () {
   });
 
   const [outputList, { set: setOutputList }] = useMap<any>({
-    items: [
-      {
-        id: 1,
-        value: {
-          sats: 0,
-          unit: 'sats',
-          address: '',
-        },
-      },
-    ],
+    items: []
   });
 
   const [balance, { set: setBalance }] = useMap<any>({
@@ -378,7 +366,17 @@ export default function Transaction () {
 
     if (data.code === 0) {
       data.data.map((item) => {
-        if (item.hasRareStats) {
+        let hasRareStats = false;
+        if (item.sats && item.sats.length > 0) {
+          item.sats.map((sat) => {
+            if (sat.satributes && sat.satributes.length > 0) {
+              hasRareStats = true;
+              return;
+            }
+          })
+        }
+
+        if (hasRareStats) {
           const utxo = {
             txid: item.utxo.split(':')[0],
             vout: Number(item.utxo.split(':')[1]),
@@ -540,6 +538,72 @@ export default function Transaction () {
     ]);
     getAllTickers();
   }, [currentAccount]);
+
+  useEffect(() => {
+    let outputItems: any[] = [];
+    if (initOutputList && initOutputList.length > 0) {
+      if (initOutputList[0].address === currentAccount) {
+        initOutputList.map((item) => {
+          const newItem = {
+            id: outputItems.length+1,
+            value: {
+              sats: item.sats,
+              unit: 'sats',
+              address: item.address,
+            },
+          }
+          outputItems.push(newItem);
+        })
+      }
+    } else {
+      const newItem = {
+        id: 1,
+        value: {
+          sats: 0,
+          unit: 'sats',
+          address: '',
+        },
+      }
+      outputItems.push(newItem);
+    }
+    setOutputList('items', outputItems);
+
+    let inputItems: any[] = [];
+    if (initInputList && initInputList.length > 0) {
+      initInputList.map((item) => {
+        const newItem = {
+          id: inputItems.length+1,
+          value: {
+            ticker: item.ticker,
+            utxo: item.utxo,
+            sats: item.sats,
+            unit: 'sats',
+          },
+          options: {
+            tickers: [],
+            utxos: [],
+          },
+        }
+        inputItems.push(newItem);
+      })
+    } else {
+      const newItem = {
+        id: 1,
+        value: {
+          ticker: '',
+          utxo: '',
+          sats: 0,
+          unit: 'sats',
+        },
+        options: {
+          tickers: [],
+          utxos: [],
+        },
+      }
+    }
+    setInputList('items', inputItems);
+    calculateBalance();
+  }, [initInputList, initOutputList]);
 
   return (
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
