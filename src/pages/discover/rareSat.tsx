@@ -158,7 +158,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       // }, 600000); // 每10min清除缓存数据
       // return () => clearInterval(intervalId); // 清除定时器
     }
-  }, [canSplit, address]);
+  }, [canSplit, currentAccount]);
   return (
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
       <Card>
