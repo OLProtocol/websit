@@ -10,7 +10,7 @@ interface SatItemProps {
 export const SatItem = ({ sat }: SatItemProps) => {
   const { network } = useUnisatConnect();
 
-  const txid = sat.id.replace(/:0$/m, '');
+  const txid = sat?.id?.replace(/:0$/m, '');
   const href =
     network === 'testnet'
       ? `https://mempool.space/testnet/tx/${txid}`
@@ -47,7 +47,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
         </>
       )}
       
-      {sat.type.map((item, _) => (
+      {sat.satributes?.map((item, _) => (
         <img src={setSatIcon(item)} className='w-6 h-6 ml-1'/>
       ))}
       &nbsp;&nbsp;&nbsp;&nbsp;
