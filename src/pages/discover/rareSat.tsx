@@ -54,7 +54,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       setSatFilterList([]);
     } else {
       if (satList !== undefined) {
-        setSatFilterList(satList.filter((item) => item.type.includes(satType)));
+        setSatFilterList(satList.filter((item) => item.type?.includes(satType)));
       }
     }
   }
@@ -137,7 +137,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     sats.forEach((sat) => {
       if (satType === 'all') {
         total += sat.size;
-      } else if (sat.type.includes(satType)) {
+      } else if (sat.type?.includes(satType)) {
         total += sat.size;
       }
       
