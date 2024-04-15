@@ -113,7 +113,8 @@ export default function SplitSat() {
         const resp = await getUtxoByValue({
             address,
             network,
-            value: 10,
+            // value: 10,
+            value: 0,
         });
         if (resp.code !== 0) {
             toast({

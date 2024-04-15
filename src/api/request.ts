@@ -25,8 +25,8 @@ export const getOrdxStatusList = async (
 ): Promise<any> => {
   const { data } = await axios.get(
     generateUrl(
-      // `v1/indexer/ordx/status?start=${params.start}&limit=${params.limit}`,
-      `status?start=${params.start}&limit=${params.limit}`,
+      // `status?start=${params.start}&limit=${params.limit}`,
+      `tick/status?start=${params.start}&limit=${params.limit}`,
       params.network,
     ),
   );
@@ -116,12 +116,11 @@ export const getUtxoByValue = async ({
   value = 600,
   network,
 }: any) => {
-  const { data } = await axios.post(
-    generateUrl(`utxo/getUtxoByValue`, network),
-    {
-      address,
-      Value: value,
-    },
+  const { data } = await axios.get(
+    generateUrl(
+      `utxo/address/${address}/${value}`,
+      network,
+    ),
   );
   return data;
 };
@@ -158,8 +157,7 @@ export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
 };
 
 export const getSats = async ({ address, network }: any) => {
-  // https://api.ordx.space/testnet-go/testnet/sats/mmhMAiNisqkpUSMz7k4ufUQbqWN6Yf3RmS
-  const { data } = await axios.get(generateUrl(`sats/${address}`, network));
+  const { data } = await axios.get(generateUrl(`exotic/address/${address}`, network));
   return data;
 };
 
@@ -173,35 +171,38 @@ export const getSplittedSats = async ({ ticker, network }: any) => {
 
 export const getAssetByUtxo = async ({ utxo, network }: any) => {
   const { data } = await axios.get(
-    generateUrl(`getAssetByUtxo/${utxo}`, network),
+    // generateUrl(`getAssetByUtxo/${utxo}`, network),
+    generateUrl(`utxo/abbrassets/${utxo}`, network),
   );
   return data;
 };
 
-export const getUtxoByType = async ({
-  address,
-  type,
-  amount,
-  network,
-}: any) => {
-  const { data } = await axios.post(
-    generateUrl(`utxo/getUtxoByType`, network),
-    {
-      Address: address,
-      Type: type,
-      Amount: amount,
-    },
+export const getUtxoByType = async ({ address, type, amount, network }: any) => {
+  console.log('amount = ', amount)
+  // const { data } = await axios.post(
+  //   generateUrl(`utxo/getUtxoByType`, network),
+  //   {
+  //     Address: address,
+  //     Type: type,
+  //     Amount: amount,
+  //   },
+  // );
+  const { data } = await axios.get(
+    generateUrl(`exotic/address/${address}/${type}`, network),
   );
   return data;
 };
 
-export const getUtxoRanges = async ({ utxos, excludeCommonRanges, network }: any) => {
-  const { data } = await axios.post(
-    generateUrl(`utxo-ranges`, network),
-    {
-      utxos,
-      excludeCommonRanges,
-    },
+export const getSatsByUtxo = async ({ utxo, network }: any) => {
+  // const { data } = await axios.post(
+  //   generateUrl(`utxo-ranges`, network),
+  //   {
+  //     utxos,
+  //     excludeCommonRanges,
+  //   },
+  // );
+  const { data } = await axios.get(
+    generateUrl(`exotic/utxo/${utxo}`, network),
   );
   return data;
 };

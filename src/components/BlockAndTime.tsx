@@ -2,7 +2,6 @@ import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useCommonStore } from '@/store';
 import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
 
 export const BlockAndTime = ({ startBlock, endBlock }: any) => {
   const { network } = useReactWalletStore((state) => state);
