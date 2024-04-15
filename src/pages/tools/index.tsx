@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Card } from 'antd';
 import { ROUTE_PATH } from '@/router';
 
-
 export default function InscribeCheck() {
   const nav = useNavigate();
   const { t } = useTranslation();
