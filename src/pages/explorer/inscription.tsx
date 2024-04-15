@@ -91,11 +91,13 @@ export default function OrdxInscription() {
               <div className='mb-2'>
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>
-                  <img
+                  <iframe
+                    scrolling='no'
+                    sandbox='allow-scripts'
                     src={`https://${
                       network === 'testnet' ? 'testnet.' : ''
-                    }ordinals.com/content/${detail?.delegate}`}
-                    className='max-w-full w-80 h-80'></img>
+                    }ordinals.com/preview/${detail?.delegate}`}
+                    className='max-w-full w-80 h-80'></iframe>
                 </div>
               </div>
             )}
