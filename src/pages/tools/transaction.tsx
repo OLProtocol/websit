@@ -506,6 +506,13 @@ export default function Transaction () {
   }, [feeRate]);
 
   useEffect(() => {
+    if (initInputList && initInputList.length > 0) {
+      return
+    }
+    if (initOutputList && initOutputList.length > 0) {
+      return
+    }
+    
     setTickerList([]);
     setInputList('items', [
       {
@@ -600,6 +607,7 @@ export default function Transaction () {
           utxos: [],
         },
       }
+      inputItems.push(newItem);
     }
     setInputList('items', inputItems);
     calculateBalance();
