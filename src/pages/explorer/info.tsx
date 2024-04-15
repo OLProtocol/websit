@@ -131,9 +131,12 @@ export default function Ord2Info() {
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>
                   <iframe
+
                     src={`https://${
                       network === 'testnet' ? 'testnet.' : ''
-                    }ordinals.com/content/${detail?.inscriptionId}`}
+                    }ordinals.com/preview/${detail?.inscriptionId}`}
+                    scrolling="no"
+                    sandbox='allow-scripts'
                     className='max-w-full w-80 h-80'></iframe>
                 </div>
               </div>

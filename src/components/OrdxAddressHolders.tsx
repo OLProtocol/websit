@@ -178,11 +178,12 @@ export const OrdxAddressHolders = ({
         address: currentAccount,
         publicKey: publicKey,
       });
+      console.log(psbt);
       await signAndPushPsbt(psbt);
       message.success('拆分成功');
       setLoading(false);
     } catch (error: any) {
-      console.error(error.message || 'Split failed');
+      console.error(error);
       message.error(error.message || 'Split failed');
       setLoading(false);
     }

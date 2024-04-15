@@ -5,6 +5,7 @@
     "index": "序号",
     "amount": "数量",
     "mint": "铸造",
+    "file": "文件",
     "deploy": "部署",
     "block": "区块",
     "content": "内容",

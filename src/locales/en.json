@@ -5,6 +5,7 @@
     "index": "Index",
     "amount": "Amount",
     "mint": "Mint",
+    "file": "File",
     "deploy": "Deploy",
     "block": "Block",
     "content": "Content",

@@ -92,9 +92,11 @@ export const Ord2FullList = () => {
         return record.imgtype ? (
           <div>
             <iframe
+              scrolling='no'
+              sandbox='allow-scripts'
               src={`https://${
                 network === 'testnet' ? 'testnet.' : ''
-              }ordinals.com/content/${inscriptionId}`}
+              }ordinals.com/preview/${inscriptionId}`}
               className='max-w-full'></iframe>
           </div>
         ) : (

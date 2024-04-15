@@ -250,6 +250,9 @@ export const InscribeOrdx = ({
           );
           return checkStatus;
         }
+        if (imgtype) {
+          set('relateInscriptionId', inscriptionId);
+        }
         if (blur) {
           set('amount', Number(limit));
           set('mintRarity', rarity);
@@ -260,9 +263,6 @@ export const InscribeOrdx = ({
             checkStatus = false;
             setErrorText(resp.msg);
             return checkStatus;
-          }
-          if (imgtype) {
-            set('relateInscriptionId', inscriptionId);
           }
           if (!resp?.data.length) {
             checkStatus = false;
@@ -771,11 +771,11 @@ export const InscribeOrdx = ({
             </div>
           </FormControl>
         )} */}
-        {data.type === 'deploy' && !data.blockChecked && (
+        {data.type === 'deploy' && (
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
-                Image
+                {t('common.file')}
               </FormLabel>
               <div className='flex-1'>
                 <Dragger
