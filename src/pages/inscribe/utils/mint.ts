@@ -554,7 +554,6 @@ export const sendBTC = async ({
   console.log('hasOrdxUtxo', hasOrdxUtxo);
   const data = await getUtxoByValue({
     address: fromAddress,
-    // value: 600,
     value: 0,
     network,
   });
@@ -567,6 +566,7 @@ export const sendBTC = async ({
   const fee = (148 * (hasOrdxUtxo ? 2 : 1) + 34 * 2 + 10) * feeRate;
   console.log(fee);
   const filterTotalValue = hasOrdxUtxo ? 546 + fee : value + 546 + fee;
+  console.log(consumUtxos);
   const { utxos: avialableUtxos } = filterUtxosByValue(
     consumUtxos,
     filterTotalValue,
@@ -592,6 +592,7 @@ export const sendBTC = async ({
       value: toValue,
     },
   ];
+  console.log(avialableUtxos);
   const psbt = await buildTransaction({
     utxos: avialableUtxos,
     outputs,

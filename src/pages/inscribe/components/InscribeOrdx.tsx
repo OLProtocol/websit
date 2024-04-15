@@ -775,7 +775,7 @@ export const InscribeOrdx = ({
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
-                Image
+                {t('common.file')}
               </FormLabel>
               <div className='flex-1'>
                 <Dragger
