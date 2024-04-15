@@ -56,15 +56,21 @@ export const NavHeader = () => {
       value: 'https://docs.ordx.space/',
       type: 'link',
     },
-  ];
-  if (['ordx.space'].every((v) => location.hostname !== v)) {
-    items.push({
+    {
       key: ROUTE_PATH.TOOLS,
       label: t('nav.tools'),
       value: ROUTE_PATH.TOOLS,
       type: 'route',
-    });
-  }
+    },
+  ];
+  // if (['ordx.space'].every((v) => location.hostname !== v)) {
+  //   items.push({
+  //     key: ROUTE_PATH.TOOLS,
+  //     label: t('nav.tools'),
+  //     value: ROUTE_PATH.TOOLS,
+  //     type: 'route',
+  //   });
+  // }
   const options = [
     { value: 'en', label: 'EN' },
     { value: 'ZH', label: 'zh' },
