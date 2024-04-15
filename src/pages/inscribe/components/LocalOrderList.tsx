@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 
 interface LocalOrderListProps {
   onOrderClick?: (item: OrderItemType) => void;

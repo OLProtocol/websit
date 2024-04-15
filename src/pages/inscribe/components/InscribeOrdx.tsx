@@ -23,7 +23,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip, Upload, Modal, Table } from 'antd';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Checkbox } from 'antd';
 import { BusButton } from '@/components/BusButton';
 import { useEffect, useMemo, useState } from 'react';
@@ -56,11 +56,10 @@ export const InscribeOrdx = ({
   onChange,
   onUtxoChange,
 }: InscribeOrdxProps) => {
-  const { currentAccount } = useUnisatConnect();
+  const { address: currentAccount, network } = useReactWalletStore();
   const { btcHeight } = useCommonStore((state) => state);
   const { t } = useTranslation();
   const { state } = useLocation();
-  const { network } = useUnisatConnect();
   const [time, setTime] = useState({ start: undefined, end: undefined } as any);
   const [data, { set }] = useMap({
     type: 'mint',
@@ -166,7 +165,7 @@ export const InscribeOrdx = ({
       if (!checkStatus) {
         return;
       }
-      
+
       setTickChecked(true);
     } else {
       onNext?.();
@@ -251,6 +250,9 @@ export const InscribeOrdx = ({
           );
           return checkStatus;
         }
+        if (imgtype) {
+          set('relateInscriptionId', inscriptionId);
+        }
         if (blur) {
           set('amount', Number(limit));
           set('mintRarity', rarity);
@@ -261,9 +263,6 @@ export const InscribeOrdx = ({
             checkStatus = false;
             setErrorText(resp.msg);
             return checkStatus;
-          }
-          if (imgtype) {
-            set('relateInscriptionId', inscriptionId);
           }
           if (!resp?.data.length) {
             checkStatus = false;
@@ -772,11 +771,11 @@ export const InscribeOrdx = ({
             </div>
           </FormControl>
         )} */}
-        {data.type === 'deploy' && !data.blockChecked && (
+        {data.type === 'deploy' && (
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
-                Image
+                {t('common.file')}
               </FormLabel>
               <div className='flex-1'>
                 <Dragger

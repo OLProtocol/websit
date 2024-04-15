@@ -2,8 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useInscriptiontInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
-import { serializeInscriptionId } from '@/pages/inscribe/utils';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 // const detaConent = serializeInscriptionId(file.relateInscriptionId, 0);
@@ -11,7 +10,7 @@ export default function OrdxInscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
   const [tabText, setTabText] = useState(t('common.holders'));
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
 
   const { data, trigger, isLoading } = useInscriptiontInfo({
     inscriptionId: inscriptionId,
@@ -92,11 +91,13 @@ export default function OrdxInscription() {
               <div className='mb-2'>
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>
-                  <img
+                  <iframe
+                    scrolling='no'
+                    sandbox='allow-scripts'
                     src={`https://${
                       network === 'testnet' ? 'testnet.' : ''
-                    }ordinals.com/content/${detail?.delegate}`}
-                    className='max-w-full w-80 h-80'></img>
+                    }ordinals.com/preview/${detail?.delegate}`}
+                    className='max-w-full w-80 h-80'></iframe>
                 </div>
               </div>
             )}

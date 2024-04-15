@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { OrdXItem } from './OrdXItem';
 import { getSats, useOrdxSummary } from '@/api';
-import { useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
 import { toast } from 'react-hot-toast';
@@ -18,7 +18,7 @@ export const OrdxAccountSummaryList = ({
   onEmpty,
   utxosTotal,
 }: OrdxSummaryListProps) => {
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
   const { data, trigger } = useOrdxSummary({ address, network });
   const otherTickers = useMemo(() => data?.data?.detail || [], [data]);
@@ -38,13 +38,12 @@ export const OrdxAccountSummaryList = ({
         return acc + sat.size;
       }, 0);
     }
-    
+
     return {
       ticker: t('pages.account.rare_sats'),
       balance: balance,
     };
   }, [rareSatList]);
-
 
   const ordNftTicker = useMemo(() => {
     // ordinals nft的ticker名称为“o”
@@ -57,7 +56,7 @@ export const OrdxAccountSummaryList = ({
       ticker: t('pages.account.ord_nft'),
       balance: balance,
     };
-  }, [])
+  }, []);
 
   const getRareSats = async () => {
     const data = await getSats({
@@ -71,15 +70,15 @@ export const OrdxAccountSummaryList = ({
       for (let i = 0; i < data.data.length; i++) {
         if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
           data.data[i].sats.forEach((item) => {
-            item.id = data.data[i].id;
+            // item.id = data.data[i].utxo;
             tmpSats.push(item);
-          })
+          });
         }
       }
     }
-    
+
     setRareSatList(tmpSats);
-  }
+  };
 
   const [select, setSelect] = useState('');
 
@@ -88,12 +87,12 @@ export const OrdxAccountSummaryList = ({
   }, [otherTickers, avialableTicker, rareSatsTicker]);
 
   const onClick = (item) => {
-    let ticker = item.ticker
+    let ticker = item.ticker;
     if (item.ticker === t('pages.account.ord_nft')) {
       ticker = 'o';
-      toast(t('pages.account.toast_oridnals_support'))
+      toast(t('pages.account.toast_oridnals_support'));
     }
-    console.log('ticker:', ticker)
+    console.log('ticker:', ticker);
     setSelect(ticker);
     onChange?.(ticker);
   };
@@ -118,7 +117,8 @@ export const OrdxAccountSummaryList = ({
       <Wrap>
         {tickers.slice(0, 3).map((item) => (
           <WrapItem>
-            <OrdXItem key={item.ticker}
+            <OrdXItem
+              key={item.ticker}
               selected={select === item.ticker}
               onClick={() => {
                 onClick(item);
@@ -131,20 +131,21 @@ export const OrdxAccountSummaryList = ({
           </WrapItem>
         ))}
       </Wrap>
-      <hr/>
+      <hr />
       <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
-      {tickers.slice(3).map((item) => (
-        <OrdXItem key={item.ticker}
-          selected={select === item.ticker}
-          onClick={() => {
-            onClick(item);
-          }}
-          item={{
-            tick: item.ticker,
-            balance: item.balance,
-          }}
-        />
-      ))}
+        {tickers.slice(3).map((item) => (
+          <OrdXItem
+            key={item.ticker}
+            selected={select === item.ticker}
+            onClick={() => {
+              onClick(item);
+            }}
+            item={{
+              tick: item.ticker,
+              balance: item.balance,
+            }}
+          />
+        ))}
       </div>
     </div>
   );

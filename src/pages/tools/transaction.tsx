@@ -4,7 +4,7 @@ import {
   getOrdxAddressHolders,
   getSats,
 } from '@/api';
-import { useUnisat, useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -23,7 +23,6 @@ import {
   InputGroup,
   InputLeftAddon,
   InputRightAddon,
-  Select,
   Stack,
   useToast,
 } from '@chakra-ui/react';
@@ -36,10 +35,16 @@ import {
   buildTransaction,
   calcNetworkFee,
   signAndPushPsbt,
-} from '@/lib/utils/btc';
+} from '@/lib/wallet/btc';
 import { hideStr } from '@/lib/utils';
+import { useLocation } from 'react-router-dom';
 
-export default function Transaction() {
+export default function Transaction () {
+  
+  const location = useLocation();
+  const initInputList = location.state?.initInputList;
+  const initOutputList = location.state?.initOutputList;
+
   const { t } = useTranslation();
   const { feeRate } = useCommonStore((state) => state);
   const [fee, setFee] = useState(0);
@@ -63,16 +68,7 @@ export default function Transaction() {
   });
 
   const [outputList, { set: setOutputList }] = useMap<any>({
-    items: [
-      {
-        id: 1,
-        value: {
-          sats: 0,
-          unit: 'sats',
-          address: '',
-        },
-      },
-    ],
+    items: []
   });
 
   const [balance, { set: setBalance }] = useMap<any>({
@@ -80,11 +76,10 @@ export default function Transaction() {
     unit: 'sats',
   });
 
-  const { currentAccount, network, currentPublicKey } = useUnisatConnect();
+  const { address: currentAccount, network, publicKey } = useReactWalletStore();
   const [tickerList, setTickerList] = useState<any[]>();
   const [loading, setLoading] = useState(false);
   const [messageApi] = message.useMessage();
-  const unisat = useUnisat();
   const toast = useToast();
 
   const addInputItem = () => {
@@ -238,7 +233,7 @@ export default function Transaction() {
       feeRate: feeRate.value,
       network,
       address: currentAccount,
-      publicKey: currentPublicKey,
+      publicKey,
     });
     setFee(fee);
     setBalance('sats', inTotal - outTotal - fee);
@@ -311,7 +306,7 @@ export default function Transaction() {
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey,
       });
       if (inTotal - outTotal - fee < 0) {
         setLoading(false);
@@ -339,7 +334,7 @@ export default function Transaction() {
         feeRate: feeRate.value,
         network,
         address: currentAccount,
-        publicKey: currentPublicKey,
+        publicKey,
       });
       await signAndPushPsbt(psbt);
       setLoading(false);
@@ -371,43 +366,57 @@ export default function Transaction() {
 
     if (data.code === 0) {
       data.data.map((item) => {
-        if (item.hasRareStats) {
+        let hasRareStats = false;
+        if (item.sats && item.sats.length > 0) {
+          item.sats.map((sat) => {
+            if (sat.satributes && sat.satributes.length > 0) {
+              hasRareStats = true;
+              return;
+            }
+          })
+        }
+
+        if (hasRareStats) {
           const utxo = {
-            txid: item.id.split(':')[0],
-            vout: Number(item.id.split(':')[1]),
+            txid: item.utxo.split(':')[0],
+            vout: Number(item.utxo.split(':')[1]),
             value: item.value,
           };
 
-          if (
-            tickers.some(
-              (obj) =>
-                obj['ticker'] ===
-                t('pages.tools.transaction.rare_sats') +
-                  '-' +
-                  item.sats[0].type[0],
-            )
-          ) {
-            tickers = tickers.map((obj) => {
-              if (
-                obj['ticker'] ===
-                t('pages.tools.transaction.rare_sats') +
-                  '-' +
-                  item.sats[0].type[0]
-              ) {
-                return {
-                  ...obj,
-                  utxos: [...obj.utxos, utxo],
-                };
-              }
-            });
-          } else {
+          if (tickers.length === 0) {
             tickers.push({
-              ticker:
-                t('pages.tools.transaction.rare_sats') +
-                '-' +
-                item.sats[0].type[0],
+              ticker: t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0],
               utxos: [utxo],
             });
+          } else {
+            let utxoExist = false;
+            tickers.map((obj) => {
+              obj.utxos.map((tmp) => {
+                if (tmp === utxo.txid + ':' + utxo.vout) {
+                  utxoExist = true;// utxo already exists
+                  return;
+                }
+              })
+            })
+            if (!utxoExist) {// utxo does not exist
+              if (tickers.some((obj) => obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0])) { // the type of rare sat already exists
+                tickers = tickers.map((obj) => {
+                  if ( obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0]) {
+                    return {
+                      ticker: obj['ticker'],
+                      utxos: [...obj.utxos, utxo],
+                    };
+                  } else {
+                    return obj;
+                  }
+                });
+              } else {
+                tickers.push({
+                  ticker: t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0],
+                  utxos: [utxo],
+                });
+              }
+            }
           }
         }
       });
@@ -419,19 +428,8 @@ export default function Transaction() {
   const getAvialableTicker = async () => {
     let data = await getUtxoByValue({
       address: currentAccount,
-      value: 600,
-      network,
-    });
-
-    if (data.code !== 0) {
-      setLoading(false);
-      messageApi.error(data.msg);
-      return;
-    }
-
-    data = await getUtxoByValue({
-      address: currentAccount,
-      value: 600,
+      // value: 600,
+      value: 0,
       network,
     });
     if (data.code !== 0) {
@@ -508,6 +506,13 @@ export default function Transaction() {
   }, [feeRate]);
 
   useEffect(() => {
+    if (initInputList && initInputList.length > 0) {
+      return
+    }
+    if (initOutputList && initOutputList.length > 0) {
+      return
+    }
+    
     setTickerList([]);
     setInputList('items', [
       {
@@ -541,55 +546,120 @@ export default function Transaction() {
     getAllTickers();
   }, [currentAccount]);
 
+  useEffect(() => {
+    let outputItems: any[] = [];
+    if (initOutputList && initOutputList.length > 0) {
+      if (initOutputList[0].address === currentAccount) {
+        initOutputList.map((item) => {
+          const newItem = {
+            id: outputItems.length+1,
+            value: {
+              sats: item.sats,
+              unit: 'sats',
+              address: item.address,
+            },
+          }
+          outputItems.push(newItem);
+        })
+      }
+    } else {
+      const newItem = {
+        id: 1,
+        value: {
+          sats: 0,
+          unit: 'sats',
+          address: '',
+        },
+      }
+      outputItems.push(newItem);
+    }
+    setOutputList('items', outputItems);
+
+    let inputItems: any[] = [];
+    if (initInputList && initInputList.length > 0) {
+      initInputList.map((item) => {
+        const newItem = {
+          id: inputItems.length+1,
+          value: {
+            ticker: item.ticker,
+            utxo: item.utxo,
+            sats: item.sats,
+            unit: 'sats',
+          },
+          options: {
+            tickers: [],
+            utxos: [],
+          },
+        }
+        inputItems.push(newItem);
+      })
+    } else {
+      const newItem = {
+        id: 1,
+        value: {
+          ticker: '',
+          utxo: '',
+          sats: 0,
+          unit: 'sats',
+        },
+        options: {
+          tickers: [],
+          utxos: [],
+        },
+      }
+      inputItems.push(newItem);
+    }
+    setInputList('items', inputItems);
+    if (outputList.items.length > 1) {
+      calculateBalance();
+    }
+  }, [initInputList, initOutputList]);
+
   return (
     <div className='flex flex-col max-w-7xl mx-auto pt-8'>
       <Card>
         <CardHeader>
-          <Heading size='md'>拆分&发送</Heading>
+          <Heading size='md'>{t('pages.tools.transaction.title')}</Heading>
         </CardHeader>
         <Divider borderColor={'teal.500'} />
         <CardBody>
           <Stack>
             <Flex>
               <Heading flex={8} as='h6' size='sm'>
-                Input
+              {t('pages.tools.transaction.input')}
               </Heading>
             </Flex>
             <FormControl>
               {inputList.items.map((item, i) => (
                 <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
-                  <Select
+                  <AntSelect
                     placeholder='Select Ticker'
-                    w={'20%'}
+                    className={'w-[20%]'} style={{ height: '40px' }}
+                    value={item.value?.ticker ? item.value?.ticker : undefined}
+                    options={
+                      tickerList?.map((utxo) => ({
+                        label: (
+                          <div>
+                            { utxo.ticker }
+                          </div>
+                        ),
+                        value: utxo.ticker,
+                      })) || []
+                    }
                     onChange={(e) =>
-                      handleTickerSelectChange(item.id, e.target.value)
+                      handleTickerSelectChange(item.id, e)
                     }>
-                    {tickerList !== undefined &&
-                      tickerList.map((utxo) => (
-                        <option
-                          key={utxo.ticker + '-' + item.id}
-                          value={
-                            item.value.ticker !== '' &&
-                            item.value.ticker === utxo.ticker
-                              ? item.value.ticker
-                              : utxo.ticker
-                          }>
-                          {utxo.ticker}
-                        </option>
-                      ))}
-                  </Select>
+                  </AntSelect>
                   <AntSelect
                     placeholder='Select UTXO'
-                    className='w-[40%]'
-                    value={inputList.items[i]?.value?.utxo}
+                    className='w-[40%]' style={{ height: '40px' }}
+                    value={inputList.items[i]?.value?.utxo ? inputList.items[i]?.value?.utxo: undefined}
                     options={
                       inputList.items[i]?.options?.utxos.map((utxo) => ({
                         label: (
                           <div>
                             {utxo.assetamount && utxo.assetamount + ' Asset/'}
-                            {utxo.value +
-                              ' sats - ' +
-                              hideStr(utxo.txid + ':' + utxo.vout)}
+                            {utxo.value + ' sats - ' + hideStr(utxo.txid + ':' + utxo.vout)}
                           </div>
                         ),
                         value: utxo.txid + ':' + utxo.vout,
@@ -614,15 +684,16 @@ export default function Transaction() {
                       readOnly
                     />
                     {/* <InputRightAddon>sat</InputRightAddon> */}
-                    <Select
+                    <AntSelect
                       variant='filled'
-                      w={'30%'}
+                      className={'w-[30%]'} style={{ height: '40px' }}
+                      value={item.value.unit}
+                      defaultValue='sats'
+                      options={[{ label: 'sats', value: 'sats' }, { label: 'btc', value: 'btc' }]}
                       onChange={(e) =>
-                        handleInputUnitSelectChange(item.id, e.target.value)
+                        handleInputUnitSelectChange(item.id, e)
                       }>
-                      <option value='sats'>sats</option>
-                      <option value='btc'>btc</option>
-                    </Select>
+                    </AntSelect>
                   </InputGroup>
 
                   <ButtonGroup w={'10%'} gap='1'>
@@ -655,7 +726,7 @@ export default function Transaction() {
           <Stack>
             <Flex>
               <Heading flex={8} as='h6' size='sm'>
-                Output
+              {t('pages.tools.transaction.output')}
               </Heading>
             </Flex>
             <FormControl>
@@ -668,10 +739,9 @@ export default function Transaction() {
                       value={item.value.address}
                       onChange={(e) => setBtcAddress(item.id, e.target.value)}
                     />
-                    <InputRightAddon
-                      onClick={() => setBtcAddress(item.id, currentAccount)}>
+                    <InputRightAddon onClick={() => setBtcAddress(item.id, currentAccount)}>
                       <Tooltip title='Fill the BTC address of the current account'>
-                        <AddIcon color='gray.300' />
+                        <AddIcon color='teal' />
                       </Tooltip>
                     </InputRightAddon>
                   </InputGroup>
@@ -690,15 +760,18 @@ export default function Transaction() {
                       onChange={(e) => setOutputSats(item.id, e.target.value)}
                       onBlur={(e) => outputSatsOnBlur(e)}
                     />
-                    <Select
+                    <AntSelect
                       variant='filled'
-                      w={'30%'}
+                      className={'w-[30%]'} style={{ height: '40px' }}
+                      value={item.value.unit}
+                      defaultValue='sats'
+                      options={[{ label: 'sats', value: 'sats' }, { label: 'btc', value: 'btc' }]}
                       onChange={(e) =>
-                        handleOutputUnitSelectChange(item.id, e.target.value)
+                        handleOutputUnitSelectChange(item.id, e)
                       }>
                       <option value='sats'>sats</option>
                       <option value='btc'>btc</option>
-                    </Select>
+                    </AntSelect>
                   </InputGroup>
 
                   <ButtonGroup gap='1' w={'10%'}>
@@ -731,7 +804,7 @@ export default function Transaction() {
           <Stack>
             <Flex>
               <Heading flex={8} as='h6' size='sm'>
-                余额
+              {t('pages.tools.transaction.balance')}
               </Heading>
             </Flex>
             <FormControl>
@@ -760,15 +833,18 @@ export default function Transaction() {
                       }
                       readOnly
                     />
-                    <Select
+                    <AntSelect
                       variant='filled'
-                      w={'30%'}
+                      className={'w-[30%]'} style={{ height: '40px' }}
+                      value={balance.unit}
+                      defaultValue='sats'
+                      options={[{ label: 'sats', value: 'sats' }, { label: 'btc', value: 'btc' }]}
                       onChange={(e) =>
-                        handleBalanceUnitSelectChange(e.target.value)
+                        handleBalanceUnitSelectChange(e)
                       }>
                       <option value='sats'>sats</option>
                       <option value='btc'>btc</option>
-                    </Select>
+                    </AntSelect>
                   </InputGroup>
                   <ButtonGroup gap='1' w={'10%'}>
                     {/* 占位 */}

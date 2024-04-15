@@ -8,11 +8,12 @@ import {
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
-import { SatRareBox } from '../explorer/components/SatRareBox';
+import { SatRareBox } from './components/SatRareBox';
 import { getSats } from '@/api';
-import { SatTable } from '../explorer/components/SatTable';
-import { SatTypeBox } from '../explorer/components/SatTypeBox';
-import { useUnisatConnect } from '@/lib/hooks';
+import { SatTable } from './components/SatTable';
+import { SatTypeBox } from './components/SatTypeBox';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+
 import { cacheData, getCachedData } from '@/lib/utils/cache';
 import { Input } from 'antd';
 
@@ -26,11 +27,9 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   const { t } = useTranslation();
   const [address, setAddress] = useState('');
   const [allSatList, setAllSatList] = useState<any[]>();
-  // const [rareSatList, setRareSatList] = useState<any[]>();
   const [satList, setSatList] = useState<any[]>();
   const [satFilterList, setSatFilterList] = useState<any[]>();
-  // const { network } = useUnisatConnect();
-  const { network, currentAccount } = useUnisatConnect();
+  const { network, address: currentAccount } = useReactWalletStore();
   const toast = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -38,11 +37,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   if (satList) {
     const uniqueTypeSet = new Set<string>();
     satList.forEach((item) =>
-      item.satributes.forEach((satType) =>
-        satType === 'first_transaction'
-          ? uniqueTypeSet.add('1st TX')
-          : uniqueTypeSet.add(satType),
-      ),
+      item.satributes.forEach((satType) => satType === 'first_transaction' ? uniqueTypeSet.add('1st TX') :uniqueTypeSet.add(satType)),
     );
     uniqueTypes = Array.from(uniqueTypeSet);
     if (uniqueTypes.length > 0) {
@@ -58,9 +53,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       setSatFilterList([]);
     } else {
       if (satList !== undefined) {
-        setSatFilterList(
-          satList.filter((item) => item.satributes?.includes(satType)),
-        );
+        setSatFilterList(satList.filter((item) => item.satributes.includes(satType)));
       }
     }
   }
@@ -97,11 +90,10 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     for (let i = 0; i < data.data.length; i++) {
       if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
         data.data[i].sats.forEach((item) => {
-          item.id = data.data[i].id;
+          item.utxo = data.data[i].utxo;
           item.value = data.data[i].value;
           tmpSats.push(item);
-        });
-        // tmpSats.push(...data.data[i].sats);
+        })
       }
     }
     tmpSats.sort(
@@ -113,14 +105,12 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     tmpSats.forEach((item) => {
       if (item.satributes.length === 1) {
         const satType = item.satributes[0];
-        if (
-          satType !== 'uncommon' &&
-          satType !== 'rare' &&
-          satType !== 'epic' &&
-          satType !== 'legendary' &&
-          satType !== 'mythic'
-        ) {
-          return item;
+        if (satType !== 'uncommon' 
+          && satType !== 'rare' 
+          && satType !== 'epic' 
+          && satType !== 'legendary' 
+          && satType !== 'mythic') {
+            return item;
         }
       } else {
         return item;
@@ -144,7 +134,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     sats.forEach((sat) => {
       if (satType === 'all') {
         total += sat.size;
-      } else if (sat.satributes?.includes(satType)) {
+      } else if (sat.satributes.includes(satType)) {
         total += sat.size;
       }
     });

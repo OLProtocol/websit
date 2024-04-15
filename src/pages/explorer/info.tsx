@@ -6,7 +6,8 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
 import { OrdxTickHistory } from './components/OrdxTickHistory';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+
 import { Button, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +19,7 @@ export default function Ord2Info() {
   const { btcHeight } = useCommonStore((state) => state);
   const [tabText, setTabText] = useState(t('common.holders'));
   const nav = useNavigate();
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
   const handleTabsChange = (type: any) => {
     if (type !== tabText) {
       setTabText(type);
@@ -129,11 +130,14 @@ export default function Ord2Info() {
               <div className='mb-2'>
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>
-                  <img
+                  <iframe
+
                     src={`https://${
                       network === 'testnet' ? 'testnet.' : ''
-                    }ordinals.com/content/${detail?.inscriptionId}`}
-                    className='max-w-full w-80 h-80'></img>
+                    }ordinals.com/preview/${detail?.inscriptionId}`}
+                    scrolling="no"
+                    sandbox='allow-scripts'
+                    className='max-w-full w-80 h-80'></iframe>
                 </div>
               </div>
             )}

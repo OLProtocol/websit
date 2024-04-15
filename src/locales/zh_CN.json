@@ -5,6 +5,7 @@
     "index": "序号",
     "amount": "数量",
     "mint": "铸造",
+    "file": "文件",
     "deploy": "部署",
     "block": "区块",
     "content": "内容",
@@ -255,8 +256,12 @@
         "card_header_sat": "Sats"
       },
       "transaction": {
+        "title": "拆分&发送",
         "available_utxo": "Plain UTXO",
-        "rare_sats": "Rare Sats"
+        "rare_sats": "Rare Sats",
+        "balance": "余额",
+        "input": "输入",
+        "output": "输出"
       }
     },
     "docs": {

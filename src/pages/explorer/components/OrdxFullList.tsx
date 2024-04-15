@@ -6,7 +6,8 @@ import { getOrdxStatusList } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import {
@@ -28,7 +29,7 @@ export const Ord2FullList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { btcHeight } = useCommonStore((state) => state);
-  const { network, currentAccount } = useUnisatConnect();
+  const { network, address: currentAccount } = useReactWalletStore();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
 
@@ -90,11 +91,13 @@ export const Ord2FullList = () => {
       render: (inscriptionId, record) => {
         return record.imgtype ? (
           <div>
-            <img
+            <iframe
+              scrolling='no'
+              sandbox='allow-scripts'
               src={`https://${
                 network === 'testnet' ? 'testnet.' : ''
-              }ordinals.com/content/${inscriptionId}`}
-              className='max-w-full'></img>
+              }ordinals.com/preview/${inscriptionId}`}
+              className='max-w-full'></iframe>
           </div>
         ) : (
           '-'

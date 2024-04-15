@@ -17,7 +17,8 @@ import { v4 as uuidV4 } from 'uuid';
 import { FeeShow } from './FeeShow';
 // import mempoolJS from '@mempool/mempool.js';
 import { generatePrivateKey, generateInscriptions } from '../utils';
-import { useUnisatConnect, useCalcFee } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useCalcFee } from '@/lib/hooks';
 import { OrderItemType, useCommonStore, useOrderStore } from '@/store';
 import { InscribeType } from '@/types';
 import { useTranslation } from 'react-i18next';
@@ -40,7 +41,7 @@ export const InscribeStepThree = ({
 }: Brc20SetpOneProps) => {
   const { t } = useTranslation();
   const { feeRate } = useCommonStore((state) => state);
-  const { network, currentAccount } = useUnisatConnect();
+  const { network, address: currentAccount } = useReactWalletStore();
   const [data, { set }] = useMap({
     toSingleAddress: currentAccount,
     toMultipleAddresses: '',

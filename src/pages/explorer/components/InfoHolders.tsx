@@ -3,7 +3,8 @@ import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useOrdxTickHolders } from '@/api';
-import { useUnisatConnect } from '@/lib/hooks/unisat';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+
 import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
 import { CopyButton } from '@/components/CopyButton';
@@ -21,7 +22,7 @@ interface InfoHoldersProps {
 export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
   const nav = useNavigate();
   const { t } = useTranslation();
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
   const { data, isLoading, trigger } = useOrdxTickHolders({
     tick,
     network,

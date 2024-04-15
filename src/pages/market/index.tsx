@@ -5,7 +5,7 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Card, Input } from 'antd';
 import { useState } from 'react';
 import { getInscriptiontInfo } from '@/api';
-import { useUnisatConnect } from '@/lib/hooks';
+import { useReactWalletStore } from 'btc-connect/dist/react';
 
 const { Search } = Input;
 
@@ -14,7 +14,7 @@ export default function InscribeCheck() {
   const { t } = useTranslation();
   const [inscribId, setSearch] = useState('');
   const [resultMsg, setResultMsg] = useState('');
-  const { network } = useUnisatConnect();
+  const { network } = useReactWalletStore();
   const toast = useToast();
 
   const doSearch = async () => {

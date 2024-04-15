@@ -5,6 +5,7 @@
     "index": "Index",
     "amount": "Amount",
     "mint": "Mint",
+    "file": "File",
     "deploy": "Deploy",
     "block": "Block",
     "content": "Content",
@@ -255,8 +256,12 @@
         "card_header_sat": "Sats"
       },
       "transaction": {
+        "title": "Split & Send",
         "available_utxo": "Plain UTXO",
-        "rare_sats": "Rare Sats"
+        "rare_sats": "Rare Sats",
+        "balance": "Balance",
+        "input": "Input",
+        "output": "Output"
       }
     },
    

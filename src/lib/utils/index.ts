@@ -1,19 +1,19 @@
 export * from './mempool';
-export * from './utxo';
-export * from './btc';
+export * from '../wallet/utxo';
+export * from '../wallet/btc';
 import { getBlockStatus } from '@/api';
 import { add, format } from 'date-fns';
 
 export const getTimeByHeight = async (height: number, network: string) => {
   const key = `height-time-${height}`;
-  const lcoalCache = localStorage.getItem(key);
+  const lcoalCache = sessionStorage.getItem(key);
   if (lcoalCache) {
     return +lcoalCache;
   }
   const { timestamp } = await getBlockStatus({ height, network });
   const time = timestamp * 1000;
   if (time) {
-    localStorage.setItem(key, time.toString());
+    sessionStorage.setItem(key, time.toString());
   }
   return time;
 };

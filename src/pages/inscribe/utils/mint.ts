@@ -458,7 +458,6 @@ export const inscribe = async ({
   const isValid = Signer.taproot.verify(txdata, 0, { pubkey, throws: true });
   console.log('isValid', isValid);
   console.log('Your txhex:', Tx.encode(txdata).hex);
-  // const result = await window.unisat.pushTx({ rawtx: Tx.encode(txdata).hex });
   const result = await pushBTCpmt(Tx.encode(txdata).hex, network);
   return result;
 };
@@ -555,7 +554,7 @@ export const sendBTC = async ({
   console.log('hasOrdxUtxo', hasOrdxUtxo);
   const data = await getUtxoByValue({
     address: fromAddress,
-    value: 600,
+    value: 0,
     network,
   });
   const consumUtxos = data?.data || [];
@@ -567,6 +566,7 @@ export const sendBTC = async ({
   const fee = (148 * (hasOrdxUtxo ? 2 : 1) + 34 * 2 + 10) * feeRate;
   console.log(fee);
   const filterTotalValue = hasOrdxUtxo ? 546 + fee : value + 546 + fee;
+  console.log(consumUtxos);
   const { utxos: avialableUtxos } = filterUtxosByValue(
     consumUtxos,
     filterTotalValue,
@@ -592,6 +592,7 @@ export const sendBTC = async ({
       value: toValue,
     },
   ];
+  console.log(avialableUtxos);
   const psbt = await buildTransaction({
     utxos: avialableUtxos,
     outputs,
