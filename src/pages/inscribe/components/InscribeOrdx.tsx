@@ -771,7 +771,7 @@ export const InscribeOrdx = ({
             </div>
           </FormControl>
         )} */}
-        {data.type === 'deploy' && !data.blockChecked && (
+        {data.type === 'deploy' && (
           <FormControl>
             <div className='flex items-center  mb-4'>
               <FormLabel className='w-52' marginBottom={0}>
