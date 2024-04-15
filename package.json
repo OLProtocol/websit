@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite --host --mode dev",
     "build": "node ./updateVersion.js && tsc && vite build",
-    "build:dev": "node ./updateVersion.js && tsc && vite build --mode development",
-    "build:test": "node ./updateVersion.js && tsc && vite build --mode test",
+    "build:dev": "node ./updateVersion.js && tsc && vite build --mode dev",
+    "build:test": "node ./updateVersion.js && tsc && vite build  --mode test",
     "build:prod": "node ./updateVersion.js && tsc && vite build --mode production",
     "dbuild": "tsc && vite build --minify false",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
