@@ -610,7 +610,9 @@ export default function Transaction () {
       inputItems.push(newItem);
     }
     setInputList('items', inputItems);
-    calculateBalance();
+    if (outputList.items.length > 1) {
+      calculateBalance();
+    }
   }, [initInputList, initOutputList]);
 
   return (
@@ -739,7 +741,7 @@ export default function Transaction () {
                     />
                     <InputRightAddon onClick={() => setBtcAddress(item.id, currentAccount)}>
                       <Tooltip title='Fill the BTC address of the current account'>
-                        <AddIcon color='gray.300' />
+                        <AddIcon color='teal' />
                       </Tooltip>
                     </InputRightAddon>
                   </InputGroup>
