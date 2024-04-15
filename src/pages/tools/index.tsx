@@ -10,7 +10,7 @@ export default function InscribeCheck() {
   const toSplittedInscriptions = () => {
     nav(ROUTE_PATH.TOOLS_SPLITTED_INSCRIPTION);
   }
-  
+
   const toUtxo = () => {
     nav(ROUTE_PATH.TOOLS_UTXO);
   }
@@ -18,7 +18,7 @@ export default function InscribeCheck() {
   const toTransact = () => {
     nav(ROUTE_PATH.TOOLS_TRANSACT, { state: { initInputList: [], initOutputList: [] } });
   }
-  
+
   return (
     <div className='flex gap-2 max-w-max mx-auto p-2'>
       <Card title={t('pages.tools.splitted_inscription.title')} className='w-60 cursor-pointer' onClick={toSplittedInscriptions}>
