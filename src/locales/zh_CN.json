@@ -268,7 +268,9 @@
         "title": "搜索特定聪",
         "des": "搜索特定聪",
         "search_placeholder_sat": "Sat ...",
-        "search_placeholder_address": "Btc address ..."
+        "search_placeholder_address": "Btc address ...",
+        "search_result": "搜索结果",
+        "btc_address": "Btc address"
       }
     },
     "docs": {

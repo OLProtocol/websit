@@ -42,7 +42,7 @@ export default function SearchSat() {
                                 target='_blank'>
                                 {hideStr(t)}
                             </a>
-                            <CopyButton text={t} tooltip='Copy Tick' />
+                            <CopyButton text={t} tooltip='Copy Utxo' />
                         </div>
                     );
                 },
@@ -205,6 +205,7 @@ export default function SearchSat() {
                         ))}
                         <Flex key={Math.random()} whiteSpace={'nowrap'} gap={4} pt={2}>
                             <InputGroup w={'100%'}>
+                                <InputLeftAddon>{t('pages.tools.sat.btc_address')}</InputLeftAddon>
                                 <Input
                                     placeholder={t('pages.tools.sat.search_placeholder_address')}
                                     size='md'
@@ -229,7 +230,7 @@ export default function SearchSat() {
                         <Card className='w-full'>
                             <CardHeader>
                                 <Heading as='h2' size='sm'>
-                                    Rare Sats
+                                    {t('pages.tools.sat.search_result')}
                                 </Heading>
                             </CardHeader>
                             <CardBody>
