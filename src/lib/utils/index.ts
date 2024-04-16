@@ -39,7 +39,7 @@ export const calcTimeBetweenBlocks = async ({
     if (end && end < height) {
       endTime = await getTimeByHeight(end, network);
     } else {
-      const endDis = end - height;
+      const endDis = Math.ceil(end - height);
       endTime = add(now, { minutes: endDis * 10 });
     }
     // console.log('startTime', startTime, 'endTime', endTime);
