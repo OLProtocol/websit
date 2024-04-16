@@ -143,10 +143,12 @@ export const getInscriptiontInfo = async ({ inscriptionId, network }: any) => {
   );
   return data;
 };
+
 export const getAppVersion = async () => {
   const { data } = await axios.get(`/version.txt`);
   return data;
 };
+
 export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
   const { data } = await axios.get(
     `https://blockstream.info/${
@@ -192,6 +194,17 @@ export const getUtxoByType = async ({ address, type, amount, network }: any) => 
   );
   return data;
 };
+
+export const getSatsByAddress = async ({ address, sats, network }: any) => {
+    const { data } = await axios.post(
+    generateUrl(`sat/FindSatsInAddress`, network),
+    {
+      address: address,
+      sats: sats,
+    },
+  );
+  return data;
+}
 
 export const getSatsByUtxo = async ({ utxo, network }: any) => {
   // const { data } = await axios.post(

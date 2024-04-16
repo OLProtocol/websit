@@ -192,7 +192,7 @@ export default function Utxo() {
               <TabPanel>
                 <Card>
                   <CardHeader>
-                    <Heading size='md'>
+                    <Heading as='h2' size='sm'>
                       Rare Sats{rareSatSize}
                     </Heading>
                   </CardHeader>
@@ -222,7 +222,7 @@ export default function Utxo() {
                 <Divider mt={4} mb={4} />
                 <Card>
                   <CardHeader>
-                    <Heading size='md'>
+                    <Heading as='h2' size='sm'>
                       Sats{satSize}
                     </Heading>
                   </CardHeader>
