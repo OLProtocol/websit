@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +27,8 @@ export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
     tick,
     network,
   });
+  const [start, setStart] = useState(0);
+  
   const list = useMemo(() => data?.data?.detail || [], [data]);
   useEffect(() => {
     trigger();
@@ -72,14 +74,33 @@ export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
       })),
     [list],
   );
+  const total = useMemo(() => data?.data?.total || 10, [data]);
+
+  const paginationChange = (page: number, pageSize: number) => {
+    setStart((page - 1) * pageSize);
+  };
 
   return (
-    <Table
-      columns={columns}
-      dataSource={dataSource}
-      pagination={{
-        position: ['bottomCenter'],
-      }}
-    />
+    <div>
+      <Table
+        loading={isLoading}
+        columns={columns}
+        dataSource={dataSource}
+        pagination={{
+          position: ['bottomCenter'],
+          defaultPageSize: 10,
+          total: total,
+          onChange: paginationChange,
+          showSizeChanger: false,
+        }}
+      />
+    </div>
+    // <Table
+    //   columns={columns}
+    //   dataSource={dataSource}
+    //   pagination={{
+    //     position: ['bottomCenter'],
+    //   }}
+    // />
   );
 };

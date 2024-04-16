@@ -133,11 +133,10 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
   }, [tick, network, start, limit]);
 
   return (
-    <div className=''>
+    <div>
       <Table
         loading={isLoading}
         columns={columns}
-        // dataSource={dataSource.filter((item) => item.inscriptionNumber !== 9223372036854775807)}
         dataSource={dataSource}
         pagination={{
           position: ['bottomCenter'],
@@ -146,11 +145,6 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
           onChange: paginationChange,
           showSizeChanger: false,
         }}
-        // onRow={(record) => {
-        //   return {
-        //     onClick: () => clickHandler(record), // 点击行
-        //   };
-        // }}
       />
     </div>
   );

@@ -13,8 +13,8 @@ import Account from '@/pages/account';
 import SplittedInscription from '@/pages/tools/splittedInscription';
 import Utxo from '@/pages/tools/utxo';
 import { RareSat } from '@/pages/discover/rareSat';
-import SplitSat from '@/pages/account/components/SplitSat';
 import Transaction from '@/pages/tools/transaction';
+import SearchSat from '@/pages/tools/searchSat';
 
 const resolveHashPath = (path: string) => {
   return `/#${path}`;
@@ -33,14 +33,11 @@ export const ROUTE_PATH = {
   TOOLS: '/tools',
   TOOLS_SPLIT_SAT: '/tools/split-sat',
   TOOLS_UTXO: '/tools/utxo',
-  // TOOLS_UTXO_ASSET: '/tools/utxo-asset',
-  // TOOLS_GET_UTXO: '/tools/get-utxo',
   TOOLS_TRANSACT: '/tools/transact',
+  TOOLS_SEARCH_SAT: '/tools/search-sat',
   TOOLS_SPLITTED_INSCRIPTION: '/tools/splitted-inscription',
-  // MARKET_INDEX: '/market',
   DISCOVER_RARE_SAT: '/discover',
   ACCOUNT: '/account',
-  // RARE_SAT: '/tools/rare_sat',
 };
 const hashPath: any = {};
 Object.keys(ROUTE_PATH).forEach((k: any) => {
@@ -95,22 +92,6 @@ export const routes: RouteObject[] = [
         path: ROUTE_PATH.TOOLS,
         element: <Tools />,
       },
-      // {
-      //   path: ROUTE_PATH.RARE_SAT,
-      //   element: <RareSat canSplit={false} />,
-      // },
-      // {
-      //   path: ROUTE_PATH.TOOLS_SPLIT_SAT,
-      //   element: <SplitSat />,
-      // },
-      // {
-      //   path: ROUTE_PATH.TOOLS_UTXO_ASSET,
-      //   element: <UtxoAsset />,
-      // },
-      // {
-      //   path: ROUTE_PATH.TOOLS_GET_UTXO,
-      //   element: <UtxoSat />,
-      // },
       {
         path: ROUTE_PATH.TOOLS_UTXO,
         element: <Utxo />,
@@ -120,13 +101,13 @@ export const routes: RouteObject[] = [
         element: <Transaction/>,
       },
       {
+        path: ROUTE_PATH.TOOLS_SEARCH_SAT,
+        element: <SearchSat />,
+      },
+      {
         path: ROUTE_PATH.TOOLS_SPLITTED_INSCRIPTION,
         element: <SplittedInscription />,
       },
-      // {
-      //   path: ROUTE_PATH.MARKET_INDEX,
-      //   element: <MarketIndex />,
-      // },
       {
         path: ROUTE_PATH.DISCOVER_RARE_SAT,
         element: <RareSat canSplit={false} />,
