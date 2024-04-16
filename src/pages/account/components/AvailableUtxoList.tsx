@@ -24,6 +24,7 @@ import {
   Tooltip,
   useToast,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 interface AvailableUtxoListProps {
   address: string;
@@ -39,6 +40,7 @@ export const AvailableUtxoList = ({
 }: AvailableUtxoListProps) => {
   const { t } = useTranslation();
   const { network, address: currentAccount, publicKey } = useReactWalletStore();
+  const router = useNavigate();
   const { feeRate } = useCommonStore((state) => state);
   const addressRef = useRef<any>();
   const publickkeyRef = useRef<any>();
@@ -124,7 +126,6 @@ export const AvailableUtxoList = ({
 
   const transferHander = async () => {
     try {
-      console.log(selectItem)
       const inscriptionUtxo = selectItem.utxo;
       const inscriptionValue = selectItem.value;
       const firstUtxo = {
@@ -157,7 +158,7 @@ export const AvailableUtxoList = ({
           value: firstOutputValue,
         },
       ];
-      console.log(utxos)
+      console.log(utxos);
       const psbt = await buildTransaction({
         utxos: utxos,
         outputs,
@@ -229,19 +230,18 @@ export const AvailableUtxoList = ({
         key: 'utxo',
         align: 'center',
         render: (t) => {
-          const txid = t.replace(/:0$/m, '');
-          const href =
-            network === 'testnet'
-              ? `https://mempool.space/testnet/tx/${txid}`
-              : `https://mempool.space/tx/${txid}`;
+          // const txid = t.replace(/:0$/m, '');
+          // const href =
+          //   network === 'testnet'
+          //     ? `https://mempool.space/testnet/tx/${txid}`
+          //     : `https://mempool.space/tx/${txid}`;
           return (
             <div className='flex item-center justify-center'>
-              <a
+              <span
                 className='text-blue-500 cursor-pointer mr-2'
-                href={href}
-                target='_blank'>
+                onClick={() => router(`/explorer/utxo/${t}`)}>
                 {hideStr(t)}
-              </a>
+              </span>
               <CopyButton text={t} tooltip='Copy Tick' />
             </div>
           );

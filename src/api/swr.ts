@@ -136,6 +136,34 @@ export const useSatTypes = ({ network }: any) => {
     isLoading: isLoading,
   };
 };
+export const useGetUtxo = ({ network, utxo }: any) => {
+  const { data, error, isLoading, } = useSWR(
+    `ordx-utxo-utxo-${network}`,
+    () => request.getUtxo({ network, utxo }),
+    {
+      keepPreviousData: true,
+    },
+  );
+  return {
+    data,
+    error,
+    isLoading: isLoading,
+  };
+};
+export const useGetAssetByUtxo = ({ network, utxo }: any) => {
+  const { data, error, isLoading, } = useSWR(
+    `ordx-utxo-utxo-${network}`,
+    () => request.getAssetByUtxo({ network, utxo }),
+    {
+      keepPreviousData: true,
+    },
+  );
+  return {
+    data,
+    error,
+    isLoading: isLoading,
+  };
+};
 export const useInscriptiontInfo = ({ inscriptionId, network }: any) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ordx-inscription-${inscriptionId}-${network}`,

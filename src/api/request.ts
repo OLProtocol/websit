@@ -171,22 +171,12 @@ export const getSplittedSats = async ({ ticker, network }: any) => {
 
 export const getAssetByUtxo = async ({ utxo, network }: any) => {
   const { data } = await axios.get(
-    // generateUrl(`getAssetByUtxo/${utxo}`, network),
     generateUrl(`utxo/abbrassets/${utxo}`, network),
   );
   return data;
 };
 
-export const getUtxoByType = async ({ address, type, amount, network }: any) => {
-  console.log('amount = ', amount)
-  // const { data } = await axios.post(
-  //   generateUrl(`utxo/getUtxoByType`, network),
-  //   {
-  //     Address: address,
-  //     Type: type,
-  //     Amount: amount,
-  //   },
-  // );
+export const getUtxoByType = async ({ address, type, network }: any) => {
   const { data } = await axios.get(
     generateUrl(`exotic/address/${address}/${type}`, network),
   );
@@ -194,13 +184,6 @@ export const getUtxoByType = async ({ address, type, amount, network }: any) => 
 };
 
 export const getSatsByUtxo = async ({ utxo, network }: any) => {
-  // const { data } = await axios.post(
-  //   generateUrl(`utxo-ranges`, network),
-  //   {
-  //     utxos,
-  //     excludeCommonRanges,
-  //   },
-  // );
   const { data } = await axios.get(
     generateUrl(`exotic/utxo/${utxo}`, network),
   );
