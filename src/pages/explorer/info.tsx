@@ -256,7 +256,7 @@ export default function Ord2Info() {
               className='w-72'
             />
           </div>
-          {tabText === t('common.holders') && tick && detail?.totalMinted && (
+          {tabText === t('common.holders') && tick && detail?.totalMinted !== undefined && (
             <div className='p-4'>
               <InfoHolders tick={tick} totalQuantity={detail?.totalMinted} />
             </div>

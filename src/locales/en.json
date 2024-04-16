@@ -256,12 +256,21 @@
         "card_header_sat": "Sats"
       },
       "transaction": {
-        "title": "Split & Send",
+        "title": "Transaction",
+        "des": "Split & Send",
         "available_utxo": "Plain UTXO",
         "rare_sats": "Rare Sats",
         "balance": "Balance",
         "input": "Input",
         "output": "Output"
+      },
+      "sat": {
+        "title": "Search for specific sat",
+        "des": "Search for specific sat",
+        "search_placeholder_sat": "Sat ...",
+        "search_placeholder_address": "Btc address ...",
+        "search_result": "Search Result",
+        "btc_address": "Btc address"
       }
     },
    
