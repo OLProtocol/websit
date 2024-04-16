@@ -33,6 +33,13 @@ export const getOrdxStatusList = async (
   return data;
 };
 
+export const health = async ({ network }) => {
+  const { data } = await axios.get(
+    generateUrl(`health`, network),
+  );
+  return data;
+};
+
 export const getOrdxInfo = async ({ tick, network }: Ord2InfoParams) => {
   const { data } = await axios.get(
     // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
