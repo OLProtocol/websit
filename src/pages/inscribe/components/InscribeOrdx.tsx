@@ -779,7 +779,6 @@ export const InscribeOrdx = ({
               </FormLabel>
               <div className='flex-1'>
                 <Dragger
-                  accept='image/*'
                   maxCount={1}
                   onRemove={onFilesRemove}
                   listType='picture'

@@ -184,6 +184,12 @@ export const getAssetByUtxo = async ({ utxo, network }: any) => {
   );
   return data;
 };
+export const getSeedByUtxo = async ({ utxo, network }: any) => {
+  const { data } = await axios.get(
+    generateUrl(`utxo/seed/${utxo}`, network),
+  );
+  return data;
+};
 
 export const getUtxoByType = async ({ address, type, network }: any) => {
   const { data } = await axios.get(

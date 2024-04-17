@@ -184,12 +184,19 @@ export default function Inscribe() {
         if (attrArr.length) {
           attr = attrArr.join(';');
         }
-        console.log(ordxData);
-        list.push({
-          type: 'ordx',
-          name: `mint_${i}`,
-          ordxType: 'mint',
-          value: [
+        let ordxValue: any[] = [
+          JSON.stringify(
+            removeObjectEmptyValue({
+              p: 'ordx',
+              op: 'mint',
+              tick: ordxData.tick.toString().trim(),
+              amt: ordxData.amount.toString(),
+              sat: ordxData.sat > 0 ? ordxData.sat.toString() : undefined,
+            }),
+          ),
+        ];
+        if (ordxData.relateInscriptionId) {
+          ordxValue = [
             JSON.stringify(
               removeObjectEmptyValue({
                 p: 'ordx',
@@ -203,15 +210,14 @@ export default function Inscribe() {
               type: 'relateInscriptionId',
               name: 'relateInscriptionId',
               value: ordxData.relateInscriptionId,
-            },
-            // {
-            //   type: 'file',
-            //   name: 'test.png',
-            //   // value: '<script src="/content/73e77779d84bb049fbf3a9542100a693282d11f010cedd3ec403cbaab29c098di0"></script>',
-            //   value: '<html><img src="/content/2e05e8f64955ecf31e2ba411af16cbb3d47cb225f2cd45039955c96282612006i0" width="100%"/></html>',
-            //   mimeType: 'text/html;charset=utf-8',
-            // }
-          ],
+            },            
+          ]
+        }
+        list.push({
+          type: 'ordx',
+          name: `mint_${i}`,
+          ordxType: 'mint',
+          value: ordxValue,
         });
       }
     } else if (ordxData.type === 'deploy') {

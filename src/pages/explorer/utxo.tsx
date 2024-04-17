@@ -100,7 +100,7 @@ export default function UtxoInfo() {
         width: 100,
         align: 'center',
         render: (t) => {
-          return <UtxoContent inscriptionId={t} />;
+          return <UtxoContent inscriptionId={t} utxo={utxo} />;
         },
       },
     ];
