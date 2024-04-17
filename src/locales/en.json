@@ -4,6 +4,7 @@
     "tick": "Tick",
     "index": "Index",
     "amount": "Amount",
+    "asset_amount": "Asset Amount",
     "mint": "Mint",
     "file": "File",
     "deploy": "Deploy",

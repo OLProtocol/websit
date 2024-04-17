@@ -122,6 +122,21 @@ export default function UtxoInfo() {
               <p className='text-gray-400'>{t('common.amount')}:</p>
               <span className='indent-2'>{detail?.value || '-'}</span>
             </div>
+            <div className='mb-2'>
+              <p className='text-gray-400'>Sat Ranges:</p>
+              <div>
+                {detail.ranges?.map((r: any) => (
+                  <div>
+                    <span>
+                      {r.size === 1
+                        ? r.start
+                        : `${r.start}-${r.start + r.size - 1}`}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {assets?.map((asset: any) => (
               <div>
                 <Divider plain></Divider>
@@ -130,7 +145,7 @@ export default function UtxoInfo() {
                   <span className='indent-2'>{asset?.ticker}</span>
                 </div>
                 <div className='mb-2'>
-                  <p className='text-gray-400'>{t('common.amount')}:</p>
+                  <p className='text-gray-400'>{t('common.asset_amount')}:</p>
                   <span className='indent-2'>{asset?.assetamount}</span>
                 </div>
                 <Table

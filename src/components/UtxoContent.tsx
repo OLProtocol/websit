@@ -7,6 +7,7 @@ interface UtxoContentProps {
   inscriptionId: string;
 }
 export function UtxoContent({ inscriptionId }: UtxoContentProps) {
+  console.log('UtxoContent', inscriptionId);
   const { network } = useReactWalletStore();
   const { data, trigger, isLoading } = useInscriptiontInfo({
     inscriptionId: inscriptionId,
@@ -15,6 +16,7 @@ export function UtxoContent({ inscriptionId }: UtxoContentProps) {
   const detail = useMemo(() => data?.data || {}, [data]);
 
   useEffect(() => {
+    console.log(123);
     if (inscriptionId) {
       trigger();
     }

@@ -4,6 +4,7 @@
     "tick": "Tick",
     "index": "序号",
     "amount": "数量",
+    "asset_amount": "资产数量",
     "mint": "铸造",
     "file": "文件",
     "deploy": "部署",
