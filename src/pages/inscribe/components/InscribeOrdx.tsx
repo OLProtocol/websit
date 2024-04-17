@@ -176,13 +176,6 @@ export const InscribeOrdx = ({
     setSpecialStatus(false);
     setUtxoList([]);
     setSelectedUtxo('');
-    // const ec = new TextEncoder();
-    // const seris = serializeInscriptionId(
-    //   'db0c19557a6bd2ffd5830adf04e6bdbebd21c5b2506ff7fea4db2b4666247e90i0',
-    //   0,
-    // );
-    // console.log('seris', seris);
-    // console.log('seris', ec.encode(seris));
     let checkStatus = true;
     if (data.tick === undefined || data.tick === '') {
       checkStatus = false;

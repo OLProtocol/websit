@@ -5,7 +5,6 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
-// const detaConent = serializeInscriptionId(file.relateInscriptionId, 0);
 export default function OrdxInscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();

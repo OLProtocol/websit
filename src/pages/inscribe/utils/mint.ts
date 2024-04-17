@@ -253,7 +253,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
       }
     } else if (file.relateInscriptionId) {
       const offset = ordxUtxo?.sats?.[0]?.offset || 0;
-      const detaConent = serializeInscriptionId(file.relateInscriptionId, 0);
+      const detaConent = serializeInscriptionId(file.relateInscriptionId);
       const originValue: any = JSON.parse(file.originValue);
       const meteData: any = originValue;
       if (file.seed !== undefined && file.seed !== null) {
