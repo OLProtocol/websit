@@ -70,7 +70,7 @@ export const InscribeOrdx = ({
     block_start: 0,
     block_end: 0,
     rarity: '',
-    cn: 0,
+    // cn: 0,
     trz: 0,
     file: '',
     relateInscriptionId: '',
@@ -314,33 +314,33 @@ export const InscribeOrdx = ({
   };
   const onBlockChecked = (e: any) => {
     set('blockChecked', e.target.checked);
-    set('rarityChecked', !e.target.checked);
-    set('cnChecked', !e.target.checked);
-    set('trzChecked', !e.target.checked);
+    // set('rarityChecked', !e.target.checked);
+    // set('cnChecked', !e.target.checked);
+    // set('trzChecked', !e.target.checked);
   };
   const onRarityChecked = (e: any) => {
     set('rarityChecked', e.target.checked);
-    if (e.target.checked) {
-      set('blockChecked', false);
-    } else {
-      set('blockChecked', !data.cnChecked && !data.trzChecked);
-    }
+    // if (e.target.checked) {
+    //   set('blockChecked', false);
+    // } else {
+    //   set('blockChecked', !data.cnChecked && !data.trzChecked);
+    // }
   };
   const onCnChecked = (e: any) => {
     set('cnChecked', e.target.checked);
-    if (e.target.checked) {
-      set('blockChecked', false);
-    } else {
-      set('blockChecked', !data.rarityChecked && !data.trzChecked);
-    }
+    // if (e.target.checked) {
+    //   set('blockChecked', false);
+    // } else {
+    //   set('blockChecked', !data.rarityChecked && !data.trzChecked);
+    // }
   };
   const onTrzChecked = (e: any) => {
     set('trzChecked', e.target.checked);
-    if (e.target.checked) {
-      set('blockChecked', false);
-    } else {
-      set('blockChecked', !data.rarityChecked && !data.cnChecked);
-    }
+    // if (e.target.checked) {
+    //   set('blockChecked', false);
+    // } else {
+    //   set('blockChecked', !data.rarityChecked && !data.cnChecked);
+    // }
   };
 
   const showSat = useMemo(() => {
@@ -662,7 +662,7 @@ export const InscribeOrdx = ({
                 </div>
               </div>
             </FormControl>
-            <FormControl>
+            {/* <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
                   {t('common.cn')}
@@ -689,7 +689,7 @@ export const InscribeOrdx = ({
                   </div>
                 </div>
               </div>
-            </FormControl>
+            </FormControl> */}
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>

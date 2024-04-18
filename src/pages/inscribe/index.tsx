@@ -63,7 +63,7 @@ export default function Inscribe() {
     limitPerMint: 10000,
     block: '',
     relateInscriptionId: '',
-    cn: 0,
+    // cn: 0,
     trz: 0,
     des: '',
     sat: 0,
@@ -110,13 +110,13 @@ export default function Inscribe() {
     setOrd2Data('repeatMint', data.repeatMint);
     setOrd2Data('limitPerMint', data.limitPerMint);
     setOrd2Data('block', `${data.block_start}-${data.block_end}`);
-    setOrd2Data('cn', data.cn);
+    // setOrd2Data('cn', data.cn);
     setOrd2Data('trz', data.trz);
     setOrd2Data('rarity', data.rarity);
     setOrd2Data('des', data.des);
     setOrd2Data('sat', data.sat);
     setOrd2Data('rarityChecked', data.rarityChecked);
-    setOrd2Data('cnChecked', data.cnChecked);
+    // setOrd2Data('cnChecked', data.cnChecked);
     setOrd2Data('trzChecked', data.trzChecked);
     setOrd2Data('blockChecked', data.blockChecked);
   };

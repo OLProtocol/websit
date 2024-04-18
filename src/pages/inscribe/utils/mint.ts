@@ -253,9 +253,9 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
       const detaConent = serializeInscriptionId(file.relateInscriptionId);
       const originValue: any = JSON.parse(file.originValue);
       const meteData: any = originValue;
-      if (file.seed !== undefined && file.seed !== null) {
-        meteData.seed = file.seed;
-      }
+      // if (file.seed !== undefined && file.seed !== null) {
+      //   meteData.seed = file.seed;
+      // }
       const edcodeMetaData = cbor.encode(meteData);
       console.log('detaConent', detaConent);
       if (ordxUtxo && offset > 0) {
