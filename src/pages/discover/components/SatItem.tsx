@@ -38,11 +38,7 @@ export const SatItem = ({ sat }: SatItemProps) => {
         </>
       ) : (
         <>
-          <span className=''>{sat.start}</span>
-          <span className='mx-2'>-</span>
-          <span className=''>
-            {sat.start + sat.size - 1}({sat.size} sats)
-          </span>
+          <span className=''>{sat.start + ' - ' + (sat.start + sat.size - 1) + '(' + sat.size + ' sats)'}</span>
           &nbsp;
         </>
       )}
@@ -53,8 +49,8 @@ export const SatItem = ({ sat }: SatItemProps) => {
       &nbsp;&nbsp;&nbsp;&nbsp;
       <div className='flex'>
         <CopyButton text={sat.start} tooltip='Copy Sat' className='pt-1' />&nbsp;&nbsp;
-        {/* {sat.canSplit && ['ordx.space'].every((v) => location.hostname !== v) && (
-          // <SplitSatButton sat={sat} tooltip='Split Sat'/>
+        {/* {sat.canSplit && ['ordx.space'].every((v) => location.hostname !== v) && sat.value !== sat.size && (
+          <SplitSatButton sat={sat} tooltip='Split Sat'/>
         )} */}
         {/* <SplitSatButton sat={sat} tooltip='Split Sat'/> */}
       </div>

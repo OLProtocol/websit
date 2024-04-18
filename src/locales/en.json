@@ -66,10 +66,10 @@
     "home": "Home",
     "inscribe": "Inscribe",
     "docs": "Docs",
-    "tools": "Tools",
+    "tools": "Toolbox",
     "discover": "Discover",
     "explorer": "Explorer",
-    "account": "Account"
+    "assets": "Assets"
   },
   "buttons": {
     "submit": "Submit",

@@ -46,7 +46,7 @@ export const NavHeader = () => {
     },
     {
       key: ROUTE_PATH.ACCOUNT,
-      label: t('nav.account'),
+      label: t('nav.assets'),
       value: ROUTE_PATH.ACCOUNT,
       type: 'route',
     },

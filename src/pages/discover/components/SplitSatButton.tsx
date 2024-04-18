@@ -2,19 +2,18 @@ import { Icon } from '@iconify/react';
 import { Tooltip } from 'antd';
 import { ROUTE_PATH } from '@/router';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import { getUtxo, getUtxoByValue } from '@/api';
 import { calculateRate } from '@/lib/utils';
 import { useCommonStore } from '@/store';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '@chakra-ui/react';
 
 interface SatItemProps {
     utxo: string;
-    start: number;
     size: number;
     offset: number;
-    satributes:any;
+    satributes: any;
 }
 
 export const SplitSatButton = ({
@@ -25,26 +24,18 @@ export const SplitSatButton = ({
     tooltip?: string;
 }) => {
     const nav = useNavigate();
-    // const { network, currentAccount } = useUnisatConnect();
     const { t } = useTranslation();
+    const toast = useToast();
     const { network, address: currentAccount } = useReactWalletStore();
-    const [inputList, setInputList] = useState<any[]>() || [];
-    const [outputList, setOutputList] = useState<any[]>() || [];
     const { feeRate } = useCommonStore((state) => state);
-    const [fee, setFee] = useState(0);
 
     // const utxo = sat.utxo;
-    const start = sat.start;
     const size = sat.size;
     const offset = sat.offset;
 
-    const clickHandler = () => {
-        nav(ROUTE_PATH.TOOLS_SPLIT_SAT + '?utxo=' + sat.utxo + '&start=' + sat.start + '&size=' + sat.size + '&offset=' + sat.offset);
-    }
-
-    const toTransact = () => {
-        generateInputsAndOutputs();
-        if (inputList && outputList) {
+    const toTransact = async () => {
+        const { inputList, outputList } = await generateInputsAndOutputs();
+        if (inputList.length > 0) {
             nav(ROUTE_PATH.TOOLS_TRANSACT, { state: { initInputList: inputList, initOutputList: outputList } });
         }
     }
@@ -74,11 +65,11 @@ export const SplitSatButton = ({
         return availableUtxos;
     };
 
-    const generateInputsAndOutputs = async() => {
+    const generateInputsAndOutputs = async () => {
         let utxoValue = await getValueOfUtxo();
 
-        let tmpInputList: any[] = [];
-        let tmpOutputList: any[] = [];
+        let inputList: any[] = [];
+        let outputList: any[] = [];
 
         let tmpAvailableUtxos = await getAvailableUtxos();
         let utxoLength = tmpAvailableUtxos.length;
@@ -86,60 +77,88 @@ export const SplitSatButton = ({
         const rareSatType = sat.satributes[0];
 
         if (offset === 0) {
-            tmpInputList.push({ // 第一个输入
+            inputList.push({ // 第一个输入
                 utxo: sat.utxo,
                 sats: utxoValue,
-                ticker:  t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
+                ticker: t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
             })
 
-            tmpOutputList.push({ // 输出：包含稀有聪
+            outputList.push({ // 输出：包含稀有聪
                 sats: size > 330 ? size : 330,
                 address: currentAccount,
             });
 
-            let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+            let inTotal = inputList.reduce((total, item) => total + item.sats, 0);
             while (inTotal < 330) {// 输入的sats小于330，需要额外添加utxo
-                tmpInputList.push({
+                if (utxoLength === 0) {
+                    toast({
+                        title: 'There is no enough utxo.',
+                        status: 'error',
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                    return { inputList: [], outputList: [] };
+                }
+                inputList.push({
                     utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
                     sats: tmpAvailableUtxos?.[utxoLength - 1].value,
                     ticker: t('pages.tools.transaction.available_utxo'),
                 })
                 tmpAvailableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
                 utxoLength = tmpAvailableUtxos.length;
-                inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+                inTotal = inputList.reduce((total, item) => total + item.sats, 0);
             }
         } else if (offset < 330) {
             let inTotal = offset
             while (inTotal < 330) {
-                tmpInputList.push({
+                if (utxoLength === 0) {
+                    toast({
+                        title: 'There is no enough utxo.',
+                        status: 'error',
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                    return { inputList: [], outputList: [] };
+                }
+                inputList.push({
                     utxo: tmpAvailableUtxos?.[0].txid + ':' + tmpAvailableUtxos?.[0].vout,
                     sats: tmpAvailableUtxos?.[0].value,
                     ticker: t('pages.tools.transaction.available_utxo'),
                 })
                 tmpAvailableUtxos?.splice(0, 1);// 删除utxo
                 utxoLength = tmpAvailableUtxos.length;
-                inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0) + offset;
+                inTotal = inputList.reduce((total, item) => total + item.sats, 0) + offset;
             }
 
-            tmpOutputList.push({
-                sats: tmpInputList.reduce((total, item) => total + item.sats, 0) + offset,
+            outputList.push({
+                sats: inputList.reduce((total, item) => total + item.sats, 0) + offset,
                 address: currentAccount,
             })
 
-            tmpInputList.push({
+            inputList.push({
                 utxo: sat.utxo,
                 sats: utxoValue,
-                ticker:  t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
+                ticker: t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
             })
 
-            tmpOutputList.push({ // 输出：包含稀有聪
+            outputList.push({ // 输出：包含稀有聪
                 sats: size > 330 ? size : 330,
                 address: currentAccount,
             })
 
-            inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+            inTotal = inputList.reduce((total, item) => total + item.sats, 0);
             while (inTotal < 330) {// 输入的sats小于330，需要额外添加utxo
-                tmpInputList.push({
+                if (utxoLength === 0) {
+                    toast({
+                        title: 'There is no enough utxo.',
+                        status: 'error',
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                    return { inputList: [], outputList: [] };
+                }
+
+                inputList.push({
                     utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
                     sats: tmpAvailableUtxos?.[utxoLength - 1].value,
                     ticker: t('pages.tools.transaction.available_utxo'),
@@ -149,41 +168,59 @@ export const SplitSatButton = ({
             }
 
         } else if (offset >= 330) {
-            tmpInputList.push({
+            inputList.push({
                 utxo: sat.utxo,
                 sats: utxoValue,
-                ticker:  t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
+                ticker: t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
             })
 
-            tmpOutputList.push({
+            outputList.push({
                 sats: offset,
                 address: currentAccount,
             });
 
-            tmpOutputList.push({ // 输出：包含稀有聪
+            outputList.push({ // 输出：包含稀有聪
                 sats: size > 330 ? size : 330,
                 address: currentAccount,
             })
 
-            let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+            let inTotal = inputList.reduce((total, item) => total + item.sats, 0);
             while (inTotal < 330) {// 输入的sats小于330，需要额外添加utxo
-                tmpInputList.push({
+                if (utxoLength === 0) {
+                    toast({
+                        title: 'There is no enough utxo.',
+                        status: 'error',
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                    return { inputList: [], outputList: [] };
+                }
+                inputList.push({
                     utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
                     sats: tmpAvailableUtxos?.[utxoLength - 1].value,
                     ticker: t('pages.tools.transaction.available_utxo'),
                 })
                 tmpAvailableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
                 utxoLength = tmpAvailableUtxos.length;
-                inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
+                inTotal = inputList.reduce((total, item) => total + item.sats, 0);
             }
         }
 
-        let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
-        let outTotal = tmpOutputList.reduce((total, item) => total + item.sats, 0);
-        let realityFee = calculateRate(tmpInputList.length, tmpOutputList.length, feeRate.value);
+        let inTotal = inputList.reduce((total, item) => total + item.sats, 0);
+        let outTotal = outputList.reduce((total, item) => total + item.sats, 0);
+        let realityFee = calculateRate(inputList.length, outputList.length, feeRate.value);
 
         while (inTotal - outTotal - realityFee < 0) {
-            tmpInputList.push({
+            if (utxoLength === 0) {
+                toast({
+                    title: 'There is no enough utxo.',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                });
+                return { inputList: [], outputList: [] };
+            }
+            inputList.push({
                 utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
                 sats: tmpAvailableUtxos?.[utxoLength - 1].value,
                 ticker: t('pages.tools.transaction.available_utxo'),
@@ -191,18 +228,16 @@ export const SplitSatButton = ({
             tmpAvailableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
             utxoLength = tmpAvailableUtxos.length;
 
-            inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
-            realityFee = calculateRate(tmpInputList.length, tmpOutputList.length + 1, feeRate.value);
+            inTotal = inputList.reduce((total, item) => total + item.sats, 0);
+            realityFee = calculateRate(inputList.length, outputList.length + 1, feeRate.value);
         }
 
-        tmpOutputList.push({
+        outputList.push({
             sats: inTotal - outTotal - realityFee,
             address: currentAccount,
         })
-
-        setInputList(tmpInputList);
-        setOutputList(tmpOutputList);
-        setFee(realityFee);
+        // setFee(realityFee);
+        return { inputList: inputList, outputList: outputList };
     }
 
     return (

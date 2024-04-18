@@ -304,7 +304,6 @@ export const AvailableUtxoList = ({
     const resp = await getUtxoByValue({
       address,
       network,
-      // value: 10,
       value: 0,
     });
     if (resp.code !== 0) {
