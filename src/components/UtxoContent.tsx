@@ -44,11 +44,13 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
   return (
     <Spin spinning={isLoading}>
       {contentSrc ? (
-        <iframe
-          scrolling='no'
-          sandbox='allow-scripts'
-          src={contentSrc}
-          className='max-w-full'></iframe>
+        <a href={contentSrc} target='_blank' rel='noopener noreferrer'>
+          <iframe
+            scrolling='no'
+            sandbox='allow-scripts'
+            src={contentSrc}
+            className='max-w-full pointer-events-none'></iframe>
+        </a>
       ) : (
         '-'
         // <img src='/logo.jpg' alt='' />
