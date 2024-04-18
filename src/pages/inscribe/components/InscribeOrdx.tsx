@@ -298,6 +298,11 @@ export const InscribeOrdx = ({
     }
     return checkStatus;
   };
+  const tickChange = async (value: string) => {
+    const cleanValue = value.replace(/-/g, ''); // Remove all hyphens from the string
+    setUtxoList([]);
+    set('tick', cleanValue);
+  };
 
   const rarityChange = (value: string) => {
     set('rarity', value);
@@ -546,8 +551,7 @@ export const InscribeOrdx = ({
                 placeholder={t('pages.inscribe.ordx.tick_placeholder')}
                 value={data.tick}
                 onChange={(e) => {
-                  setUtxoList([]);
-                  set('tick', e.target.value);
+                  tickChange(e.target.value);
                 }}
               />
             </div>

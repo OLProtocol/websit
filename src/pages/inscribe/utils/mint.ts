@@ -1,5 +1,4 @@
 import { Address, Signer, Tap, Tx, Script } from '@cmdcode/tapscript';
-import { random } from 'radash';
 import * as cbor from 'cbor-web';
 import {
   buildTransaction,
@@ -31,7 +30,6 @@ interface FileItem {
   relateInscriptionId?: string;
   type: string;
   sha256: string;
-  seed?: number;
   fileHex: string;
   fileName: string;
   fileMimeType: string;
@@ -94,7 +92,6 @@ export const generteFiles = async (list: any[]) => {
         }
         const relateData = value.find((v) => v.type === 'relateInscriptionId');
         if (relateData) {
-          file.seed = random(0, 1000).toString();
           file.relateInscriptionId = relateData.value;
         }
       }

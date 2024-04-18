@@ -1,6 +1,7 @@
 import { Radio, Alert } from 'antd';
 import { useLocation } from 'react-router-dom';
 import { useToast } from '@chakra-ui/react';
+import { random } from 'radash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { InscribeBrc20 } from './components/InscribeBrc20';
@@ -204,14 +205,15 @@ export default function Inscribe() {
                 tick: ordxData.tick.toString().trim(),
                 amt: ordxData.amount.toString(),
                 sat: ordxData.sat > 0 ? ordxData.sat.toString() : undefined,
+                desc: `seed=${random(0, 1000)}`,
               }),
             ),
             {
               type: 'relateInscriptionId',
               name: 'relateInscriptionId',
               value: ordxData.relateInscriptionId,
-            },            
-          ]
+            },
+          ];
         }
         list.push({
           type: 'ordx',
