@@ -8,7 +8,6 @@ interface UtxoContentProps {
   utxo?: string;
 }
 export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
-  console.log('UtxoContent', inscriptionId);
   const { network } = useReactWalletStore();
   const { data, trigger, isLoading } = useInscriptiontInfo({
     inscriptionId: inscriptionId,
@@ -21,14 +20,16 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
   });
   const seed = useMemo(() => seedData?.data?.[0]?.seed || 0, [seedData]);
   const contentSrc = useMemo(() => {
-    console.log(detail?.delegate, seed);
-    if (detail?.delegate && seed !== null && seed !== undefined) {
-      return `https://${
+    let url = '';
+    if (detail?.delegate) {
+      url = `https://${
         network === 'testnet' ? 'testnet.' : ''
-      }ordinals.com/preview/${detail?.delegate}?seed=${seed}`;
-    } else {
-      return;
+      }ordinals.com/preview/${detail?.delegate}`;
     }
+    if (url && seed !== null && seed !== undefined) {
+      url = `${url}?seed=${seed}`;
+    }
+    return url;
   }, [network, detail?.delegate]);
   useEffect(() => {
     if (inscriptionId) {
@@ -44,16 +45,19 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
   return (
     <Spin spinning={isLoading}>
       {contentSrc ? (
-        <a href={contentSrc} target='_blank' rel='noopener noreferrer'>
+        <a
+          href={contentSrc}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='block w-full h-full'>
           <iframe
             scrolling='no'
             sandbox='allow-scripts'
             src={contentSrc}
-            className='max-w-full pointer-events-none'></iframe>
+            className='max-w-full pointer-events-none max-h-full'></iframe>
         </a>
       ) : (
         '-'
-        // <img src='/logo.jpg' alt='' />
       )}
     </Spin>
   );
