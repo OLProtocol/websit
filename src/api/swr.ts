@@ -192,10 +192,10 @@ export const useInscriptiontInfo = ({ inscriptionId, network }: any) => {
     isLoading: isMutating,
   };
 };
-export const useOrdxTickHolders = ({ tick, network }: Ord2InfoParams) => {
+export const useOrdxTickHolders = ({ tick, network, start, limit }) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ordx-history-${tick}-${network}`,
-    () => request.getOrdxTickHolders({ tick, network }),
+    () => request.getOrdxTickHolders({ tick, network, start, limit }),
   );
   1;
   return {

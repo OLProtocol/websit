@@ -4,7 +4,6 @@ import {
   Ord2InfoParams,
   OrdXSummaryParams,
   OrdXHistoryParams,
-  OrdXHistoryDetailParams,
   TxStatusParams,
 } from './types';
 
@@ -61,10 +60,9 @@ export const getOrdxSummary = async ({
   );
   return data;
 };
-export const getOrdxTickHolders = async ({ tick, network }: Ord2InfoParams) => {
+export const getOrdxTickHolders = async ({ tick, network, start, limit, }) => {
   const { data } = await axios.get(
-    // generateUrl(`v1/indexer/ordx/${tick}/holders`, network),
-    generateUrl(`tick/holders/${tick}`, network),
+    generateUrl(`tick/holders/${tick}?start=${start}&limit=${limit}`, network),
   );
   return data;
 };
