@@ -175,9 +175,6 @@ export default function Inscribe() {
         if (ordxData.rarity && ordxData.rarity !== 'common') {
           attrArr.push(`rar=${ordxData.rarity}`);
         }
-        if (ordxData.cn > 0) {
-          attrArr.push(`cn=${ordxData.cn}`);
-        }
         if (ordxData.trz > 0) {
           attrArr.push(`trz=${ordxData.trz}`);
         }
@@ -226,9 +223,6 @@ export default function Inscribe() {
       const attrArr: string[] = [];
       if (ordxData.rarityChecked && ordxData.rarity) {
         attrArr.push(`rar=${ordxData.rarity}`);
-      }
-      if (ordxData.cnChecked && ordxData.cn) {
-        attrArr.push(`cn=${ordxData.cn}`);
       }
       if (ordxData.trzChecked && ordxData.trz) {
         attrArr.push(`trz=${ordxData.trz}`);
