@@ -106,7 +106,7 @@ export const OrdxAddressHolders = ({
   const toSplit = async (item: any) => {
     Modal.confirm({
       centered: true,
-      content: t('message.whether_continue_split'),
+      content: t('messages.whether_continue_split'),
       okText: t('common.continue'),
       cancelText: t('common.cancel'),
       onOk() {

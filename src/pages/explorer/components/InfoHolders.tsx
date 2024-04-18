@@ -23,16 +23,20 @@ export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
   const nav = useNavigate();
   const { t } = useTranslation();
   const { network } = useReactWalletStore();
+  const [start, setStart] = useState(0);
+  const [limit, setLimit] = useState(10);
   const { data, isLoading, trigger } = useOrdxTickHolders({
     tick,
     network,
+    start,
+    limit
   });
-  const [start, setStart] = useState(0);
   
   const list = useMemo(() => data?.data?.detail || [], [data]);
   useEffect(() => {
     trigger();
   }, [network, tick]);
+
   const columns: ColumnsType<DataType> = [
     {
       title: t('common.address'),
