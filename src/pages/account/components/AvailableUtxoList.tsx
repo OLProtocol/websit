@@ -69,7 +69,7 @@ export const AvailableUtxoList = ({
       return acc + cur.value;
     }, 0);
     if (totalValue < 1530 + virtualFee) {
-      message.warning('utxo数量不足，无法切割');
+      message.warning(t('messages.no_enough_utxo'));
       setLoading(false);
       return;
     }
@@ -100,7 +100,7 @@ export const AvailableUtxoList = ({
         publicKey: publicKey,
       });
       await signAndPushPsbt(psbt);
-      message.success('切割成功');
+      message.success(t('messages.cut_success'));
       setLoading(false);
     } catch (error: any) {
       console.error(error.message || 'Split failed');
@@ -111,7 +111,7 @@ export const AvailableUtxoList = ({
 
   const handleOk = async () => {
     if (!transferAddress) {
-      message.error('请输入地址');
+      message.error(t('messages.input_address'));
       return;
     }
     await transferHander();
@@ -142,7 +142,7 @@ export const AvailableUtxoList = ({
       const virtualFee = (148 * 4 + 34 * 3 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
-        message.error('余额不足');
+        message.error(t('messages.no_enough_balance'));
         return;
       }
       const { utxos: filterConsumUtxos } = filterUtxosByValue(
@@ -168,7 +168,7 @@ export const AvailableUtxoList = ({
         publicKey: publicKey,
       });
       await signAndPushPsbt(psbt);
-      message.success('发送成功');
+      message.success(t('messages.transfer_success'));
       onTransfer?.();
       setLoading(false);
     } catch (error: any) {
@@ -184,7 +184,7 @@ export const AvailableUtxoList = ({
       const virtualFee = (148 * 1 + 34 * 2 + 10) * feeRate.value;
       // const utxos = await getUtxo();
       if (item.value < 930 + virtualFee) {
-        message.warning('utxo数量不足，无法切割');
+        message.warning(t('messages.no_enough_utxo'));
         setLoading(false);
         return;
       }
@@ -216,7 +216,7 @@ export const AvailableUtxoList = ({
         publicKey: publicKey,
       });
       await signAndPushPsbt(psbt);
-      message.success('拆分成功');
+      message.success(t('messages.split_success'));
       setLoading(false);
     },
     [currentAccount, publicKey, network],
@@ -256,7 +256,7 @@ export const AvailableUtxoList = ({
     ];
     if (address === currentAccount) {
       defaultColumn.push({
-        title: 'Operations',
+        title: t('common.operation'),
         align: 'center',
         render: (record) => {
           return (
@@ -336,19 +336,19 @@ export const AvailableUtxoList = ({
 
   useEffect(() => {
     if (address) {
-      // trigger();
-      const cachedData = getCachedData('available_ordx_list_' + address);
-      if (cachedData === null) {
-        getAvailableUtxos();
-      } else {
-        setData(cachedData);
-      }
+      // const cachedData = getCachedData('available_ordx_list_' + address);
+      // if (cachedData === null) {
+      //   getAvailableUtxos();
+      // } else {
+      //   setData(cachedData);
+      // }
 
-      // 设置定时器每隔一定时间清除缓存数据
-      const intervalId = setInterval(() => {
-        cacheData('available_ordx_list_' + address, null);
-      }, 600000); // 每10min清除缓存
-      return () => clearInterval(intervalId); // 清除定时器
+      // // 设置定时器每隔一定时间清除缓存数据
+      // const intervalId = setInterval(() => {
+      //   cacheData('available_ordx_list_' + address, null);
+      // }, 600000); // 每10min清除缓存
+      // return () => clearInterval(intervalId); // 清除定时器
+      getAvailableUtxos();
     }
   }, [address, network, start, limit]);
 
