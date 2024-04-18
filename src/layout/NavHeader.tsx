@@ -17,7 +17,7 @@ export const NavHeader = () => {
       key: ROUTE_PATH.HOME,
       label: t('nav.home'),
       // value: ROUTE_PATH.HOME,
-      value: 'https://ordx.space',
+      value: i18n.language == 'en' ?'https://ordx.space' : 'https://ordx.space/index-zh.html',
       type: 'link',
     },
     {
