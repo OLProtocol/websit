@@ -95,24 +95,14 @@ export default function Utxo() {
       if (item.satributes && item.satributes.length > 0) {
         tmpRareSatList.push(sat)
         tmpRareSatSize += sat.size;
-      }
-      tmpSatList.push(sat)
+      } else {
+        tmpSatList.push(sat)
         tmpSatSize += sat.size;
+      }
     })
     setSatList(tmpSatList);
     setSatSize('(total: ' + tmpSatSize + ')')
-
-    // if (data.data.exoticRanges !== null && data.data.exoticRanges.length > 0) {
-    //   data.data.exoticRanges.map((item) => {
-    //     tmpRareSatList.push({
-    //       start: item.start,
-    //       end: item.end,
-    //       size: item.size,
-    //       satributes: item.satributes,
-    //     })
-    //     tmpSize += item.size;
-    //   })
-    // }
+    
     setRareSatList(tmpRareSatList);
     setRareSatSize('(total: ' + tmpRareSatSize + ')')
 
