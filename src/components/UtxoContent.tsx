@@ -18,7 +18,9 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
     network,
     utxo: utxo,
   });
+  console.log(seedData);
   const seed = useMemo(() => seedData?.data?.[0]?.seed || 0, [seedData]);
+  console.log(seed);
   const contentSrc = useMemo(() => {
     let url = '';
     if (detail?.delegate) {
@@ -51,8 +53,7 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
           rel='noopener noreferrer'
           className='block w-full h-full'>
           <iframe
-            scrolling='no'
-            sandbox='allow-scripts'
+            // sandbox='allow-scripts'
             src={contentSrc}
             className='max-w-full pointer-events-none max-h-full'></iframe>
         </a>
