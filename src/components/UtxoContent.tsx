@@ -21,9 +21,9 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
   const seed = useMemo(() => seedData?.data?.[0]?.seed || 0, [seedData]);
   const contentSrc = useMemo(() => {
     if (detail?.delegate && inscriptionId && seed) {
-      return `https://${
-        network === 'testnet' ? 'testnet.' : ''
-      }ordinals.com/preview/${inscriptionId}?seed=${seed}`;
+      return `https://ord-${
+        network === 'testnet' ? 'testnet' : 'mainnet'
+      }.ordx.space/preview/${inscriptionId}?seed=${seed}`;
     } else {
       return;
     }

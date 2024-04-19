@@ -132,9 +132,9 @@ export default function Ord2Info() {
                 <div>
                   <iframe
 
-                    src={`https://${
-                      network === 'testnet' ? 'testnet.' : ''
-                    }ordinals.com/preview/${detail?.inscriptionId}`}
+                    src={`https://ord-${
+                      network === 'testnet' ? 'testnet' : 'mainnet'
+                    }.ordx.space/preview/${detail?.inscriptionId}`}
                     scrolling="no"
                     sandbox='allow-scripts'
                     className='max-w-full w-80 h-80'></iframe>

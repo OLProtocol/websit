@@ -99,9 +99,9 @@ export default function OrdxInscription() {
                   <iframe
                     scrolling='no'
                     sandbox='allow-scripts'
-                    src={`https://${
-                      network === 'testnet' ? 'testnet.' : ''
-                    }ordinals.com/preview/${detail?.delegate}`}
+                    src={`https://ord-${
+                      network === 'testnet' ? 'testnet' : 'mainnet'
+                    }.ordx.space/preview/${detail?.delegate}`}
                     className='max-w-full w-80 h-80'></iframe>
                 </div>
               </div>
