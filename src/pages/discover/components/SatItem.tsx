@@ -28,8 +28,8 @@ export const SatItem = ({ utxo }: SatItemProps) => {
         &nbsp;&nbsp;
         <CopyButton text={utxo.utxo} tooltip='Copy' className='pt-1' />&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
-      <div>
 
+      <div>
         {utxo.sats.map((sat, _) => (
           <div className='flex'>
             <Tag color='green' bordered={false}>
@@ -62,7 +62,7 @@ export const SatItem = ({ utxo }: SatItemProps) => {
           <SplitSatButton sat={sat} tooltip='Split Sat'/>
         )} */}
 
-        {['ordx.space'].every((v) => location.hostname !== v) && utxo.sats.length === 1 && utxo.sats[0].value !== utxo.sats[0].size && (
+        {['ordx.space'].every((v) => location.hostname !== v) && utxo.sats.length === 1 && utxo.sats[0].value !== utxo.sats[0].size && utxo.sats[0].value > 546 && (
           <SplitSatButton sat={utxo.sats[0]} tooltip='Split Sat' />
         )}
       </div>

@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { Tooltip } from 'antd';
 import { ROUTE_PATH } from '@/router';
 import { useNavigate } from 'react-router-dom';
-import { getSatsByUtxo, getUtxo, getUtxoByValue } from '@/api';
+import { getUtxo, getUtxoByValue } from '@/api';
 import { calculateRate } from '@/lib/utils';
 import { useCommonStore } from '@/store';
 import { useReactWalletStore } from 'btc-connect/dist/react';
@@ -83,7 +83,7 @@ export const SplitSatButton = ({
                 ticker: t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
             })
 
-            outputList.push({ // 输出：包含稀有聪
+            outputList.push({ // 第一个输出：包含稀有聪 -- offset=0
                 sats: size > 330 ? size : 330,
                 address: currentAccount,
             });
@@ -130,7 +130,7 @@ export const SplitSatButton = ({
                 inTotal = inputList.reduce((total, item) => total + item.sats, 0) + offset;
             }
 
-            outputList.push({
+            outputList.push({ // 第一个输出 -- 0<offset<330
                 sats: inputList.reduce((total, item) => total + item.sats, 0) + offset,
                 address: currentAccount,
             })
@@ -141,7 +141,7 @@ export const SplitSatButton = ({
                 ticker: t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
             })
 
-            outputList.push({ // 输出：包含稀有聪
+            outputList.push({ // 第二个输出：包含稀有聪 -- 0<offset<330
                 sats: size > 330 ? size : 330,
                 address: currentAccount,
             })
@@ -174,12 +174,12 @@ export const SplitSatButton = ({
                 ticker: t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
             })
 
-            outputList.push({
+            outputList.push({ // 第一个输出 -- offset>=330
                 sats: offset,
                 address: currentAccount,
             });
 
-            outputList.push({ // 输出：包含稀有聪
+            outputList.push({ // 第二个输出：包含稀有聪
                 sats: size > 330 ? size : 330,
                 address: currentAccount,
             })
@@ -232,11 +232,11 @@ export const SplitSatButton = ({
             realityFee = calculateRate(inputList.length, outputList.length + 1, feeRate.value);
         }
 
-        outputList.push({
-            sats: inTotal - outTotal - realityFee,
-            address: currentAccount,
-        })
-        // setFee(realityFee);
+        // outputList.push({
+        //     sats: inTotal - outTotal - realityFee,
+        //     address: currentAccount,
+        // })
+        
         return { inputList: inputList, outputList: outputList };
     }
 
