@@ -99,9 +99,9 @@ export const Ord2FullList = () => {
             <iframe
               scrolling='no'
               sandbox='allow-scripts'
-              src={`https://${
-                network === 'testnet' ? 'testnet.' : ''
-              }ordinals.com/preview/${inscriptionId}`}
+              src={`https://ord-${
+                network === 'testnet' ? 'testnet' : 'mainnet'
+              }.ordx.space/preview/${inscriptionId}`}
               className='max-w-full'></iframe>
           </div>
         ) : (
