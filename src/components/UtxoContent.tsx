@@ -8,7 +8,6 @@ interface UtxoContentProps {
   utxo?: string;
 }
 export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
-  console.log('UtxoContent', inscriptionId);
   const { network } = useReactWalletStore();
   const { data, trigger, isLoading } = useInscriptiontInfo({
     inscriptionId: inscriptionId,
@@ -20,7 +19,6 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
     utxo: utxo,
   });
   const seed = useMemo(() => seedData?.data?.[0]?.seed || 0, [seedData]);
-  console.log('seed', seed);
   const contentSrc = useMemo(() => {
     if (inscriptionId && seed !== null && seed !== undefined) {
       return `https://${
@@ -44,14 +42,17 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
   return (
     <Spin spinning={isLoading}>
       {contentSrc ? (
-        <a href={contentSrc} target='_blank' rel='noopener noreferrer'>
+        <a
+          href={contentSrc}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='block w-full h-full'>
           <iframe
             src={contentSrc}
-            className='max-w-full pointer-events-none'></iframe>
+            className='max-w-full pointer-events-none max-h-full'></iframe>
         </a>
       ) : (
         '-'
-        // <img src='/logo.jpg' alt='' />
       )}
     </Spin>
   );

@@ -5,10 +5,10 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
+
 export default function OrdxInscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
-  const [tabText, setTabText] = useState(t('common.holders'));
   const { network } = useReactWalletStore();
   const nav = useNavigate();
 
