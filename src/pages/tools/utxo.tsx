@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, InputGroup, InputRightElement, IconButton, CardFooter, Button } from '@chakra-ui/react';
 import { getAssetByUtxo, getSatsByUtxo } from '@/api';
@@ -27,6 +27,15 @@ export default function Utxo() {
   function handleKeyDown(event) {
     if (event.key === 'Enter') {
       doSearch();
+    }
+  }
+
+  const handleUtxoChange = (value: any) => {
+    setUtxo(value);
+    if (value === '') {
+      setAssetList([]);
+      setSatList([]);
+      setRareSatList([]);
     }
   }
 
@@ -62,7 +71,7 @@ export default function Utxo() {
       });
       return;
     }
-    if (data.data === null || data.data.length === 0) {
+    if (data.data === null || data.data.sats === null || data.data.sats.length === 0) {
       setLoading(false);
       toast({
         title: 'No data',
@@ -76,36 +85,24 @@ export default function Utxo() {
     let tmpSatList: any[] = [];
     let tmpRareSatSize = 0
     let tmpRareSatList: any[] = [];
-    if (data.data !== null && data.data.length > 0) {
-      data.data.map((item) => {
-        const sat = {
-          start: item.start,
-          end: item.start + item.size - 1,
-          size: item.size,
-          satributes: item.satributes,
-        }
-        if (item.satributes && item.satributes.length > 0) {
-          tmpRareSatList.push(sat)
-          tmpRareSatSize += sat.size;
-        }
+    data.data.sats.map((item) => {
+      const sat = {
+        start: item.start,
+        end: item.start + item.size - 1,
+        size: item.size,
+        satributes: item.satributes,
+      }
+      if (item.satributes && item.satributes.length > 0) {
+        tmpRareSatList.push(sat)
+        tmpRareSatSize += sat.size;
+      } else {
         tmpSatList.push(sat)
-          tmpSatSize += sat.size;
-      })
-    }
+        tmpSatSize += sat.size;
+      }
+    })
     setSatList(tmpSatList);
     setSatSize('(total: ' + tmpSatSize + ')')
-
-    // if (data.data.exoticRanges !== null && data.data.exoticRanges.length > 0) {
-    //   data.data.exoticRanges.map((item) => {
-    //     tmpRareSatList.push({
-    //       start: item.start,
-    //       end: item.end,
-    //       size: item.size,
-    //       satributes: item.satributes,
-    //     })
-    //     tmpSize += item.size;
-    //   })
-    // }
+    
     setRareSatList(tmpRareSatList);
     setRareSatSize('(total: ' + tmpRareSatSize + ')')
 
@@ -143,9 +140,7 @@ export default function Utxo() {
     setAssetList(data.data);
     setLoading(false);
   };
-  // const toInscriptionInfo = (inscriptionNumber) => {
-  //   nav(`/explorer/inscription/${inscriptionNumber}`);
-  // };
+  
   const splitHandler = async () => {
     toast({
       title: 'Coming soon!',
@@ -164,8 +159,9 @@ export default function Utxo() {
             placeholder={t('pages.tools.utxo.search_placeholder')}
             size='large'
             value={utxo}
-            onChange={(e) => setUtxo(e.target.value)} onKeyDown={handleKeyDown}
-            onSearch={doSearch}
+            onChange={(e) => handleUtxoChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onSearch={() => utxo && doSearch()}
           />
         </CardHeader>
         <CardBody pt={0}>
