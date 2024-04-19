@@ -20,14 +20,14 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
   });
   const seed = useMemo(() => seedData?.data?.[0]?.seed || 0, [seedData]);
   const contentSrc = useMemo(() => {
-    if (inscriptionId && seed !== null && seed !== undefined) {
+    if (detail?.delegate && inscriptionId && seed !== null && seed !== undefined) {
       return `https://${
         network === 'testnet' ? 'testnet.' : ''
       }ordinals.com/preview/${inscriptionId}?seed=${seed}`;
     } else {
       return;
     }
-  }, [network, inscriptionId, seed]);
+  }, [network, inscriptionId, seed, detail?.delegate]);
   useEffect(() => {
     if (inscriptionId) {
       trigger();
