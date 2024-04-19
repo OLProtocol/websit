@@ -134,6 +134,13 @@ export const generteFiles = async (list: any[]) => {
   }
   return files;
 };
+/**
+ * `generateBrc20MintContent` 函数用于创建 BRC-20 代币铸币操作的 JSON 字符串，其中包括指定的参数。
+ * @param {string} tick - `generateBrc20MintContent` 函数中的 `tick` 参数是一个字符串，表示正在处理的交易的唯一标识符或引用。它可以是代币 ID、交易 ID 或与铸币操作上下文相关的任何其他标识符。
+ * @param {number} amt - `generateBrc20MintContent` 函数中的 `amt` 参数表示要铸造的代币数量。它是一个数字，指定了铸币过程中要创建的代币的数量。
+ * @param {string} [protocol=brc-20] - `generateBrc20MintContent` 函数中的 `protocol` 参数是一个字符串，用于指定正在使用的协议。在这种情况下，`protocol` 参数的默认值设置为 'brc-20'。
+ * @returns `generateBrc20MintContent` 函数返回一个包含指定协议、操作、代币 tick 和金额值的 JSON 字符串。这些值使用模板字符串和函数参数格式化为字符串。
+ */
 export const generateBrc20MintContent = (
   tick: string,
   amt: number,
@@ -207,7 +214,7 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
       if (ordxUtxo && offset > 0) {
         script = [
           pubkey,
-          'OP_CHECKSIG',
+          'P_CHECKSIG',
           'OP_0',
           'OP_IF',
           ec.encode('ord'),
@@ -243,8 +250,13 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
       }
     } else if (file.relateInscriptionId) {
       const offset = ordxUtxo?.sats?.[0]?.offset || 0;
-      const detaConent = serializeInscriptionId(file.relateInscriptionId, 0);
-      const metaData = cbor.encode(JSON.parse(file.originValue));
+      const detaConent = serializeInscriptionId(file.relateInscriptionId);
+      const originValue: any = JSON.parse(file.originValue);
+      const meteData: any = originValue;
+      // if (file.seed !== undefined && file.seed !== null) {
+      //   meteData.seed = file.seed;
+      // }
+      const edcodeMetaData = cbor.encode(meteData);
       console.log('detaConent', detaConent);
       if (ordxUtxo && offset > 0) {
         script = [
@@ -258,9 +270,11 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           '07',
           ec.encode('ordx'),
           '05',
-          metaData,
+          edcodeMetaData,
           '0B',
           detaConent,
+          // 'OP_0',
+          // content,
           'OP_ENDIF',
         ];
       } else {
@@ -273,9 +287,11 @@ const generateScript = (secret: string, file: FileItem, ordxUtxo?: any) => {
           '07',
           ec.encode('ordx'),
           '05',
-          metaData,
+          edcodeMetaData,
           '0B',
           detaConent,
+          // 'OP_0',
+          // content,
           'OP_ENDIF',
         ];
       }

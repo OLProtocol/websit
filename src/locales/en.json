@@ -4,6 +4,7 @@
     "tick": "Tick",
     "index": "Index",
     "amount": "Amount",
+    "asset_amount": "Asset Amount",
     "mint": "Mint",
     "file": "File",
     "deploy": "Deploy",
@@ -55,7 +56,9 @@
     "hint_connect": "Please connect your wallet first.",
     "available_utxo": "Plain UTXO",
     "continue": "Continue",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "send": "Send",
+    "operation": "Operation"
   },
   "toast": {
     "system_error": "System Error",
@@ -65,10 +68,10 @@
     "home": "Home",
     "inscribe": "Inscribe",
     "docs": "Docs",
-    "tools": "Tools",
+    "tools": "Toolbox",
     "discover": "Discover",
     "explorer": "Explorer",
-    "account": "Account"
+    "assets": "Assets"
   },
   "buttons": {
     "submit": "Submit",
@@ -273,7 +276,6 @@
         "btc_address": "Btc address"
       }
     },
-   
     "docs": {
       "title": "Docs"
     },
@@ -295,5 +297,15 @@
       "toast_oridnals_support": "Ordinals NFT is not supported yet.",
       "tip_enter_address": "Please enter the address"
     }
+  },
+  "messages": {
+    "no_enough_balance": "There is no enough balance.",
+    "transfer_success": "Send successfully.",
+    "whether_continue_split": "The tool is only used for the split demonstration of ordx assets, charging an cong ordx asset plus at least 546 ordinary cong as a split fee to the protocol development team. Please confirm whether to continue the splitting?",
+    "no_enough_utxo": "There is no enough utxo to split.",
+    "no_available_utxo": "There is no available utxo, please cut it first.",
+    "split_success": "Split successfully.",
+    "cut_success": "Cut successfully.",
+    "input_address": "Please input address"
   }
 }

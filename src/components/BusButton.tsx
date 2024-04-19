@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { Button } from 'antd';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-import { useToast } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 
 interface BusButtonProps {
@@ -9,7 +8,6 @@ interface BusButtonProps {
 }
 export const BusButton = ({ children }: BusButtonProps) => {
   const { t } = useTranslation();
-  const toast = useToast();
   const { connect, connected  } =
   useReactWalletStore( state => state);
   const connectHanler = async () => {

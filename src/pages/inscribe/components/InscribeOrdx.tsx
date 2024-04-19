@@ -70,7 +70,7 @@ export const InscribeOrdx = ({
     block_start: 0,
     block_end: 0,
     rarity: '',
-    cn: 0,
+    // cn: 0,
     trz: 0,
     file: '',
     relateInscriptionId: '',
@@ -176,13 +176,6 @@ export const InscribeOrdx = ({
     setSpecialStatus(false);
     setUtxoList([]);
     setSelectedUtxo('');
-    // const ec = new TextEncoder();
-    // const seris = serializeInscriptionId(
-    //   'db0c19557a6bd2ffd5830adf04e6bdbebd21c5b2506ff7fea4db2b4666247e90i0',
-    //   0,
-    // );
-    // console.log('seris', seris);
-    // console.log('seris', ec.encode(seris));
     let checkStatus = true;
     if (data.tick === undefined || data.tick === '') {
       checkStatus = false;
@@ -305,6 +298,11 @@ export const InscribeOrdx = ({
     }
     return checkStatus;
   };
+  const tickChange = async (value: string) => {
+    const cleanValue = value.replace(/-/g, ''); // Remove all hyphens from the string
+    setUtxoList([]);
+    set('tick', cleanValue);
+  };
 
   const rarityChange = (value: string) => {
     set('rarity', value);
@@ -316,33 +314,33 @@ export const InscribeOrdx = ({
   };
   const onBlockChecked = (e: any) => {
     set('blockChecked', e.target.checked);
-    set('rarityChecked', !e.target.checked);
-    set('cnChecked', !e.target.checked);
-    set('trzChecked', !e.target.checked);
+    // set('rarityChecked', !e.target.checked);
+    // set('cnChecked', !e.target.checked);
+    // set('trzChecked', !e.target.checked);
   };
   const onRarityChecked = (e: any) => {
     set('rarityChecked', e.target.checked);
-    if (e.target.checked) {
-      set('blockChecked', false);
-    } else {
-      set('blockChecked', !data.cnChecked && !data.trzChecked);
-    }
+    // if (e.target.checked) {
+    //   set('blockChecked', false);
+    // } else {
+    //   set('blockChecked', !data.cnChecked && !data.trzChecked);
+    // }
   };
   const onCnChecked = (e: any) => {
     set('cnChecked', e.target.checked);
-    if (e.target.checked) {
-      set('blockChecked', false);
-    } else {
-      set('blockChecked', !data.rarityChecked && !data.trzChecked);
-    }
+    // if (e.target.checked) {
+    //   set('blockChecked', false);
+    // } else {
+    //   set('blockChecked', !data.rarityChecked && !data.trzChecked);
+    // }
   };
   const onTrzChecked = (e: any) => {
     set('trzChecked', e.target.checked);
-    if (e.target.checked) {
-      set('blockChecked', false);
-    } else {
-      set('blockChecked', !data.rarityChecked && !data.cnChecked);
-    }
+    // if (e.target.checked) {
+    //   set('blockChecked', false);
+    // } else {
+    //   set('blockChecked', !data.rarityChecked && !data.cnChecked);
+    // }
   };
 
   const showSat = useMemo(() => {
@@ -553,8 +551,7 @@ export const InscribeOrdx = ({
                 placeholder={t('pages.inscribe.ordx.tick_placeholder')}
                 value={data.tick}
                 onChange={(e) => {
-                  setUtxoList([]);
-                  set('tick', e.target.value);
+                  tickChange(e.target.value);
                 }}
               />
             </div>
@@ -665,7 +662,7 @@ export const InscribeOrdx = ({
                 </div>
               </div>
             </FormControl>
-            <FormControl>
+            {/* <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
                   {t('common.cn')}
@@ -692,7 +689,7 @@ export const InscribeOrdx = ({
                   </div>
                 </div>
               </div>
-            </FormControl>
+            </FormControl> */}
             <FormControl>
               <div className='flex items-center  mb-4'>
                 <FormLabel className='w-52' marginBottom={0}>
@@ -779,7 +776,6 @@ export const InscribeOrdx = ({
               </FormLabel>
               <div className='flex-1'>
                 <Dragger
-                  accept='image/*'
                   maxCount={1}
                   onRemove={onFilesRemove}
                   listType='picture'

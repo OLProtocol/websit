@@ -138,7 +138,7 @@ export const useSatTypes = ({ network }: any) => {
 };
 export const useGetUtxo = ({ network, utxo }: any) => {
   const { data, error, isLoading, } = useSWR(
-    `ordx-utxo-utxo-${network}`,
+    `ordx-utxo-${utxo}-${network}`,
     () => request.getUtxo({ network, utxo }),
     {
       keepPreviousData: true,
@@ -148,6 +148,20 @@ export const useGetUtxo = ({ network, utxo }: any) => {
     data,
     error,
     isLoading: isLoading,
+  };
+};
+export const useSeedByUtxo = ({ utxo, network }: any) => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
+    `ordx-seed-${utxo}-${network}`,
+    () => request.getSeedByUtxo({ network, utxo }),
+  );
+  1;
+  return {
+    data,
+    trigger,
+    reset,
+    error,
+    isLoading: isMutating,
   };
 };
 export const useGetAssetByUtxo = ({ network, utxo }: any) => {
@@ -178,10 +192,10 @@ export const useInscriptiontInfo = ({ inscriptionId, network }: any) => {
     isLoading: isMutating,
   };
 };
-export const useOrdxTickHolders = ({ tick, network }: Ord2InfoParams) => {
+export const useOrdxTickHolders = ({ tick, network, start, limit }) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ordx-history-${tick}-${network}`,
-    () => request.getOrdxTickHolders({ tick, network }),
+    () => request.getOrdxTickHolders({ tick, network, start, limit }),
   );
   1;
   return {

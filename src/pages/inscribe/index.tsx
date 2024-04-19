@@ -1,6 +1,7 @@
 import { Radio, Alert } from 'antd';
 import { useLocation } from 'react-router-dom';
 import { useToast } from '@chakra-ui/react';
+import { random } from 'radash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { InscribeBrc20 } from './components/InscribeBrc20';
@@ -62,7 +63,7 @@ export default function Inscribe() {
     limitPerMint: 10000,
     block: '',
     relateInscriptionId: '',
-    cn: 0,
+    // cn: 0,
     trz: 0,
     des: '',
     sat: 0,
@@ -109,13 +110,13 @@ export default function Inscribe() {
     setOrd2Data('repeatMint', data.repeatMint);
     setOrd2Data('limitPerMint', data.limitPerMint);
     setOrd2Data('block', `${data.block_start}-${data.block_end}`);
-    setOrd2Data('cn', data.cn);
+    // setOrd2Data('cn', data.cn);
     setOrd2Data('trz', data.trz);
     setOrd2Data('rarity', data.rarity);
     setOrd2Data('des', data.des);
     setOrd2Data('sat', data.sat);
     setOrd2Data('rarityChecked', data.rarityChecked);
-    setOrd2Data('cnChecked', data.cnChecked);
+    // setOrd2Data('cnChecked', data.cnChecked);
     setOrd2Data('trzChecked', data.trzChecked);
     setOrd2Data('blockChecked', data.blockChecked);
   };
@@ -174,9 +175,6 @@ export default function Inscribe() {
         if (ordxData.rarity && ordxData.rarity !== 'common') {
           attrArr.push(`rar=${ordxData.rarity}`);
         }
-        if (ordxData.cn > 0) {
-          attrArr.push(`cn=${ordxData.cn}`);
-        }
         if (ordxData.trz > 0) {
           attrArr.push(`trz=${ordxData.trz}`);
         }
@@ -184,12 +182,19 @@ export default function Inscribe() {
         if (attrArr.length) {
           attr = attrArr.join(';');
         }
-        console.log(ordxData);
-        list.push({
-          type: 'ordx',
-          name: `mint_${i}`,
-          ordxType: 'mint',
-          value: [
+        let ordxValue: any[] = [
+          JSON.stringify(
+            removeObjectEmptyValue({
+              p: 'ordx',
+              op: 'mint',
+              tick: ordxData.tick.toString().trim(),
+              amt: ordxData.amount.toString(),
+              sat: ordxData.sat > 0 ? ordxData.sat.toString() : undefined,
+            }),
+          ),
+        ];
+        if (ordxData.relateInscriptionId) {
+          ordxValue = [
             JSON.stringify(
               removeObjectEmptyValue({
                 p: 'ordx',
@@ -197,6 +202,7 @@ export default function Inscribe() {
                 tick: ordxData.tick.toString().trim(),
                 amt: ordxData.amount.toString(),
                 sat: ordxData.sat > 0 ? ordxData.sat.toString() : undefined,
+                desc: `seed=${random(0, 1000)}`,
               }),
             ),
             {
@@ -204,23 +210,19 @@ export default function Inscribe() {
               name: 'relateInscriptionId',
               value: ordxData.relateInscriptionId,
             },
-            // {
-            //   type: 'file',
-            //   name: 'test.png',
-            //   // value: '<script src="/content/73e77779d84bb049fbf3a9542100a693282d11f010cedd3ec403cbaab29c098di0"></script>',
-            //   value: '<html><img src="/content/2e05e8f64955ecf31e2ba411af16cbb3d47cb225f2cd45039955c96282612006i0" width="100%"/></html>',
-            //   mimeType: 'text/html;charset=utf-8',
-            // }
-          ],
+          ];
+        }
+        list.push({
+          type: 'ordx',
+          name: `mint_${i}`,
+          ordxType: 'mint',
+          value: ordxValue,
         });
       }
     } else if (ordxData.type === 'deploy') {
       const attrArr: string[] = [];
       if (ordxData.rarityChecked && ordxData.rarity) {
         attrArr.push(`rar=${ordxData.rarity}`);
-      }
-      if (ordxData.cnChecked && ordxData.cn) {
-        attrArr.push(`cn=${ordxData.cn}`);
       }
       if (ordxData.trzChecked && ordxData.trz) {
         attrArr.push(`trz=${ordxData.trz}`);

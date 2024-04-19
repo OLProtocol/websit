@@ -31,17 +31,9 @@ export const createLittleEndianInteger = (value: number) => {
 
 export const serializeInscriptionId = (
   inscriptionId: string,
-  index: number,
 ) => {
   // 将txid反转并转换为字节数组
   const txid = inscriptionId.split('i0')[0];
-  // const txidReverse = txid
-  //   ? txid
-  //       .match(/.{1,2}/g)
-  //       ?.map((block) => block.split('').reverse().join(''))
-  //       .join('')
-  //   : '';
-  console.log(index);
   const txidBytes = txid
     .match(/.{2}/g)
     ?.reverse()

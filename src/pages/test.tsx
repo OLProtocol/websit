@@ -1,10 +1,11 @@
 import { Button } from 'antd';
 import { sort } from 'radash';
+import { SatsRangeShow } from '@/components/SatsRangeShow';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks';
 import { txHelpers } from '@unisat/wallet-sdk';
 export default function Test() {
   const filterUtxosByValue = (utxos: any[], value, reverseStatus = true) => {
-    const sortUtxos = sort(utxos, u => u.value);
+    const sortUtxos = sort(utxos, (u) => u.value);
     const _utxoList = structuredClone(sortUtxos);
     if (reverseStatus) {
       _utxoList.reverse();
@@ -48,26 +49,28 @@ export default function Test() {
   // };
 
   const testHandler = async () => {
-    console.log(filterUtxosByValue(
-      [
-        {
-          txid: 123123123,
-          vout: 0,
-          value: 10000,
-        },
-        {
-          txid: 12123223,
-          vout: 0,
-          value: 100200,
-        },
-        {
-          txid: 22222222,
-          vout: 0,
-          value: 1100,
-        },
-      ],
-      600,
-    ));
+    console.log(
+      filterUtxosByValue(
+        [
+          {
+            txid: 123123123,
+            vout: 0,
+            value: 10000,
+          },
+          {
+            txid: 12123223,
+            vout: 0,
+            value: 100200,
+          },
+          {
+            txid: 22222222,
+            vout: 0,
+            value: 1100,
+          },
+        ],
+        600,
+      ),
+    );
     // const btcUtxos = await getBtcUtxos();
     // console.log(btcUtxos);
     // console.log(Buffer.from(btcUtxos[0].scriptPk, 'hex'));
@@ -125,5 +128,10 @@ export default function Test() {
     // const txHex = signedToPsbt.extractTransaction().toHex();
     // console.log(txHex);
   };
-  return <Button onClick={testHandler}>Test</Button>;
+  return (
+    <>
+      <SatsRangeShow />
+      <Button onClick={testHandler}>Test</Button>
+    </>
+  );
 }

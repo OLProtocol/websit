@@ -503,7 +503,7 @@ export default function Transaction () {
 
   useEffect(() => {
     calculateBalance();
-  }, [feeRate]);
+  }, [feeRate, inputList, outputList]);
 
   useEffect(() => {
     if (initInputList && initInputList.length > 0) {
@@ -610,7 +610,7 @@ export default function Transaction () {
       inputItems.push(newItem);
     }
     setInputList('items', inputItems);
-    if (outputList.items.length > 1) {
+    if (initOutputList && initOutputList.length > 0) {
       calculateBalance();
     }
   }, [initInputList, initOutputList]);

@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import {
   hideStr,
   filterUtxosByValue,
-  addressToScriptPublicKey,
   buildTransaction,
   signAndPushPsbt,
 } from '@/lib/utils';
@@ -71,7 +70,7 @@ export const OrdxAddressHolders = ({
       const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
-        message.error('余额不足');
+        message.error(t('messages.no_enough_balance'));
         return;
       }
       const { utxos: filterConsumUtxos } = filterUtxosByValue(
@@ -95,7 +94,7 @@ export const OrdxAddressHolders = ({
         publicKey: publicKey,
       });
       await signAndPushPsbt(psbt);
-      message.success('发送成功');
+      message.success(t('messages.transfer_success'));
       onTransfer?.();
       setLoading(false);
     } catch (error: any) {
@@ -107,7 +106,7 @@ export const OrdxAddressHolders = ({
   const toSplit = async (item: any) => {
     Modal.confirm({
       centered: true,
-      content: `该工具仅用于ordx资产的拆分演示，会收取一个聪的ordx资产加上至少546个普通聪作为拆分费用支付给协议开发团队。请确认是否继续拆分？`,
+      content: t('messages.whether_continue_split'),
       okText: t('common.continue'),
       cancelText: t('common.cancel'),
       onOk() {
@@ -130,7 +129,7 @@ export const OrdxAddressHolders = ({
         value: Number(inscriptionValue),
       };
       if (splitUtxo.value < 331) {
-        message.warning('utxo数量不足，无法拆分！');
+        message.warning(t('messages.no_enough_utxo'));
         setLoading(false);
         return;
       }
@@ -142,7 +141,7 @@ export const OrdxAddressHolders = ({
       });
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length || consumUtxos.length < 2) {
-        message.error('没有可用utxo,请先进行切割！');
+        message.error(t('messages.no_available_utxo'));
         return;
       }
 
@@ -152,7 +151,7 @@ export const OrdxAddressHolders = ({
         total: avialableValue,
       } = filterUtxosByValue(consumUtxos, virtualFee + 330);
       if (serviceUtxo.value > 1000) {
-        message.error('没有可用utxo,请先进行切割！');
+        message.error(t('messages.no_available_utxo'));
         return;
       }
 
@@ -180,7 +179,7 @@ export const OrdxAddressHolders = ({
       });
       console.log(psbt);
       await signAndPushPsbt(psbt);
-      message.success('拆分成功');
+      message.success(t('messages.split_success'));
       setLoading(false);
     } catch (error: any) {
       console.error(error);
@@ -190,7 +189,7 @@ export const OrdxAddressHolders = ({
   };
   const handleOk = async () => {
     if (!transferAddress) {
-      message.error('请输入地址');
+      message.error(t('messages.input_address'));
       return;
     }
     await transferHander();
@@ -420,13 +419,13 @@ export const OrdxAddressHolders = ({
             }}
           />
           <Modal
-            title='发送'
+            title={t('common.send')}
             centered
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}>
             <Input
-              placeholder='请输入地址'
+              placeholder={t('messages.input_address')}
               value={transferAddress}
               onChange={(e) => setTransferAddress(e.target.value)}
             />
