@@ -264,6 +264,7 @@
         "available_utxo": "Plain UTXO",
         "rare_sats": "Rare Sats",
         "balance": "Balance",
+        "balance_des": "When the balance is less than 546 sats, the remaining balance is transferred to the miners.",
         "input": "Input",
         "output": "Output"
       },
@@ -294,14 +295,14 @@
       "cut": "Cut",
       "quick_cut": "Quick cut",
       "quick_cut_des": "Quick cut generates 2 UTXO with 600sat.",
-      "toast_oridnals_support": "Ordinals NFT is not supported yet.",
+      "toast_oridnals_support": "Ordinals NFT is in development.",
       "tip_enter_address": "Please enter the address"
     }
   },
   "messages": {
     "no_enough_balance": "There is no enough balance.",
     "transfer_success": "Send successfully.",
-    "whether_continue_split": "The tool is only used for the split demonstration of ordx assets, charging an cong ordx asset plus at least 546 ordinary cong as a split fee to the protocol development team. Please confirm whether to continue the splitting?",
+    "whether_continue_split": "The tool is only used for the split demonstration of ordx assets, charging an sat ordx asset plus at least 546 ordinary sats as a split fee to the protocol development team. Please confirm whether to continue the splitting?",
     "no_enough_utxo": "There is no enough utxo to split.",
     "no_available_utxo": "There is no available utxo, please cut it first.",
     "split_success": "Split successfully.",

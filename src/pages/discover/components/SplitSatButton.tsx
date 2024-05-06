@@ -71,8 +71,8 @@ export const SplitSatButton = ({
         let inputList: any[] = [];
         let outputList: any[] = [];
 
-        let tmpAvailableUtxos = await getAvailableUtxos();
-        let utxoLength = tmpAvailableUtxos.length;
+        let availableUtxos = await getAvailableUtxos();
+        let utxoLength = availableUtxos.length;
 
         const rareSatType = sat.satributes[0];
 
@@ -83,7 +83,7 @@ export const SplitSatButton = ({
                 ticker: t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
             })
 
-            outputList.push({ // 输出：包含稀有聪
+            outputList.push({ // 第一个输出：包含稀有聪 -- offset=0
                 sats: size > 330 ? size : 330,
                 address: currentAccount,
             });
@@ -100,12 +100,12 @@ export const SplitSatButton = ({
                     return { inputList: [], outputList: [] };
                 }
                 inputList.push({
-                    utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
-                    sats: tmpAvailableUtxos?.[utxoLength - 1].value,
+                    utxo: availableUtxos?.[utxoLength - 1].txid + ':' + availableUtxos?.[utxoLength - 1].vout,
+                    sats: availableUtxos?.[utxoLength - 1].value,
                     ticker: t('pages.tools.transaction.available_utxo'),
                 })
-                tmpAvailableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
-                utxoLength = tmpAvailableUtxos.length;
+                availableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
+                utxoLength = availableUtxos.length;
                 inTotal = inputList.reduce((total, item) => total + item.sats, 0);
             }
         } else if (offset < 330) {
@@ -121,16 +121,16 @@ export const SplitSatButton = ({
                     return { inputList: [], outputList: [] };
                 }
                 inputList.push({
-                    utxo: tmpAvailableUtxos?.[0].txid + ':' + tmpAvailableUtxos?.[0].vout,
-                    sats: tmpAvailableUtxos?.[0].value,
+                    utxo: availableUtxos?.[0].txid + ':' + availableUtxos?.[0].vout,
+                    sats: availableUtxos?.[0].value,
                     ticker: t('pages.tools.transaction.available_utxo'),
                 })
-                tmpAvailableUtxos?.splice(0, 1);// 删除utxo
-                utxoLength = tmpAvailableUtxos.length;
+                availableUtxos?.splice(0, 1);// 删除utxo
+                utxoLength = availableUtxos.length;
                 inTotal = inputList.reduce((total, item) => total + item.sats, 0) + offset;
             }
 
-            outputList.push({
+            outputList.push({ // 第一个输出 -- 0<offset<330
                 sats: inputList.reduce((total, item) => total + item.sats, 0) + offset,
                 address: currentAccount,
             })
@@ -141,7 +141,7 @@ export const SplitSatButton = ({
                 ticker: t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
             })
 
-            outputList.push({ // 输出：包含稀有聪
+            outputList.push({ // 第二个输出：包含稀有聪 -- 0<offset<330
                 sats: size > 330 ? size : 330,
                 address: currentAccount,
             })
@@ -159,12 +159,12 @@ export const SplitSatButton = ({
                 }
 
                 inputList.push({
-                    utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
-                    sats: tmpAvailableUtxos?.[utxoLength - 1].value,
+                    utxo: availableUtxos?.[utxoLength - 1].txid + ':' + availableUtxos?.[utxoLength - 1].vout,
+                    sats: availableUtxos?.[utxoLength - 1].value,
                     ticker: t('pages.tools.transaction.available_utxo'),
                 })
-                tmpAvailableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
-                utxoLength = tmpAvailableUtxos.length;
+                availableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
+                utxoLength = availableUtxos.length;
             }
 
         } else if (offset >= 330) {
@@ -174,12 +174,12 @@ export const SplitSatButton = ({
                 ticker: t('pages.tools.transaction.rare_sats') + '-' + rareSatType,
             })
 
-            outputList.push({
+            outputList.push({ // 第一个输出 -- offset>=330
                 sats: offset,
                 address: currentAccount,
             });
 
-            outputList.push({ // 输出：包含稀有聪
+            outputList.push({ // 第二个输出：包含稀有聪
                 sats: size > 330 ? size : 330,
                 address: currentAccount,
             })
@@ -196,12 +196,12 @@ export const SplitSatButton = ({
                     return { inputList: [], outputList: [] };
                 }
                 inputList.push({
-                    utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
-                    sats: tmpAvailableUtxos?.[utxoLength - 1].value,
+                    utxo: availableUtxos?.[utxoLength - 1].txid + ':' + availableUtxos?.[utxoLength - 1].vout,
+                    sats: availableUtxos?.[utxoLength - 1].value,
                     ticker: t('pages.tools.transaction.available_utxo'),
                 })
-                tmpAvailableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
-                utxoLength = tmpAvailableUtxos.length;
+                availableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
+                utxoLength = availableUtxos.length;
                 inTotal = inputList.reduce((total, item) => total + item.sats, 0);
             }
         }
@@ -221,22 +221,22 @@ export const SplitSatButton = ({
                 return { inputList: [], outputList: [] };
             }
             inputList.push({
-                utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
-                sats: tmpAvailableUtxos?.[utxoLength - 1].value,
+                utxo: availableUtxos?.[utxoLength - 1].txid + ':' + availableUtxos?.[utxoLength - 1].vout,
+                sats: availableUtxos?.[utxoLength - 1].value,
                 ticker: t('pages.tools.transaction.available_utxo'),
             })
-            tmpAvailableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
-            utxoLength = tmpAvailableUtxos.length;
+            availableUtxos?.splice(utxoLength - 1, 1);// 删除utxo
+            utxoLength = availableUtxos.length;
 
             inTotal = inputList.reduce((total, item) => total + item.sats, 0);
             realityFee = calculateRate(inputList.length, outputList.length + 1, feeRate.value);
         }
 
-        outputList.push({
-            sats: inTotal - outTotal - realityFee,
-            address: currentAccount,
-        })
-        // setFee(realityFee);
+        // outputList.push({
+        //     sats: inTotal - outTotal - realityFee,
+        //     address: currentAccount,
+        // })
+        
         return { inputList: inputList, outputList: outputList };
     }
 

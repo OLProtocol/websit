@@ -212,11 +212,6 @@ export default function Transaction () {
       return;
     }
 
-    // const realityFee = calculateRate(
-    //   inputList.items.length,
-    //   outputList.items.length,
-    //   feeRate.value,
-    // );
     const utxos = inputList.items.map((v) => {
       return {
         txid: v.value.utxo.split(':')[0],
@@ -224,6 +219,7 @@ export default function Transaction () {
         value: v.value.sats,
       };
     });
+    
     const fee = await calcNetworkFee({
       utxos,
       outputs: outputList.items.map((v) => ({
@@ -265,9 +261,11 @@ export default function Transaction () {
       const inTotal = inputList.items.reduce((acc, cur) => {
         return acc + cur.value.sats;
       }, 0);
+
       const outTotal = outputList.items.reduce((acc, cur) => {
         return acc + cur.value.sats;
       }, 0);
+
       const utxos = inputList.items.map((v) => {
         return {
           txid: v.value.utxo.split(':')[0],
@@ -275,28 +273,7 @@ export default function Transaction () {
           value: v.value.sats,
         };
       });
-      // inputList.items.map((v) => {
-      //   inTotal += v.value.sats;
 
-      //   psbt.addInput({
-      //     hash: v.value.utxo.split(':')[0],
-      //     index: Number(v.value.utxo.split(':')[1]),
-      //     witnessUtxo: {
-      //       script: Buffer.from(addressToScriptPublicKey(currentAccount), 'hex'),
-      //       value: v.value.sats,
-      //     },
-      //   })
-      // })
-
-      // outputList.items.map((v) => {
-      //   outTotal += v.value.sats;
-      //   psbt.addOutput({
-      //     address: v.value.address,
-      //     value: v.value.sats,
-      //   })
-      // })
-
-      // const realityFee = calculateRate(inputList.items.length, outputList.items.length, feeRate.value);
       const fee = await calcNetworkFee({
         utxos,
         outputs: outputList.items.map((v) => ({
@@ -401,7 +378,7 @@ export default function Transaction () {
             if (!utxoExist) {// utxo does not exist
               if (tickers.some((obj) => obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0])) { // the type of rare sat already exists
                 tickers = tickers.map((obj) => {
-                  if ( obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0]) {
+                  if (obj['ticker'] === t('pages.tools.transaction.rare_sats') + '-' + item.sats[0].satributes[0]) {
                     return {
                       ticker: obj['ticker'],
                       utxos: [...obj.utxos, utxo],
@@ -512,7 +489,7 @@ export default function Transaction () {
     if (initOutputList && initOutputList.length > 0) {
       return
     }
-    
+
     setTickerList([]);
     setInputList('items', [
       {
@@ -552,7 +529,7 @@ export default function Transaction () {
       if (initOutputList[0].address === currentAccount) {
         initOutputList.map((item) => {
           const newItem = {
-            id: outputItems.length+1,
+            id: outputItems.length + 1,
             value: {
               sats: item.sats,
               unit: 'sats',
@@ -579,7 +556,7 @@ export default function Transaction () {
     if (initInputList && initInputList.length > 0) {
       initInputList.map((item) => {
         const newItem = {
-          id: inputItems.length+1,
+          id: inputItems.length + 1,
           value: {
             ticker: item.ticker,
             utxo: item.utxo,
@@ -624,12 +601,12 @@ export default function Transaction () {
         <Divider borderColor={'teal.500'} />
         <CardBody>
           <Stack>
-            <Flex>
-              <Heading flex={8} as='h6' size='sm'>
-              {t('pages.tools.transaction.input')}
-              </Heading>
-            </Flex>
             <FormControl>
+              <Flex>
+                <Heading flex={8} as='h6' size='sm'>
+                  {t('pages.tools.transaction.input')}
+                </Heading>
+              </Flex>
               {inputList.items.map((item, i) => (
                 <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
                   <AntSelect
@@ -724,12 +701,13 @@ export default function Transaction () {
           </Stack>
           <Divider borderColor={'teal.500'} mt={4} mb={4} />
           <Stack>
-            <Flex>
-              <Heading flex={8} as='h6' size='sm'>
-              {t('pages.tools.transaction.output')}
-              </Heading>
-            </Flex>
             <FormControl>
+              <Flex>
+                <Heading flex={8} as='h6' size='sm'>
+                  {t('pages.tools.transaction.output')}
+                </Heading>
+              </Flex>
+
               {outputList.items.map((item) => (
                 <Flex key={item.id} whiteSpace={'nowrap'} gap={4} pt={2}>
                   <InputGroup w={'60%'}>
@@ -802,12 +780,15 @@ export default function Transaction () {
           </Stack>
           <Divider borderColor={'teal.500'} mt={4} mb={4} />
           <Stack>
-            <Flex>
-              <Heading flex={8} as='h6' size='sm'>
-              {t('pages.tools.transaction.balance')}
-              </Heading>
-            </Flex>
             <FormControl>
+              <Flex>
+                <Heading flex={8} as='h6' size='sm'>
+                  {t('pages.tools.transaction.balance')}
+                  <span className='text-gray-400 text-sm font-light'>({t('pages.tools.transaction.balance_des')})</span>
+                </Heading>
+                
+              </Flex>
+
               {outputList.items.length === 0 ? (
                 <div className='max-w-max mx-auto p-2'>
                   <Image src='/images/no_data.svg' className='w-10 h-10 ml-1' />

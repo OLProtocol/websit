@@ -77,7 +77,7 @@ export const buildTransaction = async ({
   console.log(btcUtxos);
   tx.setEnableRBF(true);
 
-   outputs.forEach((v) => {
+  outputs.forEach((v) => {
     tx.addOutput(v.address, v.value);
   });
   await tx.addSufficientUtxosForFee(btcUtxos, {

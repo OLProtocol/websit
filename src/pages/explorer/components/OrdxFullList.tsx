@@ -99,9 +99,9 @@ export const Ord2FullList = () => {
             <iframe
               scrolling='no'
               sandbox='allow-scripts'
-              src={`https://${
-                network === 'testnet' ? 'testnet.' : ''
-              }ordinals.com/preview/${inscriptionId}`}
+              src={`https://ord-${
+                network === 'testnet' ? 'testnet' : 'mainnet'
+              }.ordx.space/preview/${inscriptionId}`}
               className='max-w-full'></iframe>
           </div>
         ) : (
@@ -297,6 +297,7 @@ export const Ord2FullList = () => {
 
   const getAllOrdxs = async () => {
     setLoading(true);
+    setData({});
     const resp = await getOrdxStatusList({
       start: start,
       limit: limit,
@@ -314,24 +315,11 @@ export const Ord2FullList = () => {
     }
     setLoading(false);
     setData(resp);
-    cacheData('all_ordx_list_' + currentAccount, resp);
   };
 
   useEffect(() => {
     getAllOrdxs();
     getOrdxVersion();
-    // const cachedData = getCachedData('all_ordx_list_' + currentAccount);
-    // if (cachedData === null) {
-    //   getAllOrdxs();
-    // } else {
-    //   setData(cachedData);
-    // }
-
-    // // 设置定时器每隔一定时间清除缓存数据
-    // const intervalId = setInterval(() => {
-    //   cacheData('all_ordx_list_' + currentAccount, null);
-    // }, 600000); // 每10min清除一次
-    // return () => clearInterval(intervalId); // 清除定时器
   }, [network, currentAccount]);
 
   return (

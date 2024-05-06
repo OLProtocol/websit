@@ -264,6 +264,7 @@
         "available_utxo": "Plain UTXO",
         "rare_sats": "Rare Sats",
         "balance": "余额",
+        "balance_des": "余额小于546 sats时，会将余额转给矿工。",
         "input": "输入",
         "output": "输出"
       },
@@ -292,7 +293,7 @@
       "rare_sats": "Rare Sats",
       "ord_nft": "Ordinals NFT",
       "cut": "切割",
-      "toast_oridnals_support": "Ordinals NFT 暂不支持！",
+      "toast_oridnals_support": "开发中！",
       "quick_cut": "快速切割",
       "quick_cut_des": "快速切割生成2个600UTXO",
       "tip_enter_address": "请输入地址"

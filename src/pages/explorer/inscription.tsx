@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useInscriptiontInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
@@ -10,6 +10,8 @@ export default function OrdxInscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
   const { network } = useReactWalletStore();
+  const nav = useNavigate();
+
   const { data, trigger, isLoading } = useInscriptiontInfo({
     inscriptionId: inscriptionId,
     network,
@@ -32,6 +34,7 @@ export default function OrdxInscription() {
       return `https://ordinals.com/inscription/${detail?.inscriptionId}`;
     }
   }, [network, detail]);
+
   const delegateInscriptionId = useMemo(() => {
     if (!detail?.delegate) {
       return;
@@ -51,6 +54,10 @@ export default function OrdxInscription() {
       return `https://mempool.space/tx/${txid}`;
     }
   }, [network, txid]);
+
+  const toTick = () => {
+    nav(`/explorer/${detail.ticker}`);
+  }
 
   useEffect(() => {
     if (inscriptionId) {
@@ -92,9 +99,9 @@ export default function OrdxInscription() {
                   <iframe
                     scrolling='no'
                     sandbox='allow-scripts'
-                    src={`https://${
-                      network === 'testnet' ? 'testnet.' : ''
-                    }ordinals.com/preview/${detail?.delegate}`}
+                    src={`https://ord-${
+                      network === 'testnet' ? 'testnet' : 'mainnet'
+                    }.ordx.space/preview/${detail?.delegate}`}
                     className='max-w-full w-80 h-80'></iframe>
                 </div>
               </div>
@@ -102,7 +109,9 @@ export default function OrdxInscription() {
 
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.tick')}:</p>
-              <p className='indent-2'>{detail?.ticker || '-'}</p>
+              <a onClick={toTick} className='indent-2' target='_blank'>
+                {detail?.ticker || '-'}
+              </a>
             </div>
             <div className=''>
               <p className='text-gray-400'>Sats Ranges:</p>
