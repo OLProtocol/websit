@@ -172,7 +172,7 @@
         "textarea_placeholder": "any text here"
       },
       "ordx": {
-        "name": "OrdX",
+        "name": "FT",
         "tick_placeholder": "Tick must be 3, 5-32 byte long",
         "reg_placeholder": "like \"^[1-9][0-9]*0{n}$\"",
         "cn_placeholder": "For example, cn=1000, 1000 consecutively numbered sats",
@@ -264,6 +264,7 @@
         "available_utxo": "Plain UTXO",
         "rare_sats": "Rare Sats",
         "balance": "Balance",
+        "balance_des": "When the balance is less than 546 sats, the remaining balance is transferred to the miners.",
         "input": "Input",
         "output": "Output"
       },
