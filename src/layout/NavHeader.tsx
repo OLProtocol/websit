@@ -63,12 +63,12 @@ export const NavHeader = () => {
           : 'https://docs.ordx.space/',
       type: 'link',
     },
-    {
-      key: ROUTE_PATH.TOOLS,
-      label: t('nav.tools'),
-      value: ROUTE_PATH.TOOLS,
-      type: 'route',
-    },
+    // {
+    //   key: ROUTE_PATH.TOOLS,
+    //   label: t('nav.tools'),
+    //   value: ROUTE_PATH.TOOLS,
+    //   type: 'route',
+    // },
   ];
   // if (['ordx.space'].every((v) => location.hostname !== v)) {
   //   items.push({
