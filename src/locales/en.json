@@ -71,7 +71,8 @@
     "tools": "Toolbox",
     "discover": "Discover",
     "explorer": "Explorer",
-    "assets": "Assets"
+    "assets": "Assets",
+    "market": "Market"
   },
   "buttons": {
     "submit": "Submit",
