@@ -50,7 +50,9 @@ export const OrdxAccountSummaryList = ({
     const tmpTickes = otherTickers.filter((item) => item.ticker === 'o');
     let balance = 0;
     if (tmpTickes.length > 0) {
-      balance = tmpTickes[0].balance;
+      tmpTickes.forEach((item) => {
+        balance += item.balance;
+      })
     }
     return {
       ticker: t('pages.account.ord_nft'),
@@ -84,15 +86,10 @@ export const OrdxAccountSummaryList = ({
 
   const tickers = useMemo(() => {
     return [avialableTicker, rareSatsTicker, ordNftTicker, ...otherTickers];
-  }, [otherTickers, avialableTicker, rareSatsTicker]);
+  }, [otherTickers, avialableTicker, rareSatsTicker, ordNftTicker]);
 
   const onClick = (item) => {
-    let ticker = item.ticker;
-    if (item.ticker === t('pages.account.ord_nft')) {
-      ticker = 'o';
-      toast(t('pages.account.toast_oridnals_support'));
-    }
-    console.log('ticker:', ticker);
+    const ticker = item.ticker;
     setSelect(ticker);
     onChange?.(ticker);
   };

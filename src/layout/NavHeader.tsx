@@ -55,6 +55,12 @@ export const NavHeader = () => {
       type: 'route',
     },
     {
+      key: 'https://ordx.market/',
+      label: t('nav.market'),
+      value: 'https://ordx.market/',
+      type: 'link',
+    },
+    {
       key: 'https://docs.ordx.space/',
       label: t('nav.docs'),
       value:
