@@ -1,7 +1,8 @@
-import { useInscriptiontInfo, useSeedByUtxo } from '@/api';
+import { useInscriptiontInfo, useExoticUtxo } from '@/api';
 import { useEffect, useMemo } from 'react';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
+import { generateSeedByUtxos } from '@/lib/utils';
 
 interface UtxoContentProps {
   inscriptionId: string;
@@ -14,11 +15,19 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
     network,
   });
   const detail = useMemo(() => data?.data || {}, [data]);
-  const { data: seedData, trigger: seedTrigger } = useSeedByUtxo({
+  const { data: utxoData, trigger: seedTrigger } = useExoticUtxo({
     network,
     utxo: utxo,
   });
-  const seed = useMemo(() => seedData?.data?.[0]?.seed || 0, [seedData]);
+  console.log('utxoData', utxoData);
+  const seed = useMemo(
+    () =>
+      utxoData?.data
+        ? generateSeedByUtxos([utxoData?.data], utxoData?.data?.value)
+        : 0,
+    [utxoData],
+  );
+  console.log(seed);
   const contentSrc = useMemo(() => {
     if (detail?.delegate && inscriptionId && seed) {
       return `https://ord-${

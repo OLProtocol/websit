@@ -225,7 +225,17 @@ export const getUtxo = async ({ utxo, network }: any) => {
   );
   return data;
 };
-
+export const exoticUtxo = async ({ utxo, network }: any) => {
+  console.log(utxo)
+  const { data } = await axios.get(
+    // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
+    generateUrl(`exotic/utxo/${utxo}`, network),
+    {
+      timeout: 10000,
+    },
+  );
+  return data;
+};
 export async function pollGetTxStatus(
   txid: string,
   network: string,
