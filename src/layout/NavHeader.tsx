@@ -17,7 +17,10 @@ export const NavHeader = () => {
       key: ROUTE_PATH.HOME,
       label: t('nav.home'),
       // value: ROUTE_PATH.HOME,
-      value: i18n.language == 'en' ?'https://ordx.space' : 'https://ordx.space/index-zh.html',
+      value:
+        i18n.language == 'en'
+          ? 'https://ordx.space'
+          : 'https://ordx.space/index-zh.html',
       type: 'link',
     },
     {
@@ -52,9 +55,18 @@ export const NavHeader = () => {
       type: 'route',
     },
     {
+      key: 'https://ordx.market/',
+      label: t('nav.market'),
+      value: 'https://ordx.market/',
+      type: 'link',
+    },
+    {
       key: 'https://docs.ordx.space/',
       label: t('nav.docs'),
-      value: 'https://docs.ordx.space/',
+      value:
+        i18n.language == 'en'
+          ? 'https://docs.ordx.space/v/en/'
+          : 'https://docs.ordx.space/',
       type: 'link',
     },
     {
@@ -82,11 +94,7 @@ export const NavHeader = () => {
     const { value, type } = items.find((i) => i.key === key) || {};
     if (value) {
       if (type === 'link') {
-        let url = value
-        if (i18n.language == 'en') {
-         url = "https://docs.ordx.space/v/en/"
-        }
-        window.open(url, '_blank');
+        window.open(value, '_blank');
       } else if (type === 'route') {
         nav(value);
       }

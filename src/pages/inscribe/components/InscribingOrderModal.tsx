@@ -394,7 +394,7 @@ export const InscribingOrderModal = ({
               </>
             )}
             {/* step one */}
-            {activeStep === 0 && (
+            {activeStep === 0 && order?.status !== 'timeout' && (
               <div>
                 <div className='flex justify-center'>
                   <BusButton>

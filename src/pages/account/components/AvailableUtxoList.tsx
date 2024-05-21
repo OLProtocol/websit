@@ -50,11 +50,6 @@ export const AvailableUtxoList = ({
   const [limit, setLimit] = useState(10);
   const [selectItem, setSelectItem] = useState<any>();
 
-  // const { data, isLoading, trigger } = useUtxoByValue({
-  //   address,
-  //   network,
-  //   value: 10,
-  // });
   const toast = useToast();
   const [data, setData] = useState<any>();
 
