@@ -100,6 +100,7 @@ export const getOrdxAddressHolders = async ({
   );
   return data;
 };
+
 export const getOrdxTickHistory = async ({
   start,
   limit,
@@ -236,6 +237,37 @@ export const exoticUtxo = async ({ utxo, network }: any) => {
   );
   return data;
 };
+
+export const getInscriptionsByAddress = async ({
+  address,
+  network,
+  start,
+  limit,
+}: any) => {
+  const { data } = await axios.get(
+    generateUrl(
+      `inscription/address/${address}?start=${start}&limit=${limit}`,
+      network,
+    ),
+  );
+  return data;
+};
+
+export const getInscriptionsByGenesesAddress = async ({
+  address,
+  network,
+  start,
+  limit,
+}: any) => {
+  const { data } = await axios.get(
+    generateUrl(
+      `inscription/genesesaddress/${address}?start=${start}&limit=${limit}`,
+      network,
+    ),
+  );
+  return data;
+};
+
 export async function pollGetTxStatus(
   txid: string,
   network: string,

@@ -21,7 +21,7 @@ export const OrdXItem = ({ item, onClick, selected }: Ord2ItemProps) => {
       </div>
       <div className='p-2'>
         <div className='flex items-center justify-between'>
-          { item.tick === t('pages.account.rare_sats') ? (
+          { (item.tick === t('pages.account.ord_nft') || item.tick === t('pages.account.rare_sats')) ? (
             <span className='text-gray-400 mr-8'>Total:</span>
           ) : (
             <span className='text-gray-400 mr-8'>{t('common.balance')}:</span>
