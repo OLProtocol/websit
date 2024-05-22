@@ -75,7 +75,7 @@ export const OrdSatInscriptionList = () => {
                             className='text-blue-500 cursor-pointer'
                             href={href}
                             target='_blank'>
-                            {hideStr(txid)}
+                            {hideStr(t)}
                         </a>
                     );
                 },
@@ -99,14 +99,14 @@ export const OrdSatInscriptionList = () => {
                 },
             },
             {
-                title: 'Sats',
+                title: t('common.amount'),
                 dataIndex: 'value',
                 key: 'value',
                 align: 'center',
             },
             {
                 title: t('common.mint_time'),
-                dataIndex: 'mintime',
+                dataIndex: 'mintTime',
                 key: 'mintTime',
                 align: 'center',
                 render: (t) => {

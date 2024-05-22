@@ -52,7 +52,6 @@ export const NftList = () => {
                                 </span>
                             )}
                         </div>
-
                     );
                 },
             },
@@ -72,7 +71,7 @@ export const NftList = () => {
                             className='text-blue-500 cursor-pointer'
                             href={href}
                             target='_blank'>
-                            {hideStr(txid)}
+                            {hideStr(t)}
                         </a>
                     );
                 },
@@ -96,13 +95,13 @@ export const NftList = () => {
                 },
             },
             {
-                title: 'Sats',
+                title: t('common.amount'),
                 dataIndex: 'value',
                 key: 'value',
                 align: 'center',
             },
             {
-                title: t('common.first_sat'),
+                title: 'Sat',
                 dataIndex: 'sat',
                 key: 'sat',
                 align: 'center',
