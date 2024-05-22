@@ -228,7 +228,7 @@ export const OrdAddressInscriptionList = () => {
                         scroll={{ x: 800 }}
                         pagination={{
                             position: ['bottomCenter'],
-                            defaultPageSize: 100,
+                            defaultPageSize: 10,
                             total: total,
                             onChange: paginationChange,
                             showSizeChanger: false,
