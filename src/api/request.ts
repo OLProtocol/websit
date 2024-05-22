@@ -238,7 +238,7 @@ export const exoticUtxo = async ({ utxo, network }: any) => {
   return data;
 };
 
-export const getInscriptionsByAddress = async ({
+export const getOrdInscriptionsByAddress = async ({
   address,
   network,
   start,
@@ -253,7 +253,7 @@ export const getInscriptionsByAddress = async ({
   return data;
 };
 
-export const getInscriptionsByGenesesAddress = async ({
+export const getOrdInscriptionsByGenesesAddress = async ({
   address,
   network,
   start,
@@ -262,6 +262,34 @@ export const getInscriptionsByGenesesAddress = async ({
   const { data } = await axios.get(
     generateUrl(
       `inscription/genesesaddress/${address}?start=${start}&limit=${limit}`,
+      network,
+    ),
+  );
+  return data;
+};
+
+export const getOrdInscriptionsBySat = async ({
+  sat,
+  network,
+  start,
+  limit,
+}: any) => {
+  const { data } = await axios.get(
+    generateUrl(
+      `inscription/sat/${sat}?start=${start}&limit=${limit}`,
+      network,
+    ),
+  );
+  return data;
+};
+
+export const getOrdInscription = async ({
+  inscriptionId,
+  network,
+}: any) => {
+  const { data } = await axios.get(
+    generateUrl(
+      `inscription/id/${inscriptionId}`,
       network,
     ),
   );

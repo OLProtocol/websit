@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { getInscriptionsByAddress } from '@/api';
+import { getOrdInscriptionsByAddress } from '@/api';
 import { CopyButton } from '@/components/CopyButton';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 
@@ -29,7 +29,7 @@ export const NftList = () => {
     const [loading, setLoading] = useState(false);
 
     const toInscriptionInfo = (inscriptionId) => {
-        nav(`/explorer/inscription/${inscriptionId}`);
+        nav(`/ord/inscription/${inscriptionId}`);
     };
 
     const columns: ColumnsType<any> = useMemo(() => {
@@ -106,6 +106,29 @@ export const NftList = () => {
                 dataIndex: 'sat',
                 key: 'value',
                 align: 'center',
+                render: (t) => {
+                    return (
+                        <div className='flex item-center justify-center'>
+                            <span
+                                className='text-blue-500 cursor-pointer mr-2'
+                                onClick={() => nav(`/ord/inscriptions/sat/${t}`)}>
+                                {t}
+                            </span>
+                            <CopyButton text={t} tooltip='Copy Tick' />
+                        </div>
+                    );
+                },
+            },
+            {
+                title: 'Deploy Time',
+                dataIndex: 'deployTime',
+                key: 'value',
+                align: 'center',
+                render: (t) => {
+                    return (
+                        <span>{new Date(t).toLocaleString('af')}</span>
+                    )
+                }
             },
             {
                 title: 'Geneses Address',
@@ -116,7 +139,7 @@ export const NftList = () => {
                     return (
                         <a
                             className='text-blue-500 cursor-pointer'
-                            onClick={() => nav(`/explorer/inscriptions/${t}`)}>
+                            onClick={() => nav(`/ord/inscriptions/address/${t}`)}>
                             {hideStr(t)}
                         </a>
                     );
@@ -134,6 +157,7 @@ export const NftList = () => {
                 utxo: v.utxo,
                 fee: v.inscription.fee,
                 sat: v.inscription.sat,
+                deployTime: v.inscription.timestamp,
                 genesesAddress: v.inscription.genesesaddress,
             })) || [],
         [data],
@@ -142,7 +166,7 @@ export const NftList = () => {
 
     const getNfts = async () => {
         setLoading(true);
-        const resp = await getInscriptionsByAddress({
+        const resp = await getOrdInscriptionsByAddress({
             address,
             network,
             start,

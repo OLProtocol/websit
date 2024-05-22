@@ -42,7 +42,7 @@ export default function OrdxInscription() {
       return `${detail?.delegate}i0`;
     }
   }, [detail?.delegate]);
-  console.log(delegateInscriptionId);
+  
   const txid = useMemo(() => {
     return detail?.inscriptionId?.replace(/i0$/m, '');
   }, [detail]);

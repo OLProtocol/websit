@@ -263,3 +263,18 @@ export const useBtcFeeRate = (network: 'testnet' | 'main') => {
     isLoading,
   };
 };
+
+export const useOrdInscriptiontInfo = ({ inscriptionId, network }: any) => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
+    `ord-inscription-${inscriptionId}-${network}`,
+    () => request.getOrdInscription({ inscriptionId, network }),
+  );
+  1;
+  return {
+    data,
+    trigger,
+    reset,
+    error,
+    isLoading: isMutating,
+  };
+};
