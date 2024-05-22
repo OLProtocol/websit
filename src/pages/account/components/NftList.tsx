@@ -37,7 +37,7 @@ export const NftList = () => {
             {
                 title: t('common.inscriptionNumber'),
                 dataIndex: 'number',
-                key: 'value',
+                key: 'number',
                 align: 'center',
                 render: (t, record) => {
                     return (
@@ -59,7 +59,7 @@ export const NftList = () => {
             {
                 title: t('common.inscriptionId'),
                 dataIndex: 'id',
-                key: 'value',
+                key: 'id',
                 align: 'center',
                 render: (t) => {
                     const txid = t.replace(/i0$/m, '')
@@ -96,15 +96,15 @@ export const NftList = () => {
                 },
             },
             {
-                title: 'Fee',
-                dataIndex: 'fee',
+                title: 'Sats',
+                dataIndex: 'value',
                 key: 'value',
                 align: 'center',
             },
             {
-                title: 'Sat',
+                title: t('common.first_sat'),
                 dataIndex: 'sat',
-                key: 'value',
+                key: 'sat',
                 align: 'center',
                 render: (t) => {
                     return (
@@ -120,9 +120,9 @@ export const NftList = () => {
                 },
             },
             {
-                title: 'Deploy Time',
-                dataIndex: 'deployTime',
-                key: 'value',
+                title: t('common.mint_time'),
+                dataIndex: 'mintTime',
+                key: 'mintTime',
                 align: 'center',
                 render: (t) => {
                     return (
@@ -131,9 +131,9 @@ export const NftList = () => {
                 }
             },
             {
-                title: 'Geneses Address',
+                title: t('common.geneses_address'),
                 dataIndex: 'genesesAddress',
-                key: 'value',
+                key: 'genesesAddress',
                 align: 'center',
                 render: (t) => {
                     return (
@@ -155,9 +155,9 @@ export const NftList = () => {
                 id: v.inscription.id,
                 number: v.inscription.number,
                 utxo: v.utxo,
-                fee: v.inscription.fee,
+                value: v.inscription.value,
                 sat: v.inscription.sat,
-                deployTime: v.inscription.timestamp,
+                mintTime: v.inscription.timestamp,
                 genesesAddress: v.inscription.genesesaddress,
             })) || [],
         [data],

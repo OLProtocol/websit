@@ -58,7 +58,10 @@
     "continue": "Continue",
     "cancel": "Cancel",
     "send": "Send",
-    "operation": "Operation"
+    "operation": "Operation",
+    "first_sat": "First Sat",
+    "mint_time": "Minted Time",
+    "geneses_address": "Genesis Address"
   },
   "toast": {
     "system_error": "System Error",

@@ -40,7 +40,7 @@ export const OrdSatInscriptionList = () => {
             {
                 title: t('common.inscriptionNumber'),
                 dataIndex: 'number',
-                key: 'value',
+                key: 'number',
                 align: 'center',
                 render: (t, record) => {
                     return (
@@ -62,7 +62,7 @@ export const OrdSatInscriptionList = () => {
             {
                 title: t('common.inscriptionId'),
                 dataIndex: 'id',
-                key: 'value',
+                key: 'id',
                 align: 'center',
                 render: (t) => {
                     const txid = t.replace(/i0$/m, '')
@@ -99,15 +99,15 @@ export const OrdSatInscriptionList = () => {
                 },
             },
             {
-                title: 'Fee',
-                dataIndex: 'fee',
+                title: 'Sats',
+                dataIndex: 'value',
                 key: 'value',
                 align: 'center',
             },
             {
-                title: 'Deploy Time',
-                dataIndex: 'deployTime',
-                key: 'value',
+                title: t('common.mint_time'),
+                dataIndex: 'mintime',
+                key: 'mintTime',
                 align: 'center',
                 render: (t) => {
                     return (
@@ -116,9 +116,9 @@ export const OrdSatInscriptionList = () => {
                 }
             },
             {
-                title: 'Address',
+                title: t('common.holder'),
                 dataIndex: 'address',
-                key: 'value',
+                key: 'address',
                 align: 'center',
                 render: (t) => (
                     <div className='flex item-center justify-center'>
@@ -130,9 +130,9 @@ export const OrdSatInscriptionList = () => {
                 ),
             },
             {
-                title: 'Geneses Address',
+                title: t('common.geneses_address'),
                 dataIndex: 'genesesAddress',
-                key: 'value',
+                key: 'genesesAddress',
                 align: 'center',
                 render: (t) => {
                     return (
@@ -157,11 +157,11 @@ export const OrdSatInscriptionList = () => {
                 id: v.inscription.id,
                 number: v.inscription.number,
                 utxo: v.utxo,
-                fee: v.inscription.fee,
+                value: v.inscription.value,
                 sat: v.inscription.sat,
                 address: v.inscription.address,
                 genesesAddress: v.inscription.genesesaddress,
-                deployTime: v.inscription.timestamp,
+                mintTime: v.inscription.timestamp,
             })) || [],
         [data],
     );
