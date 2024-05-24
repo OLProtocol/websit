@@ -23,12 +23,12 @@ export const NavHeader = () => {
           : 'https://ordx.space/index-zh.html',
       type: 'link',
     },
-    {
-      key: ROUTE_PATH.INSCRIBE,
-      label: t('nav.inscribe'),
-      value: ROUTE_PATH.INSCRIBE,
-      type: 'route',
-    },
+    // {
+    //   key: ROUTE_PATH.INSCRIBE,
+    //   label: t('nav.inscribe'),
+    //   value: ROUTE_PATH.INSCRIBE,
+    //   type: 'route',
+    // },
     {
       key: ROUTE_PATH.ORDX_INDEX,
       label: t('nav.explorer'),
