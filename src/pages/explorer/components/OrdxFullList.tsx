@@ -46,7 +46,7 @@ export const Ord2FullList = () => {
     return data?.data?.height;
   }, [data]);
 
-  const [ordxVersion, setOrdxVersion] = useState('')
+  const [ordxVersion, setOrdxVersion] = useState('');
 
   const clickHandler = (item) => {
     nav(`/explorer/${item.tick}`);
@@ -54,7 +54,9 @@ export const Ord2FullList = () => {
 
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
-    nav('/inscribe', { state: { type: 'ordx', item } });
+    console.log(item);
+
+    // nav('/inscribe', { state: { type: 'ordx', item } });
   };
 
   const SatTitle = () => {
@@ -293,7 +295,7 @@ export const Ord2FullList = () => {
     if (resp.status === 'ok') {
       setOrdxVersion(resp.version);
     }
-  }
+  };
 
   const getAllOrdxs = async () => {
     setLoading(true);
@@ -338,15 +340,31 @@ export const Ord2FullList = () => {
     // <div className='rounded-3xl p-4 mx-auto bg-gray-200'>
     <div className='flex flex-col max-w-7xl mx-auto'>
       <Card>
-        <CardHeader className='text-center flex justify-between' w={'full'} pt={0} pb={0}>
+        <CardHeader
+          className='text-center flex justify-between'
+          w={'full'}
+          pt={0}
+          pb={0}>
           <SimpleGrid columns={2} spacing={10} w={'full'}>
-            <Box h='20' display="flex" alignItems="center" justifyContent="left">
-            <Stack spacing={6} textAlign={'left'}>
-              <Heading as='h4' size='md'>{t('pages.explorer.list_title')}</Heading>
-              <Heading as='h6' size='xs' textColor={'gray.500'}>{t('pages.explorer.ordx_version')}: {ordxVersion}</Heading>
+            <Box
+              h='20'
+              display='flex'
+              alignItems='center'
+              justifyContent='left'>
+              <Stack spacing={6} textAlign={'left'}>
+                <Heading as='h4' size='md'>
+                  {t('pages.explorer.list_title')}
+                </Heading>
+                <Heading as='h6' size='xs' textColor={'gray.500'}>
+                  {t('pages.explorer.ordx_version')}: {ordxVersion}
+                </Heading>
               </Stack>
             </Box>
-            <Box h='20' display="flex" alignItems="center" justifyContent="right">
+            <Box
+              h='20'
+              display='flex'
+              alignItems='center'
+              justifyContent='right'>
               <Button onClick={getAllOrdxs}>{t('buttons.fresh')}</Button>
             </Box>
           </SimpleGrid>
