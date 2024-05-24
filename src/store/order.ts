@@ -11,7 +11,9 @@ type OrderStatus =
   | 'commit_error'
   | 'inscribe_wait'
   | 'inscribe_success'
-  | 'inscribe_fail';
+  | 'inscribe_fail'
+  | 'timeout';
+
 export interface OrderItemType {
   orderId: string;
   type: InscribeType;
@@ -58,6 +60,7 @@ interface OrderState {
     status: OrderStatus,
   ) => void;
   changeStatus: (orderId: string, status: OrderStatus) => void;
+  checkAllList: () => void;
   savePaidOrder: (address: string, network: string) => void;
   setFunding: (orderId: string, funding: any) => void;
   setCommitTx: (orderId: string, tx: any) => void;
@@ -79,6 +82,20 @@ export const useOrderStore = create<OrderState>()(
         add: (l) => {
           set({
             list: [...get().list, l],
+          });
+        },
+        checkAllList: () => {
+          const list = get().list.map((item) => {
+            if (item.status === 'pending') {
+              const dis = Date.now() - item.createAt;
+              if (dis > 1000 * 60 * 5) {
+                item.status = 'timeout';
+              }
+            }
+            return item;
+          });
+          set({
+            list,
           });
         },
         addTxidToInscription: (orderId, index, txid) => {

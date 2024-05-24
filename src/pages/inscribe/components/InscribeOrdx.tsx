@@ -394,26 +394,28 @@ export const InscribeOrdx = ({
       onUtxoChange?.(satData);
       console.log('satData', satData);
       console.log('satData', data.amount);
-      if (satData.amount > data.amount) {
-        // if (!allowSpecialBeyondStatus) {
-        Modal.confirm({
-          centered: true,
-          content: `找到的UTXO包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
-          okText: '继续',
-          cancelText: '取消',
-          onOk() {
-            setAllowSpecialBeyondStatus(true);
-            setTickChecked(true);
-          },
-        });
-        // } else {
-        //   setTickChecked(true);
-        // }
-      } else if (data.amount > satSize) {
-        toast.error('UTXO包含的特殊聪数量不够');
-      } else {
-        setTickChecked(true);
-      }
+      // if (satData.amount > data.amount) {
+      set('amount', satData.amount);
+      setTickChecked(true);
+      setAllowSpecialBeyondStatus(true);
+      // Modal.confirm({
+      //   centered: true,
+      //   content: `找到的UTXO包含的特殊聪数量(${satData.amount})超过了您输入的Amount值，超出部分可能会被当成Gas消耗掉`,
+      //   okText: '继续',
+      //   cancelText: '取消',
+      //   onOk() {
+      //     setAllowSpecialBeyondStatus(true);
+      //     setTickChecked(true);
+      //   },
+      // });
+      // } else {
+      //   setTickChecked(true);
+      // }
+      // } else if (data.amount > satSize) {
+      //   toast.error('UTXO包含的特殊聪数量不够');
+      // } else {
+      //   setTickChecked(true);
+      // }
     }
   };
 

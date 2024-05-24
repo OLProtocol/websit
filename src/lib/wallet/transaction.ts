@@ -3,7 +3,6 @@ import {
   wallet,
   core,
   address,
-  txHelpers,
   utils,
   UTXO_DUST,
 } from '@unisat/wallet-sdk';

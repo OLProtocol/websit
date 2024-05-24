@@ -41,9 +41,15 @@ export default function UtxoInfo() {
   const toInscriptionInfo = (inscriptionId) => {
     nav(`/explorer/inscription/${inscriptionId}`);
   };
+
   const txid = useMemo(() => {
     return utxo?.split(':')[0];
   }, [utxo]);
+
+  const toTick = (tick) => {
+    nav(`/explorer/${tick}`);
+  }
+
   const txLink = useMemo(() => {
     if (network === 'testnet') {
       return `https://mempool.space/testnet/tx/${txid}`;
@@ -142,7 +148,9 @@ export default function UtxoInfo() {
                 <Divider plain></Divider>
                 <div className='mb-2'>
                   <p className='text-gray-400'>{t('common.tick')}:</p>
-                  <span className='indent-2'>{asset?.ticker}</span>
+                  <a onClick={() => toTick(asset?.ticker)} className='indent-2' target='_blank'>
+                    {asset?.ticker || '-'}
+                  </a>
                 </div>
                 <div className='mb-2'>
                   <p className='text-gray-400'>{t('common.asset_amount')}:</p>

@@ -18,21 +18,16 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
     network,
     utxo: utxo,
   });
-  console.log(seedData);
   const seed = useMemo(() => seedData?.data?.[0]?.seed || 0, [seedData]);
-  console.log(seed);
   const contentSrc = useMemo(() => {
-    let url = '';
-    if (detail?.delegate) {
-      url = `https://${
-        network === 'testnet' ? 'testnet.' : ''
-      }ordinals.com/preview/${detail?.delegate}`;
+    if (detail?.delegate && inscriptionId && seed) {
+      return `https://ord-${
+        network === 'testnet' ? 'testnet' : 'mainnet'
+      }.ordx.space/preview/${inscriptionId}?seed=${seed}`;
+    } else {
+      return;
     }
-    if (url && seed !== null && seed !== undefined) {
-      url = `${url}?seed=${seed}`;
-    }
-    return url;
-  }, [network, detail?.delegate]);
+  }, [network, inscriptionId, seed, detail?.delegate]);
   useEffect(() => {
     if (inscriptionId) {
       trigger();
@@ -53,7 +48,6 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
           rel='noopener noreferrer'
           className='block w-full h-full'>
           <iframe
-            // sandbox='allow-scripts'
             src={contentSrc}
             className='max-w-full pointer-events-none max-h-full'></iframe>
         </a>
