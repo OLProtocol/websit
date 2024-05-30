@@ -115,7 +115,7 @@ export default function Ord2Info() {
             </div>
             <div className=''>
               <p className='text-gray-400'>{t('common.holders')}:</p>
-              <p className='indent-2'>{detail?.holdersCount}</p>
+              <p className='indent-2'>{detail?.address}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.minted_total')}:</p>

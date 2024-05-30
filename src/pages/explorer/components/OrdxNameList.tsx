@@ -63,6 +63,15 @@ export const OrdxNameList = () => {
       },
     },
     {
+      title: t('common.address'),
+      dataIndex: 'address',
+      key: 'address',
+      align: 'center',
+      render: (address) => {
+        return <div className='cursor-pointer'>{hideStr(address)}</div>;
+      },
+    },
+    {
       title: t('common.inscriptionId'),
       dataIndex: 'inscriptionId',
       key: 'inscriptionId',

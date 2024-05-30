@@ -35,7 +35,7 @@ export const OrdxList = () => {
   const { network, address: currentAccount } = useReactWalletStore();
   const [type, setType] = useState('FT');
   const [ordxVersion, setOrdxVersion] = useState('');
-  const segmentedList = ['FT', 'Name', 'Ord NFT'];
+  const segmentedList = ['FT', 'Name', 'NFT'];
   const getOrdxVersion = async () => {
     const resp = await health({ network });
     if (resp.status === 'ok') {
