@@ -18,6 +18,7 @@
     "trz": "尾部为零的数量",
     "limit_per_mint": "每次铸造限制",
     "limit": "限制",
+    "ns": "名字",
     "repeat_mint": "重复铸造",
     "description": "描述",
     "economy": "经济",

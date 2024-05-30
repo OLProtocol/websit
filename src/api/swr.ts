@@ -179,7 +179,7 @@ export const useGetAssetByUtxo = ({ network, utxo }: any) => {
   };
 };
 export const useExoticUtxo = ({ network, utxo }: any) => {
-  console.log('useExoticUtxo')
+  console.log('useExoticUtxo');
   const { data, error, isMutating, trigger } = useSWRMutation(
     `ordx-utxo-${utxo}-${network}`,
     () => request.exoticUtxo({ network, utxo }),
@@ -253,6 +253,34 @@ export const useBtcHeight = (network: string) => {
     isLoading,
   };
 };
+export const useNsList = (network: string) => {
+  const { data, error, isLoading } = useSWR(
+    `ns-list-${network}`,
+    () => request.getNsList({ network }),
+    {
+      refreshInterval: 1000 * 60 * 5,
+    },
+  );
+  return {
+    data,
+    error,
+    isLoading,
+  };
+};
+export const useNsName = ({ name, network }: any) => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
+    `ns-name-${network}`,
+    () => request.getNsName({ name, network }),
+  );
+  return {
+    data,
+    error,
+    isLoading: isMutating,
+    trigger,
+    reset,
+  };
+};
+
 export const useBtcFeeRate = (network: 'testnet' | 'main') => {
   const { data, error, isLoading } = useSWR(`fee-${network}`, () =>
     fetchChainFeeRate(network),

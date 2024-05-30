@@ -11,6 +11,7 @@
     "block": "Block",
     "content": "Content",
     "rarity": "Rarity",
+    "ns": "Name",
     "deploy_time": "Deploy Time",
     "deploy_height": "Deploy Height",
     "reg": "Regular Expression",

@@ -33,9 +33,7 @@ export const getOrdxStatusList = async (
 };
 
 export const health = async ({ network }) => {
-  const { data } = await axios.get(
-    generateUrl(`health`, network),
-  );
+  const { data } = await axios.get(generateUrl(`health`, network));
   return data;
 };
 
@@ -60,7 +58,7 @@ export const getOrdxSummary = async ({
   );
   return data;
 };
-export const getOrdxTickHolders = async ({ tick, network, start, limit, }) => {
+export const getOrdxTickHolders = async ({ tick, network, start, limit }) => {
   const { data } = await axios.get(
     generateUrl(`tick/holders/${tick}?start=${start}&limit=${limit}`, network),
   );
@@ -123,10 +121,7 @@ export const getUtxoByValue = async ({
   network,
 }: any) => {
   const { data } = await axios.get(
-    generateUrl(
-      `utxo/address/${address}/${value}`,
-      network,
-    ),
+    generateUrl(`utxo/address/${address}/${value}`, network),
   );
   return data;
 };
@@ -165,7 +160,9 @@ export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
 };
 
 export const getSats = async ({ address, network }: any) => {
-  const { data } = await axios.get(generateUrl(`exotic/address/${address}`, network));
+  const { data } = await axios.get(
+    generateUrl(`exotic/address/${address}`, network),
+  );
   return data;
 };
 
@@ -184,9 +181,7 @@ export const getAssetByUtxo = async ({ utxo, network }: any) => {
   return data;
 };
 export const getSeedByUtxo = async ({ utxo, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`utxo/seed/${utxo}`, network),
-  );
+  const { data } = await axios.get(generateUrl(`utxo/seed/${utxo}`, network));
   return data;
 };
 
@@ -198,7 +193,7 @@ export const getUtxoByType = async ({ address, type, network }: any) => {
 };
 
 export const getSatsByAddress = async ({ address, sats, network }: any) => {
-    const { data } = await axios.post(
+  const { data } = await axios.post(
     generateUrl(`sat/FindSatsInAddress`, network),
     {
       address: address,
@@ -206,12 +201,10 @@ export const getSatsByAddress = async ({ address, sats, network }: any) => {
     },
   );
   return data;
-}
+};
 
 export const getSatsByUtxo = async ({ utxo, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`exotic/utxo/${utxo}`, network),
-  );
+  const { data } = await axios.get(generateUrl(`exotic/utxo/${utxo}`, network));
   return data;
 };
 
@@ -221,13 +214,11 @@ export const getSatTypes = async ({ network }: any) => {
 };
 
 export const getUtxo = async ({ utxo, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`utxo/assets/${utxo}`, network),
-  );
+  const { data } = await axios.get(generateUrl(`utxo/assets/${utxo}`, network));
   return data;
 };
 export const exoticUtxo = async ({ utxo, network }: any) => {
-  console.log(utxo)
+  console.log(utxo);
   const { data } = await axios.get(
     // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
     generateUrl(`exotic/utxo/${utxo}`, network),
@@ -283,16 +274,18 @@ export const getOrdInscriptionsBySat = async ({
   return data;
 };
 
-export const getOrdInscription = async ({
-  inscriptionId,
-  network,
-}: any) => {
+export const getOrdInscription = async ({ inscriptionId, network }: any) => {
   const { data } = await axios.get(
-    generateUrl(
-      `inscription/id/${inscriptionId}`,
-      network,
-    ),
+    generateUrl(`inscription/id/${inscriptionId}`, network),
   );
+  return data;
+};
+export const getNsList = async ({ network }: any) => {
+  const { data } = await axios.get(generateUrl(`ns/status`, network));
+  return data;
+};
+export const getNsName = async ({ name, network }: any) => {
+  const { data } = await axios.get(generateUrl(`ns/name/${name}`, network));
   return data;
 };
 

@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { getOrdxStatusList, health } from '@/api';
+import { useNsList, health } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-
+import { hideStr } from '@/lib/utils'
 import { useTranslation } from 'react-i18next';
+import { CopyButton } from '@/components/CopyButton';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import {
   Box,
@@ -22,11 +23,6 @@ import {
 } from '@chakra-ui/react';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
 
-interface DataType {
-  tick: string;
-  block: string;
-  rarity: string;
-}
 
 export const OrdxNameList = () => {
   const { t } = useTranslation();
@@ -36,168 +32,72 @@ export const OrdxNameList = () => {
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
 
-  const [data, setData] = useState<any>();
+  // const [data, setData] = useState<any>();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
-  const list = useMemo(() => data?.data?.detail || [], [data]);
-  const total = useMemo(() => data?.data?.total || 10, [data]);
-  const height = useMemo(() => {
-    return data?.data?.height;
-  }, [data]);
-
   const clickHandler = (item) => {
-    nav(`/explorer/${item.tick}`);
+    nav(`/explorer/ns/${item.name}`);
   };
 
-  const toInscribe = (e: any, item: any) => {
-    e.stopPropagation();
-    nav('/inscribe', { state: { type: 'ordx', item } });
-  };
-
-  const SatTitle = () => {
-    return (
-      <a
-        className='flex items-center justify-center'
-        href='https://docs.ordx.space/ordinalsx/instruct#deploy'
-        target='_blank'>
-        <span className='mr-1'>{t('common.satAttr')}</span>
-        <QuestionCircleOutlined />
-      </a>
-    );
-  };
+  const { data } = useNsList(network);
+  const list = useMemo(() => data?.data?.names || [], [data]);
+  const total = useMemo(() => data?.data?.total || 10, [data]);
 
   const columns: ColumnsType<any> = [
     {
       title: t('common.index'),
-      dataIndex: 'id',
-      key: 'id',
-      width: 60,
+      dataIndex: 'index',
+      key: 'index',
+      width: 80,
       align: 'center',
     },
     {
-      title: t('common.tick'),
-      dataIndex: 'tick',
-      key: 'tick',
+      title: t('common.ns'),
+      dataIndex: 'name',
+      key: 'name',
       width: 80,
       align: 'center',
-      render: (tick) => {
-        return <div className='cursor-pointer'>{tick}</div>;
+      render: (name) => {
+        return <div className='cursor-pointer'>{name}</div>;
       },
     },
     {
-      title: t('common.content'),
+      title: t('common.inscriptionId'),
       dataIndex: 'inscriptionId',
       key: 'inscriptionId',
-      width: 80,
       align: 'center',
-      render: (inscriptionId, record) => {
-        return record.imgtype ? (
-          <div>
-            <iframe
-              scrolling='no'
-              sandbox='allow-scripts'
-              src={`https://ord-${
-                network === 'testnet' ? 'testnet' : 'mainnet'
-              }.ordx.space/preview/${inscriptionId}`}
-              className='max-w-full'></iframe>
-          </div>
-        ) : (
-          '-'
-        );
-      },
-    },
-    {
-      title: t('common.description'),
-      dataIndex: 'description',
-      key: 'description',
-      width: 120,
-      align: 'center',
-      render: (t) => t || '-',
-    },
-    {
-      title: t('common.block'),
-      dataIndex: 'block',
-      key: 'block',
-      width: 130,
-      align: 'center',
-      render: (block, record) => {
-        return block === '-' ? (
-          '-'
-        ) : (
-          <BlockAndTime
-            startBlock={record.startBlock}
-            endBlock={record.endBlock}
-          />
-        );
-      },
-    },
-    {
-      title: t('common.limit'),
-      dataIndex: 'limit',
-      key: 'limit',
-      width: 80,
-      align: 'center',
-    },
-    {
-      title: SatTitle,
-      dataIndex: 'attr',
-      key: 'attr',
-      width: 100,
-      align: 'center',
-      render: (_, record) => {
-        const { rarity, cn, trz } = record;
-        const attrArr: string[] = [];
-        if (rarity !== 'unknow' && rarity !== 'common' && !!rarity) {
-          attrArr.push(`rar=${rarity}`);
-        }
-        if (cn !== undefined) {
-          attrArr.push(`cn=${cn}`);
-        }
-        if (trz !== undefined) {
-          attrArr.push(`trz=${trz}`);
-        }
-        let attr = '-';
-        if (attrArr.length > 0) {
-          attr = attrArr.join(';');
-        }
-        return attr;
-      },
-    },
-    {
-      title: t('common.holders'),
-      dataIndex: 'holders',
-      key: 'holders',
-      width: 60,
-      align: 'center',
-    },
-    {
-      title: t('common.minted'),
-      dataIndex: 'minted',
-      key: 'minted',
-      width: 60,
-      align: 'center',
-    },
-    {
-      title: t('common.status'),
-      dataIndex: 'status',
-      key: 'status',
-      width: 70,
-      align: 'center',
-      render: (status, record) => {
-        if (status === 'Pending') {
-          return <Tag color='orange'>{t('common.waiting')}</Tag>;
-        } else if (status === 'Minting') {
-          return (
-            <Button type='link' onClick={(e) => toInscribe(e, record)}>
-              {t('common.minting')}
-            </Button>
-          );
-        }
+      render: (t) => {
+        const txid = t.replace(/i0$/m, '');
+        const href =
+          network === 'testnet'
+            ? `https://mempool.space/testnet/tx/${txid}`
+            : `https://mempool.space/tx/${txid}`;
         return (
-          <Tag color='blue' className='mr-0'>
-            {t('common.completed')}
-          </Tag>
+          <a
+            className='text-blue-500 cursor-pointer'
+            href={href}
+            target='_blank'>
+            {hideStr(t)}
+          </a>
+        );
+      },
+    },
+    {
+      title: 'UTXO',
+      dataIndex: 'utxo',
+      key: 'utxo',
+      align: 'center',
+      render: (t) => {
+        return (
+          <div className='flex item-center justify-center'>
+            <span
+              className='text-blue-500 cursor-pointer mr-2'
+              onClick={() => nav(`/explorer/utxo/${t}`)}>
+              {hideStr(t)}
+            </span>
+            <CopyButton text={t} tooltip='Copy Tick' />
+          </div>
         );
       },
     },
@@ -207,110 +107,17 @@ export const OrdxNameList = () => {
     setStart((page - 1) * pageSize);
   };
 
-  const dataSource: DataType[] = useMemo(
+  const dataSource: any[] = useMemo(
     () =>
-      list.map((item) => {
-        let status;
-        if (
-          item.rarity !== 'unknow' &&
-          item.rarity !== 'common' &&
-          !!item.rarity
-        ) {
-          status = 'Minting';
-        } else if (
-          item.startBlock &&
-          item.endBlock &&
-          btcHeight < item.endBlock &&
-          btcHeight > item.startBlock
-        ) {
-          status = 'Minting';
-        } else if (btcHeight < item.startBlock) {
-          status = 'Pending';
-        } else {
-          status = 'Completed';
-        }
-        const special =
-          item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
-        const attrArr: string[] = [];
-        if (
-          item.rarity !== 'unknow' &&
-          item.rarity !== 'common' &&
-          !!item.rarity
-        ) {
-          attrArr.push(`rar=${item.rarity}`);
-        }
-        if (item.cn) {
-          attrArr.push(`cn=${item.cn}`);
-        }
-        if (item.trz) {
-          attrArr.push(`trz=${item.trz}`);
-        }
-        let attr;
-        if (attrArr.length) {
-          attr = attrArr.join(';');
-        }
-        const value = JSON.stringify(
-          removeObjectEmptyValue({
-            p: 'ordx',
-            op: 'deploy',
-            tick: item.ticker?.toString(),
-            block: item.blockChecked ? item.block?.toString() : undefined,
-            lim: item.limit?.toString(),
-            attr,
-            des: item.description?.toString(),
-          }),
-        );
+      list.map((item, i) => {
+    
         return {
-          id: item.id + 1,
-          tick: item.ticker,
-          block:
-            !special && item.startBlock > 0
-              ? `${item.startBlock}-${item.endBlock}`
-              : '-',
-          startBlock: item.startBlock,
-          endBlock: item.endBlock,
-          rarity: item.rarity,
-          description: item.description,
-          reg: item.reg,
-          content: value,
-          holders: item.holdersCount,
-          imgtype: item.imgtype,
-          inscriptionId: item.inscriptionId,
-          deployHeight: item.deployHeight,
-          minted: item.totalMinted,
-          limit: item.limit,
-          status,
-          deploy_time: new Date(item.deployBlocktime).toLocaleString('af'),
+          index: i + 1,
+          ...item,
         };
       }),
-    [list, height],
+    [list],
   );
-
-  const getAllOrdxs = async () => {
-    setLoading(true);
-    setData({});
-    const resp = await getOrdxStatusList({
-      start: start,
-      limit: limit,
-      network: network,
-    });
-    if (resp.code !== 0) {
-      toast({
-        title: resp.msg,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      setLoading(false);
-      return;
-    }
-    setLoading(false);
-    setData(resp);
-  };
-
-  useEffect(() => {
-    getAllOrdxs();
-  }, [network, currentAccount]);
 
   return (
     <Table

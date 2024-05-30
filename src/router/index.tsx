@@ -5,6 +5,7 @@ import Test from '@/pages/test';
 import Inscribe from '@/pages/inscribe';
 import Ord2Index from '@/pages/explorer';
 import Ord2Info from '@/pages/explorer/info';
+import OrdxNs from '@/pages/explorer/ns';
 import UtxoInfo from '@/pages/explorer/utxo';
 import OrdxInscription from '@/pages/explorer/inscription';
 import InscribeCheck from '@/pages/inscribe_check';
@@ -30,6 +31,7 @@ export const ROUTE_PATH = {
   INSCRIBE_TEST: '/inscribe_test',
   ORDX_INDEX: '/explorer',
   ORDX_INFO: '/explorer/:tick',
+  ORDX_NS: '/explorer/ns/:name',
   ORDX_UTXO_INFO: '/explorer/utxo/:utxo',
   ORDX_INSCRIPTION: '/explorer/inscription/:inscriptionId',
   ORDX_INSCRIPTIONS_BY_ADDRESS: '/explorer/inscriptions/:address',
@@ -82,6 +84,10 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.ORDX_INFO,
         element: <Ord2Info />,
+      },
+      {
+        path: ROUTE_PATH.ORDX_NS,
+        element: <OrdxNs />,
       },
       {
         path: ROUTE_PATH.ORDX_UTXO_INFO,
