@@ -100,6 +100,7 @@ export const getOrdxAddressHolders = async ({
   );
   return data;
 };
+
 export const getOrdxTickHistory = async ({
   start,
   limit,
@@ -222,6 +223,36 @@ export const getSatTypes = async ({ network }: any) => {
 export const getUtxo = async ({ utxo, network }: any) => {
   const { data } = await axios.get(
     generateUrl(`utxo/assets/${utxo}`, network),
+  );
+  return data;
+};
+
+export const getInscriptionsByAddress = async ({
+  address,
+  network,
+  start,
+  limit,
+}: any) => {
+  const { data } = await axios.get(
+    generateUrl(
+      `inscription/address/${address}?start=${start}&limit=${limit}`,
+      network,
+    ),
+  );
+  return data;
+};
+
+export const getInscriptionsByGenesesAddress = async ({
+  address,
+  network,
+  start,
+  limit,
+}: any) => {
+  const { data } = await axios.get(
+    generateUrl(
+      `inscription/genesesaddress/${address}?start=${start}&limit=${limit}`,
+      network,
+    ),
   );
   return data;
 };

@@ -4,7 +4,6 @@ import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { useReactWalletStore } from 'btc-connect/dist/react';
 
 interface LocalOrderListProps {
   onOrderClick?: (item: OrderItemType) => void;
@@ -16,7 +15,7 @@ interface DataType {
 }
 export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
   const { t } = useTranslation();
-  const { list } = useOrderStore((state) => state);
+  const { list, checkAllList } = useOrderStore((state) => state);
   const clickHandler = ({ orderId }) => {
     const item = list.find((v) => v.orderId === orderId);
     if (item) {
@@ -56,6 +55,9 @@ export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
       })),
     [list],
   );
+  useEffect(() => {
+    checkAllList();
+  }, []);
   return (
     <Table
       columns={columns}

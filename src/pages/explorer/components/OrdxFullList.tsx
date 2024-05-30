@@ -290,6 +290,7 @@ export const OrdxFullList = () => {
 
   const getAllOrdxs = async () => {
     setLoading(true);
+    setData({});
     const resp = await getOrdxStatusList({
       start: start,
       limit: limit,
@@ -307,7 +308,6 @@ export const OrdxFullList = () => {
     }
     setLoading(false);
     setData(resp);
-    cacheData('all_ordx_list_' + currentAccount, resp);
   };
 
   useEffect(() => {
