@@ -139,10 +139,10 @@ export default function SplitSat() {
         }
 
         // let availableUtxoIndex = 0;
-        let tmpInputList: any[] = [];
-        let tmpOutputList: any[] = [];
+        const tmpInputList: any[] = [];
+        const tmpOutputList: any[] = [];
 
-        let tmpAvailableUtxos = availableUtxos;
+        const tmpAvailableUtxos = availableUtxos;
         let utxoLength = tmpAvailableUtxos?.length;
 
         if (offset === 0) {
@@ -227,7 +227,7 @@ export default function SplitSat() {
         }
         
         let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
-        let outTotal = tmpOutputList.reduce((total, item) => total + item.sats, 0);
+        const outTotal = tmpOutputList.reduce((total, item) => total + item.sats, 0);
         let realityFee = calculateRate(tmpInputList.length, tmpOutputList.length, feeRate.value);
 
         while (inTotal - outTotal - realityFee < 0) {

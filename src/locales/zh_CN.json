@@ -58,7 +58,9 @@
     "continue": "继续",
     "cancel": "取消",
     "send": "发送",
-    "operation": "操作"
+    "operation": "操作",
+    "mint_time": "铸造时间",
+    "geneses_address": "创世地址"
   },
   "toast": {
     "system_error": "系统异常，请稍后再试。",

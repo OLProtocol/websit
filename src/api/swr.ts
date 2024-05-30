@@ -137,7 +137,7 @@ export const useSatTypes = ({ network }: any) => {
   };
 };
 export const useGetUtxo = ({ network, utxo }: any) => {
-  const { data, error, isLoading, } = useSWR(
+  const { data, error, isLoading } = useSWR(
     `ordx-utxo-${utxo}-${network}`,
     () => request.getUtxo({ network, utxo }),
     {
@@ -165,7 +165,7 @@ export const useSeedByUtxo = ({ utxo, network }: any) => {
   };
 };
 export const useGetAssetByUtxo = ({ network, utxo }: any) => {
-  const { data, error, isLoading, } = useSWR(
+  const { data, error, isLoading } = useSWR(
     `ordx-utxo-utxo-${network}`,
     () => request.getAssetByUtxo({ network, utxo }),
     {
@@ -176,6 +176,19 @@ export const useGetAssetByUtxo = ({ network, utxo }: any) => {
     data,
     error,
     isLoading: isLoading,
+  };
+};
+export const useExoticUtxo = ({ network, utxo }: any) => {
+  console.log('useExoticUtxo')
+  const { data, error, isMutating, trigger } = useSWRMutation(
+    `ordx-utxo-${utxo}-${network}`,
+    () => request.exoticUtxo({ network, utxo }),
+  );
+  return {
+    data,
+    error,
+    isLoading: isMutating,
+    trigger,
   };
 };
 export const useInscriptiontInfo = ({ inscriptionId, network }: any) => {
@@ -248,5 +261,20 @@ export const useBtcFeeRate = (network: 'testnet' | 'main') => {
     data,
     error,
     isLoading,
+  };
+};
+
+export const useOrdInscriptiontInfo = ({ inscriptionId, network }: any) => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(
+    `ord-inscription-${inscriptionId}-${network}`,
+    () => request.getOrdInscription({ inscriptionId, network }),
+  );
+  1;
+  return {
+    data,
+    trigger,
+    reset,
+    error,
+    isLoading: isMutating,
   };
 };

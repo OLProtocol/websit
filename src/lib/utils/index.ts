@@ -3,6 +3,8 @@ export * from '../wallet/utxo';
 export * from '../wallet/btc';
 import { getBlockStatus } from '@/api';
 import { add, format } from 'date-fns';
+import { flat, sum } from 'radash';
+import crypto from 'crypto';
 
 export const getTimeByHeight = async (height: number, network: string) => {
   const key = `height-time-${height}`;
@@ -84,4 +86,46 @@ export const isRegExp = (str: string) => {
   } catch (e) {
     return false;
   }
+};
+
+export const generateSeed = (ranges) => {
+  const jsonString = JSON.stringify(ranges);
+  try {
+    const bytes = new TextEncoder().encode(jsonString);
+    const hash = crypto.createHash('sha256');
+    hash.update(bytes);
+    const hashResult = hash.digest('hex').slice(0, 16);
+    return hashResult;
+  } catch (error) {
+    console.error('json.Marshal failed. ' + error);
+    return '0';
+  }
+};
+export const selectAmountRangesByUtxos = (utxos: any[], amount) => {
+  const sats: any[] = flat(utxos.map((v) => v.sats));
+  const ranges: any[] = [];
+  let totalSize = 0;
+  for (let i = 0; i < sats.length; i++) {
+    const item = sats[i];
+    const { size, start } = item;
+    totalSize += size;
+
+    if (totalSize > amount) {
+      const dis = totalSize - amount;
+      ranges.push({
+        start,
+        size: size - dis,
+      });
+    } else {
+      ranges.push({
+        start,
+        size,
+      });
+    }
+  }
+  return ranges;
+};
+export const generateSeedByUtxos = (utxos: any[], amount) => {
+  amount = Math.max(amount, 546);
+  return generateSeed(selectAmountRangesByUtxos(utxos, amount));
 };

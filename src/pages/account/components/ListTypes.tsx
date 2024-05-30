@@ -3,15 +3,11 @@ import { useOrdxSummary } from '@/api';
 import { ListTypeItem } from './ListTypeItem';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 
-
 interface ListTypesProps {
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
-export const ListTypes = ({
-  onChange,
-  onEmpty,
-}: ListTypesProps) => {
+export const ListTypes = ({ onChange, onEmpty }: ListTypesProps) => {
   const { network, address } = useReactWalletStore();
   const { data, trigger } = useOrdxSummary({ address: address, network });
   const [select, setSelect] = useState('');
@@ -47,6 +43,16 @@ export const ListTypes = ({
           }}
         />
       ))}
+      {/* <ListTypeItem
+        selected={select === 'name'}
+        onClick={() => {
+          onClick({ticker: 'name'});
+        }}
+        item={{
+          tick: 'name',
+          balance: '0',
+        }}
+      /> */}
     </div>
   );
 };

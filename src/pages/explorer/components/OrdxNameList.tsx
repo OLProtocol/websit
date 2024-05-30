@@ -28,7 +28,7 @@ interface DataType {
   rarity: string;
 }
 
-export const OrdxFullList = () => {
+export const OrdxNameList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { btcHeight } = useCommonStore((state) => state);
@@ -45,7 +45,6 @@ export const OrdxFullList = () => {
   const height = useMemo(() => {
     return data?.data?.height;
   }, [data]);
-
 
   const clickHandler = (item) => {
     nav(`/explorer/${item.tick}`);
@@ -287,9 +286,9 @@ export const OrdxFullList = () => {
     [list, height],
   );
 
-
   const getAllOrdxs = async () => {
     setLoading(true);
+    setData({});
     const resp = await getOrdxStatusList({
       start: start,
       limit: limit,
@@ -307,7 +306,6 @@ export const OrdxFullList = () => {
     }
     setLoading(false);
     setData(resp);
-    cacheData('all_ordx_list_' + currentAccount, resp);
   };
 
   useEffect(() => {

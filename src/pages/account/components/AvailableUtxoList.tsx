@@ -331,18 +331,6 @@ export const AvailableUtxoList = ({
 
   useEffect(() => {
     if (address) {
-      // const cachedData = getCachedData('available_ordx_list_' + address);
-      // if (cachedData === null) {
-      //   getAvailableUtxos();
-      // } else {
-      //   setData(cachedData);
-      // }
-
-      // // 设置定时器每隔一定时间清除缓存数据
-      // const intervalId = setInterval(() => {
-      //   cacheData('available_ordx_list_' + address, null);
-      // }, 600000); // 每10min清除缓存
-      // return () => clearInterval(intervalId); // 清除定时器
       getAvailableUtxos();
     }
   }, [address, network, start, limit]);

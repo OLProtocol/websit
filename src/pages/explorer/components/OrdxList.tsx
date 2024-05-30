@@ -8,6 +8,8 @@ import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { OrdxFullList } from './OrdxFullList';
+import { OrdxNameList } from './OrdxNameList';
+import { NftList } from '@/pages/account/components/NftList';
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import {
@@ -85,7 +87,9 @@ export const OrdxList = () => {
               }}
             />
           </div>
-          {type === 'FT' && <OrdxFullList />}
+          {type === segmentedList[0] && <OrdxFullList />}
+          {type === segmentedList[1] && <OrdxNameList />}
+          {type === segmentedList[2] && <NftList />}
         </CardBody>
       </Card>
     </div>

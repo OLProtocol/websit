@@ -46,7 +46,6 @@ export const OrdxFullList = () => {
     return data?.data?.height;
   }, [data]);
 
-
   const clickHandler = (item) => {
     nav(`/explorer/${item.tick}`);
   };
@@ -286,7 +285,6 @@ export const OrdxFullList = () => {
       }),
     [list, height],
   );
-
 
   const getAllOrdxs = async () => {
     setLoading(true);

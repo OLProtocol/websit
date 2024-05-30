@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { OrdXItem } from './OrdXItem';
-import { getSats, useOrdxSummary } from '@/api';
+import { getOrdInscriptionsByAddress, getSats, useOrdxSummary } from '@/api';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
@@ -23,6 +23,7 @@ export const OrdxAccountSummaryList = ({
   const { data, trigger } = useOrdxSummary({ address, network });
   const otherTickers = useMemo(() => data?.data?.detail || [], [data]);
   const [rareSatList, setRareSatList] = useState<any[]>();
+  const [nftList, setNftList] = useState<any[]>();
 
   const avialableTicker = useMemo(() => {
     return {
@@ -46,19 +47,28 @@ export const OrdxAccountSummaryList = ({
   }, [rareSatList]);
 
   const ordNftTicker = useMemo(() => {
-    // ordinals nft的ticker名称为“o”
-    const tmpTickes = otherTickers.filter((item) => item.ticker === 'o');
-    let balance = 0;
-    if (tmpTickes.length > 0) {
-      tmpTickes.forEach((item) => {
-        balance += item.balance;
-      })
-    }
     return {
       ticker: t('pages.account.ord_nft'),
-      balance: balance,
+      balance: nftList?.length || 0,
     };
-  }, []);
+  }, [nftList]);
+
+  const getNfts = async () => {
+    const data = await getOrdInscriptionsByAddress({
+      address,
+      network,
+      start: 0,
+      limit: 1000
+    });
+    let tmpNfts: any[] = [];
+    if (data.code !== 0) {
+      tmpNfts = [];
+    } else {
+      tmpNfts = data.data.detail;
+    }
+
+    setNftList(tmpNfts);
+  };
 
   const getRareSats = async () => {
     const data = await getSats({
@@ -107,6 +117,7 @@ export const OrdxAccountSummaryList = ({
   useEffect(() => {
     trigger();
     getRareSats();
+    getNfts();
   }, [address, network]);
 
   return (

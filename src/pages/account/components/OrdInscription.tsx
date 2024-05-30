@@ -1,50 +1,35 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useInscriptiontInfo } from '@/api';
+import { useOrdInscriptiontInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 
-export default function OrdxInscription() {
+export default function OrdInscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
   const { network } = useReactWalletStore();
   const nav = useNavigate();
 
-  const { data, trigger, isLoading } = useInscriptiontInfo({
+  const { data, trigger, isLoading } = useOrdInscriptiontInfo({
     inscriptionId: inscriptionId,
     network,
   });
 
   const detail = useMemo(() => data?.data || {}, [data]);
 
-  const satsText = useMemo(() => {
-    const ranges =
-      detail?.ranges?.map((r: any) =>
-        r.size === 1 ? r.start : `${r.start}-${r.start + r.size - 1}`,
-      ) || [];
-    return ranges.join(', ');
-  }, [detail]);
-
   const ordinalLink = useMemo(() => {
     if (network === 'testnet') {
-      return `https://testnet.ordinals.com/inscription/${detail?.inscriptionId}`;
+      return `https://testnet.ordinals.com/inscription/${detail?.inscription?.id}`;
     } else {
-      return `https://ordinals.com/inscription/${detail?.inscriptionId}`;
+      return `https://ordinals.com/inscription/${detail?.inscription?.id}`;
     }
   }, [network, detail]);
 
-  const delegateInscriptionId = useMemo(() => {
-    if (!detail?.delegate) {
-      return;
-    } else {
-      return `${detail?.delegate}i0`;
-    }
-  }, [detail?.delegate]);
   
   const txid = useMemo(() => {
-    return detail?.inscriptionId?.replace(/i0$/m, '');
+    return detail?.inscription?.id?.replace(/i0$/m, '');
   }, [detail]);
 
   const txLink = useMemo(() => {
@@ -55,9 +40,6 @@ export default function OrdxInscription() {
     }
   }, [network, txid]);
 
-  const toTick = () => {
-    nav(`/explorer/${detail.ticker}`);
-  }
 
   useEffect(() => {
     if (inscriptionId) {
@@ -71,11 +53,11 @@ export default function OrdxInscription() {
       <div className='max-w-4xl mx-auto mt-8'>
         <div className='flex justify-between mb-4 items-center'>
           <a href={ordinalLink} className=' text-2xl' target='_blank'>
-            {detail.inscriptionNumber === 9223372036854775807 ? (
-              <span className='text-orange-400'>{detail.inscriptionId}</span>
+            {detail?.inscription?.number === 9223372036854775807 ? (
+              <span className='text-orange-400'>{detail?.inscription?.id}</span>
             ) : (
               <span className='text-orange-400'>
-                #{detail.inscriptionNumber}
+                #{detail?.inscription?.number}
               </span>
             )}
           </a>
@@ -89,42 +71,22 @@ export default function OrdxInscription() {
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.inscriptionId')}:</p>
               <a href={ordinalLink} className='indent-2' target='_blank'>
-                {detail?.inscriptionId || '-'}
+                {detail?.inscription?.id || '-'}
               </a>
             </div>
-            {!!detail?.delegate && (
-              <div className='mb-2'>
-                <p className='text-gray-400'>{t('common.content')}:</p>
-                <div>
-                  <iframe
-                    scrolling='no'
-                    sandbox='allow-scripts'
-                    src={`https://ord-${
-                      network === 'testnet' ? 'testnet' : 'mainnet'
-                    }.ordx.space/preview/${detail?.delegate}`}
-                    className='max-w-full w-80 h-80'></iframe>
-                </div>
-              </div>
-            )}
 
-            <div className='mb-2'>
-              <p className='text-gray-400'>{t('common.tick')}:</p>
-              <a onClick={toTick} className='indent-2' target='_blank'>
-                {detail?.ticker || '-'}
-              </a>
-            </div>
             <div className=''>
-              <p className='text-gray-400'>Sats Ranges:</p>
-              <p className='indent-2'>{satsText || '-'}</p>
+              <p className='text-gray-400'>Sat:</p>
+              <p className='indent-2'>{detail?.inscription?.sat}</p>
             </div>
             <div className='mb-2'>
-              <p className='text-gray-400'>{t('common.quantity')}:</p>
-              <p className='indent-2'>{detail?.amount}</p>
+              <p className='text-gray-400'>Fee:</p>
+              <p className='indent-2'>{detail?.inscription?.fee}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
-                {new Date(detail?.mintTimes).toLocaleString('af')}
+                {new Date(detail?.inscription?.timestamp).toLocaleString('af')}
               </p>
             </div>
 
@@ -140,3 +102,5 @@ export default function OrdxInscription() {
     </Spin>
   );
 }
+1704364685000
+1704891712
