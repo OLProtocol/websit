@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { Button, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxAddressHistory } from '@/api';
