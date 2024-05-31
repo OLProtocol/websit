@@ -4,6 +4,8 @@
     "tick": "Tick",
     "utxo": "Utxo",
     "sat": "聪",
+    "selfmint": "铸造比例",
+    "max": "总量",
     "index": "序号",
     "amount": "数量",
     "asset_amount": "资产数量",

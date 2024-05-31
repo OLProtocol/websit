@@ -181,6 +181,14 @@ export default function Ord2Info() {
               <p className='indent-2'>{detail?.limit}</p>
             </div>
             <div className='mb-2'>
+              <p className='text-gray-400'>{t('common.max')}:</p>
+              <p className='indent-2'>{detail?.max || '-'}</p>
+            </div>
+            <div className='mb-2'>
+              <p className='text-gray-400'>{t('common.selfmint')}:</p>
+              <p className='indent-2'>{detail?.selfmint || '-'}</p>
+            </div>
+            <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
                 {new Date(detail?.deployBlocktime).toLocaleString('af')}
