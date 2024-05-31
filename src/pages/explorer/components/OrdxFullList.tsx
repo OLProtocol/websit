@@ -140,6 +140,20 @@ export const OrdxFullList = () => {
       align: 'center',
     },
     {
+      title: t('common.max'),
+      dataIndex: 'max',
+      key: 'max',
+      width: 80,
+      align: 'center',
+    },
+    {
+      title: t('common.selfmint'),
+      dataIndex: 'selfmint',
+      key: 'selfmint',
+      width: 80,
+      align: 'center',
+    },
+    {
       title: SatTitle,
       dataIndex: 'attr',
       key: 'attr',
@@ -270,6 +284,7 @@ export const OrdxFullList = () => {
           startBlock: item.startBlock,
           endBlock: item.endBlock,
           rarity: item.rarity,
+        
           description: item.description,
           reg: item.reg,
           content: value,
@@ -279,6 +294,8 @@ export const OrdxFullList = () => {
           deployHeight: item.deployHeight,
           minted: item.totalMinted,
           limit: item.limit,
+          max: item.max || '-',
+          selfmint: item.selfmint || '-',
           status,
           deploy_time: new Date(item.deployBlocktime).toLocaleString('af'),
         };
@@ -324,7 +341,7 @@ export const OrdxFullList = () => {
         onChange: paginationChange,
         showSizeChanger: false,
       }}
-      scroll={{ x: 1000 }}
+      scroll={{ x: 1160 }}
       onRow={(record) => {
         return {
           onClick: () => clickHandler(record), // 点击行
