@@ -3,9 +3,7 @@ import { useNsName } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { Segmented } from 'antd';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
-import { BlockAndTime } from '@/components/BlockAndTime';
-import { InfoHolders } from './components/InfoHolders';
-import { OrdxTickHistory } from './components/OrdxTickHistory';
+import { CopyButton } from '@/components/CopyButton';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 
 import { Button, Tag, Spin } from 'antd';
@@ -73,62 +71,35 @@ export default function Ord2Info() {
             <span> {t('common.overview')} </span>
           </div>
           <div className='p-4'>
-            {!!detail?.imgtype && (
-              <div className='mb-2'>
-                <p className='text-gray-400'>{t('common.content')}:</p>
-                <div>
-                  <iframe
-                    src={`https://ord-${
-                      network === 'testnet' ? 'testnet' : 'mainnet'
-                    }.ordx.space/preview/${detail?.inscriptionId}`}
-                    scrolling='no'
-                    sandbox='allow-scripts'
-                    className='max-w-full w-80 h-80'></iframe>
-                </div>
-              </div>
-            )}
-
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.inscriptionId')}:</p>
               <a href={ordinalLink} className='indent-2' target='_blank'>
                 {detail?.inscriptionId || '-'}
               </a>
             </div>
-            <div className='mb-2'>
-              <p className='text-gray-400'>{t('common.description')}:</p>
-              <p className='indent-2'>{detail?.description || '-'}</p>
-            </div>
 
             <div className='mb-2'>
-              <p className='text-gray-400'>{t('common.deploy_height')}:</p>
-              <p className='indent-2'>{detail?.deployHeight}</p>
+              <p className='text-gray-400'>{t('common.sat')}:</p>
+              <p className=''>{detail?.sat}</p>
             </div>
             <div className='mb-2'>
-              <p className='text-gray-400'>{t('common.limit_per_mint')}:</p>
-              <p className='indent-2'>{detail?.limit}</p>
+              <p className='text-gray-400'>{t('common.utxo')}:</p>
+              <div className='flex item-center'>
+                <span
+                  className='text-blue-500 cursor-pointer mr-2'
+                  onClick={() => nav(`/explorer/utxo/${detail?.utxo}`)}>
+                  {detail?.utxo}
+                </span>
+                <CopyButton text={detail?.utxo} tooltip='Copy Tick' />
+              </div>
             </div>
             <div className='mb-2'>
-              <p className='text-gray-400'>{t('common.deploy_time')}:</p>
-              <p className='indent-2'>
-                {new Date(detail?.deployBlocktime).toLocaleString('af')}
-              </p>
-            </div>
-            <div className=''>
-              <p className='text-gray-400'>{t('common.holders')}:</p>
+              <p className='text-gray-400'>{t('common.holder')}:</p>
               <p className='indent-2'>{detail?.address}</p>
-            </div>
-            <div className='mb-2'>
-              <p className='text-gray-400'>{t('common.minted_total')}:</p>
-            </div>
-            <div className=''>
-              <p className='text-gray-400'>{t('common.deployTx')}:</p>
-              <a href={txLink} className='indent-2' target='_blank'>
-                {detail?.txid || '-'}
-              </a>
             </div>
           </div>
         </div>
-        <div className='border-[1px] border-gray-200 rounded-xl'>
+        {/* <div className='border-[1px] border-gray-200 rounded-xl'>
           <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-14 items-center'>
             <Segmented
               options={[t('common.holders'), t('common.minted_history')]}
@@ -137,7 +108,7 @@ export default function Ord2Info() {
               className='w-72'
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </Spin>
   );

@@ -2,6 +2,8 @@
   "app": "Ordinals X Protocol",
   "common": {
     "tick": "Tick",
+    "utxo": "Utxo",
+    "sat": "Sat",
     "index": "Index",
     "amount": "Amount",
     "asset_amount": "Asset Amount",
