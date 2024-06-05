@@ -12,7 +12,7 @@ import {
   AddressType,
 } from '@unisat/wallet-sdk';
 import { WalletUtilsError, ErrorCodes } from './error';
-import { toPsbtNetwork, NetworkType } from './network';
+import { toPsbtNetwork, NetworkType } from '../hooks/network';
 interface TxInput {
   data: {
     hash: string;
