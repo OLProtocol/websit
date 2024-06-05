@@ -8,7 +8,7 @@ import {
 } from './types';
 
 export const generateUrl = (url: string, network?: string) => {
-  return `${VITE_API_HOST}${network === 'testnet' ? '/testnet' : '/mainnet'}/${url}`;
+  return `${VITE_API_HOST}${network === 'testnet' ? '/testnet4' : '/mainnet'}/${url}`;
 };
 const { VITE_API_HOST } = import.meta.env;
 export const responseParse = async (response) => {
