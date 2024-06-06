@@ -297,6 +297,7 @@
       "ordx_version": "OrdX 版本"
     },
     "account": {
+      "name": "名字",
       "available_utxo": "Plain UTXO",
       "rare_sats": "Rare Sats",
       "ord_nft": "Ordinals NFT",

@@ -253,10 +253,24 @@ export const useBtcHeight = (network: string) => {
     isLoading,
   };
 };
-export const useNsList = (network: string) => {
+export const useNsList = ({ network, start, limit }: any) => {
   const { data, error, isLoading } = useSWR(
-    `ns-list-${network}`,
-    () => request.getNsList({ network }),
+    `ns-list-${network}-${start}-${limit}`,
+    () => request.getNsList({ network, start, limit }),
+    {
+      refreshInterval: 1000 * 60 * 5,
+    },
+  );
+  return {
+    data,
+    error,
+    isLoading,
+  };
+};
+export const useNsListByAddress = ({ address, network, start, limit }: any) => {
+  const { data, error, isLoading } = useSWR(
+    `ns-list-${address}-${network}-${start}-${limit}`,
+    () => request.getNsListByAddress({ network, address, start, limit }),
     {
       refreshInterval: 1000 * 60 * 5,
     },

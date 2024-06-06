@@ -52,13 +52,18 @@ export const OrdxAccountSummaryList = ({
       balance: nftList?.length || 0,
     };
   }, [nftList]);
-
+  const nameTicker = useMemo(() => {
+    return {
+      ticker: t('pages.account.name'),
+      balance: 0 || '',
+    };
+  }, []);
   const getNfts = async () => {
     const data = await getOrdInscriptionsByAddress({
       address,
       network,
       start: 0,
-      limit: 1000
+      limit: 1000,
     });
     let tmpNfts: any[] = [];
     if (data.code !== 0) {
@@ -69,7 +74,7 @@ export const OrdxAccountSummaryList = ({
 
     setNftList(tmpNfts);
   };
-
+  
   const getRareSats = async () => {
     const data = await getSats({
       address: address,
@@ -95,7 +100,13 @@ export const OrdxAccountSummaryList = ({
   const [select, setSelect] = useState('');
 
   const tickers = useMemo(() => {
-    return [avialableTicker, rareSatsTicker, ordNftTicker, ...otherTickers];
+    return [
+      avialableTicker,
+      nameTicker,
+      rareSatsTicker,
+      ordNftTicker,
+      ...otherTickers,
+    ];
   }, [otherTickers, avialableTicker, rareSatsTicker, ordNftTicker]);
 
   const onClick = (item) => {

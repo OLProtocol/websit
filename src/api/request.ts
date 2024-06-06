@@ -280,8 +280,28 @@ export const getOrdInscription = async ({ inscriptionId, network }: any) => {
   );
   return data;
 };
-export const getNsList = async ({ network }: any) => {
-  const { data } = await axios.get(generateUrl(`ns/status`, network));
+export const getNsList = async ({ network, start, limit }: any) => {
+  const { data } = await axios.get(
+    generateUrl(`ns/status?start=${start}&limit=${limit}`, network),
+  );
+  return data;
+};
+export const getNsListByAddress = async ({
+  address,
+  network,
+  start,
+  limit,
+}: any) => {
+  const { data } = await axios.get(
+    // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
+    generateUrl(
+      `ns/address/${address}?start=${start}&limit=${limit}`,
+      network,
+    ),
+    {
+      timeout: 10000,
+    },
+  );
   return data;
 };
 export const getNsName = async ({ name, network }: any) => {

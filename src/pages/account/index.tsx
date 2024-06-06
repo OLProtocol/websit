@@ -6,6 +6,7 @@ import { RareSat } from '../discover/rareSat';
 import { AvailableUtxoList } from './components/AvailableUtxoList';
 import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
 import { NftList } from './components/NftList';
+import { NameList } from './components/NameList';
 
 export default function Account() {
   const { t } = useTranslation();
@@ -26,6 +27,9 @@ export default function Account() {
             utxosTotal={utxosTotal}
             onChange={(tick) => setTicker(tick)}
           />
+          {ticker === t('pages.account.name') && (
+            <NameList />
+          )}
           {ticker === t('pages.account.rare_sats') && (
             <RareSat canSplit={true} />
           )}
