@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { OrdxFullList } from './OrdxFullList';
 import { OrdxNameList } from './OrdxNameList';
-import { NftList } from '@/pages/account/components/NftList';
+import { OrdNftList } from './OrdNftList';
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import {
@@ -89,7 +89,7 @@ export const OrdxList = () => {
           </div>
           {type === segmentedList[0] && <OrdxFullList />}
           {type === segmentedList[1] && <OrdxNameList />}
-          {type === segmentedList[2] && <NftList />}
+          {type === segmentedList[2] && <OrdNftList />}
         </CardBody>
       </Card>
     </div>

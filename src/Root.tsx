@@ -17,7 +17,7 @@ export default function Root() {
   );
   const { VITE_TIP_STATUS, VITE_TIP_HEIGHT } = import.meta.env;
   useEffect(() => {
-    const height = heightData;
+    const height = heightData?.data?.height || 0;
     if (height) {
       const serviceStatus = heightData >= Number(VITE_TIP_HEIGHT);
       setServiceStatus(serviceStatus ? 1 : 0);

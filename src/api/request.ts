@@ -243,6 +243,19 @@ export const getOrdInscriptionsByAddress = async ({
   );
   return data;
 };
+export const getOrdNftList = async ({
+  network,
+  start,
+  limit,
+}: any) => {
+  const { data } = await axios.get(
+    generateUrl(
+      `inscription/list?start=${start}&limit=${limit}`,
+      network,
+    ),
+  );
+  return data;
+};
 
 export const getOrdInscriptionsByGenesesAddress = async ({
   address,
@@ -376,3 +389,12 @@ export async function pollGetTxStatus(
     }
   }
 }
+
+export const getBestHeight = async ({ network }: any) => {
+  const { data } = await axios.get(generateUrl(`bestheight`, network));
+  return data;
+};
+export const getHeightInfo = async ({ height, network }: any) => {
+  const { data } = await axios.get(generateUrl(`height/${height}`, network));
+  return data;
+};

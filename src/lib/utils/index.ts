@@ -1,7 +1,7 @@
 export * from './mempool';
 export * from '../wallet/utxo';
 export * from '../wallet/btc';
-import { getBlockStatus } from '@/api';
+import { getHeightInfo } from '@/api';
 import { add, format } from 'date-fns';
 import { flat, sum } from 'radash';
 import crypto from 'crypto';
@@ -12,7 +12,8 @@ export const getTimeByHeight = async (height: number, network: string) => {
   if (lcoalCache) {
     return +lcoalCache;
   }
-  const { timestamp } = await getBlockStatus({ height, network });
+  const { data } = await getHeightInfo({ height, network });
+  const timestamp = data?.timestamp || 0;
   const time = timestamp * 1000;
   if (time) {
     sessionStorage.setItem(key, time.toString());

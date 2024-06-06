@@ -242,7 +242,21 @@ export const useOrdxTickHistory = ({
 export const useBtcHeight = (network: string) => {
   const { data, error, isLoading } = useSWR(
     `height-${network}`,
-    () => blockStream.getTipBlockHeight({ network }),
+    () => request.getBestHeight({ network }),
+    {
+      refreshInterval: 1000 * 60 * 5,
+    },
+  );
+  return {
+    data,
+    error,
+    isLoading,
+  };
+};
+export const useOrdNftList = ({ network, start, limit }: any) => {
+  const { data, error, isLoading } = useSWR(
+    `ns-list-${network}-${start}-${limit}`,
+    () => request.getOrdNftList({ network, start, limit }),
     {
       refreshInterval: 1000 * 60 * 5,
     },
