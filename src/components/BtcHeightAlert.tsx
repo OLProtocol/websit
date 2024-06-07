@@ -3,22 +3,23 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
 import { useReactWalletStore } from 'btc-connect/dist/react';
+import { generateMempoolUrl } from '@/lib/utils';
 
 const MessageText = () => {
   const { t } = useTranslation();
-  const { network } = useReactWalletStore(state => state);
+  const { network } = useReactWalletStore((state) => state);
   const { btcHeight } = useCommonStore((state) => state);
   const href = useMemo(
-    () =>
-      `https://mempool.space/zh${
-        network === 'testnet' ? '/testnet' : ''
-      }/block/${btcHeight}`,
+    () => generateMempoolUrl({ network, path: `block/${btcHeight}` }),
     [network, btcHeight],
   );
   return (
     <div className='flex items-center justify-center'>
       <div>{t('common.height_alert')}</div>
-      <a className='text-blue-500 cursor-pointer ml-2' href={href} target='_blank'>
+      <a
+        className='text-blue-500 cursor-pointer ml-2'
+        href={href}
+        target='_blank'>
         {btcHeight}
       </a>
     </div>

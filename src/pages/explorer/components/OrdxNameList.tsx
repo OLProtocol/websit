@@ -21,6 +21,7 @@ import {
   Stack,
   useToast,
 } from '@chakra-ui/react';
+import { generateMempoolUrl } from '@/lib/utils';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
 
 
@@ -78,10 +79,10 @@ export const OrdxNameList = () => {
       align: 'center',
       render: (t) => {
         const txid = t.replace(/i0$/m, '');
-        const href =
-          network === 'testnet'
-            ? `https://mempool.space/testnet/tx/${txid}`
-            : `https://mempool.space/tx/${txid}`;
+        const href = generateMempoolUrl({
+          network,
+          path: `tx/${txid}`,
+        });
         return (
           <a
             className='text-blue-500 cursor-pointer'

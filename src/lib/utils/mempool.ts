@@ -1,3 +1,25 @@
+export const generateMempoolUrl = ({
+  network,
+  path,
+  locale,
+}: {
+  network: string;
+  path?: string;
+  locale?: string;
+}) => {
+  const base = 'https://mempool.space';
+  let url = base;
+  if (locale) {
+    url += `/${locale}`;
+  }
+  if (network === 'testnet') {
+    url += '/testnet4';
+  }
+  if (path) {
+    url += `/${path}`;
+  }
+  return url;
+};
 
 export const fetchTipHeight = async (network: 'main' | 'testnet') => {
   const url =
@@ -21,7 +43,7 @@ interface TxInfoParams {
   txid: string;
   network: 'main' | 'testnet';
 }
-export const fetchTxHex = async ({ network, txid}: TxInfoParams) => {
+export const fetchTxHex = async ({ network, txid }: TxInfoParams) => {
   // const { bitcoin: { fees } } = mempoolJS({
   //   hostname: 'mempool.space',
   //   network,

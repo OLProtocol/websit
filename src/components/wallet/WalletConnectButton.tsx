@@ -7,6 +7,7 @@ import {
   WalletConnectReact,
   useReactWalletStore,
 } from 'btc-connect/dist/react';
+import { generateMempoolUrl } from '@/lib/utils';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import 'btc-connect/dist/style/index.css';
 import { hideStr } from '@/lib/utils';
@@ -57,9 +58,10 @@ export const WalletConnectButton = () => {
     console.log('click', e);
   };
   const toHistory = () => {
-    const url = `https://mempool.space${
-      network === 'testnet' ? '/testnet' : ''
-    }/address/${address}`;
+    const url = generateMempoolUrl({
+      network,
+      path: `address/${address}`,
+    });
     window.open(url, '_blank');
   };
   useEffect(() => {

@@ -225,11 +225,6 @@ export const AvailableUtxoList = ({
         key: 'utxo',
         align: 'center',
         render: (t) => {
-          // const txid = t.replace(/:0$/m, '');
-          // const href =
-          //   network === 'testnet'
-          //     ? `https://mempool.space/testnet/tx/${txid}`
-          //     : `https://mempool.space/tx/${txid}`;
           return (
             <div className='flex item-center justify-center'>
               <span

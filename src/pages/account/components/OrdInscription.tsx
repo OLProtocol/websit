@@ -5,6 +5,7 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { generateMempoolUrl } from '@/lib/utils';
 
 export default function OrdInscription() {
   const { t } = useTranslation();
@@ -33,11 +34,11 @@ export default function OrdInscription() {
   }, [detail]);
 
   const txLink = useMemo(() => {
-    if (network === 'testnet') {
-      return `https://mempool.space/testnet/tx/${txid}`;
-    } else {
-      return `https://mempool.space/tx/${txid}`;
-    }
+    const href = generateMempoolUrl({
+      network,
+      path: `tx/${txid}`,
+    });
+    return href;
   }, [network, txid]);
 
 

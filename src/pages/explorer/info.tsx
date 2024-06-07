@@ -7,7 +7,7 @@ import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
 import { OrdxTickHistory } from './components/OrdxTickHistory';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-
+import { generateMempoolUrl } from '@/lib/utils';
 import { Button, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -90,11 +90,11 @@ export default function Ord2Info() {
     }
   }, [network, detail]);
   const txLink = useMemo(() => {
-    if (network === 'testnet') {
-      return `https://mempool.space/testnet/tx/${detail?.txid}`;
-    } else {
-      return `https://mempool.space/tx/${detail?.txid}`;
-    }
+    const href = generateMempoolUrl({
+      network,
+      path: `tx/${detail?.txid}`,
+    });
+    return href;
   }, [network, detail]);
   useEffect(() => {
     if (tick) {

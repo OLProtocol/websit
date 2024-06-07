@@ -12,7 +12,7 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { UtxoContent } from '@/components/UtxoContent';
 import { hideStr } from '@/lib/utils';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-
+import { generateMempoolUrl } from '@/lib/utils';
 import { Button, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -51,11 +51,11 @@ export default function UtxoInfo() {
   }
 
   const txLink = useMemo(() => {
-    if (network === 'testnet') {
-      return `https://mempool.space/testnet/tx/${txid}`;
-    } else {
-      return `https://mempool.space/tx/${txid}`;
-    }
+    const href = generateMempoolUrl({
+      network,
+      path: `tx/${txid}`,
+    });
+    return href;
   }, [network, txid]);
   const columns: ColumnsType<any> = useMemo(() => {
     const defaultColumn: any[] = [

@@ -3,7 +3,7 @@ import { Button, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxAddressHistory } from '@/api';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-
+import { generateMempoolUrl } from '@/lib/utils';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -64,10 +64,10 @@ export const OrdxAddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps)
       align: 'center',
       render: (t) => {
         const txid = t.replace(/i0$/m, '')
-        const href =
-          network === 'testnet'
-            ? `https://mempool.space/testnet/tx/${txid}`
-            : `https://mempool.space/tx/${txid}`;
+        const href = generateMempoolUrl({
+          network,
+          path: `tx/${txid}`,
+        });
         return (
           <a
             className='text-blue-500 cursor-pointer'

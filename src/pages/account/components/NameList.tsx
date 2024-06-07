@@ -5,13 +5,11 @@ import { useNsListByAddress } from '@/api';
 import { useCommonStore } from '@/store';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-import { hideStr } from '@/lib/utils'
+import { hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { CopyButton } from '@/components/CopyButton';
-import {
-  useToast,
-} from '@chakra-ui/react';
-
+import { useToast } from '@chakra-ui/react';
+import { generateMempoolUrl } from '@/lib/utils';
 
 export const NameList = () => {
   const { t } = useTranslation();
@@ -29,7 +27,12 @@ export const NameList = () => {
     nav(`/explorer/ns/${item.name}`);
   };
 
-  const { data } = useNsListByAddress({address: currentAccount, start, limit, network});
+  const { data } = useNsListByAddress({
+    address: currentAccount,
+    start,
+    limit,
+    network,
+  });
   const list = useMemo(() => data?.data?.names || [], [data]);
   const total = useMemo(() => data?.data?.total || 10, [data]);
 
@@ -51,15 +54,6 @@ export const NameList = () => {
         return <div className='cursor-pointer'>{name}</div>;
       },
     },
-    // {
-    //   title: t('common.address'),
-    //   dataIndex: 'address',
-    //   key: 'address',
-    //   align: 'center',
-    //   render: (address) => {
-    //     return <div className='cursor-pointer'>{hideStr(address)}</div>;
-    //   },
-    // },
     {
       title: t('common.inscriptionId'),
       dataIndex: 'inscriptionId',
@@ -67,10 +61,7 @@ export const NameList = () => {
       align: 'center',
       render: (t) => {
         const txid = t.replace(/i0$/m, '');
-        const href =
-          network === 'testnet'
-            ? `https://mempool.space/testnet/tx/${txid}`
-            : `https://mempool.space/tx/${txid}`;
+        const href = generateMempoolUrl({ network, path: `tx/${txid}` });
         return (
           <a
             className='text-blue-500 cursor-pointer'
@@ -108,7 +99,6 @@ export const NameList = () => {
   const dataSource: any[] = useMemo(
     () =>
       list.map((item, i) => {
-    
         return {
           index: i + 1,
           ...item,

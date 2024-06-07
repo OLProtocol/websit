@@ -35,6 +35,7 @@ import {
   base64ToHex,
   serializeInscriptionId,
 } from '../utils';
+import { generateMempoolUrl } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { getOrdxInfo, useSatTypes, getUtxoByType } from '@/api';
 import toast from 'react-hot-toast';
@@ -448,10 +449,10 @@ export const InscribeOrdx = ({
       width: '40%',
       render: (t) => {
         const txid = t.replace(/:0$/m, '');
-        const href =
-          network === 'testnet'
-            ? `https://mempool.space/testnet/tx/${txid}`
-            : `https://mempool.space/tx/${txid}`;
+        const href = generateMempoolUrl({
+          network,
+          path: `tx/${txid}`,
+        });
         return (
           <div className='flex item-center justify-center'>
             <Tooltip title={t}>

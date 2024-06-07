@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { Button, Segmented, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxTickHistory } from '@/api';

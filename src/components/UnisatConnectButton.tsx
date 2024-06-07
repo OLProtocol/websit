@@ -5,7 +5,7 @@ import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { useUnisatConnect, useUnisat } from '@/lib/hooks/unisat';
 import { useNavigate } from 'react-router-dom';
 import { Center, useToast } from '@chakra-ui/react';
-
+import { generateMempoolUrl } from '@/lib/utils';
 import { hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { ROUTE_PATH } from '@/router';
@@ -70,9 +70,10 @@ export const UnisatConnectButton = () => {
     console.log('click', e);
   };
   const toHistory = () => {
-    const url = `https://mempool.space${
-      network === 'testnet' ? '/testnet' : ''
-    }/address/${currentAccount}`;
+    const url = generateMempoolUrl({
+      network,
+      path: `address/${currentAccount}`,
+    });
     window.open(url, '_blank');
   };
   const menuProps = {
@@ -117,7 +118,6 @@ export const UnisatConnectButton = () => {
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
                 <Button type='primary' className='w-32' onClick={toHistory}>
-                  
                   {t('buttons.toHistory')}
                 </Button>
               </div>
