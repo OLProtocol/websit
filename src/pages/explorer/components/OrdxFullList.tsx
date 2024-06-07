@@ -52,7 +52,7 @@ export const OrdxFullList = () => {
 
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
-    nav('/inscribe', { state: { type: 'ordx', item } });
+    // nav('/inscribe', { state: { type: 'ordx', item } });
   };
 
   const SatTitle = () => {
@@ -231,11 +231,13 @@ export const OrdxFullList = () => {
           !!item.rarity
         ) {
           status = 'Minting';
+        } else if (item.max && item.totalMinted < item.max) {
+          status = 'Minting';
         } else if (
           item.startBlock &&
           item.endBlock &&
-          btcHeight < item.endBlock &&
-          btcHeight > item.startBlock
+          btcHeight <= item.endBlock &&
+          btcHeight >= item.startBlock
         ) {
           status = 'Minting';
         } else if (btcHeight < item.startBlock) {
@@ -284,7 +286,7 @@ export const OrdxFullList = () => {
           startBlock: item.startBlock,
           endBlock: item.endBlock,
           rarity: item.rarity,
-        
+
           description: item.description,
           reg: item.reg,
           content: value,

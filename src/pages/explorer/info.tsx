@@ -30,20 +30,25 @@ export default function Ord2Info() {
 
   const status = useMemo(() => {
     let _status;
+    if (!detail.ticker) {
+      return _status;
+    }
     if (
-      detail?.rarity !== 'unknow' &&
-      detail?.rarity !== 'common' &&
-      !!detail?.rarity
+      detail.rarity !== 'unknow' &&
+      detail.rarity !== 'common' &&
+      !!detail.rarity
     ) {
+      _status = 'Minting';
+    } else if (detail.max && detail.totalMinted < detail.max) {
       _status = 'Minting';
     } else if (
-      detail?.startBlock &&
-      detail?.endBlock &&
-      btcHeight <= detail?.endBlock &&
-      btcHeight >= detail?.startBlock
+      detail.startBlock &&
+      detail.endBlock &&
+      btcHeight <= detail.endBlock &&
+      btcHeight >= detail.startBlock
     ) {
       _status = 'Minting';
-    } else if (btcHeight < detail?.startBlock) {
+    } else if (btcHeight < detail.startBlock) {
       _status = 'Pending';
     } else {
       _status = 'Completed';
@@ -52,16 +57,16 @@ export default function Ord2Info() {
   }, [detail, btcHeight]);
   const toInscribe = () => {
     console.log(detail);
-    nav('/inscribe', {
-      state: {
-        type: 'ordx',
-        item: {
-          tick: detail.ticker,
-          rarity: detail.rarity,
-          limit: detail.limit,
-        },
-      },
-    });
+    // nav('/inscribe', {
+    //   state: {
+    //     type: 'ordx',
+    //     item: {
+    //       tick: detail.ticker,
+    //       rarity: detail.rarity,
+    //       limit: detail.limit,
+    //     },
+    //   },
+    // });
   };
   const attr = useMemo(() => {
     const { rarity, cn, trz } = detail || {};
@@ -131,11 +136,10 @@ export default function Ord2Info() {
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>
                   <iframe
-
                     src={`https://ord-${
                       network === 'testnet' ? 'testnet' : 'mainnet'
                     }.ordx.space/preview/${detail?.inscriptionId}`}
-                    scrolling="no"
+                    scrolling='no'
                     sandbox='allow-scripts'
                     className='max-w-full w-80 h-80'></iframe>
                 </div>
@@ -264,11 +268,13 @@ export default function Ord2Info() {
               className='w-72'
             />
           </div>
-          {tabText === t('common.holders') && tick && detail?.totalMinted !== undefined && (
-            <div className='p-4'>
-              <InfoHolders tick={tick} totalQuantity={detail?.totalMinted} />
-            </div>
-          )}
+          {tabText === t('common.holders') &&
+            tick &&
+            detail?.totalMinted !== undefined && (
+              <div className='p-4'>
+                <InfoHolders tick={tick} totalQuantity={detail?.totalMinted} />
+              </div>
+            )}
           {tabText === t('common.minted_history') && tick && (
             <div className='p-4'>
               <OrdxTickHistory tick={tick} />
