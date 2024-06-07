@@ -112,7 +112,6 @@ export default function Ord2Index() {
         )}
         {!showAddress && (
           <div>
-            
             <OrdxList />
           </div>
         )}

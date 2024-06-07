@@ -10,16 +10,7 @@ import { useReactWalletStore } from 'btc-connect/dist/react';
 
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
-import {
-  Box,
-  Card,
-  CardBody,
-  CardHeader,
-  Heading,
-  SimpleGrid,
-  Stack,
-  useToast,
-} from '@chakra-ui/react';
+import { useToast } from '@chakra-ui/react';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
 
 interface DataType {
@@ -52,6 +43,7 @@ export const OrdxFullList = () => {
 
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
+    console.log(item);
     // nav('/inscribe', { state: { type: 'ordx', item } });
   };
 

@@ -70,11 +70,20 @@ export const NavHeader = () => {
       type: 'link',
     },
     {
-      key: ROUTE_PATH.TOOLS,
-      label: t('nav.tools'),
-      value: ROUTE_PATH.TOOLS,
-      type: 'route',
+      key: 'https://docs.ordx.space/',
+      label: t('nav.docs'),
+      value:
+        i18n.language == 'en'
+          ? 'https://docs.ordx.space/v/en/'
+          : 'https://docs.ordx.space/',
+      type: 'link',
     },
+    // {
+    //   key: ROUTE_PATH.TOOLS,
+    //   label: t('nav.tools'),
+    //   value: ROUTE_PATH.TOOLS,
+    //   type: 'route',
+    // },
   ];
   // if (['ordx.space'].every((v) => location.hostname !== v)) {
   //   items.push({
