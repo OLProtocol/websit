@@ -52,16 +52,16 @@ export default function Ord2Info() {
   }, [detail, btcHeight]);
   const toInscribe = () => {
     console.log(detail);
-    nav('/inscribe', {
-      state: {
-        type: 'ordx',
-        item: {
-          tick: detail.ticker,
-          rarity: detail.rarity,
-          limit: detail.limit,
-        },
-      },
-    });
+    // nav('/inscribe', {
+    //   state: {
+    //     type: 'ordx',
+    //     item: {
+    //       tick: detail.ticker,
+    //       rarity: detail.rarity,
+    //       limit: detail.limit,
+    //     },
+    //   },
+    // });
   };
   const attr = useMemo(() => {
     const { rarity, cn, trz } = detail || {};

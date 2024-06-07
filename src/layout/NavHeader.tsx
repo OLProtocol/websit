@@ -23,12 +23,12 @@ export const NavHeader = () => {
           : 'https://ordx.space/index-zh.html',
       type: 'link',
     },
-    {
-      key: ROUTE_PATH.INSCRIBE,
-      label: t('nav.inscribe'),
-      value: ROUTE_PATH.INSCRIBE,
-      type: 'route',
-    },
+    // {
+    //   key: ROUTE_PATH.INSCRIBE,
+    //   label: t('nav.inscribe'),
+    //   value: ROUTE_PATH.INSCRIBE,
+    //   type: 'route',
+    // },
     {
       key: ROUTE_PATH.ORDX_INDEX,
       label: t('nav.explorer'),
@@ -70,11 +70,20 @@ export const NavHeader = () => {
       type: 'link',
     },
     {
-      key: ROUTE_PATH.TOOLS,
-      label: t('nav.tools'),
-      value: ROUTE_PATH.TOOLS,
-      type: 'route',
+      key: 'https://docs.ordx.space/',
+      label: t('nav.docs'),
+      value:
+        i18n.language == 'en'
+          ? 'https://docs.ordx.space/v/en/'
+          : 'https://docs.ordx.space/',
+      type: 'link',
     },
+    // {
+    //   key: ROUTE_PATH.TOOLS,
+    //   label: t('nav.tools'),
+    //   value: ROUTE_PATH.TOOLS,
+    //   type: 'route',
+    // },
   ];
   // if (['ordx.space'].every((v) => location.hostname !== v)) {
   //   items.push({

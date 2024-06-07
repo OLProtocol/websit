@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { useNavigate, useParams } from 'react-router-dom';
 import { useOrdInscriptiontInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
