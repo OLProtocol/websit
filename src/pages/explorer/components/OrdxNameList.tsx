@@ -29,7 +29,7 @@ export const OrdxNameList = () => {
   const nav = useNavigate();
   const { btcHeight } = useCommonStore((state) => state);
   const { network, address: currentAccount } = useReactWalletStore();
-  const [start, setStart] = useState(0);
+  const [start, setStart] = useState(1);
   const [limit, setLimit] = useState(10);
 
   // const [data, setData] = useState<any>();
@@ -40,7 +40,7 @@ export const OrdxNameList = () => {
     nav(`/explorer/ns/${item.name}`);
   };
 
-  const { data } = useNsList(network);
+  const { data } = useNsList({ start, limit, network });
   const list = useMemo(() => data?.data?.names || [], [data]);
   const total = useMemo(() => data?.data?.total || 10, [data]);
 
