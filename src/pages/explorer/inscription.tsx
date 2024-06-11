@@ -6,7 +6,7 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { generateMempoolUrl } from '@/lib/utils';
+import { generateMempoolUrl, generateOrdUrl } from '@/lib/utils';
 
 export default function OrdxInscription() {
   const { t } = useTranslation();
@@ -30,11 +30,10 @@ export default function OrdxInscription() {
   }, [detail]);
 
   const ordinalLink = useMemo(() => {
-    if (network === 'testnet') {
-      return `https://testnet.ordinals.com/inscription/${detail?.inscriptionId}`;
-    } else {
-      return `https://ordinals.com/inscription/${detail?.inscriptionId}`;
-    }
+    return generateOrdUrl({
+      network,
+      path: `inscription/${detail?.inscriptionId}`,
+    });
   }, [network, detail]);
 
   const delegateInscriptionId = useMemo(() => {
@@ -44,7 +43,7 @@ export default function OrdxInscription() {
       return `${detail?.delegate}i0`;
     }
   }, [detail?.delegate]);
-  
+
   const txid = useMemo(() => {
     return detail?.inscriptionId?.replace(/i0$/m, '');
   }, [detail]);
@@ -59,7 +58,7 @@ export default function OrdxInscription() {
 
   const toTick = () => {
     nav(`/explorer/${detail.ticker}`);
-  }
+  };
 
   useEffect(() => {
     if (inscriptionId) {
@@ -101,9 +100,10 @@ export default function OrdxInscription() {
                   <iframe
                     scrolling='no'
                     sandbox='allow-scripts'
-                    src={`https://ord-${
-                      network === 'testnet' ? 'testnet' : 'mainnet'
-                    }.ordx.space/preview/${detail?.delegate}`}
+                    src={generateOrdUrl({
+                      network,
+                      path: `preview/${detail?.delegate}`,
+                    })}
                     className='max-w-full w-80 h-80'></iframe>
                 </div>
               </div>

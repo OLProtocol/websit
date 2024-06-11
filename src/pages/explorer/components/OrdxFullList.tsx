@@ -7,7 +7,7 @@ import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-
+import { generateOrdUrl } from '@/lib/utils'
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import { useToast } from '@chakra-ui/react';
@@ -89,9 +89,10 @@ export const OrdxFullList = () => {
             <iframe
               scrolling='no'
               sandbox='allow-scripts'
-              src={`https://ord-${
-                network === 'testnet' ? 'testnet' : 'mainnet'
-              }.ordx.space/preview/${inscriptionId}`}
+              src={generateOrdUrl({
+                network,
+                path: `preview/${inscriptionId}`,
+              })}
               className='max-w-full'></iframe>
           </div>
         ) : (

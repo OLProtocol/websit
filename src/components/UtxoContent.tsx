@@ -2,6 +2,7 @@ import { useInscriptiontInfo, useExoticUtxo } from '@/api';
 import { useEffect, useMemo } from 'react';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
+import { generateOrdUrl } from '@/lib/utils';
 import { generateSeedByUtxos } from '@/lib/utils';
 
 interface UtxoContentProps {
@@ -30,9 +31,10 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
   console.log(seed);
   const contentSrc = useMemo(() => {
     if (detail?.delegate && inscriptionId && seed) {
-      return `https://ord-${
-        network === 'testnet' ? 'testnet' : 'mainnet'
-      }.ordx.space/preview/${inscriptionId}?seed=${seed}`;
+      return generateOrdUrl({
+        network,
+        path: `preview/${inscriptionId}?seed=${seed}`,
+      });
     } else {
       return;
     }

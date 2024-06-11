@@ -1,4 +1,5 @@
 export * from './mempool';
+export * from './url';
 export * from '../wallet/utxo';
 export * from '../wallet/btc';
 import { getHeightInfo } from '@/api';

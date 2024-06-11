@@ -7,7 +7,7 @@ import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
 import { OrdxTickHistory } from './components/OrdxTickHistory';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-import { generateMempoolUrl } from '@/lib/utils';
+import { generateMempoolUrl, generateOrdUrl } from '@/lib/utils';
 import { Button, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -88,11 +88,10 @@ export default function Ord2Info() {
   }, [detail]);
   const specialStatus = useMemo(() => !!attr, [attr]);
   const ordinalLink = useMemo(() => {
-    if (network === 'testnet') {
-      return `https://testnet.ordinals.com/inscription/${detail?.inscriptionId}`;
-    } else {
-      return `https://ordinals.com/inscription/${detail?.inscriptionId}`;
-    }
+    return generateOrdUrl({
+      network,
+      path: `inscription/${detail?.inscriptionId}`,
+    });
   }, [network, detail]);
   const txLink = useMemo(() => {
     const href = generateMempoolUrl({
@@ -136,9 +135,10 @@ export default function Ord2Info() {
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>
                   <iframe
-                    src={`https://ord-${
-                      network === 'testnet' ? 'testnet' : 'mainnet'
-                    }.ordx.space/preview/${detail?.inscriptionId}`}
+                    src={generateOrdUrl({
+                      network,
+                      path: `preview/${detail?.inscriptionId}`,
+                    })}
                     scrolling='no'
                     sandbox='allow-scripts'
                     className='max-w-full w-80 h-80'></iframe>
@@ -160,9 +160,6 @@ export default function Ord2Info() {
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.block')}:</p>
               <div className='indent-2 flex'>
-                {/* {specialStatus
-                  ? '-'
-                  : <BlockAndTime startBlock={detail?}/>} */}
                 {specialStatus && '-'}
                 {!!(
                   !specialStatus &&
@@ -230,23 +227,6 @@ export default function Ord2Info() {
                 )}
               </p>
             </div>
-
-            {/* <div className=''>
-              <p className='text-gray-400'>{t('common.rarity')}:</p>
-              <p className='indent-2'>
-                {detail?.rarity && detail?.rarity !== 'unknow' ? (
-                  <Tag color='green' key={detail?.rarity}>
-                    {detail?.rarity}
-                  </Tag>
-                ) : (
-                  '-'
-                )}
-              </p>
-            </div>
-            <div className=''>
-              <p className='text-gray-400'>{t('common.trz')}:</p>
-              <p className='indent-2'>{detail?.trz || '-'}</p>
-            </div> */}
             <div className=''>
               <p className='text-gray-400'>{t('common.satAttr')}:</p>
               <p className='indent-2'>{attr || '-'}</p>
