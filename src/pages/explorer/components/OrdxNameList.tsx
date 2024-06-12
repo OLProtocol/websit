@@ -30,7 +30,7 @@ export const OrdxNameList = () => {
   const nav = useNavigate();
   const { btcHeight } = useCommonStore((state) => state);
   const { network, address: currentAccount } = useReactWalletStore();
-  const [start, setStart] = useState(1);
+  const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
 
   // const [data, setData] = useState<any>();

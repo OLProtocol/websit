@@ -84,7 +84,7 @@ export const OrdxFullList = () => {
       width: 80,
       align: 'center',
       render: (inscriptionId, record) => {
-        return record.imgtype ? (
+        return record.contenttype ? (
           <div>
             <iframe
               scrolling='no'
@@ -284,7 +284,7 @@ export const OrdxFullList = () => {
           reg: item.reg,
           content: value,
           holders: item.holdersCount,
-          imgtype: item.imgtype,
+          contenttype: item.contenttype,
           inscriptionId: item.inscriptionId,
           deployHeight: item.deployHeight,
           minted: item.totalMinted,

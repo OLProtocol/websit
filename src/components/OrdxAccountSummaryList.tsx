@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast';
 interface OrdxSummaryListProps {
   address: string;
   utxosTotal?: number;
+  nameTotal?: number;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
@@ -17,6 +18,7 @@ export const OrdxAccountSummaryList = ({
   onChange,
   onEmpty,
   utxosTotal,
+  nameTotal,
 }: OrdxSummaryListProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
@@ -55,9 +57,9 @@ export const OrdxAccountSummaryList = ({
   const nameTicker = useMemo(() => {
     return {
       ticker: t('pages.account.name'),
-      balance: 0 || '',
+      balance: nameTotal || 0,
     };
-  }, []);
+  }, [nameTotal]);
   const getNfts = async () => {
     const data = await getOrdInscriptionsByAddress({
       address,
@@ -134,7 +136,7 @@ export const OrdxAccountSummaryList = ({
   return (
     <div>
       <Wrap>
-        {tickers.slice(0, 3).map((item) => (
+        {tickers.slice(0, 4).map((item) => (
           <WrapItem>
             <OrdXItem
               key={item.ticker}
@@ -152,7 +154,7 @@ export const OrdxAccountSummaryList = ({
       </Wrap>
       <hr />
       <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
-        {tickers.slice(3).map((item) => (
+        {tickers.slice(4).map((item) => (
           <OrdXItem
             key={item.ticker}
             selected={select === item.ticker}

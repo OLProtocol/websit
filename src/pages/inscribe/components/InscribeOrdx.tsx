@@ -201,7 +201,7 @@ export const InscribeOrdx = ({
         startBlock,
         endBlock,
         limit,
-        imgtype,
+        contenttype,
         inscriptionId,
       } = info.data || {};
       const isSpecial = rarity !== 'unknow' && rarity !== 'common' && !!rarity;
@@ -244,7 +244,7 @@ export const InscribeOrdx = ({
           );
           return checkStatus;
         }
-        if (imgtype) {
+        if (contenttype) {
           set('relateInscriptionId', inscriptionId);
         }
         if (blur) {

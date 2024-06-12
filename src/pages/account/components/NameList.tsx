@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNsListByAddress } from '@/api';
@@ -11,7 +11,10 @@ import { CopyButton } from '@/components/CopyButton';
 import { useToast } from '@chakra-ui/react';
 import { generateMempoolUrl } from '@/lib/utils';
 
-export const NameList = () => {
+interface NameListProps {
+  onTotalChange?: (total: number) => void;
+}
+export const NameList = ({ onTotalChange }: NameListProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { btcHeight } = useCommonStore((state) => state);
@@ -26,7 +29,7 @@ export const NameList = () => {
   const clickHandler = (item) => {
     nav(`/explorer/ns/${item.name}`);
   };
-
+  console.log(start);
   const { data } = useNsListByAddress({
     address: currentAccount,
     start,
@@ -34,8 +37,11 @@ export const NameList = () => {
     network,
   });
   const list = useMemo(() => data?.data?.names || [], [data]);
-  const total = useMemo(() => data?.data?.total || 10, [data]);
+  const total = useMemo(() => data?.data?.amount || 0, [data]);
 
+  useEffect(() => {
+    onTotalChange?.(total), [total];
+  }, [total]);
   const columns: ColumnsType<any> = [
     {
       title: t('common.index'),

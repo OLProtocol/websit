@@ -1,10 +1,11 @@
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
 import { RareSat } from '../discover/rareSat';
 import { AvailableUtxoList } from './components/AvailableUtxoList';
 import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
+import { useNsListByAddress } from '@/api'
 import { NftList } from './components/NftList';
 import { NameList } from './components/NameList';
 
@@ -13,6 +14,14 @@ export default function Account() {
   const { network, address: currentAccount } = useReactWalletStore();
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
   const [ticker, setTicker] = useState('');
+
+  const { data } = useNsListByAddress({
+    address: currentAccount,
+    start: 0,
+    limit: 1,
+    network,
+  });
+  const nameTotal = useMemo(() => data?.data?.amount || 0, [data]);
 
   const onTotalChange = (total: number) => {
     setUtxosTotal(total);
@@ -25,10 +34,11 @@ export default function Account() {
           <OrdxAccountSummaryList
             address={currentAccount}
             utxosTotal={utxosTotal}
+            nameTotal={nameTotal}
             onChange={(tick) => setTicker(tick)}
           />
           {ticker === t('pages.account.name') && (
-            <NameList />
+            <NameList/>
           )}
           {ticker === t('pages.account.rare_sats') && (
             <RareSat canSplit={true} />
