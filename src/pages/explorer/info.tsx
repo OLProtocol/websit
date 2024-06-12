@@ -130,7 +130,7 @@ export default function Ord2Info() {
             <span> {t('common.overview')} </span>
           </div>
           <div className='p-4'>
-            {!!detail?.contenttype && (
+            {detail?.contenttype === 'text/html' && (
               <div className='mb-2'>
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>

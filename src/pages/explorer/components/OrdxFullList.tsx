@@ -84,7 +84,7 @@ export const OrdxFullList = () => {
       width: 80,
       align: 'center',
       render: (inscriptionId, record) => {
-        return record.contenttype ? (
+        return record.contenttype === 'text/html' ? (
           <div>
             <iframe
               scrolling='no'

@@ -244,7 +244,7 @@ export const InscribeOrdx = ({
           );
           return checkStatus;
         }
-        if (contenttype) {
+        if (contenttype === 'text/html') {
           set('relateInscriptionId', inscriptionId);
         }
         if (blur) {
