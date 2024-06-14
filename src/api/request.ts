@@ -218,7 +218,6 @@ export const getUtxo = async ({ utxo, network }: any) => {
   return data;
 };
 export const exoticUtxo = async ({ utxo, network }: any) => {
-  console.log(utxo);
   const { data } = await axios.get(
     // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
     generateUrl(`exotic/utxo/${utxo}`, network),
@@ -396,5 +395,6 @@ export const getBestHeight = async ({ network }: any) => {
 };
 export const getHeightInfo = async ({ height, network }: any) => {
   const { data } = await axios.get(generateUrl(`height/${height}`, network));
+  console.log(data);
   return data;
 };

@@ -33,13 +33,7 @@ export default function Ord2Info() {
     if (!detail.ticker) {
       return _status;
     }
-    if (
-      detail.rarity !== 'unknow' &&
-      detail.rarity !== 'common' &&
-      !!detail.rarity
-    ) {
-      _status = 'Minting';
-    } else if (detail.max && detail.totalMinted < detail.max) {
+    if (detail.max && detail.totalMinted < detail.max) {
       _status = 'Minting';
     } else if (
       detail.startBlock &&
@@ -162,7 +156,6 @@ export default function Ord2Info() {
               <div className='indent-2 flex'>
                 {specialStatus && '-'}
                 {!!(
-                  !specialStatus &&
                   detail?.startBlock &&
                   detail?.endBlock
                 ) && (

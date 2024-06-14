@@ -218,13 +218,7 @@ export const OrdxFullList = () => {
     () =>
       list.map((item) => {
         let status;
-        if (
-          item.rarity !== 'unknow' &&
-          item.rarity !== 'common' &&
-          !!item.rarity
-        ) {
-          status = 'Minting';
-        } else if (item.max && item.totalMinted < item.max) {
+        if (item.max && item.totalMinted < item.max) {
           status = 'Minting';
         } else if (
           item.startBlock &&
@@ -238,8 +232,6 @@ export const OrdxFullList = () => {
         } else {
           status = 'Completed';
         }
-        const special =
-          item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         const attrArr: string[] = [];
         if (
           item.rarity !== 'unknow' &&
@@ -272,8 +264,7 @@ export const OrdxFullList = () => {
         return {
           id: item.id + 1,
           tick: item.ticker,
-          block:
-            !special && item.startBlock > 0
+          block: item.startBlock > 0
               ? `${item.startBlock}-${item.endBlock}`
               : '-',
           startBlock: item.startBlock,
