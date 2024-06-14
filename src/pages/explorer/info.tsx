@@ -154,7 +154,6 @@ export default function Ord2Info() {
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.block')}:</p>
               <div className='indent-2 flex'>
-                {specialStatus && '-'}
                 {!!(
                   detail?.startBlock &&
                   detail?.endBlock
@@ -180,12 +179,12 @@ export default function Ord2Info() {
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.selfmint')}:</p>
-              <p className='indent-2'>{detail?.selfmint || '-'}</p>
+              <p className='indent-2'>{detail?.selfmint ? `${detail?.selfmint}%` : '-'}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
-                {new Date(detail?.deployBlocktime).toLocaleString('af')}
+                {detail?.deployBlocktime ? new Date(detail?.deployBlocktime * 1000).toLocaleString('af') : '-'}
               </p>
             </div>
             <div className=''>

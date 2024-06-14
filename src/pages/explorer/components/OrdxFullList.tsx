@@ -145,6 +145,9 @@ export const OrdxFullList = () => {
       key: 'selfmint',
       width: 80,
       align: 'center',
+      render: (selfmint) => {
+        return selfmint ? `${selfmint}%` : '-';
+      },
     },
     {
       title: SatTitle,
@@ -281,7 +284,7 @@ export const OrdxFullList = () => {
           minted: item.totalMinted,
           limit: item.limit,
           max: item.max || '-',
-          selfmint: item.selfmint || '-',
+          selfmint: item.selfmint,
           status,
           deploy_time: new Date(item.deployBlocktime).toLocaleString('af'),
         };
