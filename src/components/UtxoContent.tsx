@@ -35,7 +35,10 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
         path: `preview/${inscriptionId}?seed=${seed}`,
       });
     } else {
-      return;
+      return generateOrdUrl({
+        network,
+        path: `preview/${inscriptionId}`,
+      });
     }
   }, [network, inscriptionId, seed, detail?.delegate]);
   useEffect(() => {
