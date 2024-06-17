@@ -28,7 +28,6 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
         : 0,
     [utxoData],
   );
-  console.log(seed);
   const contentSrc = useMemo(() => {
     if (detail?.delegate && inscriptionId && seed) {
       return generateOrdUrl({

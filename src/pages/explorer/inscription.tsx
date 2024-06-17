@@ -5,6 +5,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
+import { UtxoContent } from '@/components/UtxoContent';
 import { useTranslation } from 'react-i18next';
 import { generateMempoolUrl, generateOrdUrl } from '@/lib/utils';
 
@@ -97,14 +98,7 @@ export default function OrdxInscription() {
               <div className='mb-2'>
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>
-                  <iframe
-                    scrolling='no'
-                    sandbox='allow-scripts'
-                    src={generateOrdUrl({
-                      network,
-                      path: `preview/${detail?.delegate}`,
-                    })}
-                    className='max-w-full w-80 h-80'></iframe>
+                <UtxoContent inscriptionId={detail?.delegate} utxo={detail?.utxo} />
                 </div>
               </div>
             )}
