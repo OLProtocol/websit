@@ -56,7 +56,7 @@ export const OrdNftList = () => {
         key: 'id',
         align: 'center',
         render: (t) => {
-          const txid = t.replace(/i0$/m, '');
+          const txid = t?.replace(/i0$/m, '');
           const href = generateMempoolUrl({
             network,
             path: `tx/${txid}`,

@@ -33,7 +33,13 @@ export default function Ord2Info() {
     if (!detail.ticker) {
       return _status;
     }
+    const isSpecial =
+      detail.rarity !== 'unknow' &&
+      detail.rarity !== 'common' &&
+      !!detail.rarity;
     if (detail.max && detail.totalMinted < detail.max) {
+      _status = 'Minting';
+    } else if (isSpecial && detail.startBlock < 0) {
       _status = 'Minting';
     } else if (
       detail.startBlock &&
@@ -154,14 +160,13 @@ export default function Ord2Info() {
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.block')}:</p>
               <div className='indent-2 flex'>
-                {!!(
-                  detail?.startBlock &&
-                  detail?.endBlock
-                ) && (
+                {detail?.startBlock > 0 && detail?.endBlock > 0 ? (
                   <BlockAndTime
                     startBlock={detail.startBlock}
                     endBlock={detail.endBlock}
                   />
+                ) : (
+                  '-'
                 )}
               </div>
             </div>
@@ -179,12 +184,18 @@ export default function Ord2Info() {
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.selfmint')}:</p>
-              <p className='indent-2'>{detail?.selfmint ? `${detail?.selfmint}%` : '-'}</p>
+              <p className='indent-2'>
+                {detail?.selfmint ? `${detail?.selfmint}%` : '-'}
+              </p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
-                {detail?.deployBlocktime ? new Date(detail?.deployBlocktime * 1000).toLocaleString('af') : '-'}
+                {detail?.deployBlocktime
+                  ? new Date(detail?.deployBlocktime * 1000).toLocaleString(
+                      'af',
+                    )
+                  : '-'}
               </p>
             </div>
             <div className=''>

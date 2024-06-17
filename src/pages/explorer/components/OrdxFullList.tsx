@@ -7,7 +7,7 @@ import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-import { generateOrdUrl } from '@/lib/utils'
+import { generateOrdUrl } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import { useToast } from '@chakra-ui/react';
@@ -220,8 +220,12 @@ export const OrdxFullList = () => {
   const dataSource: DataType[] = useMemo(
     () =>
       list.map((item) => {
+        const isSpecial =
+          item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         let status;
         if (item.max && item.totalMinted < item.max) {
+          status = 'Minting';
+        } else if (isSpecial && item.startBlock < 0) {
           status = 'Minting';
         } else if (
           item.startBlock &&
@@ -236,11 +240,7 @@ export const OrdxFullList = () => {
           status = 'Completed';
         }
         const attrArr: string[] = [];
-        if (
-          item.rarity !== 'unknow' &&
-          item.rarity !== 'common' &&
-          !!item.rarity
-        ) {
+        if (isSpecial) {
           attrArr.push(`rar=${item.rarity}`);
         }
         if (item.cn) {
@@ -267,9 +267,8 @@ export const OrdxFullList = () => {
         return {
           id: item.id + 1,
           tick: item.ticker,
-          block: item.startBlock > 0
-              ? `${item.startBlock}-${item.endBlock}`
-              : '-',
+          block:
+            item.startBlock > 0 ? `${item.startBlock}-${item.endBlock}` : '-',
           startBlock: item.startBlock,
           endBlock: item.endBlock,
           rarity: item.rarity,
