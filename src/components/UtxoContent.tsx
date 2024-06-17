@@ -53,7 +53,7 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
   }, [utxo, network]);
 
   return (
-    <Spin spinning={isLoading}>
+    <Spin spinning={isLoading} className='h-full'>
       {contentSrc ? (
         <a
           href={contentSrc}
