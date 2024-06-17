@@ -94,8 +94,8 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
     },
     {
       title: t('common.address'),
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'mintaddress',
+      key: 'mintaddress',
       width: 120,
       align: 'center',
       render: (t) => (
