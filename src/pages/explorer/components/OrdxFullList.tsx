@@ -223,17 +223,31 @@ export const OrdxFullList = () => {
         const isSpecial =
           item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         let status;
-        if (item.max && item.totalMinted < item.max) {
-          status = 'Minting';
+        console.log(item.ticker);
+        console.log(isSpecial, item.startBlock, item.endBlock, btcHeight, btcHeight)
+        if (!isSpecial && item.startBlock < 0) {
+          if (item.max && item.totalMinted < item.max) {
+            status = 'Minting';
+          } else if (!item.max) {
+            status = 'Minting';
+          }
         } else if (isSpecial && item.startBlock < 0) {
-          status = 'Minting';
+          if (item.max && item.totalMinted < item.max) {
+            status = 'Minting';
+          } else if (!item.max) {
+            status = 'Minting';
+          }
         } else if (
           item.startBlock &&
           item.endBlock &&
           btcHeight <= item.endBlock &&
           btcHeight >= item.startBlock
         ) {
-          status = 'Minting';
+          if (item.max && item.totalMinted < item.max) {
+            status = 'Minting';
+          } else if (!item.max) {
+            status = 'Minting';
+          }
         } else if (btcHeight < item.startBlock) {
           status = 'Pending';
         } else {

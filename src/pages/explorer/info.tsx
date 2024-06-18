@@ -37,17 +37,30 @@ export default function Ord2Info() {
       detail.rarity !== 'unknow' &&
       detail.rarity !== 'common' &&
       !!detail.rarity;
-    if (detail.max && detail.totalMinted < detail.max) {
-      _status = 'Minting';
+    console.log(isSpecial);
+    if (!isSpecial && detail.startBlock < 0) {
+      if (detail.max && detail.totalMinted < detail.max) {
+        _status = 'Minting';
+      } else if (!detail.max) {
+        _status = 'Minting';
+      }
     } else if (isSpecial && detail.startBlock < 0) {
-      _status = 'Minting';
+      if (detail.max && detail.totalMinted < detail.max) {
+        _status = 'Minting';
+      } else if (!detail.max) {
+        _status = 'Minting';
+      }
     } else if (
       detail.startBlock &&
       detail.endBlock &&
       btcHeight <= detail.endBlock &&
       btcHeight >= detail.startBlock
     ) {
-      _status = 'Minting';
+      if (detail.max && detail.totalMinted < detail.max) {
+        _status = 'Minting';
+      } else if (!detail.max) {
+        _status = 'Minting';
+      }
     } else if (btcHeight < detail.startBlock) {
       _status = 'Pending';
     } else {
