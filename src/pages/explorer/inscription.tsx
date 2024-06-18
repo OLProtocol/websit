@@ -97,7 +97,7 @@ export default function OrdxInscription() {
             {!!detail?.delegate && (
               <div className='mb-2'>
                 <p className='text-gray-400'>{t('common.content')}:</p>
-                <div className='h-60'>
+                <div className='h-80'>
                   <UtxoContent
                     inscriptionId={detail?.inscriptionId}
                     utxo={detail?.utxo}

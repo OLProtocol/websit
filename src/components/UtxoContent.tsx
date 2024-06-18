@@ -53,8 +53,10 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
   }, [utxo, network]);
 
   return (
-    <Spin spinning={isLoading} className='h-full'>
-      {contentSrc ? (
+    <div className='h-full'>
+      {isLoading ? (
+        <Spin spinning={isLoading}></Spin>
+      ) : contentSrc ? (
         <a
           href={contentSrc}
           target='_blank'
@@ -62,11 +64,11 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
           className='block w-full h-full'>
           <iframe
             src={contentSrc}
-            className='max-w-full pointer-events-none max-h-full'></iframe>
+            className='max-w-full h-full pointer-events-none max-h-full'></iframe>
         </a>
       ) : (
         '-'
       )}
-    </Spin>
+    </div>
   );
 }
