@@ -128,6 +128,7 @@ export const selectAmountRangesByUtxos = (utxos: any[], amount) => {
   return ranges;
 };
 export const generateSeedByUtxos = (utxos: any[], amount) => {
+  console.log(utxos, amount)
   amount = Math.max(amount, 546);
   return generateSeed(selectAmountRangesByUtxos(utxos, amount));
 };

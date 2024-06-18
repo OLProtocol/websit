@@ -3,30 +3,25 @@ import { useEffect, useMemo } from 'react';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
 import { generateOrdUrl } from '@/lib/utils';
-import { generateSeedByUtxos } from '@/lib/utils';
+import { generateSeed  } from '@/lib/utils';
 
 interface UtxoContentProps {
   inscriptionId: string;
-  utxo?: string;
+  ranges?: any[];
 }
-export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
+export function UtxoContent({ inscriptionId, ranges = [] }: UtxoContentProps) {
   const { network } = useReactWalletStore();
   const { data, trigger, isLoading } = useInscriptiontInfo({
     inscriptionId: inscriptionId,
     network,
   });
   const detail = useMemo(() => data?.data || {}, [data]);
-  const { data: utxoData, trigger: seedTrigger } = useExoticUtxo({
-    network,
-    utxo: utxo,
-  });
-  console.log('utxoData', utxoData);
   const seed = useMemo(
     () =>
-      utxoData?.data
-        ? generateSeedByUtxos([utxoData?.data], utxoData?.data?.value)
+      ranges.length > 0
+        ? generateSeed(ranges)
         : 0,
-    [utxoData],
+    [ranges],
   );
   const contentSrc = useMemo(() => {
     if (detail?.delegate && inscriptionId && seed) {
@@ -46,11 +41,6 @@ export function UtxoContent({ inscriptionId, utxo }: UtxoContentProps) {
       trigger();
     }
   }, [inscriptionId, network]);
-  useEffect(() => {
-    if (utxo) {
-      seedTrigger();
-    }
-  }, [utxo, network]);
 
   return (
     <div className='h-full'>

@@ -105,8 +105,9 @@ export default function UtxoInfo() {
         key: 'inscriptionId',
         width: 100,
         align: 'center',
-        render: (t) => {
-          return <UtxoContent inscriptionId={t} utxo={utxo} />;
+        render: (t, record) => {
+          console.log('record', record)
+          return <UtxoContent inscriptionId={t} ranges={record.ranges} />;
         },
       },
     ];

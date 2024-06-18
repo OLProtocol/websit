@@ -100,7 +100,6 @@ export default function OrdxInscription() {
                 <div className='h-80'>
                   <UtxoContent
                     inscriptionId={detail?.inscriptionId}
-                    utxo={detail?.utxo}
                   />
                 </div>
               </div>
