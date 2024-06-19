@@ -607,7 +607,6 @@ export const InscribeOrdx = ({
                       className='flex-1'
                       onBlur={onBlockBLur}
                       isDisabled={!data.blockChecked}
-                      placeholder='Block start'
                       onChange={(_, e) => set('block_start', isNaN(e) ? 0 : e)}
                       min={1}>
                       <NumberInputField />
@@ -618,7 +617,6 @@ export const InscribeOrdx = ({
                       isDisabled={!data.blockChecked}
                       className='flex-1'
                       onBlur={onBlockBLur}
-                      placeholder='Block End'
                       onChange={(_, e) => set('block_end', isNaN(e) ? 0 : e)}
                       min={1}>
                       <NumberInputField />
@@ -711,7 +709,6 @@ export const InscribeOrdx = ({
                   <div className='ml-2 flex-1'>
                     <NumberInput
                       value={data.trz}
-                      placeholder={t('pages.inscribe.ordx.trz_placeholder')}
                       isDisabled={!data.trzChecked}
                       onChange={(_, e) => set('trz', isNaN(e) ? 0 : e)}
                       min={0}>

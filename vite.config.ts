@@ -15,6 +15,29 @@ export default defineConfig({
   build: {
     target: 'esnext',
     rollupOptions: {
+      external: [
+        "node:util",
+        "node:buffer",
+        "node:stream",
+        "node:net",
+        "node:url",
+        "node:fs",
+        "node:path",
+        "node:process",
+        "perf_hooks",
+      ],
+      output: {
+        globals: {
+          "node:stream": "stream",
+          "node:buffer": "buffer",
+          "node:util": "util",
+          "node:net": "net",
+          "node:url": "url",
+          "node:process": "process",
+          perf_hooks: "perf_hooks",
+        },
+        inlineDynamicImports: true,
+      },
       // plugins: [nodePolyfills()],
     },
   },
@@ -35,6 +58,7 @@ export default defineConfig({
   // },
   define: {
     'process.env': process.env,
+    'process.version': JSON.stringify(process.version),
   },
   resolve: {
     alias: {
