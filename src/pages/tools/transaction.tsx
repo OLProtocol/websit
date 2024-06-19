@@ -403,7 +403,7 @@ export default function Transaction () {
   };
 
   const getAvialableTicker = async () => {
-    let data = await getUtxoByValue({
+    const data = await getUtxoByValue({
       address: currentAccount,
       // value: 600,
       value: 0,
@@ -524,7 +524,7 @@ export default function Transaction () {
   }, [currentAccount]);
 
   useEffect(() => {
-    let outputItems: any[] = [];
+    const outputItems: any[] = [];
     if (initOutputList && initOutputList.length > 0) {
       if (initOutputList[0].address === currentAccount) {
         initOutputList.map((item) => {
@@ -552,7 +552,7 @@ export default function Transaction () {
     }
     setOutputList('items', outputItems);
 
-    let inputItems: any[] = [];
+    const inputItems: any[] = [];
     if (initInputList && initInputList.length > 0) {
       initInputList.map((item) => {
         const newItem = {
@@ -662,7 +662,6 @@ export default function Transaction () {
                     />
                     {/* <InputRightAddon>sat</InputRightAddon> */}
                     <AntSelect
-                      variant='filled'
                       className={'w-[30%]'} style={{ height: '40px' }}
                       value={item.value.unit}
                       defaultValue='sats'
@@ -739,7 +738,6 @@ export default function Transaction () {
                       onBlur={(e) => outputSatsOnBlur(e)}
                     />
                     <AntSelect
-                      variant='filled'
                       className={'w-[30%]'} style={{ height: '40px' }}
                       value={item.value.unit}
                       defaultValue='sats'
@@ -815,7 +813,6 @@ export default function Transaction () {
                       readOnly
                     />
                     <AntSelect
-                      variant='filled'
                       className={'w-[30%]'} style={{ height: '40px' }}
                       value={balance.unit}
                       defaultValue='sats'
