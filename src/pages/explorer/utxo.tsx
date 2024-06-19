@@ -35,7 +35,10 @@ export default function UtxoInfo() {
     return assetData?.data?.detail || {};
   }, [assetData]);
   const assets = useMemo(() => {
-    return detail?.assets || [];
+    return detail?.assets?.map(v => ({
+      ...v,
+      assets: v?.assets?.map(a => ({...a, ticker: v.ticker })),
+    })) || [];
   }, [detail]);
 
   const toInscriptionInfo = (inscriptionId) => {
@@ -107,7 +110,7 @@ export default function UtxoInfo() {
         align: 'center',
         render: (t, record) => {
           console.log('record', record)
-          return <UtxoContent inscriptionId={t} ranges={record.ranges} />;
+          return <UtxoContent inscriptionId={t} ranges={record.ticker.length < 3 ? [] : record.ranges} />;
         },
       },
     ];
