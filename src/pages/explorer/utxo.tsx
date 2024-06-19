@@ -13,23 +13,17 @@ import { UtxoContent } from '@/components/UtxoContent';
 import { hideStr } from '@/lib/utils';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import { generateMempoolUrl } from '@/lib/utils';
-import { Button, Tag, Spin } from 'antd';
+import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useCommonStore } from '@/store';
 
 export default function UtxoInfo() {
   const { t } = useTranslation();
   const { utxo } = useParams();
-  const { btcHeight } = useCommonStore((state) => state);
   const [tabText, setTabText] = useState(t('common.holders'));
   const nav = useNavigate();
   const { network } = useReactWalletStore();
-  const handleTabsChange = (type: any) => {
-    if (type !== tabText) {
-      setTabText(type);
-    }
-  };
+
   const { data: assetData, isLoading } = useGetUtxo({ utxo, network });
   const detail = useMemo(() => {
     return assetData?.data?.detail || {};
