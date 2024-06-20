@@ -111,7 +111,7 @@ export default function OrdxInscription() {
                 {detail?.ticker || '-'}
               </a>
             </div>
-            <div className=''>
+            <div>
               <p className='text-gray-400'>Sats Ranges:</p>
               <p className='indent-2'>{satsText || '-'}</p>
             </div>
@@ -126,7 +126,7 @@ export default function OrdxInscription() {
               </p>
             </div>
 
-            <div className=''>
+            <div>
               <p className='text-gray-400'>{t('common.genesisTx')}:</p>
               <a href={txLink} className='indent-2' target='_blank'>
                 {txid || '-'}
