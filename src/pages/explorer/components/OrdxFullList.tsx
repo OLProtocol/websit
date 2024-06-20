@@ -296,7 +296,7 @@ export const OrdxFullList = () => {
           deployHeight: item.deployHeight,
           minted: item.totalMinted,
           limit: item.limit,
-          max: item.max || '-',
+          max: item.max > 0 || '-',
           selfmint: item.selfmint,
           status,
           deploy_time: new Date(item.deployBlocktime).toLocaleString('af'),

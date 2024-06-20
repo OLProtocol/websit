@@ -193,7 +193,7 @@ export default function Ord2Info() {
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.max')}:</p>
-              <p className='indent-2'>{detail?.max || '-'}</p>
+              <p className='indent-2'>{detail?.max > 0 || '-'}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.selfmint')}:</p>
