@@ -226,15 +226,15 @@ export const OrdxFullList = () => {
         console.log(item.ticker);
         console.log(isSpecial, item.startBlock, item.endBlock, btcHeight, btcHeight)
         if (!isSpecial && item.startBlock < 0) {
-          if (item.max && item.totalMinted < item.max) {
+          if (item.max > 0 && item.totalMinted < item.max) {
             status = 'Minting';
-          } else if (!item.max) {
+          } else if (item.max < 0) {
             status = 'Minting';
           }
         } else if (isSpecial && item.startBlock < 0) {
-          if (item.max && item.totalMinted < item.max) {
+          if (item.max > 0 && item.totalMinted < item.max) {
             status = 'Minting';
-          } else if (!item.max) {
+          } else if (item.max < 0) {
             status = 'Minting';
           }
         } else if (
@@ -243,9 +243,9 @@ export const OrdxFullList = () => {
           btcHeight <= item.endBlock &&
           btcHeight >= item.startBlock
         ) {
-          if (item.max && item.totalMinted < item.max) {
+          if (item.max > 0&& item.totalMinted < item.max) {
             status = 'Minting';
-          } else if (!item.max) {
+          } else if (item.max < 0) {
             status = 'Minting';
           }
         } else if (btcHeight < item.startBlock) {
@@ -296,7 +296,7 @@ export const OrdxFullList = () => {
           deployHeight: item.deployHeight,
           minted: item.totalMinted,
           limit: item.limit,
-          max: item.max > 0 || '-',
+          max: item.max > 0 ? item.max : '-',
           selfmint: item.selfmint,
           status,
           deploy_time: new Date(item.deployBlocktime).toLocaleString('af'),

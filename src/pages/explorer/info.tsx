@@ -39,15 +39,15 @@ export default function Ord2Info() {
       !!detail.rarity;
     console.log(isSpecial);
     if (!isSpecial && detail.startBlock < 0) {
-      if (detail.max && detail.totalMinted < detail.max) {
+      if (detail.max > 0 && detail.totalMinted < detail.max) {
         _status = 'Minting';
-      } else if (!detail.max) {
+      } else if (detail.max < 0) {
         _status = 'Minting';
       }
     } else if (isSpecial && detail.startBlock < 0) {
-      if (detail.max && detail.totalMinted < detail.max) {
+      if (detail.max > 0 && detail.totalMinted < detail.max) {
         _status = 'Minting';
-      } else if (!detail.max) {
+      } else if (detail.max < 0) {
         _status = 'Minting';
       }
     } else if (
@@ -56,9 +56,9 @@ export default function Ord2Info() {
       btcHeight <= detail.endBlock &&
       btcHeight >= detail.startBlock
     ) {
-      if (detail.max && detail.totalMinted < detail.max) {
+      if (detail.max > 0 && detail.totalMinted < detail.max) {
         _status = 'Minting';
-      } else if (!detail.max) {
+      } else if (detail.max < 0) {
         _status = 'Minting';
       }
     } else if (btcHeight < detail.startBlock) {
@@ -193,7 +193,7 @@ export default function Ord2Info() {
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.max')}:</p>
-              <p className='indent-2'>{detail?.max > 0 || '-'}</p>
+              <p className='indent-2'>{detail?.max > 0 ? detail?.max : '-'}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.selfmint')}:</p>
