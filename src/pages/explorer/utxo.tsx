@@ -29,10 +29,12 @@ export default function UtxoInfo() {
     return assetData?.data?.detail || {};
   }, [assetData]);
   const assets = useMemo(() => {
-    return detail?.assets?.map(v => ({
-      ...v,
-      assets: v?.assets?.map(a => ({...a, ticker: v.ticker })),
-    })) || [];
+    return (
+      detail?.assets?.map((v) => ({
+        ...v,
+        assets: v?.assets?.map((a) => ({ ...a, ticker: v.ticker })),
+      })) || []
+    );
   }, [detail]);
 
   const toInscriptionInfo = (inscriptionId) => {
@@ -45,7 +47,7 @@ export default function UtxoInfo() {
 
   const toTick = (tick) => {
     nav(`/explorer/${tick}`);
-  }
+  };
 
   const txLink = useMemo(() => {
     const href = generateMempoolUrl({
@@ -103,8 +105,15 @@ export default function UtxoInfo() {
         width: 100,
         align: 'center',
         render: (t, record) => {
-          console.log('record', record)
-          return <UtxoContent inscriptionId={t} ranges={record.ticker.length < 3 ? [] : record.ranges} />;
+          console.log('record', record);
+          return record.ticker === 'e' ? (
+            '-'
+          ) : (
+            <UtxoContent
+              inscriptionId={t}
+              ranges={record.ticker.length < 3 ? [] : record.ranges}
+            />
+          );
         },
       },
     ];
@@ -146,7 +155,10 @@ export default function UtxoInfo() {
                 <Divider plain></Divider>
                 <div className='mb-2'>
                   <p className='text-gray-400'>{t('common.tick')}:</p>
-                  <a onClick={() => toTick(asset?.ticker)} className='indent-2' target='_blank'>
+                  <a
+                    onClick={() => toTick(asset?.ticker)}
+                    className='indent-2'
+                    target='_blank'>
                     {asset?.ticker || '-'}
                   </a>
                 </div>
