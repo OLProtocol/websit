@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { getTickLabel } from '@/lib/utils';
 interface Ord2ItemProps {
   item: {
     tick: string;
@@ -17,7 +18,7 @@ export const OrdXItem = ({ item, onClick, selected }: Ord2ItemProps) => {
       }`}
       onClick={onClick}>
       <div className='h-10 flex justify-between px-2 items-center bg-gray-200'>
-        <span className='text-orange-500'>{item.tick}</span>
+        <span className='text-orange-500'>{getTickLabel(item.tick)}</span>
       </div>
       <div className='p-2'>
         <div className='flex items-center justify-between'>

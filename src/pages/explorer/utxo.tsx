@@ -12,7 +12,7 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { UtxoContent } from '@/components/UtxoContent';
 import { hideStr } from '@/lib/utils';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-import { generateMempoolUrl } from '@/lib/utils';
+import { generateMempoolUrl, getTickLabel } from '@/lib/utils';
 import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -159,7 +159,7 @@ export default function UtxoInfo() {
                     onClick={() => toTick(asset?.ticker)}
                     className='indent-2'
                     target='_blank'>
-                    {asset?.ticker || '-'}
+                    {getTickLabel(asset?.ticker) || '-'}
                   </a>
                 </div>
                 <div className='mb-2'>

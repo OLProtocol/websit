@@ -7,8 +7,19 @@ import { add, format } from 'date-fns';
 import { flat, sum } from 'radash';
 import crypto from 'crypto';
 
+export const getTickLabel = (tick?: string) => {
+  if (tick === undefined) return undefined;
+  const tickMap = {
+    n: 'Name',
+    o: 'Ordinals NFT',
+    e: 'Rare',
+  };
+  return tickMap[tick] || tick;
+};
+
+
 export const getTimeByHeight = async (height: number, network: string) => {
-  const key = `height-time-${height}`;
+  const key = `height-time-${height}-${network}`;
   const lcoalCache = sessionStorage.getItem(key);
   if (lcoalCache) {
     return +lcoalCache;
