@@ -104,7 +104,7 @@ export const WalletConnectButton = () => {
   return (
     <WalletConnectReact
       config={{
-        network: 'testnet',
+        network: 'livenet',
         defaultConnectorId: 'okx',
       }}
       theme='light'
