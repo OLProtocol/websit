@@ -84,14 +84,17 @@ export const OrdxFullList = () => {
       width: 80,
       align: 'center',
       render: (inscriptionId, record) => {
-        return record.contenttype === 'text/html' ? (
+        const showId = record?.delegate ?? inscriptionId;
+        console.log(record.delegate)
+        console.log(showId);
+        return record.contenttype === 'text/html' || !!record?.delegate ? (
           <div>
             <iframe
               scrolling='no'
               sandbox='allow-scripts'
               src={generateOrdUrl({
                 network,
-                path: `preview/${inscriptionId}`,
+                path: `preview/${showId}`,
               })}
               className='max-w-full'></iframe>
           </div>
@@ -291,6 +294,7 @@ export const OrdxFullList = () => {
           reg: item.reg,
           content: value,
           holders: item.holdersCount,
+          delegate: item.delegate,
           contenttype: item.contenttype,
           inscriptionId: item.inscriptionId,
           deployHeight: item.deployHeight,

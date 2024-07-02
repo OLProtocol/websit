@@ -113,6 +113,12 @@ export default function Ord2Info() {
     });
     return href;
   }, [network, detail]);
+  const showContent = useMemo(() => {
+    return  detail?.contenttype === 'text/html' || !!detail?.delegate;
+  }, [detail])
+  const showContentId = useMemo(() => {
+    return  detail?.delegate ?? detail?.inscriptionId;
+  }, [detail])
   useEffect(() => {
     if (tick) {
       trigger();
@@ -143,14 +149,14 @@ export default function Ord2Info() {
             <span> {t('common.overview')} </span>
           </div>
           <div className='p-4'>
-            {detail?.contenttype === 'text/html' && (
+            {showContent && (
               <div className='mb-2'>
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>
                   <iframe
                     src={generateOrdUrl({
                       network,
-                      path: `preview/${detail?.inscriptionId}`,
+                      path: `preview/${showContentId}`,
                     })}
                     scrolling='no'
                     sandbox='allow-scripts'
