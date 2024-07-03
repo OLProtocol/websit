@@ -76,7 +76,7 @@ export const OrdxAccountSummaryList = ({
 
     setNftList(tmpNfts);
   };
-  
+
   const getRareSats = async () => {
     const data = await getSats({
       address: address,
@@ -102,12 +102,17 @@ export const OrdxAccountSummaryList = ({
   const [select, setSelect] = useState('');
 
   const tickers = useMemo(() => {
+    // console.log('otherTickers', otherTickers);
+    const filteredTickers = otherTickers.filter(
+      // no show assert for: o(Ordinals NFT), e(Rare), n(Name)
+      (ticker) => ticker.ticker !== "o" && ticker.ticker !== "e" && ticker.ticker !== "n",
+    );
     return [
       avialableTicker,
       nameTicker,
       rareSatsTicker,
       ordNftTicker,
-      ...otherTickers,
+      ...filteredTickers,
     ];
   }, [otherTickers, avialableTicker, rareSatsTicker, ordNftTicker]);
 

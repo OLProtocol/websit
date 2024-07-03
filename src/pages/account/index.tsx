@@ -38,7 +38,7 @@ export default function Account() {
             onChange={(tick) => setTicker(tick)}
           />
           {ticker === t('pages.account.name') && (
-            <NameList/>
+            <NameList />
           )}
           {ticker === t('pages.account.rare_sats') && (
             <RareSat canSplit={true} />

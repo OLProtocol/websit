@@ -152,8 +152,7 @@ export const getAppVersion = async () => {
 
 export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
   const { data } = await axios.get(
-    `https://blockstream.info/${
-      network === 'testnet' ? 'testnet/' : ''
+    `https://blockstream.info/${network === 'testnet' ? 'testnet/' : ''
     }api/tx/${txid}`,
   );
   return data;
@@ -236,7 +235,7 @@ export const getOrdInscriptionsByAddress = async ({
 }: any) => {
   const { data } = await axios.get(
     generateUrl(
-      `inscription/address/${address}?start=${start}&limit=${limit}`,
+      `nft/address/${address}?start=${start}&limit=${limit}`,
       network,
     ),
   );
