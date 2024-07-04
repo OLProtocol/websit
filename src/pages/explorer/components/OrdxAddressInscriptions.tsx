@@ -1,6 +1,6 @@
 import { Input, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { getInscriptionsByGenesesAddress } from '@/api';
+// import { getInscriptionsByGenesesAddress } from '@/api';
 import { CopyButton } from '@/components/CopyButton';
 import { useReactWalletStore } from 'btc-connect/dist/react';
 import type { ColumnsType } from 'antd/es/table';
@@ -68,8 +68,8 @@ export const OrdxAddressInscriptionList = () => {
                 render: (t) => {
                     const txid = t.replace(/i0$/m, '')
                     const href = generateMempoolUrl({
-                      network,
-                      path: `tx/${txid}`,
+                        network,
+                        path: `tx/${txid}`,
                     });
                     return (
                         <a
@@ -147,30 +147,30 @@ export const OrdxAddressInscriptionList = () => {
         if (search === '') {
             return;
         }
-        getInscriptions(search);
+        // getInscriptions(search);
     };
 
-    const getInscriptions = async (genesesAddress: string) => {
-        setLoading(true);
-        const resp = await getInscriptionsByGenesesAddress({
-            address: genesesAddress,
-            network,
-            start,
-            limit,
-        });
-        if (resp.code !== 0) {
-            toast({
-                title: resp.msg,
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-            setLoading(false);
-            return;
-        }
-        setLoading(false);
-        setData(resp);
-    };
+    // const getInscriptions = async (genesesAddress: string) => {
+    //     setLoading(true);
+    //     const resp = await getInscriptionsByGenesesAddress({
+    //         address: genesesAddress,
+    //         network,
+    //         start,
+    //         limit,
+    //     });
+    //     if (resp.code !== 0) {
+    //         toast({
+    //             title: resp.msg,
+    //             status: 'error',
+    //             duration: 3000,
+    //             isClosable: true,
+    //         });
+    //         setLoading(false);
+    //         return;
+    //     }
+    //     setLoading(false);
+    //     setData(resp);
+    // };
 
     const paginationChange = (page: number, pageSize: number) => {
         setStart((page - 1) * pageSize);
@@ -179,7 +179,7 @@ export const OrdxAddressInscriptionList = () => {
 
     useEffect(() => {
         if (address) {
-            getInscriptions(address);
+            // getInscriptions(address);
         }
     }, [address, network, start, limit]);
 
