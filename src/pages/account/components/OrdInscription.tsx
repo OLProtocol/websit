@@ -23,15 +23,15 @@ export default function OrdInscription() {
 
   const ordinalLink = useMemo(() => {
     if (network === 'testnet') {
-      return `https://testnet.ordinals.com/inscription/${detail?.inscription?.id}`;
+      return `https://testnet.ordinals.com/inscription/${detail?.inscriptionId}`;
     } else {
-      return `https://ordinals.com/inscription/${detail?.inscription?.id}`;
+      return `https://ordinals.com/inscription/${detail?.inscriptionId}`;
     }
   }, [network, detail]);
 
-  
+
   const txid = useMemo(() => {
-    return detail?.inscription?.id?.replace(/i0$/m, '');
+    return detail?.inscriptionId?.replace(/i0$/m, '');
   }, [detail]);
 
   const txLink = useMemo(() => {
@@ -53,17 +53,17 @@ export default function OrdInscription() {
     <Spin spinning={isLoading}>
       <BtcHeightAlert />
       <div className='max-w-4xl mx-auto mt-8'>
-        <div className='flex justify-between mb-4 items-center'>
+        {/* <div className='flex justify-between mb-4 items-center'>
           <a href={ordinalLink} className=' text-2xl' target='_blank'>
             {detail?.inscription?.number === 9223372036854775807 ? (
-              <span className='text-orange-400'>{detail?.inscription?.id}</span>
+              <span className='text-orange-400'>{detail?.inscriptionId}</span>
             ) : (
               <span className='text-orange-400'>
                 #{detail?.inscription?.number}
               </span>
             )}
           </a>
-        </div>
+        </div> */}
 
         <div className='border-[1px] border-gray-200 rounded-xl mb-4'>
           <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-10 items-center'>
@@ -73,22 +73,22 @@ export default function OrdInscription() {
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.inscriptionId')}:</p>
               <a href={ordinalLink} className='indent-2' target='_blank'>
-                {detail?.inscription?.id || '-'}
+                {detail?.inscriptionId || '-'}
               </a>
             </div>
 
             <div className=''>
               <p className='text-gray-400'>Sat:</p>
-              <p className='indent-2'>{detail?.inscription?.sat}</p>
+              <p className='indent-2'>{detail?.sat}</p>
             </div>
-            <div className='mb-2'>
+            {/* <div className='mb-2'>
               <p className='text-gray-400'>Fee:</p>
               <p className='indent-2'>{detail?.inscription?.fee}</p>
-            </div>
+            </div> */}
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
-                {new Date(detail?.inscription?.timestamp).toLocaleString('af')}
+                {new Date(detail?.time).toLocaleString('af')}
               </p>
             </div>
 

@@ -255,21 +255,6 @@ export const getOrdNftList = async ({
   return data;
 };
 
-export const getOrdInscriptionsByGenesesAddress = async ({
-  address,
-  network,
-  start,
-  limit,
-}: any) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `inscription/genesesaddress/${address}?start=${start}&limit=${limit}`,
-      network,
-    ),
-  );
-  return data;
-};
-
 export const getOrdInscriptionsBySat = async ({
   sat,
   network,
@@ -278,7 +263,7 @@ export const getOrdInscriptionsBySat = async ({
 }: any) => {
   const { data } = await axios.get(
     generateUrl(
-      `inscription/sat/${sat}?start=${start}&limit=${limit}`,
+      `nft/sat/${sat}?start=${start}&limit=${limit}`,
       network,
     ),
   );
@@ -287,7 +272,7 @@ export const getOrdInscriptionsBySat = async ({
 
 export const getOrdInscription = async ({ inscriptionId, network }: any) => {
   const { data } = await axios.get(
-    generateUrl(`inscription/id/${inscriptionId}`, network),
+    generateUrl(`nft/nftid/${inscriptionId}`, network),
   );
   return data;
 };
@@ -328,27 +313,29 @@ export const getInscriptionsByAddress = async ({
 }: any) => {
   const { data } = await axios.get(
     generateUrl(
-      `inscription/address/${address}?start=${start}&limit=${limit}`,
+      `nft/address/${address}?start=${start}&limit=${limit}`,
       network,
     ),
   );
   return data;
 };
 
-export const getInscriptionsByGenesesAddress = async ({
-  address,
-  network,
-  start,
-  limit,
-}: any) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `inscription/genesesaddress/${address}?start=${start}&limit=${limit}`,
-      network,
-    ),
-  );
-  return data;
-};
+// export const getInscriptionsByGenesesAddress = async ({
+//   address,
+//   network,
+//   start,
+//   limit,
+// }: any) => {
+//   //没有根据创世地址拿到nft的需求
+//   const { data } = await axios.get(
+//     generateUrl(
+//       `inscription/genesesaddress/${address}?start=${start}&limit=${limit}`,
+//       network,
+//     ),
+//   );
+//   return data;
+// };
+
 
 export async function pollGetTxStatus(
   txid: string,
