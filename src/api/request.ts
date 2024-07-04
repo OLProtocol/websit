@@ -248,7 +248,7 @@ export const getOrdNftList = async ({
 }: any) => {
   const { data } = await axios.get(
     generateUrl(
-      `inscription/list?start=${start}&limit=${limit}`,
+      `nft/status?start=${start}&limit=${limit}`,
       network,
     ),
   );

@@ -26,30 +26,30 @@ export const OrdNftList = () => {
   const toInscriptionInfo = (inscriptionId) => {
     nav(`/ord/inscription/${inscriptionId}`);
   };
-  const { data } = useOrdNftList({network, start, limit})
+  const { data } = useOrdNftList({ network, start, limit })
   const columns: ColumnsType<any> = useMemo(() => {
     const defaultColumn: any[] = [
-      {
-        title: t('common.inscriptionNumber'),
-        dataIndex: 'number',
-        key: 'number',
-        align: 'center',
-        render: (t, record) => {
-          return (
-            <div>
-              {t === 9223372036854775807n ? (
-                <span>-</span>
-              ) : (
-                <span
-                  className='text-blue-500 cursor-pointer'
-                  onClick={() => toInscriptionInfo(record.id)}>
-                  #{t}
-                </span>
-              )}
-            </div>
-          );
-        },
-      },
+      // {
+      //   title: t('common.inscriptionNumber'),
+      //   dataIndex: 'number',
+      //   key: 'number',
+      //   align: 'center',
+      //   render: (t, record) => {
+      //     return (
+      //       <div>
+      //         {t === 9223372036854775807n ? (
+      //           <span>-</span>
+      //         ) : (
+      //           <span
+      //             className='text-blue-500 cursor-pointer'
+      //             onClick={() => toInscriptionInfo(record.id)}>
+      //             #{t}
+      //           </span>
+      //         )}
+      //       </div>
+      //     );
+      //   },
+      // },
       {
         title: t('common.inscriptionId'),
         dataIndex: 'id',
@@ -89,12 +89,12 @@ export const OrdNftList = () => {
           );
         },
       },
-      {
-        title: t('common.amount'),
-        dataIndex: 'value',
-        key: 'value',
-        align: 'center',
-      },
+      // {
+      //   title: t('common.amount'),
+      //   dataIndex: 'value',
+      //   key: 'value',
+      //   align: 'center',
+      // },
       {
         title: 'Sat',
         dataIndex: 'sat',
@@ -143,14 +143,21 @@ export const OrdNftList = () => {
 
   const dataSource = useMemo(
     () =>
-      data?.data?.detail?.map((v) => ({
-        id: v.inscription.id,
-        number: v.inscription.number,
+      data?.data?.nfts?.map((v) => ({
+        // id: v.inscription.id,
+        // number: v.inscription.number,
+        // utxo: v.utxo,
+        // value: v.inscription.value,
+        // sat: v.inscription.sat,
+        // mintTime: v.inscription.timestamp,
+        // genesesAddress: v.inscription.genesesaddress,
+
+        id: v.inscriptionId,
+        sat: v.sat,
+        address: v.address,
         utxo: v.utxo,
-        value: v.inscription.value,
-        sat: v.inscription.sat,
-        mintTime: v.inscription.timestamp,
-        genesesAddress: v.inscription.genesesaddress,
+        mintTime: v.time,
+        genesesAddress: v.inscriptionAddress,
       })) || [],
     [data],
   );
@@ -166,20 +173,20 @@ export const OrdNftList = () => {
   return (
     // <Card>
     //   <CardBody>
-        <Table
-          bordered
-          loading={loading}
-          columns={columns}
-          dataSource={dataSource}
-          scroll={{ x: 800 }}
-          pagination={{
-            position: ['bottomCenter'],
-            defaultPageSize: 10,
-            total: total,
-            onChange: paginationChange,
-            showSizeChanger: false,
-          }}
-        />
+    <Table
+      bordered
+      loading={loading}
+      columns={columns}
+      dataSource={dataSource}
+      scroll={{ x: 800 }}
+      pagination={{
+        position: ['bottomCenter'],
+        defaultPageSize: 10,
+        total: total,
+        onChange: paginationChange,
+        showSizeChanger: false,
+      }}
+    />
     //   </CardBody>
     // </Card>
   );
