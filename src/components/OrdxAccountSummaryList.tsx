@@ -107,6 +107,7 @@ export const OrdxAccountSummaryList = ({
       // no show assert for: o(Ordinals NFT), e(Rare), n(Name)
       (ticker) => ticker.type !== "o" && ticker.type !== "e" && ticker.type !== "n",
     );
+    console.log('filteredTickers', filteredTickers);
     return [
       avialableTicker,
       nameTicker,
