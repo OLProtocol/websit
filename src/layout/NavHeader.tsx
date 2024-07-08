@@ -19,8 +19,8 @@ export const NavHeader = () => {
       // value: ROUTE_PATH.HOME,
       value:
         i18n.language == 'en'
-          ? 'https://ordx.space'
-          : 'https://ordx.space/index-zh.html',
+          ? 'https://sat20.org'
+          : 'https://sat20.org/index-zh.html',
       type: 'link',
     },
     // {
