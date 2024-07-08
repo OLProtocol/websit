@@ -68,8 +68,8 @@ export const OrdSatInscriptionList = () => {
                 render: (t) => {
                     const txid = t.replace(/i0$/m, '')
                     const href = generateMempoolUrl({
-                      network,
-                      path: `tx/${txid}`,
+                        network,
+                        path: `tx/${txid}`,
                     });
                     return (
                         <a
@@ -154,19 +154,27 @@ export const OrdSatInscriptionList = () => {
 
     const dataSource = useMemo(
         () =>
-            data?.data?.detail.map((v) => ({
-                id: v.inscription.id,
-                number: v.inscription.number,
+            data?.data?.nfts.map((v) => ({
+                // id: v.inscription.id,
+                // number: v.inscription.number,
+                // utxo: v.utxo,
+                // value: v.inscription.value,
+                // sat: v.inscription.sat,
+                // address: v.inscription.address,
+                // genesesAddress: v.inscription.genesesaddress,
+                // mintTime: v.inscription.timestamp,
+
+                id: v.inscriptionId,
+                sat: v.sat,
+                address: v.address,
                 utxo: v.utxo,
-                value: v.inscription.value,
-                sat: v.inscription.sat,
-                address: v.inscription.address,
-                genesesAddress: v.inscription.genesesaddress,
-                mintTime: v.inscription.timestamp,
+                mintTime: v.time,
+                genesesAddress: v.inscriptionAddress,
             })) || [],
         [data],
     );
-    const total = useMemo(() => data?.data?.total || 0, [data]);
+
+    const total = useMemo(() => data?.data?.nfts?.length || 0, [data]);
 
     const doSearch = () => {
         if (search === '') {
