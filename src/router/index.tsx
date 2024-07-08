@@ -63,7 +63,7 @@ export const routes: RouteObject[] = [
     children: [
       {
         path: ROUTE_PATH.HOME,
-        element: <Home />,
+        element: <Ord2Index />,
       },
       {
         path: ROUTE_PATH.TEST,
