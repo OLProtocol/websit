@@ -71,9 +71,8 @@ export const OrdxAccountSummaryList = ({
     if (data.code !== 0) {
       tmpNfts = [];
     } else {
-      tmpNfts = data.data.detail;
+      tmpNfts = data.data.nfts;
     }
-
     setNftList(tmpNfts);
   };
 
@@ -103,9 +102,10 @@ export const OrdxAccountSummaryList = ({
 
   const tickers = useMemo(() => {
     // console.log('otherTickers', otherTickers);
+
     const filteredTickers = otherTickers.filter(
       // no show assert for: o(Ordinals NFT), e(Rare), n(Name)
-      (ticker) => ticker.ticker !== "o" && ticker.ticker !== "e" && ticker.ticker !== "n",
+      (ticker) => ticker.type !== "o" && ticker.type !== "e" && ticker.type !== "n",
     );
     return [
       avialableTicker,

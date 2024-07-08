@@ -21,7 +21,7 @@ export default function Account() {
     limit: 1,
     network,
   });
-  const nameTotal = useMemo(() => data?.data?.amount || 0, [data]);
+  const nameTotal = useMemo(() => data?.data?.total || 0, [data]);
 
   const onTotalChange = (total: number) => {
     setUtxosTotal(total);

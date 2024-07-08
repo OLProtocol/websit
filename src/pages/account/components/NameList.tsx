@@ -37,7 +37,7 @@ export const NameList = ({ onTotalChange }: NameListProps) => {
     network,
   });
   const list = useMemo(() => data?.data?.names || [], [data]);
-  const total = useMemo(() => data?.data?.amount || 0, [data]);
+  const total = useMemo(() => data?.data?.total || 0, [data]);
 
   useEffect(() => {
     onTotalChange?.(total), [total];

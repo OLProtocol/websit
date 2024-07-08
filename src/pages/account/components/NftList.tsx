@@ -144,7 +144,7 @@ export const NftList = () => {
 
   const dataSource = useMemo(
     () =>
-      data?.data?.detail.map((v) => ({
+      data?.data?.nfts.map((v) => ({
         // id: v.inscription.id,
         // number: v.inscription.number,
         // utxo: v.utxo,
