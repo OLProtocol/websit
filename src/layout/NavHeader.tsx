@@ -65,8 +65,8 @@ export const NavHeader = () => {
       label: t('nav.docs'),
       value:
         i18n.language == 'en'
-          ? 'https://docs.ordx.space/v/en/'
-          : 'https://docs.ordx.space/',
+          ? 'https://docs.sat20.org/v/en/'
+          : 'https://docs.sat20.org/',
       type: 'link',
     },
     // {
