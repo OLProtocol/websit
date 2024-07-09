@@ -103,7 +103,7 @@ export default function UtxoInfo() {
         align: 'center',
         render: (t, record) => {
           console.log('record', record);
-          return record.type === 'e' ? (
+          return record.type === 'e' || record.type === 'n' ? (
             '-'
           ) : (
             <UtxoContent
