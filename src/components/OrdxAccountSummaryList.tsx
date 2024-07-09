@@ -25,7 +25,7 @@ export const OrdxAccountSummaryList = ({
   const { data, trigger } = useOrdxSummary({ address, network });
   const otherTickers = useMemo(() => data?.data?.detail || [], [data]);
   const [rareSatList, setRareSatList] = useState<any[]>();
-  const [nftList, setNftList] = useState<any[]>();
+  const [nftSumBalance, setNftBalance] = useState<any>();
 
   const avialableTicker = useMemo(() => {
     return {
@@ -51,9 +51,9 @@ export const OrdxAccountSummaryList = ({
   const ordNftTicker = useMemo(() => {
     return {
       ticker: t('pages.account.ord_nft'),
-      balance: nftList?.length || 0,
+      balance: nftSumBalance || 0,
     };
-  }, [nftList]);
+  }, [nftSumBalance]);
   const nameTicker = useMemo(() => {
     return {
       ticker: t('pages.account.name'),
@@ -65,15 +65,15 @@ export const OrdxAccountSummaryList = ({
       address,
       network,
       start: 0,
-      limit: 1000,
+      limit: 1,
     });
-    let tmpNfts: any[] = [];
+    let sum = 0;
     if (data.code !== 0) {
-      tmpNfts = [];
+      sum = 0;
     } else {
-      tmpNfts = data.data.nfts;
+      sum = data.data.total;
     }
-    setNftList(tmpNfts);
+    setNftBalance(sum);
   };
 
   const getRareSats = async () => {
@@ -140,7 +140,7 @@ export const OrdxAccountSummaryList = ({
   return (
     <div>
       <Wrap>
-        {tickers.slice(0, 4).map((item) => (
+        {tickers.slice(0).map((item) => (
           item.balance > 0 &&
           <WrapItem>
             <OrdXItem
