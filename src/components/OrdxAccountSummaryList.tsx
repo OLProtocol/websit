@@ -8,8 +8,8 @@ import { toast } from 'react-hot-toast';
 
 interface OrdxSummaryListProps {
   address: string;
-  utxosTotal?: number;
-  nameTotal?: number;
+  utxosTotal: number;
+  nameTotal: number;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
@@ -100,19 +100,20 @@ export const OrdxAccountSummaryList = ({
 
   const [select, setSelect] = useState('');
 
-  const tickers = useMemo(() => {
-    const filteredTickers = otherTickers.filter(
+  const filteredTickers = useMemo(() => {
+    return otherTickers.filter(
       // no show assert for: o(Ordinals NFT), e(Rare), n(Name)
       (ticker) => ticker.type !== "o" && ticker.type !== "e" && ticker.type !== "n",
     );
+  }, [otherTickers]);
+  const tickers = useMemo(() => {
     return [
       avialableTicker,
       nameTicker,
       rareSatsTicker,
       ordNftTicker,
-      ...filteredTickers,
     ];
-  }, [otherTickers, avialableTicker, rareSatsTicker, ordNftTicker]);
+  }, [avialableTicker, nameTicker, rareSatsTicker, ordNftTicker]);
 
   const onClick = (item) => {
     const ticker = item.ticker;
@@ -140,6 +141,7 @@ export const OrdxAccountSummaryList = ({
     <div>
       <Wrap>
         {tickers.slice(0, 4).map((item) => (
+          item.balance > 0 &&
           <WrapItem>
             <OrdXItem
               key={item.ticker}
@@ -157,7 +159,7 @@ export const OrdxAccountSummaryList = ({
       </Wrap>
       <hr />
       <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
-        {tickers.slice(4).map((item) => (
+        {filteredTickers.slice(0).map((item) => (
           <OrdXItem
             key={item.ticker}
             selected={select === item.ticker}

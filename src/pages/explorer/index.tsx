@@ -37,7 +37,9 @@ export default function Ord2Index() {
   });
   const nameTotal = useMemo(() => data?.data?.total || 0, [data]);
   const onTotalChange = (total: number) => {
-    setUtxosTotal(total);
+    if (total !== 0) {
+      setUtxosTotal(total);
+    }
   }
 
   const showAddress = useMemo(() => {
@@ -129,13 +131,13 @@ export default function Ord2Index() {
               <AvailableUtxoList address={address} onTotalChange={onTotalChange} />
             )}
             {selectTick === t('pages.account.name') && (
-              <NameList />
+              <NameList address={address} />
             )}
             {selectTick === t('pages.account.rare_sats') && (
-              <RareSat canSplit={true} />
+              <RareSat canSplit={true} targetAddress={address} />
             )}
             {selectTick === t('pages.account.ord_nft') && (
-              <NftList />
+              <NftList targetAddress={address} />
             )}
             {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
               <OrdxAddressHolders tick={selectTick} address={address} />
