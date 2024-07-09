@@ -37,7 +37,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
   if (satList) {
     const uniqueTypeSet = new Set<string>();
     satList.forEach((item) =>
-      item.satributes.forEach((satType) => satType === 'first_transaction' ? uniqueTypeSet.add('1st TX') :uniqueTypeSet.add(satType)),
+      item.satributes.forEach((satType) => satType === 'first_transaction' ? uniqueTypeSet.add('1st TX') : uniqueTypeSet.add(satType)),
     );
     uniqueTypes = Array.from(uniqueTypeSet);
     if (uniqueTypes.length > 0) {
@@ -86,7 +86,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
       return;
     }
 
-    let tmpSats: any[] = [];
+    const tmpSats: any[] = [];
     for (let i = 0; i < data.data.length; i++) {
       if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
         data.data[i].sats.forEach((item) => {
@@ -105,12 +105,12 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
     tmpSats.forEach((item) => {
       if (item.satributes.length === 1) {
         const satType = item.satributes[0];
-        if (satType !== 'uncommon' 
-          && satType !== 'rare' 
-          && satType !== 'epic' 
-          && satType !== 'legendary' 
+        if (satType !== 'uncommon'
+          && satType !== 'rare'
+          && satType !== 'epic'
+          && satType !== 'legendary'
           && satType !== 'mythic') {
-            return item;
+          return item;
         }
       } else {
         return item;

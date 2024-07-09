@@ -6,8 +6,8 @@ import { RareSat } from '../discover/rareSat';
 import { AvailableUtxoList } from './components/AvailableUtxoList';
 import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
 import { useNsListByAddress } from '@/api'
-import { NftList } from './components/NftList';
-import { NameList } from './components/NameList';
+import { NftList } from '@/components/NftList';
+import { NameList } from '@/components/NameList';
 
 export default function Account() {
   const { t } = useTranslation();
