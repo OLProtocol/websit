@@ -62,7 +62,7 @@
     "founder": "铸造者",
     "inscribe": "铭文",
     "hint_connect": "请连接钱包以继续。",
-    "available_utxo": "空白的UTXO",
+    "available_utxo": "空白UTXO",
     "continue": "继续",
     "cancel": "取消",
     "send": "发送",
@@ -272,7 +272,7 @@
       "transaction": {
         "title": "交易",
         "des": "拆分&发送",
-        "available_utxo": "Plain UTXO",
+        "available_utxo": "空白UTXO",
         "rare_sats": "Rare Sats",
         "balance": "余额",
         "balance_des": "余额小于546 sats时，会将余额转给矿工。",
@@ -301,8 +301,8 @@
     },
     "account": {
       "name": "名字",
-      "available_utxo": "Plain UTXO",
-      "rare_sats": "Rare Sats",
+      "available_utxo": "空白UTXO",
+      "rare_sats": "稀有聪",
       "ord_nft": "Ordinals NFT",
       "cut": "切割",
       "toast_oridnals_support": "开发中！",
