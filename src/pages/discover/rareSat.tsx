@@ -30,10 +30,13 @@ export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
   const [allSatList, setAllSatList] = useState<any[]>();
   const [satList, setSatList] = useState<any[]>();
   const [satFilterList, setSatFilterList] = useState<any[]>();
-  const { network } = useReactWalletStore();
+
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-
+  const { network, address: currentAccount } = useReactWalletStore();
+  if (address === '') {
+    setAddress(currentAccount);
+  }
   let uniqueTypes: string[] = [];
   if (satList) {
     const uniqueTypeSet = new Set<string>();

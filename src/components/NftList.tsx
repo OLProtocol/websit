@@ -164,12 +164,10 @@ export const NftList = ({ targetAddress }) => {
     [data],
   );
 
-  const total = useMemo(() => data?.data?.nfts?.length || 0, [data]);
-  // const total = useMemo(() => data?.data?.total || 0, [data]);
+  const total = useMemo(() => data?.data?.total || 0, [data]);
 
   const getNfts = async () => {
     setLoading(true);
-    console.log('getNfts', address, network, start, limit);
     try {
       const resp = await getOrdInscriptionsByAddress({
         address,
@@ -177,7 +175,6 @@ export const NftList = ({ targetAddress }) => {
         start,
         limit,
       });
-      console.log('getNfts resp', resp);
       if (resp.code !== 0) {
         toast({
           title: resp.msg,
@@ -219,7 +216,7 @@ export const NftList = ({ targetAddress }) => {
       scroll={{ x: 800 }}
       pagination={{
         position: ['bottomCenter'],
-        defaultPageSize: 10000,
+        defaultPageSize: 10,
         total: total,
         onChange: paginationChange,
         showSizeChanger: false,
