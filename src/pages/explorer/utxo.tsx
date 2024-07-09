@@ -42,6 +42,10 @@ export default function UtxoInfo() {
     nav(`/explorer/${tick}`);
   };
 
+  const toName = (name) => {
+    nav(`/explorer/ns/${name}`);
+  };
+
   const txLink = useMemo(() => {
     const href = generateMempoolUrl({
       network,
@@ -153,11 +157,23 @@ export default function UtxoInfo() {
                   <p className='text-gray-400'>{t('common.asset_type')}:</p>
                   <span className='indent-2'>{getAssetTypeLabel(asset?.type)}</span>
                 </div>
-                {asset?.type !== 'o' && (
+                {asset?.type === 'f' && (
                   <div className='mb-2'>
                     <p className='text-gray-400'>{t('common.asset_name')}:</p>
                     <a
                       onClick={() => toTick(asset.ticker)}
+                      className='indent-2'
+                      target='_blank'
+                      style={{ cursor: 'pointer' }}>
+                      {asset.ticker}
+                    </a>
+                  </div>
+                )}
+                {asset?.type === 'n' && (
+                  <div className='mb-2'>
+                    <p className='text-gray-400'>{t('common.asset_name')}:</p>
+                    <a
+                      onClick={() => toName(asset.ticker)}
                       className='indent-2'
                       target='_blank'
                       style={{ cursor: 'pointer' }}>
