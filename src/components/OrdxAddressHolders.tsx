@@ -265,14 +265,14 @@ export const OrdxAddressHolders = ({
         width: 100,
         align: 'center',
         render: (t) => {
-          let inscriptionnums: any;
+
           const href =
             network === 'testnet'
               ? `https://testnet.ordinals.com/inscription/`
               : `https://ordinals.com/inscription/`;
-          inscriptionnums = t?.map((r: any) => (
+          const inscriptionnums = t?.map((r: any) => (
             <div>
-              {r.num === 9223372036854775807 ? (
+              {r.num === '9223372036854775807' ? (
                 <span
                   className='text-blue-500 cursor-pointer'
                   onClick={() => toInscriptionInfo(r.id)}>
@@ -337,12 +337,12 @@ export const OrdxAddressHolders = ({
   // const [dataSource, setDataSource] = useState<any[]>();
   const generateData = () => {
     const details = data?.data?.detail;
-    let datas: any[] = [];
+    const datas: any[] = [];
     if (details) {
-      for (let detail of details) {
+      for (const detail of details) {
         let ranges: any[] = [];
-        let inscriptionNums: any[] = [];
-        let item = {
+        const inscriptionNums: any[] = [];
+        const item = {
           utxo: detail.utxo,
           amount: detail.amount,
           assetamount: detail.assetamount,
@@ -370,7 +370,6 @@ export const OrdxAddressHolders = ({
   const dataSource = useMemo(() => {
     return generateData();
   }, [data]);
-
   const total = useMemo(() => data?.data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);

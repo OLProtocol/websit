@@ -16,8 +16,9 @@ export const OrdxSummaryList = ({
   const { network } = useReactWalletStore();
   const { data, trigger } = useOrdxSummary({ address, network });
   const [select, setSelect] = useState('');
-  const list = useMemo(() => data?.data?.detail || [], [data]);
 
+  const list = useMemo(() => data?.data?.detail || [], [data]);
+  // debugger;
   const onClick = (item) => {
     setSelect(item.ticker);
     onChange?.(item.ticker);

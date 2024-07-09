@@ -5,7 +5,7 @@ import { useNsListByAddress } from '@/api';
 import { useCommonStore } from '@/store';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-import { hideStr } from '@/lib/utils';
+import { genOrdinalsUrl, hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { CopyButton } from '@/components/CopyButton';
 import { useToast } from '@chakra-ui/react';
@@ -66,13 +66,16 @@ export const NameList = ({ onTotalChange }: NameListProps) => {
       key: 'inscriptionId',
       align: 'center',
       render: (t) => {
-        const txid = t.replace(/i0$/m, '');
-        const href = generateMempoolUrl({ network, path: `tx/${txid}` });
+        // const txid = t.replace(/i0$/m, '');
+        const inscriptionId = t;
+        const href = genOrdinalsUrl({ network, path: `inscription/${inscriptionId}` })
+        // const href = generateMempoolUrl({ network, path: `tx/${txid}` });
         return (
           <a
             className='text-blue-500 cursor-pointer'
             href={href}
-            target='_blank'>
+            target='_blank'
+            onClick={(e) => e.stopPropagation()}>
             {hideStr(t)}
           </a>
         );
@@ -88,7 +91,10 @@ export const NameList = ({ onTotalChange }: NameListProps) => {
           <div className='flex item-center justify-center'>
             <span
               className='text-blue-500 cursor-pointer mr-2'
-              onClick={() => nav(`/explorer/utxo/${t}`)}>
+              onClick={(e) => {
+                e.stopPropagation();
+                nav(`/explorer/utxo/${t}`)
+              }}>
               {hideStr(t)}
             </span>
             <CopyButton text={t} tooltip='Copy Tick' />

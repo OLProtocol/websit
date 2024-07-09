@@ -101,8 +101,6 @@ export const OrdxAccountSummaryList = ({
   const [select, setSelect] = useState('');
 
   const tickers = useMemo(() => {
-    // console.log('otherTickers', otherTickers);
-
     const filteredTickers = otherTickers.filter(
       // no show assert for: o(Ordinals NFT), e(Rare), n(Name)
       (ticker) => ticker.type !== "o" && ticker.type !== "e" && ticker.type !== "n",

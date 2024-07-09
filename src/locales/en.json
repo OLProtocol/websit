@@ -1,7 +1,9 @@
 {
-  "app": "Ordinals X Protocol",
+  "app": "SAT20 Protocol",
   "common": {
     "tick": "Tick",
+    "asset_type": "Asset Type",
+    "asset_name": "Asset Name",
     "utxo": "Utxo",
     "sat": "Sat",
     "selfmint": "Self Mint",
@@ -9,6 +11,7 @@
     "index": "Index",
     "amount": "Amount",
     "asset_amount": "Asset Amount",
+    "asset_ranges": "Sat Ranges",
     "mint": "Mint",
     "file": "File",
     "deploy": "Deploy",

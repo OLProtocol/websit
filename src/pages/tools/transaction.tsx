@@ -39,8 +39,8 @@ import {
 import { hideStr } from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
 
-export default function Transaction () {
-  
+export default function Transaction() {
+
   const location = useLocation();
   const initInputList = location.state?.initInputList;
   const initOutputList = location.state?.initOutputList;
@@ -219,7 +219,7 @@ export default function Transaction () {
         value: v.value.sats,
       };
     });
-    
+
     const fee = await calcNetworkFee({
       utxos,
       outputs: outputList.items.map((v) => ({
@@ -617,7 +617,7 @@ export default function Transaction () {
                       tickerList?.map((utxo) => ({
                         label: (
                           <div>
-                            { utxo.ticker }
+                            {utxo.ticker}
                           </div>
                         ),
                         value: utxo.ticker,
@@ -630,7 +630,7 @@ export default function Transaction () {
                   <AntSelect
                     placeholder='Select UTXO'
                     className='w-[40%]' style={{ height: '40px' }}
-                    value={inputList.items[i]?.value?.utxo ? inputList.items[i]?.value?.utxo: undefined}
+                    value={inputList.items[i]?.value?.utxo ? inputList.items[i]?.value?.utxo : undefined}
                     options={
                       inputList.items[i]?.options?.utxos.map((utxo) => ({
                         label: (
@@ -784,7 +784,7 @@ export default function Transaction () {
                   {t('pages.tools.transaction.balance')}
                   <span className='text-gray-400 text-sm font-light'>({t('pages.tools.transaction.balance_des')})</span>
                 </Heading>
-                
+
               </Flex>
 
               {outputList.items.length === 0 ? (
