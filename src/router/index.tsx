@@ -135,7 +135,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTE_PATH.DISCOVER_RARE_SAT,
-        element: <RareSat canSplit={false} />,
+        element: <RareSat canSplit={false} targetAddress={''} />,
       },
       {
         path: ROUTE_PATH.ACCOUNT,
