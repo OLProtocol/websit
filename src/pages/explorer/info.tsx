@@ -7,7 +7,7 @@ import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
 import { OrdxTickHistory } from './components/OrdxTickHistory';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-import { generateMempoolUrl, generateOrdUrl, getTickLabel } from '@/lib/utils';
+import { generateMempoolUrl, genOrdServiceUrl, genOrdinalsUrl, getAssetTypeLabel } from '@/lib/utils';
 import { Button, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -101,7 +101,7 @@ export default function Ord2Info() {
   }, [detail]);
   const specialStatus = useMemo(() => !!attr, [attr]);
   const ordinalLink = useMemo(() => {
-    return generateOrdUrl({
+    return genOrdinalsUrl({
       network,
       path: `inscription/${detail?.inscriptionId}`,
     });
@@ -114,10 +114,10 @@ export default function Ord2Info() {
     return href;
   }, [network, detail]);
   const showContent = useMemo(() => {
-    return  detail?.contenttype === 'text/html' || !!detail?.delegate;
+    return detail?.contenttype === 'text/html' || !!detail?.delegate;
   }, [detail])
   const showContentId = useMemo(() => {
-    return  detail?.delegate ?? detail?.inscriptionId;
+    return detail?.delegate ?? detail?.inscriptionId;
   }, [detail])
   useEffect(() => {
     if (tick) {
@@ -129,7 +129,7 @@ export default function Ord2Info() {
       <BtcHeightAlert />
       <div className='max-w-4xl mx-auto mt-8'>
         <div className='flex justify-between mb-4 items-center'>
-          <span className='text-orange-400 text-2xl '>{getTickLabel(tick)}</span>
+          <span className='text-orange-400 text-2xl '>{getAssetTypeLabel(tick)}</span>
           <span>
             {status === 'Pending' && (
               <Tag color='orange'>{t('common.waiting')}</Tag>
@@ -154,7 +154,7 @@ export default function Ord2Info() {
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div>
                   <iframe
-                    src={generateOrdUrl({
+                    src={genOrdServiceUrl({
                       network,
                       path: `preview/${showContentId}`,
                     })}
@@ -212,8 +212,8 @@ export default function Ord2Info() {
               <p className='indent-2'>
                 {detail?.deployBlocktime
                   ? new Date(detail?.deployBlocktime * 1000).toLocaleString(
-                      'af',
-                    )
+                    'af',
+                  )
                   : '-'}
               </p>
             </div>

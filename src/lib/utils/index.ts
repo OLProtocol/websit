@@ -7,14 +7,15 @@ import { add, format } from 'date-fns';
 import { flat, sum } from 'radash';
 import crypto from 'crypto';
 
-export const getTickLabel = (tick?: string) => {
-  if (tick === undefined) return undefined;
+export const getAssetTypeLabel = (tickerType?: string) => {
+  if (tickerType === undefined) return undefined;
   const tickMap = {
     n: 'Name',
     o: 'Ordinals NFT',
     e: 'Rare',
+    f: 'FT',
   };
-  return tickMap[tick] || tick;
+  return tickMap[tickerType] || tickerType;
 };
 
 

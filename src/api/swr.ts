@@ -139,7 +139,9 @@ export const useSatTypes = ({ network }: any) => {
 export const useGetUtxo = ({ network, utxo }: any) => {
   const { data, error, isLoading } = useSWR(
     `ordx-utxo-${utxo}-${network}`,
-    () => request.getUtxo({ network, utxo }),
+    () => {
+      return request.getUtxo({ network, utxo })
+    },
     {
       keepPreviousData: true,
     },

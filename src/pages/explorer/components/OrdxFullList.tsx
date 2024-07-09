@@ -7,7 +7,7 @@ import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-import { generateOrdUrl } from '@/lib/utils';
+import { genOrdServiceUrl } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import { useToast } from '@chakra-ui/react';
@@ -92,7 +92,7 @@ export const OrdxFullList = () => {
             <iframe
               scrolling='no'
               sandbox='allow-scripts'
-              src={generateOrdUrl({
+              src={genOrdServiceUrl({
                 network,
                 path: `preview/${showId}`,
               })}
@@ -246,7 +246,7 @@ export const OrdxFullList = () => {
           btcHeight <= item.endBlock &&
           btcHeight >= item.startBlock
         ) {
-          if (item.max > 0&& item.totalMinted < item.max) {
+          if (item.max > 0 && item.totalMinted < item.max) {
             status = 'Minting';
           } else if (item.max < 0) {
             status = 'Minting';
