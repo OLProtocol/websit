@@ -7,7 +7,7 @@ import { useReactWalletStore } from 'btc-connect/dist/react';
 import { Spin } from 'antd';
 import { UtxoContent } from '@/components/UtxoContent';
 import { useTranslation } from 'react-i18next';
-import { generateMempoolUrl, generateOrdUrl } from '@/lib/utils';
+import { generateMempoolUrl, genOrdinalsUrl } from '@/lib/utils';
 
 export default function OrdxInscription() {
   const { t } = useTranslation();
@@ -31,7 +31,7 @@ export default function OrdxInscription() {
   }, [detail]);
 
   const ordinalLink = useMemo(() => {
-    return generateOrdUrl({
+    return genOrdinalsUrl({
       network,
       path: `inscription/${detail?.inscriptionId}`,
     });
