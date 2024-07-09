@@ -272,7 +272,12 @@ export const OrdxAddressHolders = ({
               : `https://ordinals.com/inscription/`;
           const inscriptionnums = t?.map((r: any) => (
             <div>
-              {r.num === '9223372036854775807' ? (
+              <span
+                className='text-blue-500 cursor-pointer'
+                onClick={() => toInscriptionInfo(r.id)}>
+                {hideStr(r.id)}
+              </span>
+              {/* {r.num === '9223372036854775807' ? (
                 <span
                   className='text-blue-500 cursor-pointer'
                   onClick={() => toInscriptionInfo(r.id)}>
@@ -294,7 +299,7 @@ export const OrdxAddressHolders = ({
                 //   target='_blank'>
                 //   #{r.num}
                 // </a>
-              )}
+              )} */}
             </div>
           ));
           return inscriptionnums;
