@@ -12,13 +12,14 @@ import { useToast } from '@chakra-ui/react';
 import { generateMempoolUrl } from '@/lib/utils';
 
 interface NameListProps {
+  address: string;
   onTotalChange?: (total: number) => void;
 }
-export const NameList = ({ onTotalChange }: NameListProps) => {
+export const NameList = ({ onTotalChange, address }: NameListProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { btcHeight } = useCommonStore((state) => state);
-  const { network, address: currentAccount } = useReactWalletStore();
+  const { network, } = useReactWalletStore();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
 
@@ -31,7 +32,7 @@ export const NameList = ({ onTotalChange }: NameListProps) => {
   };
   console.log(start);
   const { data } = useNsListByAddress({
-    address: currentAccount,
+    address: address,
     start,
     limit,
     network,

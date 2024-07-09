@@ -24,7 +24,9 @@ export default function Account() {
   const nameTotal = useMemo(() => data?.data?.total || 0, [data]);
 
   const onTotalChange = (total: number) => {
-    setUtxosTotal(total);
+    if (total !== 0) {
+      setUtxosTotal(total);
+    }
   }
 
   return (
@@ -38,10 +40,10 @@ export default function Account() {
             onChange={(tick) => setTicker(tick)}
           />
           {ticker === t('pages.account.name') && (
-            <NameList />
+            <NameList address={currentAccount} />
           )}
           {ticker === t('pages.account.rare_sats') && (
-            <RareSat canSplit={true} />
+            <RareSat canSplit={true} targetAddress={currentAccount} />
           )}
 
           {ticker === t('pages.account.available_utxo') && (
@@ -49,7 +51,7 @@ export default function Account() {
           )}
 
           {ticker === t('pages.account.ord_nft') && (
-            <NftList />
+            <NftList targetAddress={currentAccount} />
           )}
 
           {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && (

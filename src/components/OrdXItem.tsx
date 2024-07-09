@@ -4,7 +4,7 @@ interface Ord2ItemProps {
   item: {
     tick: string;
 
-    balance: string;
+    balance: number;
   };
   selected?: boolean;
   onClick?: () => void;

@@ -10,15 +10,16 @@ import { hideStr } from '@/lib/utils';
 import { Card, CardBody, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-export const NftList = () => {
+export const NftList = ({ targetAddress }) => {
   const { t } = useTranslation();
   const nav = useNavigate();
 
-  const { network, address } = useReactWalletStore();
+  const { network } = useReactWalletStore();
   const router = useNavigate();
+  const [address] = useState(targetAddress);
 
   const [start, setStart] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(10000);
 
   const toast = useToast();
   const [data, setData] = useState<any>();
@@ -168,6 +169,7 @@ export const NftList = () => {
 
   const getNfts = async () => {
     setLoading(true);
+    console.log('getNfts', address, network, start, limit);
     try {
       const resp = await getOrdInscriptionsByAddress({
         address,
@@ -175,6 +177,7 @@ export const NftList = () => {
         start,
         limit,
       });
+      console.log('getNfts resp', resp);
       if (resp.code !== 0) {
         toast({
           title: resp.msg,
@@ -216,7 +219,7 @@ export const NftList = () => {
       scroll={{ x: 800 }}
       pagination={{
         position: ['bottomCenter'],
-        defaultPageSize: 10,
+        defaultPageSize: 10000,
         total: total,
         onChange: paginationChange,
         showSizeChanger: false,

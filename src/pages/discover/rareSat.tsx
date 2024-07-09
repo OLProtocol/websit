@@ -21,15 +21,16 @@ const { Search } = Input;
 
 interface RareSatProps {
   canSplit: boolean;
+  targetAddress: string;
 }
 
-export const RareSat = ({ canSplit }: RareSatProps) => {
+export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
   const { t } = useTranslation();
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState(targetAddress);
   const [allSatList, setAllSatList] = useState<any[]>();
   const [satList, setSatList] = useState<any[]>();
   const [satFilterList, setSatFilterList] = useState<any[]>();
-  const { network, address: currentAccount } = useReactWalletStore();
+  const { network } = useReactWalletStore();
   const toast = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -143,7 +144,7 @@ export const RareSat = ({ canSplit }: RareSatProps) => {
 
   useEffect(() => {
     if (canSplit) {
-      setAddress(currentAccount);
+      // setAddress(currentAccount);
       doSearch();
       // const cachedData = getCachedData('all_sat_list_' + address);
       // if (cachedData === null) {
