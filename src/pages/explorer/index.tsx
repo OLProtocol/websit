@@ -1,23 +1,45 @@
+import { useReactWalletStore } from 'btc-connect/dist/react';
 import { useEffect, useMemo, useState } from 'react';
 import { Input, Empty, Segmented } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
-import { OrdxList } from './components/OrdxList';
-import { OrdxSummaryList } from '../../components/OrdxSummaryList';
-import { OrdxAddressHolders } from '../../components/OrdxAddressHolders';
+import { OrdxList } from '@/pages/explorer/components/OrdxList';
+import { OrdxSummaryList } from '@/components/OrdxSummaryList';
+import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
 import { useTranslation } from 'react-i18next';
+import { useNsListByAddress } from '@/api'
+import { NameList } from '@/components/NameList';
+import { NftList } from '@/components/NftList';
+import { RareSat } from '@/pages/discover/rareSat';
+import { AvailableUtxoList } from '@/pages/account/components/AvailableUtxoList';
+import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
 
 const { Search } = Input;
 
 export default function Ord2Index() {
+  const [address, setAddress] = useState('');
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
-  const [address, setAddress] = useState('');
   const [summaryEmptyStatus, setSummaryEmptyStatus] = useState(false);
   const [historyEmptyStatus, setHistoryEmptyStatus] = useState(false);
   const [selectTick, setSelectTick] = useState('');
   const [searchParams] = useSearchParams();
   const q = searchParams.get('q');
+
+  const { network } = useReactWalletStore();
+  const [utxosTotal, setUtxosTotal] = useState<number>(0);
+
+  const { data } = useNsListByAddress({
+    address: address,
+    start: 0,
+    limit: 1,
+    network,
+  });
+  const nameTotal = useMemo(() => data?.data?.total || 0, [data]);
+  const onTotalChange = (total: number) => {
+    setUtxosTotal(total);
+  }
+
   const showAddress = useMemo(() => {
     return address ? true : false;
   }, [address]);
@@ -95,19 +117,29 @@ export default function Ord2Index() {
               </div>
             )}
             <div className='mb-4'>
-              <OrdxSummaryList
+              <OrdxAccountSummaryList
                 onEmpty={summaryEmptyHandler}
                 address={address}
+                utxosTotal={utxosTotal}
+                nameTotal={nameTotal}
                 onChange={(tick) => setSelectTick(tick)}
               />
             </div>
-            <div className='mb-4'>
-              <OrdxAddressHolders
-                onEmpty={historyEmptyHandler}
-                tick={selectTick}
-                address={address}
-              />
-            </div>
+            {selectTick === t('pages.account.available_utxo') && (
+              <AvailableUtxoList address={address} onTotalChange={onTotalChange} />
+            )}
+            {selectTick === t('pages.account.name') && (
+              <NameList />
+            )}
+            {selectTick === t('pages.account.rare_sats') && (
+              <RareSat canSplit={true} />
+            )}
+            {selectTick === t('pages.account.ord_nft') && (
+              <NftList />
+            )}
+            {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
+              <OrdxAddressHolders tick={selectTick} address={address} />
+            )}
           </>
         )}
         {!showAddress && (
