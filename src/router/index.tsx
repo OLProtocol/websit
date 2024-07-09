@@ -123,7 +123,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTE_PATH.TOOLS_TRANSACT,
-        element: <Transaction/>,
+        element: <Transaction />,
       },
       {
         path: ROUTE_PATH.TOOLS_SEARCH_SAT,

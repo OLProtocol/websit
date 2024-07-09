@@ -2,6 +2,8 @@
   "app": "Sat20 Protocol",
   "common": {
     "tick": "Tick",
+    "asset_type": "资产类型",
+    "asset_name": "资产名字",
     "utxo": "Utxo",
     "sat": "聪",
     "selfmint": "铸造比例",
@@ -9,6 +11,7 @@
     "index": "序号",
     "amount": "数量",
     "asset_amount": "资产数量",
+    "asset_ranges": "聪范围",
     "mint": "铸造",
     "file": "文件",
     "deploy": "部署",

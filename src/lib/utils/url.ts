@@ -27,7 +27,7 @@ export const genOrdinalsUrl = ({
   path?: string;
   locale?: string;
 }) => {
-  const base = network === 'testnet' ? 'https://testnet4.ordinals.com/' : 'https://ordinals.com';
+  const base = network === 'testnet' ? 'https://testnet4.ordinals.com' : 'https://ordinals.com';
   let url = base;
   if (locale) {
     url += `/${locale}`;

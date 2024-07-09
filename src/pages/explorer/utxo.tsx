@@ -12,7 +12,7 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { UtxoContent } from '@/components/UtxoContent';
 import { hideStr } from '@/lib/utils';
 import { useReactWalletStore } from 'btc-connect/dist/react';
-import { generateMempoolUrl, getTickLabel } from '@/lib/utils';
+import { generateMempoolUrl, getAssetTypeLabel } from '@/lib/utils';
 import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -25,17 +25,10 @@ export default function UtxoInfo() {
   const { network } = useReactWalletStore();
 
   const { data: assetData, isLoading } = useGetUtxo({ utxo, network });
-  const detail = useMemo(() => {
+
+  const allAssetList = useMemo(() => {
     return assetData?.data?.detail || {};
   }, [assetData]);
-  const assets = useMemo(() => {
-    return (
-      detail?.assets?.map((v) => ({
-        ...v,
-        assets: v?.assets?.map((a) => ({ ...a, ticker: v.ticker })),
-      })) || []
-    );
-  }, [detail]);
 
   const toInscriptionInfo = (inscriptionId) => {
     nav(`/explorer/inscription/${inscriptionId}`);
@@ -59,14 +52,14 @@ export default function UtxoInfo() {
   const columns: ColumnsType<any> = useMemo(() => {
     const defaultColumn: any[] = [
       {
-        title: 'Assets',
+        title: t('common.asset_amount'),
         dataIndex: 'assetamount',
         key: 'assetamount',
         width: 60,
         align: 'center',
       },
       {
-        title: 'Asset Ranges',
+        title: t('common.asset_ranges'),
         dataIndex: 'ranges',
         key: 'ranges',
         width: 200,
@@ -106,12 +99,13 @@ export default function UtxoInfo() {
         align: 'center',
         render: (t, record) => {
           console.log('record', record);
-          return record.ticker === 'e' ? (
+          return record.type === 'e' ? (
             '-'
           ) : (
             <UtxoContent
               inscriptionId={t}
-              ranges={record.ticker.length < 3 ? [] : record.ranges}
+              ranges={record.ranges}
+            // ranges={record.type == 'o' ? [] : record.ranges}
             />
           );
         },
@@ -119,6 +113,7 @@ export default function UtxoInfo() {
     ];
     return defaultColumn;
   }, []);
+
   return (
     <Spin spinning={isLoading}>
       <BtcHeightAlert />
@@ -128,17 +123,18 @@ export default function UtxoInfo() {
             <div className='mb-2'>
               <p className='text-gray-400'>utxo:</p>
               <a href={txLink} className='indent-2' target='_blank'>
-                {utxo || '-'}
+                {allAssetList?.utxo || '-'}
               </a>
             </div>
+
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.amount')}:</p>
-              <span className='indent-2'>{detail?.value || '-'}</span>
+              <span className='indent-2'>{allAssetList?.value || '-'}</span>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>Sat Ranges:</p>
               <div>
-                {detail.ranges?.map((r: any) => (
+                {allAssetList.ranges?.map((r: any) => (
                   <div>
                     <span>
                       {r.size === 1
@@ -150,18 +146,26 @@ export default function UtxoInfo() {
               </div>
             </div>
 
-            {assets?.map((asset: any) => (
+            {allAssetList?.assets?.map((asset: any) => (
               <div>
                 <Divider plain></Divider>
                 <div className='mb-2'>
-                  <p className='text-gray-400'>{t('common.tick')}:</p>
-                  <a
-                    onClick={() => toTick(asset?.ticker)}
-                    className='indent-2'
-                    target='_blank'>
-                    {getTickLabel(asset?.ticker) || '-'}
-                  </a>
+                  <p className='text-gray-400'>{t('common.asset_type')}:</p>
+                  <span className='indent-2'>{getAssetTypeLabel(asset?.type)}</span>
                 </div>
+                {asset?.type !== 'o' && (
+                  <div className='mb-2'>
+                    <p className='text-gray-400'>{t('common.asset_name')}:</p>
+                    <a
+                      onClick={() => toTick(asset.ticker)}
+                      className='indent-2'
+                      target='_blank'
+                      style={{ cursor: 'pointer' }}>
+                      {asset.ticker}
+                    </a>
+                  </div>
+                )}
+
                 <div className='mb-2'>
                   <p className='text-gray-400'>{t('common.asset_amount')}:</p>
                   <span className='indent-2'>{asset?.assetamount}</span>
@@ -170,7 +174,7 @@ export default function UtxoInfo() {
                   pagination={false}
                   bordered
                   columns={columns}
-                  dataSource={asset.assets}
+                  dataSource={asset?.assets}
                   scroll={{ x: 460 }}
                 />
               </div>
