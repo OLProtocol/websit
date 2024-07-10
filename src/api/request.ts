@@ -304,21 +304,6 @@ export const getNsName = async ({ name, network }: any) => {
   return data;
 };
 
-export const getInscriptionsByAddress = async ({
-  address,
-  network,
-  start,
-  limit,
-}: any) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `nft/address/${address}?start=${start}&limit=${limit}`,
-      network,
-    ),
-  );
-  return data;
-};
-
 // export const getInscriptionsByGenesesAddress = async ({
 //   address,
 //   network,
