@@ -19,6 +19,16 @@ import SearchSat from '@/pages/tools/searchSat';
 import { OrdAddressInscriptionList } from '@/pages/account/components/OrdAddressInscriptions';
 import OrdInscription from '@/pages/account/components/OrdInscription';
 import { OrdSatInscriptionList } from '@/pages/account/components/OrdSatInscriptions';
+import { useReactWalletStore } from 'btc-connect/dist/react';
+
+interface RareSatContainerProps {
+  canSplit: boolean;
+}
+
+export const RareSatContainer: React.FC<RareSatContainerProps> = ({ canSplit }) => {
+  const { address: currentAccount } = useReactWalletStore();
+  return <RareSat canSplit={canSplit} targetAddress={""} />;
+};
 
 const resolveHashPath = (path: string) => {
   return `/#${path}`;
@@ -52,6 +62,8 @@ const hashPath: any = {};
 Object.keys(ROUTE_PATH).forEach((k: any) => {
   hashPath[k] = resolveHashPath((ROUTE_PATH as any)[k]);
 });
+
+
 
 export const ROUTE_HASH_PATH: typeof ROUTE_PATH = hashPath;
 
@@ -135,7 +147,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTE_PATH.DISCOVER_RARE_SAT,
-        element: <RareSat canSplit={false} targetAddress={''} />,
+        element: <RareSatContainer canSplit={false} />,
       },
       {
         path: ROUTE_PATH.ACCOUNT,

@@ -33,21 +33,28 @@ export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
 
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const { network, address: currentAccount } = useReactWalletStore();
-  if (address === '') {
-    setAddress(currentAccount);
-  }
-  let uniqueTypes: string[] = [];
-  if (satList) {
-    const uniqueTypeSet = new Set<string>();
-    satList.forEach((item) =>
-      item.satributes.forEach((satType) => satType === 'first_transaction' ? uniqueTypeSet.add('1st TX') : uniqueTypeSet.add(satType)),
-    );
-    uniqueTypes = Array.from(uniqueTypeSet);
-    if (uniqueTypes.length > 0) {
-      uniqueTypes.unshift('all');
+  const { network } = useReactWalletStore();
+  const [uniqueTypes, setUniqueTypes] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (address === '') {
+      setAddress(targetAddress);
     }
-  }
+  }, [address, targetAddress]);
+
+  useEffect(() => {
+    if (satList) {
+      const uniqueTypeSet = new Set<string>();
+      satList.forEach((item) =>
+        item.satributes.forEach((satType) => satType === 'first_transaction' ? uniqueTypeSet.add('1st TX') : uniqueTypeSet.add(satType)),
+      );
+      setUniqueTypes(Array.from(uniqueTypeSet));
+      if (uniqueTypes.length > 0) {
+        uniqueTypes.
+          unshift('all');
+      }
+    }
+  }, [satList]);
 
   function setFilterType(satType: string): void {
     if (satType === '1st TX') {
@@ -210,8 +217,9 @@ export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
                       <Heading size='md'>Interesting Sats</Heading>
                     </CardHeader>
                     <CardBody>
-                      {uniqueTypes.map((item, _) => (
+                      {uniqueTypes.map((item, index) => (
                         <Button
+                          key={index}
                           size='sm'
                           className='m-1'
                           onClick={() => setFilterType(item)}>
@@ -238,7 +246,7 @@ export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
                       <Heading size='md'>Interesting Sats</Heading>
                     </CardHeader>
                     <CardBody>
-                      <SatTable sats={[]} canSplit={canSplit} />
+
                     </CardBody>
                   </Card>
                 </div>

@@ -16,9 +16,10 @@ export function UtxoContent({ inscriptionId, ranges = [] }: UtxoContentProps) {
     network,
   });
   const detail = useMemo(() => data?.data || {}, [data]);
+  // console.log('UtxoContent ranges:', ranges, inscriptionId);
   const seed = useMemo(
     () =>
-      ranges.length > 0
+      ranges.length > 1
         ? generateSeed(ranges)
         : 0,
     [ranges],

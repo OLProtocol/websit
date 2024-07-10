@@ -248,8 +248,8 @@ export const OrdxAddressHolders = ({
         width: 300,
         align: 'center',
         render: (t) => {
-          const ranges = t?.map((r: any) => (
-            <div>
+          const ranges = t?.map((r: any, index: number) => (
+            <div key={index}>
               <span>
                 {r.size === 1 ? r.start : `${r.start}-${r.start + r.size - 1}`}
               </span>
@@ -270,8 +270,8 @@ export const OrdxAddressHolders = ({
             network === 'testnet'
               ? `https://testnet.ordinals.com/inscription/`
               : `https://ordinals.com/inscription/`;
-          const inscriptionnums = t?.map((r: any) => (
-            <div>
+          const inscriptionnums = t?.map((r: any, index: number) => (
+            <div key={index}>
               <span
                 className='text-blue-500 cursor-pointer'
                 onClick={() => toInscriptionInfo(r.id)}>
@@ -348,6 +348,7 @@ export const OrdxAddressHolders = ({
         let ranges: any[] = [];
         const inscriptionNums: any[] = [];
         const item = {
+          key: detail.utxo,
           utxo: detail.utxo,
           amount: detail.amount,
           assetamount: detail.assetamount,

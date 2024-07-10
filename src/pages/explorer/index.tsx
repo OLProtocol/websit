@@ -111,7 +111,7 @@ export default function Ord2Index() {
         )} */}
       </div>
       <div className='max-w-7xl mx-auto px-4'>
-        {showAddress && (
+        {(showAddress && address != "") && (
           <>
             {empty && (
               <div className='mb-4'>

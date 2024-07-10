@@ -30,7 +30,6 @@ export const NameList = ({ onTotalChange, address }: NameListProps) => {
   const clickHandler = (item) => {
     nav(`/explorer/ns/${item.name}`);
   };
-  console.log(start);
   const { data } = useNsListByAddress({
     address: address,
     start,
@@ -113,6 +112,7 @@ export const NameList = ({ onTotalChange, address }: NameListProps) => {
     () =>
       list.map((item, i) => {
         return {
+          key: item.inscriptionId,
           index: i + 1,
           ...item,
         };
