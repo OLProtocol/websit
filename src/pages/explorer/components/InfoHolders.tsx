@@ -31,7 +31,7 @@ export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
     start,
     limit
   });
-  
+
   const list = useMemo(() => data?.data?.detail || [], [data]);
   useEffect(() => {
     trigger();
@@ -70,8 +70,9 @@ export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
     },
   ];
   const dataSource: DataType[] = useMemo(
-    () => 
-      list.map((item) => ({
+    () =>
+      list.map((item, index) => ({
+        key: index,
         address: item.wallet,
         value: item.total_balance,
         percentage: (item.total_balance / totalQuantity * 100).toFixed(2) + '%',

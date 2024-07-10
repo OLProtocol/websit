@@ -277,6 +277,7 @@ export const AvailableUtxoList = ({
     () =>
       data?.data?.map((v) => ({
         ...v,
+        key: `${v.txid}:${v.vout}`,
         utxo: `${v.txid}:${v.vout}`,
       })) || [],
     [data],

@@ -31,8 +31,8 @@ export const SatItem = ({ utxo }: SatItemProps) => {
       </div>
 
       <div>
-        {utxo.sats.map((sat, _) => (
-          <div className='flex'>
+        {utxo.sats.map((sat, index) => (
+          <div key={index} className='flex'>
             <Tag color='green' bordered={false}>
               Block#{sat.block}
             </Tag>
@@ -53,8 +53,8 @@ export const SatItem = ({ utxo }: SatItemProps) => {
                 &nbsp;
               </>
             )}
-            {sat.satributes.map((item, _) => (
-              <img src={setSatIcon(item)} className='w-6 h-6 ml-1' />
+            {sat.satributes.map((item, index) => (
+              <img key={index} src={setSatIcon(item)} className='w-6 h-6 ml-1' />
             ))}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <div className='flex'>
@@ -68,14 +68,12 @@ export const SatItem = ({ utxo }: SatItemProps) => {
           </div>
         ))}
       </div>
-
       <div>
         {/* {sat.canSplit && ['ordx.space'].every((v) => location.hostname !== v) && sat.value !== sat.size && (
           <SplitSatButton sat={sat} tooltip='Split Sat'/>
         )} */}
 
-        {['ordx.space'].every((v) => location.hostname !== v) &&
-          utxo.sats.length === 1 &&
+        {utxo.sats.length === 1 &&
           utxo.sats[0].value !== utxo.sats[0].size &&
           utxo.sats[0].value > 546 && (
             <SplitSatButton sat={utxo.sats[0]} tooltip='Split Sat' />

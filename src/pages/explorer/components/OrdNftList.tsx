@@ -178,6 +178,7 @@ export const OrdNftList = () => {
       loading={loading}
       columns={columns}
       dataSource={dataSource}
+      rowKey="id"
       scroll={{ x: 800 }}
       pagination={{
         position: ['bottomCenter'],

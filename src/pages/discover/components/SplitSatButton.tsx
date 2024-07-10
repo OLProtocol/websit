@@ -66,12 +66,12 @@ export const SplitSatButton = ({
     };
 
     const generateInputsAndOutputs = async () => {
-        let utxoValue = await getValueOfUtxo();
+        const utxoValue = await getValueOfUtxo();
 
-        let inputList: any[] = [];
-        let outputList: any[] = [];
+        const inputList: any[] = [];
+        const outputList: any[] = [];
 
-        let availableUtxos = await getAvailableUtxos();
+        const availableUtxos = await getAvailableUtxos();
         let utxoLength = availableUtxos.length;
 
         const rareSatType = sat.satributes[0];
@@ -207,7 +207,7 @@ export const SplitSatButton = ({
         }
 
         let inTotal = inputList.reduce((total, item) => total + item.sats, 0);
-        let outTotal = outputList.reduce((total, item) => total + item.sats, 0);
+        const outTotal = outputList.reduce((total, item) => total + item.sats, 0);
         let realityFee = calculateRate(inputList.length, outputList.length, feeRate.value);
 
         while (inTotal - outTotal - realityFee < 0) {
@@ -236,7 +236,7 @@ export const SplitSatButton = ({
         //     sats: inTotal - outTotal - realityFee,
         //     address: currentAccount,
         // })
-        
+
         return { inputList: inputList, outputList: outputList };
     }
 
