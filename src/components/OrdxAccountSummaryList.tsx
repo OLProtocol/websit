@@ -140,9 +140,9 @@ export const OrdxAccountSummaryList = ({
   return (
     <div>
       <Wrap>
-        {tickers.slice(0).map((item) => (
+        {tickers?.map((item, index) => (
           item.balance > 0 &&
-          <WrapItem>
+          <WrapItem key={index}>
             <OrdXItem
               key={item.ticker}
               selected={select === item.ticker}
@@ -159,7 +159,7 @@ export const OrdxAccountSummaryList = ({
       </Wrap>
       <hr />
       <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
-        {filteredTickers.slice(0).map((item) => (
+        {filteredTickers?.map((item) => (
           <OrdXItem
             key={item.ticker}
             selected={select === item.ticker}

@@ -340,6 +340,7 @@ export const OrdxFullList = () => {
       bordered
       columns={columns}
       dataSource={dataSource}
+      rowKey="id"
       pagination={{
         position: ['bottomCenter'],
         defaultPageSize: 10,

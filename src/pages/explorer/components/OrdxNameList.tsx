@@ -120,7 +120,7 @@ export const OrdxNameList = () => {
   const dataSource: any[] = useMemo(
     () =>
       list.map((item, i) => {
-    
+
         return {
           index: i + 1,
           ...item,
@@ -134,6 +134,7 @@ export const OrdxNameList = () => {
       bordered
       columns={columns}
       dataSource={dataSource}
+      rowKey="id"
       pagination={{
         position: ['bottomCenter'],
         defaultPageSize: 10,

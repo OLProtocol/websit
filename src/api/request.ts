@@ -289,7 +289,6 @@ export const getNsListByAddress = async ({
   limit,
 }: any) => {
   const { data } = await axios.get(
-    // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
     generateUrl(
       `ns/address/${address}?start=${start}&limit=${limit}`,
       network,

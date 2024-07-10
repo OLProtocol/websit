@@ -16,14 +16,15 @@ interface DataType {
 export const SatTable = ({ sats, canSplit }: SatTableProps) => {
 
   const generateData = () => {
-    let datas: any[] = [];
+    if (!sats) return [];
+    const datas: any[] = [];
 
-    let utxos = {};
+    const utxos = {};
     sats.forEach((sat) => {
-      let utxo = sat.utxo;
-      let value = sat.value;
-      
-      if (utxos.hasOwnProperty(utxo)) {
+      const utxo = sat.utxo;
+      const value = sat.value;
+
+      if (utxos[utxo]) {
         utxos[utxo].sats.push(sat);
       } else {
         utxos[utxo] = {
@@ -34,7 +35,8 @@ export const SatTable = ({ sats, canSplit }: SatTableProps) => {
     })
 
     Object.keys(utxos).map((key) => {
-      let item = {
+      const item = {
+        key: key,
         utxo: key,
         value: utxos[key].value,
         sats: utxos[key].sats,
@@ -47,12 +49,13 @@ export const SatTable = ({ sats, canSplit }: SatTableProps) => {
   const dataSource = useMemo(() => {
     return generateData();
   }, [sats]);
+  console.log("dataSource", dataSource);
 
   const columns: ColumnsType<DataType> = [
     {
       title: 'Sat',
-      dataIndex: 'sat',
-      key: 'sat',
+      dataIndex: 'utxo',
+      key: 'utxo',
       align: 'center',
       render(_, record) {
         record.canSplit = canSplit;
@@ -61,20 +64,25 @@ export const SatTable = ({ sats, canSplit }: SatTableProps) => {
     },
   ];
   return (
-    <Table
-      className='bg-transparent bg-gray-200'
-      showHeader={false}
-      columns={columns}
-      dataSource={dataSource}
-      rowClassName='bg-transparent'
-      pagination={
-        sats.length > 10
-          ? {
+    <div>
+
+      <Table
+        className='bg-transparent bg-gray-200'
+        showHeader={false}
+        columns={columns}
+        dataSource={dataSource}
+        rowClassName='bg-transparent'
+        pagination={
+          sats.length > 10
+            ? {
               position: ['bottomCenter'],
               pageSize: 10,
             }
-          : false
-      }
-    />
+            : false
+        }
+      />
+      <p>Hostname: {location.hostname}</p>
+    </div>
+
   );
 };

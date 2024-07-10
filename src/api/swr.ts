@@ -10,6 +10,7 @@ import {
 } from './types';
 
 import { fetchTipHeight, fetchChainFeeRate } from '@/lib/utils';
+import { useMemo } from 'react';
 const fetcher = (args) =>
   fetch(args)
     .then((res) => res.json())
@@ -284,8 +285,12 @@ export const useNsList = ({ network, start, limit }: any) => {
   };
 };
 export const useNsListByAddress = ({ address, network, start, limit }: any) => {
+  const key = useMemo(
+    () => (address ? `ns-list-${address}-${network}-${start}-${limit}` : null),
+    [address, network, start, limit]
+  );
   const { data, error, isLoading } = useSWR(
-    `ns-list-${address}-${network}-${start}-${limit}`,
+    key,
     () => request.getNsListByAddress({ network, address, start, limit }),
     {
       refreshInterval: 1000 * 60 * 5,

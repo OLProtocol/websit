@@ -138,8 +138,8 @@ export default function UtxoInfo() {
             <div className='mb-2'>
               <p className='text-gray-400'>Sat Ranges:</p>
               <div>
-                {allAssetList.ranges?.map((r: any) => (
-                  <div>
+                {allAssetList.ranges?.map((r: any, index: number) => (
+                  <div key={index}>
                     <span>
                       {r.size === 1
                         ? r.start
@@ -150,8 +150,8 @@ export default function UtxoInfo() {
               </div>
             </div>
 
-            {allAssetList?.assets?.map((asset: any) => (
-              <div>
+            {allAssetList?.assets?.map((asset: any, index: number) => (
+              <div key={index}>
                 <Divider plain></Divider>
                 <div className='mb-2'>
                   <p className='text-gray-400'>{t('common.asset_type')}:</p>

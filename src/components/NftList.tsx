@@ -154,6 +154,7 @@ export const NftList = ({ targetAddress }) => {
         // mintTime: v.inscription.timestamp,
         // genesesAddress: v.inscription.genesesaddress,
         id: v.inscriptionId,
+        key: v.inscriptionId,
         sat: v.sat,
         address: v.address,
         utxo: v.utxo,
