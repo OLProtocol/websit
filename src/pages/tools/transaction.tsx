@@ -439,7 +439,7 @@ export default function Transaction() {
     detail.map(async (item) => {
       data = await getOrdxAddressHolders({
         start: 0,
-        limit: 10000,
+        limit: 10,
         address: currentAccount,
         ticker: item.ticker,
         network: network,

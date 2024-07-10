@@ -19,13 +19,17 @@ export const NftList = ({ targetAddress }) => {
   const [address] = useState(targetAddress);
 
   const [start, setStart] = useState(0);
-  const [limit, setLimit] = useState(10000);
+  const [limit, setLimit] = useState(10);
 
   const toast = useToast();
   const [data, setData] = useState<any>();
   const [loading, setLoading] = useState(false);
 
-  const toInscriptionInfo = (inscriptionId) => {
+  const toExplorerInscription = (inscriptionId) => {
+    nav(`/explorer/inscription/${inscriptionId}`);
+  };
+
+  const toOrdInscription = (inscriptionId) => {
     nav(`/ord/inscription/${inscriptionId}`);
   };
 
@@ -58,16 +62,19 @@ export const NftList = ({ targetAddress }) => {
         key: 'id',
         align: 'center',
         render: (t) => {
-          const txid = t.replace(/i0$/m, '');
-          const href = generateMempoolUrl({
-            network,
-            path: `tx/${txid}`,
-          });
+          // const txid = t.replace(/i0$/m, '');
+          // const href = generateMempoolUrl({
+          //   network,
+          //   path: `tx/${txid}`,
+          // });
           return (
             <a
               className='text-blue-500 cursor-pointer'
-              href={href}
-              target='_blank'>
+              // href={href}
+              // href={`/#/explorer/inscription/${t}`}
+              onClick={() => toExplorerInscription(t)}
+            // target='_blank'
+            >
               {hideStr(t)}
             </a>
           );

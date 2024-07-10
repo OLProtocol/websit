@@ -141,7 +141,6 @@ export const OrdxAccountSummaryList = ({
     <div>
       <Wrap>
         {tickers?.map((item, index) => (
-          item.balance > 0 &&
           <WrapItem key={index}>
             <OrdXItem
               key={item.ticker}
