@@ -30,6 +30,7 @@ export default function UtxoInfo() {
     return assetData?.data?.detail || {};
   }, [assetData]);
 
+  // console.log("allAssetList", allAssetList);
   const toInscriptionInfo = (inscriptionId) => {
     nav(`/explorer/inscription/${inscriptionId}`);
   };
@@ -74,6 +75,7 @@ export default function UtxoInfo() {
               <span>
                 {r.size === 1 ? r.start : `${r.start}-${r.start + r.size - 1}`}
               </span>
+              {/* <span> - ({r.size} sats)</span> */}
             </div>
           ));
           return ranges;
@@ -85,13 +87,15 @@ export default function UtxoInfo() {
         key: 'inscriptionId',
         width: 100,
         align: 'center',
-        render: (t) => {
-          return (
+        render: (t, record) => {
+          return record.type !== 'e' /*|| record.type === 'n'*/ ? (
             <span
               className='text-blue-500 cursor-pointer'
               onClick={() => toInscriptionInfo(t)}>
               {hideStr(t)}
             </span>
+          ) : (
+            <span>_</span>
           );
         },
       },
@@ -102,8 +106,8 @@ export default function UtxoInfo() {
         width: 100,
         align: 'center',
         render: (t, record) => {
-          console.log('record', record);
-          return record.type === 'e' || record.type === 'n' ? (
+          // console.log('record', record);
+          return record.type === 'e' /*|| record.type === 'n'*/ ? (
             '-'
           ) : (
             <UtxoContent
@@ -145,6 +149,7 @@ export default function UtxoInfo() {
                         ? r.start
                         : `${r.start}-${r.start + r.size - 1}`}
                     </span>
+                    <span> - ({r.size} sats)</span>
                   </div>
                 ))}
               </div>
@@ -190,7 +195,10 @@ export default function UtxoInfo() {
                   pagination={false}
                   bordered
                   columns={columns}
-                  dataSource={asset?.assets}
+                  dataSource={asset?.assets.map((a: any) => ({
+                    ...a,
+                    type: asset.type,
+                  }))}
                   scroll={{ x: 460 }}
                 />
               </div>
