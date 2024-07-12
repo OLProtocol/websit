@@ -18,13 +18,16 @@ export function UtxoContent({ inscriptionId, ranges = [] }: UtxoContentProps) {
   const detail = useMemo(() => data?.data || {}, [data]);
   // console.log('UtxoContent ranges:', ranges, inscriptionId);
   const seed = useMemo(
-    () =>
-      ranges.length > 1
+    () => {
+      console.log("utxoContent ranges:" + JSON.stringify(ranges));
+      return ranges.length > 0
         ? generateSeed(ranges)
-        : 0,
+        : 0
+    },
     [ranges],
   );
   const contentSrc = useMemo(() => {
+    console.log("utxoContent delegate:", detail?.delegate, "inscriptionid:", inscriptionId, "seed:", seed);
     if (detail?.delegate && inscriptionId && seed) {
       return genOrdServiceUrl({
         network,

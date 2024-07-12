@@ -107,15 +107,25 @@ export default function UtxoInfo() {
         align: 'center',
         render: (t, record) => {
           // console.log('record', record);
-          return record.type === 'e' /*|| record.type === 'n'*/ ? (
-            '-'
-          ) : (
-            <UtxoContent
-              inscriptionId={t}
-              ranges={record.ranges}
-            // ranges={record.type == 'o' ? [] : record.ranges}
-            />
-          );
+          switch (record.type) {
+            case 'f':
+              return (
+                <UtxoContent
+                  inscriptionId={t}
+                  ranges={record.ranges}
+                />);
+            case 'o':
+            case 'n':
+              return (
+                <UtxoContent
+                  inscriptionId={t}
+                  ranges={[]}
+                />);
+            case 'e':
+              return '-';
+            default:
+              return '-';
+          }
         },
       },
     ];
