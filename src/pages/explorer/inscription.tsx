@@ -46,7 +46,7 @@ export default function OrdxInscription() {
   }, [detail?.delegate]);
 
   const txid = useMemo(() => {
-    return detail?.inscriptionId.split('i')[0];
+    return detail?.inscriptionId?.split('i')[0];
   }, [detail]);
 
   const txLink = useMemo(() => {
