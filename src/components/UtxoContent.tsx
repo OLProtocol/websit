@@ -19,7 +19,7 @@ export function UtxoContent({ inscriptionId, ranges = [] }: UtxoContentProps) {
   // console.log('UtxoContent ranges:', ranges, inscriptionId);
   const seed = useMemo(
     () => {
-      console.log("utxoContent ranges:" + JSON.stringify(ranges));
+      // console.log("utxoContent ranges:" + JSON.stringify(ranges));
       return ranges.length > 0
         ? generateSeed(ranges)
         : 0
