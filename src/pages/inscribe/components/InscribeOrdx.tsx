@@ -23,7 +23,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip, Upload, Modal, Table } from 'antd';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Checkbox } from 'antd';
 import { BusButton } from '@/components/BusButton';
 import { useEffect, useMemo, useState } from 'react';

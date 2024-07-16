@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useInscriptiontInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Spin } from 'antd';
 import { UtxoContent } from '@/components/UtxoContent';
 import { useTranslation } from 'react-i18next';

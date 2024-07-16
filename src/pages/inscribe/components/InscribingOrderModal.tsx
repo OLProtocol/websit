@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { Card, Steps, Divider, Button, Tag, Progress } from 'antd';
 import { InscribeOrderItem } from './InscribeOrderItem';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { pollGetTxStatus } from '@/api';
 import { BusButton } from '@/components/BusButton';
 import { useOrderStore, OrderItemType } from '@/store';

@@ -17,7 +17,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { FeeShow } from './FeeShow';
 // import mempoolJS from '@mempool/mempool.js';
 import { generatePrivateKey, generateInscriptions } from '../utils';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useCalcFee } from '@/lib/hooks';
 import { OrderItemType, useCommonStore, useOrderStore } from '@/store';
 import { InscribeType } from '@/types';

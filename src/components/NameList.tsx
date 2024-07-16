@@ -4,7 +4,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { useNsListByAddress } from '@/api';
 import { useCommonStore } from '@/store';
 import { useNavigate } from 'react-router-dom';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { genOrdinalsUrl, hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { CopyButton } from '@/components/CopyButton';

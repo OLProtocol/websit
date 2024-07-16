@@ -5,7 +5,7 @@ import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Card, Input } from 'antd';
 import { useState } from 'react';
 import { getInscriptiontInfo } from '@/api';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 const { Search } = Input;
 

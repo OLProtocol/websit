@@ -2,7 +2,7 @@
 import { Button, Segmented, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxTickHistory } from '@/api';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
@@ -44,7 +44,7 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
             : `https://ordinals.com/inscription/${record.inscriptionId}`;
         return (
           <div>
-            { t === 9223372036854775807 ? (
+            {t === 9223372036854775807 ? (
               <span>-</span>
             ) : (
               // <a

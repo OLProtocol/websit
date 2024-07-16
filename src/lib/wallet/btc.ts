@@ -5,7 +5,7 @@ import {
   convertUtxosToBtcUtxos,
   convertBtcUtxosToInputs,
 } from './utxo';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 export const calcNetworkFee = async ({
   utxos,

@@ -2,7 +2,7 @@
 import { Button, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxAddressHistory } from '@/api';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl } from '@/lib/utils';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
@@ -52,7 +52,7 @@ export const OrdxAddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps)
               </a>
             )}
           </div>
-          
+
         );
       },
     },
@@ -148,11 +148,11 @@ export const OrdxAddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps)
               onChange: paginationChange,
               showSizeChanger: false,
             }}
-            // onRow={(record) => {
-            //   return {
-            //     onClick: () => clickHandler(record), // 点击行
-            //   };
-            // }}
+          // onRow={(record) => {
+          //   return {
+          //     onClick: () => clickHandler(record), // 点击行
+          //   };
+          // }}
           />
         </div>
       ) : (

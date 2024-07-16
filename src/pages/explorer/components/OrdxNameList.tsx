@@ -6,7 +6,7 @@ import { useNsList, health } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { hideStr } from '@/lib/utils'
 import { useTranslation } from 'react-i18next';
 import { CopyButton } from '@/components/CopyButton';

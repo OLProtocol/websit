@@ -1,7 +1,7 @@
 import { Tag } from 'antd';
 import { CopyButton } from '@/components/CopyButton';
 import { SplitSatButton } from './SplitSatButton';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { setSatIcon } from '@/lib/utils/sat';
 import { hideStr } from '@/lib/utils';
 import { generateMempoolUrl } from '@/lib/utils';
