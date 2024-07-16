@@ -12,7 +12,7 @@ import { SatRareBox } from './components/SatRareBox';
 import { getSats } from '@/api';
 import { SatTable } from './components/SatTable';
 import { SatTypeBox } from './components/SatTypeBox';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 import { cacheData, getCachedData } from '@/lib/utils/cache';
 import { Input } from 'antd';

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, useToast, Card, CardHeader, CardBody, Tabs, Tab, TabList, TabPanels, TabPanel } from '@chakra-ui/react';
 import { getSplittedSats } from '@/api';
 import { useNavigate } from 'react-router-dom';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Input } from 'antd';
 
 const { Search } = Input;
@@ -22,7 +22,7 @@ export default function SplittedInscription() {
       doSearch();
     }
   }
-  
+
   const doSearch = async () => {
     setLoading(true);
     setInscriptionList([]);
@@ -63,7 +63,7 @@ export default function SplittedInscription() {
         <CardHeader>
           <Search
             allowClear
-            placeholder={t('pages.tools.splitted_inscription.search_placeholder')} 
+            placeholder={t('pages.tools.splitted_inscription.search_placeholder')}
             size='large'
             value={ticker}
             onChange={(e) => setTicker(e.target.value)} onKeyDown={handleKeyDown}
@@ -77,18 +77,18 @@ export default function SplittedInscription() {
             </TabList>
             <TabPanels>
               <TabPanel>
-              {(inscriptionList !== undefined && inscriptionList.length > 0) ? (
-                inscriptionList.map((item: any) => (
-                  <Button size='sm' className='m-1' onClick={() => toInscriptionInfo(item)}>
-                    #{item}
-                  </Button>
-                )) 
-              ):(
-                <div className='max-w-max mx-auto p-2'>
-                  <img src='/images/no_data.svg' className='w-10 h-10 ml-1'/>
-                  <span className='text-gray-300'>No data</span>
-                </div>
-              )}
+                {(inscriptionList !== undefined && inscriptionList.length > 0) ? (
+                  inscriptionList.map((item: any) => (
+                    <Button size='sm' className='m-1' onClick={() => toInscriptionInfo(item)}>
+                      #{item}
+                    </Button>
+                  ))
+                ) : (
+                  <div className='max-w-max mx-auto p-2'>
+                    <img src='/images/no_data.svg' className='w-10 h-10 ml-1' />
+                    <span className='text-gray-300'>No data</span>
+                  </div>
+                )}
               </TabPanel>
             </TabPanels>
           </Tabs>

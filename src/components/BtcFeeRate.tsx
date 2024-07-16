@@ -13,13 +13,13 @@ import {
 } from '@chakra-ui/react';
 import { useState, useMemo, useEffect } from 'react';
 import { BtcFeeRateItem } from './BtcFeeRateItem';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useBtcFeeRate } from '@/api';
 import { useTranslation } from 'react-i18next';
 
 interface BtcFeeRate {
   onChange?: (value: number) => void;
-  feeRateData?:any
+  feeRateData?: any
 }
 export const BtcFeeRate = ({ onChange, feeRateData }: BtcFeeRate) => {
   const { t } = useTranslation();

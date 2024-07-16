@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { getUtxo, getUtxoByValue } from '@/api';
 import { calculateRate } from '@/lib/utils';
 import { useCommonStore } from '@/store';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@chakra-ui/react';
 

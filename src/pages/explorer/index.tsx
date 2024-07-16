@@ -1,4 +1,4 @@
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useEffect, useMemo, useState } from 'react';
 import { Input, Empty, Segmented } from 'antd';
 import { useSearchParams } from 'react-router-dom';

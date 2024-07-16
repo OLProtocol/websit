@@ -1,11 +1,11 @@
 import { getSatTypes } from "@/api";
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Card, CardBody, CardHeader, Heading, Tooltip, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 
 export const SatTypeBox = () => {
-  
+
   const toast = useToast();
   const [satTypeList, setSatTypeList] = useState<any[]>();
   const { network } = useReactWalletStore();
@@ -157,15 +157,15 @@ export const SatTypeBox = () => {
       </CardHeader>
       <CardBody>
         <div className='flex'>
-        { satTypeList !== undefined && (
-          satTypeList.map((item, index) => (
-            <div key={index}>
-              <Tooltip label={item.name + ': ' + item.tip}>
-                <img src={item.icon} className='w-6 h-6' />
-              </Tooltip>
-            </div>
-          )
-        ))}
+          {satTypeList !== undefined && (
+            satTypeList.map((item, index) => (
+              <div key={index}>
+                <Tooltip label={item.name + ': ' + item.tip}>
+                  <img src={item.icon} className='w-6 h-6' />
+                </Tooltip>
+              </div>
+            )
+            ))}
         </div>
       </CardBody>
     </Card>

@@ -21,7 +21,7 @@ import {
   InputLeftAddon,
 } from '@chakra-ui/react';
 import { getSatsByAddress } from '@/api';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import { useMap } from 'react-use';
 import { Table } from 'antd';

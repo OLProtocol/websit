@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react';
 import {
   WalletConnectReact,
   useReactWalletStore,
-} from 'btc-connect/dist/react';
+} from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl } from '@/lib/utils';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
-import 'btc-connect/dist/style/index.css';
+import '@sat20/btc-connect/dist/style/index.css';
 import { hideStr } from '@/lib/utils';
 import { notification } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -68,7 +68,7 @@ export const WalletConnectButton = () => {
     console.log('check', connected);
     check();
   }, []);
-  const onConnectSuccess = async () => {};
+  const onConnectSuccess = async () => { };
   const onConnectError = (error: any) => {
     console.error('Connect Wallet Failed', error);
     notification.error({
