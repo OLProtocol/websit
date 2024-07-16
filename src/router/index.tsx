@@ -19,7 +19,7 @@ import SearchSat from '@/pages/tools/searchSat';
 import { OrdAddressInscriptionList } from '@/pages/account/components/OrdAddressInscriptions';
 import OrdInscription from '@/pages/account/components/OrdInscription';
 import { OrdSatInscriptionList } from '@/pages/account/components/OrdSatInscriptions';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 interface RareSatContainerProps {
   canSplit: boolean;

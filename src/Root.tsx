@@ -1,7 +1,7 @@
 import { Outlet, useSearchParams } from 'react-router-dom';
 import { NavHeader } from '@/layout/NavHeader';
 import { Alert, Layout, Menu, theme } from 'antd';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 const { Header, Content, Footer, Sider } = Layout;
 import { useCommonStore } from './store';
 import { UpdateVersionModal } from './components/UpdateVersionModal';

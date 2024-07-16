@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { getUtxoByValue } from '@/api';
 import { CopyButton } from '@/components/CopyButton';
 import * as bitcoin from 'bitcoinjs-lib';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';

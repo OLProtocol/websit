@@ -2,7 +2,7 @@ import { Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { getOrdInscriptionsByAddress } from '@/api';
 import { CopyButton } from '@/components/CopyButton';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl } from '@/lib/utils';
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';

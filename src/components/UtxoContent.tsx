@@ -1,6 +1,6 @@
 import { useInscriptiontInfo, useExoticUtxo } from '@/api';
 import { useEffect, useMemo } from 'react';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Spin } from 'antd';
 import { genOrdServiceUrl } from '@/lib/utils';
 import { generateSeed } from '@/lib/utils';

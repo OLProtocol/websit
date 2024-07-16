@@ -1,4 +1,4 @@
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { useState, useMemo } from 'react';
 import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';

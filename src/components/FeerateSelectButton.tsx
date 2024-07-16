@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useCommonStore } from '@/store';
 import { BtcFeeRate } from './BtcFeeRate';
 import { useBtcFeeRate } from '@/api';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 export const FeerateSelectButton = () => {
   const { network } = useReactWalletStore(state => state);
   const [fee, setFee] = useState(1);

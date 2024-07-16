@@ -11,7 +11,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { UtxoContent } from '@/components/UtxoContent';
 import { hideStr } from '@/lib/utils';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl, getAssetTypeLabel } from '@/lib/utils';
 import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';

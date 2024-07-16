@@ -6,7 +6,7 @@ import { getOrdxStatusList, health } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { OrdxFullList } from './OrdxFullList';
 import { OrdxNameList } from './OrdxNameList';
 import { OrdNftList } from './OrdNftList';

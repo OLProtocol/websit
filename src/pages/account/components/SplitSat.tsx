@@ -1,5 +1,5 @@
 import { getUtxo, getUtxoByValue } from '@/api';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 import { addressToScriptPublicKey, calculateRate } from '@/lib/utils';
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Grid, GridItem, Heading, Input, InputGroup, InputLeftAddon, InputRightAddon, Stack, useToast } from '@chakra-ui/react';
@@ -25,7 +25,7 @@ export default function SplitSat() {
     const [outputList, setOutputList] = useState<any[]>() || [];
     const [utxoValue, setUtxoValue] = useState(0);
     const { feeRate } = useCommonStore((state) => state);
-    const [ fee, setFee] = useState(0);
+    const [fee, setFee] = useState(0);
 
     const splitHandler = async () => {
         if (!currentAccount || !btcWallet) {
@@ -158,10 +158,10 @@ export default function SplitSat() {
             let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
             while (inTotal < 330) {// 输入的sats小于330，需要额外添加utxo
                 tmpInputList.push({
-                    utxo: tmpAvailableUtxos?.[utxoLength-1].txid + ':' + tmpAvailableUtxos?.[utxoLength-1].vout,
-                    sats: tmpAvailableUtxos?.[utxoLength-1].value,
+                    utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
+                    sats: tmpAvailableUtxos?.[utxoLength - 1].value,
                 })
-                tmpAvailableUtxos.splice(utxoLength-1, 1);// 删除utxo
+                tmpAvailableUtxos.splice(utxoLength - 1, 1);// 删除utxo
                 utxoLength = tmpAvailableUtxos.length;
                 inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
             }
@@ -193,10 +193,10 @@ export default function SplitSat() {
             inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
             while (inTotal < 330) {// 输入的sats小于330，需要额外添加utxo
                 tmpInputList.push({
-                    utxo: tmpAvailableUtxos?.[utxoLength-1].txid + ':' + tmpAvailableUtxos?.[utxoLength-1].vout,
-                    sats: tmpAvailableUtxos?.[utxoLength-1].value,
+                    utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
+                    sats: tmpAvailableUtxos?.[utxoLength - 1].value,
                 })
-                tmpAvailableUtxos.splice(utxoLength-1, 1);// 删除utxo
+                tmpAvailableUtxos.splice(utxoLength - 1, 1);// 删除utxo
                 utxoLength = tmpAvailableUtxos.length;
             }
 
@@ -217,35 +217,35 @@ export default function SplitSat() {
             let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
             while (inTotal < 330) {// 输入的sats小于330，需要额外添加utxo
                 tmpInputList.push({
-                    utxo: tmpAvailableUtxos?.[utxoLength-1].txid + ':' + tmpAvailableUtxos?.[utxoLength-1].vout,
-                    sats: tmpAvailableUtxos?.[utxoLength-1].value,
+                    utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + tmpAvailableUtxos?.[utxoLength - 1].vout,
+                    sats: tmpAvailableUtxos?.[utxoLength - 1].value,
                 })
-                tmpAvailableUtxos.splice(utxoLength-1, 1);// 删除utxo
+                tmpAvailableUtxos.splice(utxoLength - 1, 1);// 删除utxo
                 utxoLength = tmpAvailableUtxos.length;
                 inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
             }
         }
-        
+
         let inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
         const outTotal = tmpOutputList.reduce((total, item) => total + item.sats, 0);
         let realityFee = calculateRate(tmpInputList.length, tmpOutputList.length, feeRate.value);
 
         while (inTotal - outTotal - realityFee < 0) {
             tmpInputList.push({
-                utxo: tmpAvailableUtxos?.[utxoLength-1].txid + ':' + availableUtxos?.[utxoLength-1].vout,
-                sats: tmpAvailableUtxos?.[utxoLength-1].value,
+                utxo: tmpAvailableUtxos?.[utxoLength - 1].txid + ':' + availableUtxos?.[utxoLength - 1].vout,
+                sats: tmpAvailableUtxos?.[utxoLength - 1].value,
             })
-            tmpAvailableUtxos.splice(utxoLength-1, 1);// 删除utxo
+            tmpAvailableUtxos.splice(utxoLength - 1, 1);// 删除utxo
             utxoLength = tmpAvailableUtxos.length;
-            
+
             inTotal = tmpInputList.reduce((total, item) => total + item.sats, 0);
-            realityFee = calculateRate(tmpInputList.length, tmpOutputList.length+1, feeRate.value);
+            realityFee = calculateRate(tmpInputList.length, tmpOutputList.length + 1, feeRate.value);
         }
 
         tmpOutputList.push({
             sats: inTotal - outTotal - realityFee,
         })
-        
+
         setInputList(tmpInputList);
         setOutputList(tmpOutputList);
         setFee(realityFee);

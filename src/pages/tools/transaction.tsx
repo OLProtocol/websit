@@ -4,7 +4,7 @@ import {
   getOrdxAddressHolders,
   getSats,
 } from '@/api';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import {
   Button,

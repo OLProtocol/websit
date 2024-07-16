@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useOrdxSummary } from '@/api';
 import { ListTypeItem } from './ListTypeItem';
-import { useReactWalletStore } from 'btc-connect/dist/react';
+import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 interface ListTypesProps {
   onChange?: (tick: string) => void;
