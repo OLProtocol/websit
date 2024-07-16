@@ -202,14 +202,20 @@ export default function UtxoInfo() {
                   <span className='indent-2'>{asset?.assetamount}</span>
                 </div>
                 <Table
-                  pagination={false}
                   bordered
                   columns={columns}
-                  dataSource={asset?.assets.map((a: any) => ({
+                  dataSource={asset?.assets?.map((a: any) => ({
                     ...a,
                     type: asset.type,
                   }))}
                   scroll={{ x: 460 }}
+                  pagination={{
+                    position: ['bottomCenter'],
+                    defaultPageSize: 5,
+                    total: asset?.assets?.length,
+                    // onChange: paginationChange,
+                    showSizeChanger: true,
+                  }}
                 />
               </div>
             ))}
