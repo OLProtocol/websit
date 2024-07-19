@@ -293,11 +293,11 @@
     },
     "explorer": {
       "title": "Explorer",
-      "subtitle": "Check out Sat20 balance of the address.",
+      "subtitle": "Check out Ordx balance of the address.",
       "des": "Recognize all operations including DEPLOY, MINT and TRANSFER.",
-      "list_title": "The full list of Sat20",
+      "list_title": "The full list of Ordx",
       "not_support": "Viewing the transferred balance is temporarily unavailable.",
-      "ordx_version": "Sat20 Version"
+      "ordx_version": "Ordx Version"
     },
     "account": {
       "name": "Name",
