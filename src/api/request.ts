@@ -39,7 +39,6 @@ export const health = async ({ network }) => {
 
 export const getSat20Info = async ({ tick, network }: Sat20InfoParams) => {
   const { data } = await axios.get(
-    // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
     generateUrl(`tick/info/${tick}`, network),
     {
       timeout: 10000,
@@ -53,7 +52,6 @@ export const getSat20Summary = async ({
   network,
 }: Sat20SummaryParams) => {
   const { data } = await axios.get(
-    // generateUrl(`query-v4/address/${address}/ordx/summary`, network),
     generateUrl(`address/summary/${address}`, network),
   );
   return data;
@@ -74,7 +72,6 @@ export const getSat20AddressHistory = async ({
 }: Sat20HistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      // `query-v4/address/${address}/ordx/${ticker}/history?start=${start}&limit=${limit}`,
       `address/history/${address}/${ticker}?start=${start}&limit=${limit}`,
       network,
     ),
@@ -91,7 +88,6 @@ export const getSat20AddressHolders = async ({
 }: Sat20HistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      // `query-v4/address/${address}/ordx/${ticker}/holderlist?start=${start}&limit=${limit}`,
       `address/utxolist/${address}/${ticker}?start=${start}&limit=${limit}`,
       network,
     ),
@@ -107,7 +103,6 @@ export const getSat20TickHistory = async ({
 }: Sat20HistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      // `query-v4/ordx/${ticker}?start=${start}&limit=${limit}`,
       `tick/history/${ticker}?start=${start}&limit=${limit}`,
       network,
     ),
@@ -167,7 +162,6 @@ export const getSats = async ({ address, network }: any) => {
 
 export const getSplittedSats = async ({ ticker, network }: any) => {
   const { data } = await axios.get(
-    // generateUrl(`v1/indexer/ordx/${ticker}/splittedInscriptions`, network),
     generateUrl(`splittedInscriptions/${ticker}`, network),
   );
   return data;
@@ -218,7 +212,6 @@ export const getUtxo = async ({ utxo, network }: any) => {
 };
 export const exoticUtxo = async ({ utxo, network }: any) => {
   const { data } = await axios.get(
-    // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
     generateUrl(`exotic/utxo/${utxo}`, network),
     {
       timeout: 10000,

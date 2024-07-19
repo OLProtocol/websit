@@ -14,18 +14,18 @@ import {
 } from '@/lib/utils';
 import { CopyButton } from './CopyButton';
 
-interface Ord2HistoryProps {
+interface Sat20HistoryProps {
   tick: string;
   address: string;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
 }
-export const OrdxAddressHolders = ({
+export const Sat20AddressHolders = ({
   tick,
   address,
   onEmpty,
   onTransfer,
-}: Ord2HistoryProps) => {
+}: Sat20HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { feeRate } = useCommonStore((state) => state);

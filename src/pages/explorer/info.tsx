@@ -5,7 +5,7 @@ import { Segmented } from 'antd';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
-import { OrdxTickHistory } from './components/OrdxTickHistory';
+import { Sat20TickHistory } from './components/OrdxTickHistory';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl, genOrdServiceUrl, genOrdinalsUrl, getAssetTypeLabel } from '@/lib/utils';
 import { Button, Tag, Spin } from 'antd';
@@ -279,7 +279,7 @@ export default function Ord2Info() {
             )}
           {tabText === t('common.minted_history') && tick && (
             <div className='p-4'>
-              <OrdxTickHistory tick={tick} />
+              <Sat20TickHistory tick={tick} />
             </div>
           )}
         </div>

@@ -10,10 +10,10 @@ import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
 import { CopyButton } from '@/components/CopyButton';
 
-interface Ord2HistoryProps {
+interface Sat20HistoryProps {
   tick: string;
 }
-export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
+export const Sat20TickHistory = ({ tick }: Sat20HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { network } = useReactWalletStore();

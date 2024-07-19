@@ -109,9 +109,9 @@
   "pages": {
     "home": {
       "title": "Home",
-      "summary_01": "The Ordinals X protocol (ordx protocol) is a \"Satoshi Standard\" Fungible Token issuance protocol based on the Ordinals protocol. It involves numbering and inscribing sats, one token one satoshi, creating a permanent binding and cannot be destroyed.",
-      "summary_02": "The ordx protocol is the world's first protocol to break through the UTXO model and delve into a deeper layer. By precisely locating and manipulating BTC's fundamental unit, \"Satoshi\", the ordx protocol gains immense power, addressing issues such as spam creation, difficulty in splitting, and vulnerability to destruction.",
-      "summary_03": "The ordx assets will freely flow throughout the entire BTC network, whether on the first layer or second layer. This is because Satoshi is BTC, and Satoshi carries permanently bound ordx assets.",
+      "summary_01": "The Ordinals X protocol (sat20 protocol) is a \"Satoshi Standard\" Fungible Token issuance protocol based on the Ordinals protocol. It involves numbering and inscribing sats, one token one satoshi, creating a permanent binding and cannot be destroyed.",
+      "summary_02": "The sat20 protocol is the world's first protocol to break through the UTXO model and delve into a deeper layer. By precisely locating and manipulating BTC's fundamental unit, \"Satoshi\", the sat20 protocol gains immense power, addressing issues such as spam creation, difficulty in splitting, and vulnerability to destruction.",
+      "summary_03": "The sat20 assets will freely flow throughout the entire BTC network, whether on the first layer or second layer. This is because Satoshi is BTC, and Satoshi carries permanently bound sat20 assets.",
       "summary_04": "Protocol Comparison",
       "pearl_01": "The Oriental Pearl",
       "pearl_02": "We have officially deployed the first Token of the protocol: Pearl on January 25, 2024.",
@@ -293,11 +293,11 @@
     },
     "explorer": {
       "title": "Explorer",
-      "subtitle": "Check out OrdX balance of the address.",
+      "subtitle": "Check out Sat20 balance of the address.",
       "des": "Recognize all operations including DEPLOY, MINT and TRANSFER.",
-      "list_title": "The full list of ordx",
+      "list_title": "The full list of Sat20",
       "not_support": "Viewing the transferred balance is temporarily unavailable.",
-      "ordx_version": "OrdX Version"
+      "ordx_version": "Sat20 Version"
     },
     "account": {
       "name": "Name",

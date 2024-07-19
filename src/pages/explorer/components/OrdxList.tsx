@@ -30,7 +30,7 @@ interface DataType {
   rarity: string;
 }
 
-export const OrdxList = () => {
+export const Sat20List = () => {
   const { t } = useTranslation();
   const { network, address: currentAccount } = useReactWalletStore();
   const [type, setType] = useState('FT');

@@ -1,10 +1,10 @@
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { useState, useMemo } from 'react';
-import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
+import { Sat20AccountSummaryList } from '@/components/OrdxAccountSummaryList';
 import { RareSat } from '../discover/rareSat';
 import { AvailableUtxoList } from './components/AvailableUtxoList';
-import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
+import { Sat20AddressHolders } from '@/components/OrdxAddressHolders';
 import { useNsListByAddress } from '@/api'
 import { NftList } from '@/components/NftList';
 import { NameList } from '@/components/NameList';
@@ -33,7 +33,7 @@ export default function Account() {
     <div className='max-w-6xl mx-auto pt-4'>
       {currentAccount !== '' ? (
         <div>
-          <OrdxAccountSummaryList
+          <Sat20AccountSummaryList
             address={currentAccount}
             utxosTotal={utxosTotal}
             nameTotal={nameTotal}
@@ -55,7 +55,7 @@ export default function Account() {
           )}
 
           {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && (
-            <OrdxAddressHolders tick={ticker} address={currentAccount} />
+            <Sat20AddressHolders tick={ticker} address={currentAccount} />
           )}
         </div>
       ) : (

@@ -39,7 +39,7 @@ export const ROUTE_PATH = {
   TEST: '/test',
   INSCRIBE: '/inscribe',
   INSCRIBE_TEST: '/inscribe_test',
-  ORDX_INDEX: '/explorer',
+  SAT20_INDEX: '/explorer',
   ORDX_INFO: '/explorer/:tick',
   ORDX_NS: '/explorer/ns/:name',
   ORDX_UTXO_INFO: '/explorer/utxo/:utxo',
@@ -90,7 +90,7 @@ export const routes: RouteObject[] = [
         element: <Inscribe />,
       },
       {
-        path: ROUTE_PATH.ORDX_INDEX,
+        path: ROUTE_PATH.SAT20_INDEX,
         element: <Ord2Index />,
       },
       {

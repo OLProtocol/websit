@@ -9,7 +9,7 @@ interface Ord2ItemProps {
   selected?: boolean;
   onClick?: () => void;
 }
-export const OrdXItem = ({ item, onClick, selected }: Ord2ItemProps) => {
+export const Sat20Item = ({ item, onClick, selected }: Ord2ItemProps) => {
   const { t } = useTranslation();
   return (
     <div key={item.tick}
