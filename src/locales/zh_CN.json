@@ -293,11 +293,11 @@
     },
     "explorer": {
       "title": "浏览器",
-      "subtitle": "查看地址的 Sat20 余额",
+      "subtitle": "查看地址的 Ordx 余额",
       "des": "识别包括部署、铸造和转账在内的所有操作。",
-      "list_title": "Sat20 的完整列表",
+      "list_title": "Ordx 的完整列表",
       "not_support": "暂时不支持查看转移后的余额。",
-      "ordx_version": "Sat20 版本"
+      "ordx_version": "Ordx 版本"
     },
     "account": {
       "name": "名字",
