@@ -16,7 +16,7 @@ import { generateMempoolUrl } from '@/lib/utils';
 import { useNavigate, useParams } from 'react-router-dom';
 const { Search } = Input;
 
-export const OrdxAddressInscriptionList = () => {
+export const Sat20AddressInscriptionList = () => {
     const { t } = useTranslation();
     const nav = useNavigate();
     const { address } = useParams();

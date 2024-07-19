@@ -77,7 +77,7 @@ export const InscribingOrderModal = ({
         order;
       if (inscriptions.length === 1) {
         let txid;
-        if (order.ordxUtxo) {
+        if (order.utxo) {
           txid = await sendBTC({
             toAddress: inscriptions[0].inscriptionAddress,
             value: fee.totalFee,
@@ -85,7 +85,7 @@ export const InscribingOrderModal = ({
             network: network,
             fromAddress: currentAccount,
             fromPubKey: publicKey,
-            ordxUtxo: order.ordxUtxo,
+            ordxUtxo: order.utxo,
           });
         } else {
           txid = await sendBTC({
@@ -263,7 +263,7 @@ export const InscribingOrderModal = ({
           amount: commitTx.outputs[i].amount,
           toAddress: order.toAddress[0],
           inscribeFee: order.inscriptionSize,
-          ordxUtxo: order.ordxUtxo,
+          ordxUtxo: order.utxo,
         });
         addTxidToInscription(order.orderId, i, txid);
         // }

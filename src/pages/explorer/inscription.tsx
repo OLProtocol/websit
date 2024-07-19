@@ -9,7 +9,7 @@ import { UtxoContent } from '@/components/UtxoContent';
 import { useTranslation } from 'react-i18next';
 import { generateMempoolUrl, genOrdinalsUrl } from '@/lib/utils';
 
-export default function OrdxInscription() {
+export default function Sat20Inscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
   const { network } = useReactWalletStore();

@@ -1,9 +1,9 @@
 import axios from 'axios';
 import {
-  Ord2ListStatusParams,
-  Ord2InfoParams,
-  OrdXSummaryParams,
-  OrdXHistoryParams,
+  Sat20ListStatusParams as Sat20StatusListParams,
+  Sat20InfoParams,
+  Sat20SummaryParams,
+  Sat20HistoryParams,
   TxStatusParams,
 } from './types';
 
@@ -19,8 +19,8 @@ export const responseParse = async (response) => {
     console.log('error: ' + msg);
   }
 };
-export const getOrdxStatusList = async (
-  params: Ord2ListStatusParams,
+export const getSat20StatusList = async (
+  params: Sat20StatusListParams,
 ): Promise<any> => {
   const { data } = await axios.get(
     generateUrl(
@@ -37,9 +37,8 @@ export const health = async ({ network }) => {
   return data;
 };
 
-export const getOrdxInfo = async ({ tick, network }: Ord2InfoParams) => {
+export const getSat20Info = async ({ tick, network }: Sat20InfoParams) => {
   const { data } = await axios.get(
-    // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
     generateUrl(`tick/info/${tick}`, network),
     {
       timeout: 10000,
@@ -48,33 +47,31 @@ export const getOrdxInfo = async ({ tick, network }: Ord2InfoParams) => {
   return data;
 };
 
-export const getOrdxSummary = async ({
+export const getSat20Summary = async ({
   address,
   network,
-}: OrdXSummaryParams) => {
+}: Sat20SummaryParams) => {
   const { data } = await axios.get(
-    // generateUrl(`query-v4/address/${address}/ordx/summary`, network),
     generateUrl(`address/summary/${address}`, network),
   );
   return data;
 };
-export const getOrdxTickHolders = async ({ tick, network, start, limit }) => {
+export const getSat20TickHolders = async ({ tick, network, start, limit }) => {
   const { data } = await axios.get(
     generateUrl(`tick/holders/${tick}?start=${start}&limit=${limit}`, network),
   );
   return data;
 };
 
-export const getOrdxAddressHistory = async ({
+export const getSat20AddressHistory = async ({
   address,
   ticker,
   network,
   start,
   limit,
-}: OrdXHistoryParams) => {
+}: Sat20HistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      // `query-v4/address/${address}/ordx/${ticker}/history?start=${start}&limit=${limit}`,
       `address/history/${address}/${ticker}?start=${start}&limit=${limit}`,
       network,
     ),
@@ -82,16 +79,15 @@ export const getOrdxAddressHistory = async ({
   return data;
 };
 
-export const getOrdxAddressHolders = async ({
+export const getSat20AddressHolders = async ({
   address,
   ticker,
   network,
   start,
   limit,
-}: OrdXHistoryParams) => {
+}: Sat20HistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      // `query-v4/address/${address}/ordx/${ticker}/holderlist?start=${start}&limit=${limit}`,
       `address/utxolist/${address}/${ticker}?start=${start}&limit=${limit}`,
       network,
     ),
@@ -99,15 +95,14 @@ export const getOrdxAddressHolders = async ({
   return data;
 };
 
-export const getOrdxTickHistory = async ({
+export const getSat20TickHistory = async ({
   start,
   limit,
   ticker,
   network,
-}: OrdXHistoryParams) => {
+}: Sat20HistoryParams) => {
   const { data } = await axios.get(
     generateUrl(
-      // `query-v4/ordx/${ticker}?start=${start}&limit=${limit}`,
       `tick/history/${ticker}?start=${start}&limit=${limit}`,
       network,
     ),
@@ -167,7 +162,6 @@ export const getSats = async ({ address, network }: any) => {
 
 export const getSplittedSats = async ({ ticker, network }: any) => {
   const { data } = await axios.get(
-    // generateUrl(`v1/indexer/ordx/${ticker}/splittedInscriptions`, network),
     generateUrl(`splittedInscriptions/${ticker}`, network),
   );
   return data;
@@ -218,7 +212,6 @@ export const getUtxo = async ({ utxo, network }: any) => {
 };
 export const exoticUtxo = async ({ utxo, network }: any) => {
   const { data } = await axios.get(
-    // generateUrl(`v1/indexer/ordx/${tick}/info`, network),
     generateUrl(`exotic/utxo/${utxo}`, network),
     {
       timeout: 10000,

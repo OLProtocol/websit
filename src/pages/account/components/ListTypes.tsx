@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useOrdxSummary } from '@/api';
+import { useSat20Summary } from '@/api';
 import { ListTypeItem } from './ListTypeItem';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
@@ -9,7 +9,7 @@ interface ListTypesProps {
 }
 export const ListTypes = ({ onChange, onEmpty }: ListTypesProps) => {
   const { network, address } = useReactWalletStore();
-  const { data, trigger } = useOrdxSummary({ address: address, network });
+  const { data, trigger } = useSat20Summary({ address: address, network });
   const [select, setSelect] = useState('');
   const list = useMemo(() => data?.data?.detail || [], [data]);
   const onClick = (item) => {

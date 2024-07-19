@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import {
   useGetAssetByUtxo,
-  getOrdxInfo,
+  getSat20Info,
   getInscriptiontInfo,
   useGetUtxo,
 } from '@/api';
