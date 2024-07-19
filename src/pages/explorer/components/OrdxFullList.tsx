@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { getOrdxStatusList, health } from '@/api';
+import { useAllOrdxStatusList } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
@@ -22,24 +22,48 @@ interface DataType {
 export const OrdxFullList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
-  const { btcHeight } = useCommonStore((state) => state);
-  const { network, address: currentAccount } = useReactWalletStore();
-  const [start, setStart] = useState(0);
-  const [limit, setLimit] = useState(10);
-
-  const [data, setData] = useState<any>();
-  const [loading, setLoading] = useState(false);
   const toast = useToast();
 
-  const list = useMemo(() => data?.data?.detail || [], [data]);
-  const total = useMemo(() => data?.data?.total || 10, [data]);
-  const height = useMemo(() => {
-    return data?.data?.height;
-  }, [data]);
+  const { btcHeight } = useCommonStore((state) => state);
+  const { network } = useReactWalletStore();
+
+  const [start, setStart] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const [loading, setLoading] = useState(false);
 
   const clickHandler = (item) => {
     nav(`/explorer/${item.tick}`);
   };
+
+  const { data, error, isLoading } = useAllOrdxStatusList({ start, limit, network });
+  const list = useMemo(() => data?.data?.detail || [], [data]);
+  const total = useMemo(() => data?.data?.total || 0, [data]);
+  const height = useMemo(() => {
+    return data?.data?.height;
+  }, [data]);
+
+  useEffect(() => {
+    // console.debug("Explorer All Ordx Status List:", "isLoading:", isLoading, "error:", error, "data:", data)
+    setLoading(isLoading);
+    if (error) {
+      toast({
+        title: error,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return
+    }
+    if (data && data.code !== 0) {
+      toast({
+        title: data?.msg,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return
+    }
+  }, [error, isLoading, data, toast]);
 
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
@@ -216,10 +240,6 @@ export const OrdxFullList = () => {
     },
   ];
 
-  const paginationChange = (page: number, pageSize: number) => {
-    setStart((page - 1) * pageSize);
-  };
-
   const dataSource: DataType[] = useMemo(
     () =>
       list.map((item) => {
@@ -309,35 +329,14 @@ export const OrdxFullList = () => {
     [list, height],
   );
 
-  const getAllOrdxs = async () => {
-    setLoading(true);
-    setData({});
-    const resp = await getOrdxStatusList({
-      start: start,
-      limit: limit,
-      network: network,
-    });
-    if (resp.code !== 0) {
-      toast({
-        title: resp.msg,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      setLoading(false);
-      return;
-    }
-    setLoading(false);
-    setData(resp);
+  const paginationChange = (page: number, pageSize: number) => {
+    setStart((page - 1) * pageSize);
   };
-
-  useEffect(() => {
-    getAllOrdxs();
-  }, [network, currentAccount]);
 
   return (
     <Table
       bordered
+      loading={loading}
       columns={columns}
       dataSource={dataSource}
       rowKey="id"

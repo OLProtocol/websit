@@ -24,26 +24,49 @@ import {
 import { generateMempoolUrl } from '@/lib/utils';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
 
-
 export const OrdxNameList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
-  const { btcHeight } = useCommonStore((state) => state);
-  const { network, address: currentAccount } = useReactWalletStore();
-  const [start, setStart] = useState(0);
-  const [limit, setLimit] = useState(10);
-
-  // const [data, setData] = useState<any>();
-  const [loading, setLoading] = useState(false);
   const toast = useToast();
+
+  const { network } = useReactWalletStore();
+
+  const [start, setStart] = useState(0);
+  const [limit] = useState(10);
+  const [loading, setLoading] = useState(false);
 
   const clickHandler = (item) => {
     nav(`/explorer/ns/${item.name}`);
   };
 
-  const { data } = useNsList({ start, limit, network });
+  const { data, error, isLoading } = useNsList({ start, limit, network });
   const list = useMemo(() => data?.data?.names || [], [data]);
-  const total = useMemo(() => data?.data?.total || 10, [data]);
+  const total = useMemo(() => data?.data?.total || 0, [data]);
+
+  useEffect(() => {
+    // console.debug("Explorer Names:", "isLoading:", isLoading, "error:", error, "data:", data)
+    setLoading(isLoading);
+    if (error) {
+      toast({
+        title: error,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return
+    }
+    if (data && data.code !== 0) {
+      toast({
+        title: data?.msg,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return
+    }
+  }, [error, isLoading, data, toast]);
+
+
 
   const columns: ColumnsType<any> = [
     {
@@ -113,14 +136,9 @@ export const OrdxNameList = () => {
     },
   ];
 
-  const paginationChange = (page: number, pageSize: number) => {
-    setStart((page - 1) * pageSize);
-  };
-
   const dataSource: any[] = useMemo(
     () =>
       list.map((item, i) => {
-
         return {
           index: i + 1,
           ...item,
@@ -129,9 +147,14 @@ export const OrdxNameList = () => {
     [list],
   );
 
+  const paginationChange = (page: number, pageSize: number) => {
+    setStart((page - 1) * pageSize);
+  };
+
   return (
     <Table
       bordered
+      loading={loading}
       columns={columns}
       dataSource={dataSource}
       rowKey="id"
