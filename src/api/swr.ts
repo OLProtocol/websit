@@ -256,10 +256,11 @@ export const useBtcHeight = (network: string) => {
     isLoading,
   };
 };
-export const useOrdNftList = ({ network, start, limit }: any) => {
+
+export const useAllOrdxStatusList = ({ network, start, limit }: any) => {
   const { data, error, isLoading } = useSWR(
-    `ns-list-${network}-${start}-${limit}`,
-    () => request.getOrdNftList({ network, start, limit }),
+    `ordx-status-list-${network}-${start}-${limit}`,
+    () => request.getOrdxStatusList({ network, start, limit }),
     {
       refreshInterval: 1000 * 60 * 5,
     },
@@ -270,6 +271,7 @@ export const useOrdNftList = ({ network, start, limit }: any) => {
     isLoading,
   };
 };
+
 export const useNsList = ({ network, start, limit }: any) => {
   const { data, error, isLoading } = useSWR(
     `ns-list-${network}-${start}-${limit}`,
@@ -284,6 +286,22 @@ export const useNsList = ({ network, start, limit }: any) => {
     isLoading,
   };
 };
+
+export const useOrdNftList = ({ network, start, limit }: any) => {
+  const { data, error, isLoading } = useSWR(
+    `ord-nft-list-${network}-${start}-${limit}`,
+    () => request.getOrdNftList({ network, start, limit }),
+    {
+      refreshInterval: 1000 * 60 * 5,
+    },
+  );
+  return {
+    data,
+    error,
+    isLoading,
+  };
+};
+
 export const useNsListByAddress = ({ address, network, start, limit }: any) => {
   const key = useMemo(
     () => (address ? `ns-list-${address}-${network}-${start}-${limit}` : null),
