@@ -7,8 +7,8 @@ import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-import { OrdxFullList } from './OrdxFullList';
-import { OrdxNameList } from './OrdxNameList';
+import { Sat20FullList } from './Sat20FullList';
+import { Sat20NameList } from './Sat20NameList';
 import { OrdNftList } from './OrdNftList';
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
@@ -87,8 +87,8 @@ export const Sat20List = () => {
               }}
             />
           </div>
-          {type === segmentedList[0] && <OrdxFullList />}
-          {type === segmentedList[1] && <OrdxNameList />}
+          {type === segmentedList[0] && <Sat20FullList />}
+          {type === segmentedList[1] && <Sat20NameList />}
           {type === segmentedList[2] && <OrdNftList />}
         </CardBody>
       </Card>

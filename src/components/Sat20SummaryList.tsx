@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Sat20Item } from './OrdXItem';
+import { Sat20Item } from './Sat20Item';
 import { useSat20Summary } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 

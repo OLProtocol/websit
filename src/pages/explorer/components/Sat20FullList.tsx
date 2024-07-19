@@ -19,7 +19,7 @@ interface DataType {
   rarity: string;
 }
 
-export const OrdxFullList = () => {
+export const Sat20FullList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const toast = useToast();

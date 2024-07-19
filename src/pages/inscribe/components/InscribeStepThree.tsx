@@ -131,7 +131,7 @@ export const InscribeStepThree = ({
       feeRate: feeRate.value,
       files,
       network,
-      ordxUtxo,
+      utxo: ordxUtxo,
       inscriptionSize: inscriptionSize,
       status: 'pending',
       createAt: Date.now().valueOf(),

@@ -5,7 +5,7 @@ import { Segmented } from 'antd';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
-import { Sat20TickHistory } from './components/OrdxTickHistory';
+import { Sat20TickHistory } from './components/Sat20TickHistory';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl, genOrdServiceUrl, genOrdinalsUrl, getAssetTypeLabel } from '@/lib/utils';
 import { Button, Tag, Spin } from 'antd';
@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
 
-export default function Ord2Info() {
+export default function Sat20Info() {
   const { t } = useTranslation();
   const { tick } = useParams();
   const { btcHeight } = useCommonStore((state) => state);

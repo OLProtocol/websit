@@ -1,10 +1,10 @@
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { useState, useMemo } from 'react';
-import { Sat20AccountSummaryList } from '@/components/OrdxAccountSummaryList';
+import { Sat20AccountSummaryList } from '@/components/Sat20AccountSummaryList';
 import { RareSat } from '../discover/rareSat';
 import { AvailableUtxoList } from './components/AvailableUtxoList';
-import { Sat20AddressHolders } from '@/components/OrdxAddressHolders';
+import { Sat20AddressHolders } from '@/components/Sat20AddressHolders';
 import { useNsListByAddress } from '@/api'
 import { NftList } from '@/components/NftList';
 import { NameList } from '@/components/NameList';

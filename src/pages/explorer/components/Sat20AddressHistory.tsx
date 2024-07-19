@@ -14,7 +14,7 @@ interface Ord2HistoryProps {
   address: string;
   onEmpty?: (b: boolean) => void;
 }
-export const OrdxAddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps) => {
+export const Sat20AddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { network } = useReactWalletStore();

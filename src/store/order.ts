@@ -24,7 +24,7 @@ export interface OrderItemType {
   toAddress: string[];
   network: string;
   files: any[];
-  ordxUtxo: any;
+  utxo: any;
   fee: {
     serviceFee: number;
     totalFee: number;

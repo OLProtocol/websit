@@ -3,11 +3,11 @@ import Root from '@/Root';
 import Home from '@/pages/home';
 import Test from '@/pages/test';
 import Inscribe from '@/pages/inscribe';
-import Ord2Index from '@/pages/explorer';
-import Ord2Info from '@/pages/explorer/info';
-import OrdxNs from '@/pages/explorer/ns';
+import Sat20Index from '@/pages/explorer';
+import Sat20Info from '@/pages/explorer/Sat20Info';
+import Sat20NameInfo from '@/pages/explorer/Sat20NameInfo';
 import UtxoInfo from '@/pages/explorer/utxo';
-import OrdxInscription from '@/pages/explorer/inscription';
+import Sat20Inscription from '@/pages/explorer/inscription';
 import InscribeCheck from '@/pages/inscribe_check';
 import Tools from '@/pages/tools';
 import Account from '@/pages/account';
@@ -40,10 +40,10 @@ export const ROUTE_PATH = {
   INSCRIBE: '/inscribe',
   INSCRIBE_TEST: '/inscribe_test',
   SAT20_INDEX: '/explorer',
-  ORDX_INFO: '/explorer/:tick',
-  ORDX_NS: '/explorer/ns/:name',
-  ORDX_UTXO_INFO: '/explorer/utxo/:utxo',
-  ORDX_INSCRIPTION: '/explorer/inscription/:inscriptionId',
+  SAT20_INFO: '/explorer/:tick',
+  SAT20_NS: '/explorer/ns/:name',
+  SAT20_UTXO_INFO: '/explorer/utxo/:utxo',
+  SAT20_INSCRIPTION: '/explorer/inscription/:inscriptionId',
   ORDX_INSCRIPTIONS_BY_ADDRESS: '/explorer/inscriptions/:address',
   INSCRIBE_CHECK: '/inscribe_check',
   TOOLS: '/tools',
@@ -75,7 +75,7 @@ export const routes: RouteObject[] = [
     children: [
       {
         path: ROUTE_PATH.HOME,
-        element: <Ord2Index />,
+        element: <Sat20Index />,
       },
       {
         path: ROUTE_PATH.TEST,
@@ -91,23 +91,23 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTE_PATH.SAT20_INDEX,
-        element: <Ord2Index />,
+        element: <Sat20Index />,
       },
       {
-        path: ROUTE_PATH.ORDX_INFO,
-        element: <Ord2Info />,
+        path: ROUTE_PATH.SAT20_INFO,
+        element: <Sat20Info />,
       },
       {
-        path: ROUTE_PATH.ORDX_NS,
-        element: <OrdxNs />,
+        path: ROUTE_PATH.SAT20_NS,
+        element: <Sat20NameInfo />,
       },
       {
-        path: ROUTE_PATH.ORDX_UTXO_INFO,
+        path: ROUTE_PATH.SAT20_UTXO_INFO,
         element: <UtxoInfo />,
       },
       {
-        path: ROUTE_PATH.ORDX_INSCRIPTION,
-        element: <OrdxInscription />,
+        path: ROUTE_PATH.SAT20_INSCRIPTION,
+        element: <Sat20Inscription />,
       },
       {
         path: ROUTE_PATH.ORD_INSCRIPTIONS_BY_ADDRESS,
