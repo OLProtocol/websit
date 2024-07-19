@@ -30,9 +30,9 @@ export const NavHeader = () => {
     //   type: 'route',
     // },
     {
-      key: ROUTE_PATH.ORDX_INDEX,
+      key: ROUTE_PATH.SAT20_INDEX,
       label: t('nav.explorer'),
-      value: ROUTE_PATH.ORDX_INDEX,
+      value: ROUTE_PATH.SAT20_INDEX,
       type: 'route',
     },
 
@@ -69,15 +69,6 @@ export const NavHeader = () => {
           : 'https://docs.sat20.org/',
       type: 'link',
     },
-    // {
-    //   key: 'https://docs.ordx.space/',
-    //   label: t('nav.docs'),
-    //   value:
-    //     i18n.language == 'en'
-    //       ? 'https://docs.ordx.space/v/en/'
-    //       : 'https://docs.ordx.space/',
-    //   type: 'link',
-    // },
     // {
     //   key: ROUTE_PATH.TOOLS,
     //   label: t('nav.tools'),

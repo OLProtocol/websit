@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
 
-export default function Ord2Info() {
+export default function Sat20NameInfo() {
   const { t } = useTranslation();
   const { name } = useParams();
   console.log(name);

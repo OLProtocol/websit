@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button, Segmented } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { getOrdxStatusList, health } from '@/api';
+import { getSat20StatusList, health } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-import { OrdxFullList } from './OrdxFullList';
-import { OrdxNameList } from './OrdxNameList';
+import { Sat20FullList } from './Sat20FullList';
+import { Sat20NameList } from './Sat20NameList';
 import { OrdNftList } from './OrdNftList';
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
@@ -30,7 +30,7 @@ interface DataType {
   rarity: string;
 }
 
-export const OrdxList = () => {
+export const Sat20List = () => {
   const { t } = useTranslation();
   const { network, address: currentAccount } = useReactWalletStore();
   const [type, setType] = useState('FT');
@@ -87,8 +87,8 @@ export const OrdxList = () => {
               }}
             />
           </div>
-          {type === segmentedList[0] && <OrdxFullList />}
-          {type === segmentedList[1] && <OrdxNameList />}
+          {type === segmentedList[0] && <Sat20FullList />}
+          {type === segmentedList[1] && <Sat20NameList />}
           {type === segmentedList[2] && <OrdNftList />}
         </CardBody>
       </Card>

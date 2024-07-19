@@ -13,9 +13,9 @@ import i18n from '@/locales';
 
 type ProtocolCompare = {
   rowTitle: string;
-  ordx: string;
-  brc20: string;
-  atomicals: string;
+  sat20: string;
+  // brc20: string;
+  // atomicals: string;
 };
 
 
@@ -25,73 +25,73 @@ export default function Home() {
   const data: ProtocolCompare[] = [
     {
       rowTitle: t('pages.home.tb_row01_col01'),
-      ordx: t('pages.home.tb_row01_col02'),
-      brc20: t('pages.home.tb_row01_col03'),
-      atomicals: t('pages.home.tb_row01_col04'),
+      sat20: t('pages.home.tb_row01_col02'),
+      // brc20: t('pages.home.tb_row01_col03'),
+      // atomicals: t('pages.home.tb_row01_col04'),
     },
     {
       rowTitle: t('pages.home.tb_row02_col01'),
-      ordx: t('pages.home.tb_row02_col02'),
-      brc20: t('pages.home.tb_row02_col03'),
-      atomicals: t('pages.home.tb_row02_col04'),
+      sat20: t('pages.home.tb_row02_col02'),
+      // brc20: t('pages.home.tb_row02_col03'),
+      // atomicals: t('pages.home.tb_row02_col04'),
     },
     {
       rowTitle: t('pages.home.tb_row03_col01'),
-      ordx: t('pages.home.tb_row03_col02'),
-      brc20: t('pages.home.tb_row03_col03'),
-      atomicals: t('pages.home.tb_row03_col04'),
+      sat20: t('pages.home.tb_row03_col02'),
+      // brc20: t('pages.home.tb_row03_col03'),
+      // atomicals: t('pages.home.tb_row03_col04'),
     },
     {
       rowTitle: t('pages.home.tb_row04_col01'),
-      ordx: t('pages.home.tb_row04_col02'),
-      brc20: t('pages.home.tb_row04_col03'),
-      atomicals: t('pages.home.tb_row04_col04'),
+      sat20: t('pages.home.tb_row04_col02'),
+      // brc20: t('pages.home.tb_row04_col03'),
+      // atomicals: t('pages.home.tb_row04_col04'),
     },
     {
       rowTitle: t('pages.home.tb_row05_col01'),
-      ordx: t('pages.home.tb_row05_col02'),
-      brc20: t('pages.home.tb_row05_col03'),
-      atomicals: t('pages.home.tb_row05_col04'),
+      sat20: t('pages.home.tb_row05_col02'),
+      // brc20: t('pages.home.tb_row05_col03'),
+      // atomicals: t('pages.home.tb_row05_col04'),
     },
     {
       rowTitle: t('pages.home.tb_row06_col01'),
-      ordx: t('pages.home.tb_row06_col02'),
-      brc20: t('pages.home.tb_row06_col03'),
-      atomicals: t('pages.home.tb_row06_col04'),
+      sat20: t('pages.home.tb_row06_col02'),
+      // brc20: t('pages.home.tb_row06_col03'),
+      // atomicals: t('pages.home.tb_row06_col04'),
     },
     {
       rowTitle: t('pages.home.tb_row07_col01'),
-      ordx: t('pages.home.tb_row07_col02'),
-      brc20: t('pages.home.tb_row07_col03'),
-      atomicals: t('pages.home.tb_row07_col04'),
+      sat20: t('pages.home.tb_row07_col02'),
+      // brc20: t('pages.home.tb_row07_col03'),
+      // atomicals: t('pages.home.tb_row07_col04'),
     },
     {
       rowTitle: t('pages.home.tb_row08_col01'),
-      ordx: t('pages.home.tb_row08_col02'),
-      brc20: t('pages.home.tb_row08_col03'),
-      atomicals: t('pages.home.tb_row08_col04'),
+      sat20: t('pages.home.tb_row08_col02'),
+      // brc20: t('pages.home.tb_row08_col03'),
+      // atomicals: t('pages.home.tb_row08_col04'),
     },
   ];
   console.log(data);
   const columnHelper = createColumnHelper<ProtocolCompare>();
-  
+
   const columns = [
     columnHelper.accessor('rowTitle', {
       cell: (info) => info.getValue(),
       header: '-',
     }),
-    columnHelper.accessor('ordx', {
+    columnHelper.accessor('sat20', {
       cell: (info) => info.getValue(),
-      header: 'Ordx',
+      header: 'Sat20',
     }),
-    columnHelper.accessor('brc20', {
-      cell: (info) => info.getValue(),
-      header: 'Brc-20',
-    }),
-    columnHelper.accessor('atomicals', {
-      cell: (info) => info.getValue(),
-      header: 'Atomicals',
-    }),
+    // columnHelper.accessor('brc20', {
+    //   cell: (info) => info.getValue(),
+    //   header: 'Brc-20',
+    // }),
+    // columnHelper.accessor('atomicals', {
+    //   cell: (info) => info.getValue(),
+    //   header: 'Atomicals',
+    // }),
   ];
   const toMint = () => {
     nav('/inscribe', {
@@ -111,7 +111,7 @@ export default function Home() {
   };
 
   const toCompare = () => {
-    var url = ""
+    let url = ""
     console.log(i18n.language)
     if (i18n.language == 'zh_CN' || i18n.language == 'zh') {
       url = "https://docs.ordx.space/ordinals-x/xie-yi-bi-jiao/compare"

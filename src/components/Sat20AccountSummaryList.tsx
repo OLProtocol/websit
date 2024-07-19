@@ -1,28 +1,28 @@
 import { useEffect, useMemo, useState } from 'react';
-import { OrdXItem } from './OrdXItem';
-import { getOrdInscriptionsByAddress, getSats, useOrdxSummary } from '@/api';
+import { Sat20Item } from './Sat20Item';
+import { getOrdInscriptionsByAddress, getSats, useSat20Summary } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
 import { toast } from 'react-hot-toast';
 
-interface OrdxSummaryListProps {
+interface Sat20SummaryListProps {
   address: string;
   utxosTotal: number;
   nameTotal: number;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
-export const OrdxAccountSummaryList = ({
+export const Sat20AccountSummaryList = ({
   address,
   onChange,
   onEmpty,
   utxosTotal,
   nameTotal,
-}: OrdxSummaryListProps) => {
+}: Sat20SummaryListProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
-  const { data, trigger } = useOrdxSummary({ address, network });
+  const { data, trigger } = useSat20Summary({ address, network });
   const otherTickers = useMemo(() => data?.data?.detail || [], [data]);
   const [rareSatList, setRareSatList] = useState<any[]>();
   const [nftSumBalance, setNftBalance] = useState<any>();
@@ -142,7 +142,7 @@ export const OrdxAccountSummaryList = ({
       <Wrap>
         {tickers?.map((item, index) => (
           <WrapItem key={index}>
-            <OrdXItem
+            <Sat20Item
               key={item.ticker}
               selected={select === item.ticker}
               onClick={() => {
@@ -159,7 +159,7 @@ export const OrdxAccountSummaryList = ({
       <hr />
       <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
         {filteredTickers?.map((item) => (
-          <OrdXItem
+          <Sat20Item
             key={item.ticker}
             selected={select === item.ticker}
             onClick={() => {

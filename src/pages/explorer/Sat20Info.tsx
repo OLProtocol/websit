@@ -1,11 +1,11 @@
 import { useParams } from 'react-router-dom';
-import { useOrdxInfo } from '@/api';
+import { useSat20Info } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { Segmented } from 'antd';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
-import { OrdxTickHistory } from './components/OrdxTickHistory';
+import { Sat20TickHistory } from './components/Sat20TickHistory';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl, genOrdServiceUrl, genOrdinalsUrl, getAssetTypeLabel } from '@/lib/utils';
 import { Button, Tag, Spin } from 'antd';
@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
 
-export default function Ord2Info() {
+export default function Sat20Info() {
   const { t } = useTranslation();
   const { tick } = useParams();
   const { btcHeight } = useCommonStore((state) => state);
@@ -25,7 +25,7 @@ export default function Ord2Info() {
       setTabText(type);
     }
   };
-  const { data, trigger, isLoading } = useOrdxInfo({ tick, network });
+  const { data, trigger, isLoading } = useSat20Info({ tick, network });
   const detail = useMemo(() => data?.data || {}, [data]);
 
   const status = useMemo(() => {
@@ -279,7 +279,7 @@ export default function Ord2Info() {
             )}
           {tabText === t('common.minted_history') && tick && (
             <div className='p-4'>
-              <OrdxTickHistory tick={tick} />
+              <Sat20TickHistory tick={tick} />
             </div>
           )}
         </div>

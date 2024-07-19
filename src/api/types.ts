@@ -1,21 +1,19 @@
-export interface Ord2ListStatusParams {
+export interface Sat20ListStatusParams {
   start: number;
   limit: number;
   sort?: string;
   network: string;
-  ticker_hex?: string;
-  complete?: string;
 }
-export interface Ord2InfoParams {
+export interface Sat20InfoParams {
   tick?: string;
   network: string;
 }
-export interface OrdXSummaryParams {
+export interface Sat20SummaryParams {
   address?: string;
   network: string;
 }
 
-export interface OrdXHistoryParams {
+export interface Sat20HistoryParams {
   address?: string;
   ticker?: string;
   network: string;
@@ -23,7 +21,7 @@ export interface OrdXHistoryParams {
   limit: number;
 }
 
-export interface OrdXHistoryDetailParams {
+export interface Sat20HistoryDetailParams {
   address?: string;
   ticker?: string;
   network: string;

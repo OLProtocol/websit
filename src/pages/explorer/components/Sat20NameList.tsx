@@ -24,7 +24,7 @@ import {
 import { generateMempoolUrl } from '@/lib/utils';
 import { cacheData, getCachedData } from '@/lib/utils/cache';
 
-export const OrdxNameList = () => {
+export const Sat20NameList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const toast = useToast();

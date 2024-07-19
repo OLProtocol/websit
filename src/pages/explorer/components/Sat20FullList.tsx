@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { useAllOrdxStatusList } from '@/api';
+import { useAllSat20StatusList } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ interface DataType {
   rarity: string;
 }
 
-export const OrdxFullList = () => {
+export const Sat20FullList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const toast = useToast();
@@ -35,7 +35,7 @@ export const OrdxFullList = () => {
     nav(`/explorer/${item.tick}`);
   };
 
-  const { data, error, isLoading } = useAllOrdxStatusList({ start, limit, network });
+  const { data, error, isLoading } = useAllSat20StatusList({ start, limit, network });
   const list = useMemo(() => data?.data?.detail || [], [data]);
   const total = useMemo(() => data?.data?.total || 0, [data]);
   const height = useMemo(() => {

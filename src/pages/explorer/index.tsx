@@ -3,20 +3,20 @@ import { useEffect, useMemo, useState } from 'react';
 import { Input, Empty, Segmented } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
-import { OrdxList } from '@/pages/explorer/components/OrdxList';
-import { OrdxSummaryList } from '@/components/OrdxSummaryList';
-import { OrdxAccountSummaryList } from '@/components/OrdxAccountSummaryList';
+import { Sat20List } from '@/pages/explorer/components/Sat20List';
+import { Sat20SummaryList } from '@/components/Sat20SummaryList';
+import { Sat20AccountSummaryList } from '@/components/Sat20AccountSummaryList';
 import { useTranslation } from 'react-i18next';
 import { useNsListByAddress } from '@/api'
 import { NameList } from '@/components/NameList';
 import { NftList } from '@/components/NftList';
 import { RareSat } from '@/pages/discover/rareSat';
 import { AvailableUtxoList } from '@/pages/account/components/AvailableUtxoList';
-import { OrdxAddressHolders } from '@/components/OrdxAddressHolders';
+import { Sat20AddressHolders } from '@/components/Sat20AddressHolders';
 
 const { Search } = Input;
 
-export default function Ord2Index() {
+export default function Sat20Index() {
   const [address, setAddress] = useState('');
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
@@ -51,7 +51,7 @@ export default function Ord2Index() {
     }
     setAddress(search);
     history.replaceState(null, '', `/#/explorer?q=${search}`);
-    // nav(`${ROUTE_PATH.ORDX_INDEX}?q=${search}`);
+    // nav(`${ROUTE_PATH.SAT20_INDEX}?q=${search}`);
   };
   const summaryEmptyHandler = (b: boolean) => {
     setSummaryEmptyStatus(b);
@@ -70,7 +70,7 @@ export default function Ord2Index() {
     if (search === '') {
       setAddress('');
       // history.replaceState(null, '', `/#/explorer`);
-      // nav(`${ROUTE_PATH.ORDX_INDEX}`);
+      // nav(`${ROUTE_PATH.SAT20_INDEX}`);
     }
   }, [search]);
   useEffect(() => {
@@ -119,7 +119,7 @@ export default function Ord2Index() {
               </div>
             )}
             <div className='mb-4'>
-              <OrdxAccountSummaryList
+              <Sat20AccountSummaryList
                 onEmpty={summaryEmptyHandler}
                 address={address}
                 utxosTotal={utxosTotal}
@@ -140,13 +140,13 @@ export default function Ord2Index() {
               <NftList targetAddress={address} />
             )}
             {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
-              <OrdxAddressHolders tick={selectTick} address={address} />
+              <Sat20AddressHolders tick={selectTick} address={address} />
             )}
           </>
         )}
         {!showAddress && (
           <div>
-            <OrdxList />
+            <Sat20List />
           </div>
         )}
       </div>

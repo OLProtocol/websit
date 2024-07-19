@@ -1,7 +1,7 @@
 import {
-  getOrdxSummary,
+  getSat20Summary,
   getUtxoByValue,
-  getOrdxAddressHolders,
+  getSat20AddressHolders,
   getSats,
 } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
@@ -424,7 +424,7 @@ export default function Transaction() {
   const getTickers = async () => {
     const tickers: any[] = [];
 
-    let data = await getOrdxSummary({
+    let data = await getSat20Summary({
       address: currentAccount,
       network,
     });
@@ -437,7 +437,7 @@ export default function Transaction() {
     const detail = data.data.detail;
 
     detail.map(async (item) => {
-      data = await getOrdxAddressHolders({
+      data = await getSat20AddressHolders({
         start: 0,
         limit: 10,
         address: currentAccount,

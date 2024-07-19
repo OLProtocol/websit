@@ -3,10 +3,10 @@ import * as blockStream from './blockStream';
 import useSWRMutation from 'swr/mutation';
 import * as request from './request';
 import {
-  Ord2ListStatusParams,
-  Ord2InfoParams,
-  OrdXSummaryParams,
-  OrdXHistoryParams,
+  Sat20ListStatusParams,
+  Sat20InfoParams,
+  Sat20SummaryParams,
+  Sat20HistoryParams,
 } from './types';
 
 import { fetchTipHeight, fetchChainFeeRate } from '@/lib/utils';
@@ -36,26 +36,11 @@ export const useAppVersion = () => {
     isLoading,
   };
 };
-// export const useOrd2Status = ({
-//   start,
-//   limit,
-//   network,
-// }: Ord2ListStatusParams) => {
-//   const { data, error, isLoading } = useSWR(
-//     `ord2-status-${start}-${limit}-${network}`,
-//     () => request.getOrdxStatusList({ start, limit, network }),
-//   );
-//   return {
-//     data,
-//     error,
-//     isLoading,
-//   };
-// };
 
-export const useOrdxInfo = ({ tick, network }: Ord2InfoParams) => {
+export const useSat20Info = ({ tick, network }: Sat20InfoParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
     `ord2-info-${tick}-${network}`,
-    () => request.getOrdxInfo({ tick, network }),
+    () => request.getSat20Info({ tick, network }),
   );
   return {
     data,
@@ -66,10 +51,10 @@ export const useOrdxInfo = ({ tick, network }: Ord2InfoParams) => {
   };
 };
 
-export const useOrdxSummary = ({ address, network }: OrdXSummaryParams) => {
+export const useSat20Summary = ({ address, network }: Sat20SummaryParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ordx-summary-${address}`,
-    () => request.getOrdxSummary({ address, network }),
+    `sat20-summary-${address}`,
+    () => request.getSat20Summary({ address, network }),
   );
   return {
     data,
@@ -80,17 +65,17 @@ export const useOrdxSummary = ({ address, network }: OrdXSummaryParams) => {
   };
 };
 
-export const useOrdxAddressHistory = ({
+export const useSat20AddressHistory = ({
   address,
   ticker,
   network,
   start,
   limit,
-}: OrdXHistoryParams) => {
+}: Sat20HistoryParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ordx-history-${address}-${ticker}`,
+    `sat20-history-${address}-${ticker}`,
     () =>
-      request.getOrdxAddressHistory({ start, limit, address, ticker, network }),
+      request.getSat20AddressHistory({ start, limit, address, ticker, network }),
   );
   1;
   return {
@@ -101,17 +86,17 @@ export const useOrdxAddressHistory = ({
     isLoading: isMutating,
   };
 };
-export const useOrdxAddressHolders = ({
+export const useSat20AddressHolders = ({
   address,
   ticker,
   network,
   start,
   limit,
-}: OrdXHistoryParams) => {
+}: Sat20HistoryParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ordx-history-${address}-${ticker}`,
+    `sat20-history-${address}-${ticker}`,
     () =>
-      request.getOrdxAddressHolders({ start, limit, address, ticker, network }),
+      request.getSat20AddressHolders({ start, limit, address, ticker, network }),
   );
   1;
   return {
@@ -125,7 +110,7 @@ export const useOrdxAddressHolders = ({
 
 export const useSatTypes = ({ network }: any) => {
   const { data, error, isLoading } = useSWR(
-    `ordx-utxo-satstype-${network}`,
+    `sat20-utxo-satstype-${network}`,
     () => request.getSatTypes({ network }),
     {
       keepPreviousData: true,
@@ -139,7 +124,7 @@ export const useSatTypes = ({ network }: any) => {
 };
 export const useGetUtxo = ({ network, utxo }: any) => {
   const { data, error, isLoading } = useSWR(
-    `ordx-utxo-${utxo}-${network}`,
+    `sat20-utxo-${utxo}-${network}`,
     () => {
       return request.getUtxo({ network, utxo })
     },
@@ -155,7 +140,7 @@ export const useGetUtxo = ({ network, utxo }: any) => {
 };
 export const useSeedByUtxo = ({ utxo, network }: any) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ordx-seed-${utxo}-${network}`,
+    `sat20-seed-${utxo}-${network}`,
     () => request.getSeedByUtxo({ network, utxo }),
   );
   1;
@@ -169,7 +154,7 @@ export const useSeedByUtxo = ({ utxo, network }: any) => {
 };
 export const useGetAssetByUtxo = ({ network, utxo }: any) => {
   const { data, error, isLoading } = useSWR(
-    `ordx-utxo-utxo-${network}`,
+    `sat20-utxo-utxo-${network}`,
     () => request.getAssetByUtxo({ network, utxo }),
     {
       keepPreviousData: true,
@@ -184,7 +169,7 @@ export const useGetAssetByUtxo = ({ network, utxo }: any) => {
 export const useExoticUtxo = ({ network, utxo }: any) => {
   console.log('useExoticUtxo');
   const { data, error, isMutating, trigger } = useSWRMutation(
-    `ordx-utxo-${utxo}-${network}`,
+    `sat20-utxo-${utxo}-${network}`,
     () => request.exoticUtxo({ network, utxo }),
   );
   return {
@@ -196,7 +181,7 @@ export const useExoticUtxo = ({ network, utxo }: any) => {
 };
 export const useInscriptiontInfo = ({ inscriptionId, network }: any) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ordx-inscription-${inscriptionId}-${network}`,
+    `sat20-inscription-${inscriptionId}-${network}`,
     () => request.getInscriptiontInfo({ inscriptionId, network }),
   );
   1;
@@ -208,10 +193,10 @@ export const useInscriptiontInfo = ({ inscriptionId, network }: any) => {
     isLoading: isMutating,
   };
 };
-export const useOrdxTickHolders = ({ tick, network, start, limit }) => {
+export const useSat20TickHolders = ({ tick, network, start, limit }) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ordx-history-${tick}-${network}`,
-    () => request.getOrdxTickHolders({ tick, network, start, limit }),
+    `sat20-history-${tick}-${network}`,
+    () => request.getSat20TickHolders({ tick, network, start, limit }),
   );
   1;
   return {
@@ -222,15 +207,15 @@ export const useOrdxTickHolders = ({ tick, network, start, limit }) => {
     isLoading: isMutating,
   };
 };
-export const useOrdxTickHistory = ({
+export const useSat20TickHistory = ({
   start,
   limit,
   ticker,
   network,
-}: OrdXHistoryParams) => {
+}: Sat20HistoryParams) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ordx-history-${ticker}`,
-    () => request.getOrdxTickHistory({ start, limit, ticker, network }),
+    `sat20-history-${ticker}`,
+    () => request.getSat20TickHistory({ start, limit, ticker, network }),
   );
   1;
   return {
@@ -257,10 +242,10 @@ export const useBtcHeight = (network: string) => {
   };
 };
 
-export const useAllOrdxStatusList = ({ network, start, limit }: any) => {
+export const useAllSat20StatusList = ({ network, start, limit }: any) => {
   const { data, error, isLoading } = useSWR(
-    `ordx-status-list-${network}-${start}-${limit}`,
-    () => request.getOrdxStatusList({ network, start, limit }),
+    `sat20-status-list-${network}-${start}-${limit}`,
+    () => request.getSat20StatusList({ network, start, limit }),
     {
       refreshInterval: 1000 * 60 * 5,
     },

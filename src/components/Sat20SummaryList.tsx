@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
-import { OrdXItem } from './OrdXItem';
-import { useOrdxSummary } from '@/api';
+import { Sat20Item } from './Sat20Item';
+import { useSat20Summary } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
-interface OrdxSummaryListProps {
+interface Sat20SummaryListProps {
   address: string;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
-export const OrdxSummaryList = ({
+export const Sat20SummaryList = ({
   address,
   onChange,
   onEmpty,
-}: OrdxSummaryListProps) => {
+}: Sat20SummaryListProps) => {
   const { network } = useReactWalletStore();
-  const { data, trigger } = useOrdxSummary({ address, network });
+  const { data, trigger } = useSat20Summary({ address, network });
   const [select, setSelect] = useState('');
 
   const list = useMemo(() => data?.data?.detail || [], [data]);
@@ -39,7 +39,7 @@ export const OrdxSummaryList = ({
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.map((item) => (
-        <OrdXItem key={Math.random()}
+        <Sat20Item key={Math.random()}
           selected={select === item.ticker}
           onClick={() => {
             onClick(item);
