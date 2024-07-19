@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { Button, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useOrdxAddressHistory } from '@/api';
+import { useSat20AddressHistory } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl } from '@/lib/utils';
 import type { ColumnsType } from 'antd/es/table';
@@ -20,7 +20,7 @@ export const OrdxAddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps)
   const { network } = useReactWalletStore();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { data, isLoading, trigger } = useOrdxAddressHistory({
+  const { data, isLoading, trigger } = useSat20AddressHistory({
     ticker: tick,
     address,
     network,

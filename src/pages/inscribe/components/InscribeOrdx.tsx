@@ -37,7 +37,7 @@ import {
 } from '../utils';
 import { generateMempoolUrl } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { getOrdxInfo, useSatTypes, getUtxoByType } from '@/api';
+import { getSat20Info, useSatTypes, getUtxoByType } from '@/api';
 import toast from 'react-hot-toast';
 import { useCommonStore } from '@/store';
 import { ColumnsType } from 'antd/es/table';
@@ -147,7 +147,7 @@ export const InscribeOrdx = ({
       // if (cachedData) {
       //   return JSON.parse(cachedData);
       // }
-      const info = await getOrdxInfo({ tick, network });
+      const info = await getSat20Info({ tick, network });
       if (info) {
         localStorage.setItem(key, JSON.stringify(info));
       }

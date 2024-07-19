@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useOrdxInfo } from '@/api';
+import { useSat20Info } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { Segmented } from 'antd';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
@@ -25,7 +25,7 @@ export default function Ord2Info() {
       setTabText(type);
     }
   };
-  const { data, trigger, isLoading } = useOrdxInfo({ tick, network });
+  const { data, trigger, isLoading } = useSat20Info({ tick, network });
   const detail = useMemo(() => data?.data || {}, [data]);
 
   const status = useMemo(() => {

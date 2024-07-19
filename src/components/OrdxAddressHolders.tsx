@@ -1,6 +1,6 @@
 import { Button, message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useOrdxAddressHolders, getUtxoByValue } from '@/api';
+import { useSat20AddressHolders, getUtxoByValue } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useCommonStore } from '@/store';
 import type { ColumnsType } from 'antd/es/table';
@@ -38,7 +38,7 @@ export const OrdxAddressHolders = ({
   const tipAddress =
     network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
 
-  const { data, isLoading, trigger } = useOrdxAddressHolders({
+  const { data, isLoading, trigger } = useSat20AddressHolders({
     ticker: tick,
     address,
     network,

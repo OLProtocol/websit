@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { Button, Segmented, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useOrdxTickHistory } from '@/api';
+import { useSat20TickHistory } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 import type { ColumnsType } from 'antd/es/table';
@@ -19,7 +19,7 @@ export const OrdxTickHistory = ({ tick }: Ord2HistoryProps) => {
   const { network } = useReactWalletStore();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { data, isLoading, trigger } = useOrdxTickHistory({
+  const { data, isLoading, trigger } = useSat20TickHistory({
     ticker: tick,
     network,
     start,

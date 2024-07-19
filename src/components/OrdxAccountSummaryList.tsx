@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { OrdXItem } from './OrdXItem';
-import { getOrdInscriptionsByAddress, getSats, useOrdxSummary } from '@/api';
+import { getOrdInscriptionsByAddress, getSats, useSat20Summary } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
@@ -22,7 +22,7 @@ export const OrdxAccountSummaryList = ({
 }: OrdxSummaryListProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
-  const { data, trigger } = useOrdxSummary({ address, network });
+  const { data, trigger } = useSat20Summary({ address, network });
   const otherTickers = useMemo(() => data?.data?.detail || [], [data]);
   const [rareSatList, setRareSatList] = useState<any[]>();
   const [nftSumBalance, setNftBalance] = useState<any>();
