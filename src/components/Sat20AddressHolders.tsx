@@ -323,14 +323,14 @@ export const Sat20AddressHolders = ({
                 }}>
                 {t('buttons.send')}
               </Button>
-              <Button
+              {/* <Button
                 type='link'
                 loading={loading}
                 onClick={() => {
                   toSplit(record);
                 }}>
                 {t('buttons.split')}
-              </Button>
+              </Button> */}
             </div>
           );
         },
