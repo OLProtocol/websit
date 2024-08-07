@@ -1,7 +1,7 @@
 import type { MenuProps } from 'antd';
 import { useMemo } from 'react';
 import { Button, Popover, Space, Divider, Tag } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
   WalletConnectReact,
@@ -15,9 +15,13 @@ import { notification } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { tryit } from 'radash';
 import { useCommonStore } from '@/store';
+import { wallet } from '@unisat/wallet-sdk';
+
+const { VITE_BTC_CHAIN, VITE_API_HOST } = import.meta.env;
 
 export const WalletConnectButton = () => {
   const { t } = useTranslation();
+  const routerLocation = useLocation();
   const router = useNavigate();
   const {
     connected,
@@ -26,7 +30,7 @@ export const WalletConnectButton = () => {
     disconnect,
     balance,
     btcWallet,
-    network,
+    network: curNetwork,
     switchNetwork,
   } = useReactWalletStore((state) => state);
   const items: MenuProps['items'] = [
@@ -59,16 +63,43 @@ export const WalletConnectButton = () => {
   };
   const toHistory = () => {
     const url = generateMempoolUrl({
-      network,
+      network: curNetwork,
       path: `address/${address}`,
     });
     window.open(url, '_blank');
   };
   useEffect(() => {
     console.log('check', connected);
+
     check();
+    updateStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const onConnectSuccess = async () => { };
+
+
+  const needNetwork = useMemo(() => {
+    return VITE_BTC_CHAIN === 'mainnet' ? 'livenet' : 'testnet';
+  }, [])
+
+  const updateStatus = async () => {
+    if (connected && needNetwork !== curNetwork) {
+      disconnect();
+    }
+  };
+
+  const onConnectSuccess = async () => {
+    // btcWallet?.switchNetwork(curNetwork).then(() => {
+    //   console.log('switchNetwork success');
+    // }).catch((err) => {
+    //   disconnect();
+    //   console.error('switchNetwork error', err);
+    // }).finally(() => {
+    //   console.log('finally');
+    // })
+    // if (connected && needNetwork !== curNetwork) {
+    //   disconnect();
+    // }
+  };
   const onConnectError = (error: any) => {
     console.error('Connect Wallet Failed', error);
     notification.error({
@@ -78,7 +109,7 @@ export const WalletConnectButton = () => {
   };
   const handlerDisconnect = async () => {
     console.log('disconnect success');
-    await disconnect();
+    // disconnect();
   };
   const accountAndNetworkChange = async () => {
     const [err] = await tryit(check)();
@@ -104,57 +135,58 @@ export const WalletConnectButton = () => {
   return (
     <WalletConnectReact
       config={{
-        network: 'livenet',
-        defaultConnectorId: 'okx',
+        network: needNetwork,
+        defaultConnectorId: 'unisat',
       }}
       theme='light'
+      isSwitchNetwork={true}
       onConnectSuccess={onConnectSuccess}
-      onConnectError={onConnectError}>
-      <>
-        <Popover
-          content={
-            <div>
-              <div className='flex justify-center items-center'>
-                <span className='mr-2'>{balance.total} SAT</span>
-                <Tag color='error'>{network}</Tag>
-              </div>
-              {/* <Divider style={{ margin: '10px 0' }} />
-              <div className='flex justify-center'>
-                <Button
-                  type='primary'
-                  className='w-28'
-                  onClick={toAccount}>
-                  {t('buttons.toAccount')}
-                </Button>
-              </div>  */}
-              <Divider style={{ margin: '10px 0' }} />
-              <div className='flex justify-center'>
-                <Button type='primary' className='w-32' onClick={switchNetwork}>
-                  {t('buttons.switchNetwork')}
-                </Button>
-              </div>
-              <Divider style={{ margin: '10px 0' }} />
-              <div className='flex justify-center'>
-                <Button type='primary' className='w-32' onClick={toHistory}>
-                  {t('buttons.toHistory')}
-                </Button>
-              </div>
-              <Divider style={{ margin: '10px 0' }} />
-              <div className='flex justify-center'>
-                <Button type='primary' className='w-32' onClick={disconnect}>
-                  {t('buttons.disconnect')}
-                </Button>
-              </div>
+      onConnectError={onConnectError}
+      onDisconnectSuccess={handlerDisconnect}
+      children={<Popover
+        content={
+          <div>
+            <div className='flex justify-center items-center'>
+              <span className='mr-2'>{balance.total} SAT</span>
+              <Tag color='error'>{curNetwork}</Tag>
             </div>
-          }>
-          <Button shape='round' size='small'>
-            <Space>
-              {hideAccount}
-              <DownOutlined />
-            </Space>
-          </Button>
-        </Popover>
-      </>
+            {/* <Divider style={{ margin: '10px 0' }} />
+            <div className='flex justify-center'>
+              <Button
+                type='primary'
+                className='w-28'
+                onClick={toAccount}>
+                {t('buttons.toAccount')}
+              </Button>
+            </div>  */}
+            <Divider style={{ margin: '10px 0' }} />
+            <div className='flex justify-center'>
+              <Button type='primary' className='w-32' onClick={switchNetwork}>
+                {t('buttons.switchNetwork')}
+              </Button>
+            </div>
+            <Divider style={{ margin: '10px 0' }} />
+            <div className='flex justify-center'>
+              <Button type='primary' className='w-32' onClick={toHistory}>
+                {t('buttons.toHistory')}
+              </Button>
+            </div>
+            <Divider style={{ margin: '10px 0' }} />
+            <div className='flex justify-center'>
+              <Button type='primary' className='w-32' onClick={disconnect}>
+                {t('buttons.disconnect')}
+              </Button>
+            </div>
+          </div>
+        }>
+        <Button shape='round' size='small'>
+          <Space>
+            {hideAccount}
+            <DownOutlined />
+          </Space>
+        </Button>
+      </Popover>}
+    >
     </WalletConnectReact>
   );
 };
