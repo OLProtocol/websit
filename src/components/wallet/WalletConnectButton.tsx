@@ -51,9 +51,9 @@ export const WalletConnectButton = () => {
   };
 
   useEffect(() => {
-    if (address) {
-      check();
-    }
+    // if (address) {
+    check();
+    // }
   }, [address]);
 
   useEffect(() => {
