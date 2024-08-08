@@ -52,6 +52,7 @@ export const WalletConnectButton = () => {
     if (needNetwork === curNetwork) {
       if (address) {
         console.log('walletConnectButton check');
+        btcWallet?.connect();
         check();
       }
     } else {
