@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Outlet, useSearchParams } from 'react-router-dom';
 import { NavHeader } from '@/layout/NavHeader';
 import { Alert, Layout, Menu, theme } from 'antd';
