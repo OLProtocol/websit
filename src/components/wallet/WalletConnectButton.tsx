@@ -70,7 +70,7 @@ export const WalletConnectButton = () => {
         location.href = VITE_MAINNET_DOMAIN;
         break;
       case 'mainnet':
-        location.href = VITE_MAINNET_DOMAIN;
+        location.href = VITE_TESTNET_DOMAIN;
         break;
     }
   }
