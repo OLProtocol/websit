@@ -59,10 +59,10 @@ export const WalletConnectButton = () => {
   useEffect(() => {
     console.log('walletConnectButton needNetwork', needNetwork, 'curNetwork', curNetwork, 'network', network);
     if (needNetwork !== curNetwork) {
-      console.log('disconnect');
+      console.log('walletConnectButton disconnect');
       btcWallet?.disconnect();
     }
-  }, [curNetwork]);
+  }, [btcWallet, curNetwork]);
 
 
 
