@@ -320,5 +320,10 @@
     "split_success": "拆分成功",
     "cut_success": "切割成功",
     "input_address": "请输入地址"
+  },
+  "wallet": {
+    "connect_success": "连接钱包成功",
+    "disconnect_success": "断开钱包成功",
+    "switch_network_success": "切换钱包网络成功"
   }
 }

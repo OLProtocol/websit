@@ -2,7 +2,6 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { router } from '@/router';
 import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { UnisatConnectProvider } from '@/provider/UnisatConnectProvider';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
@@ -15,7 +14,7 @@ function App() {
     const defaultLanguage = i18n.language;
     i18n.changeLanguage(defaultLanguage);
   }, [i18n.language]);
-  
+
   return (
     <StyleProvider hashPriority='high'>
       <main className='h-full'>
@@ -27,11 +26,9 @@ function App() {
             duration: 2000,
           }}
         />
-        <UnisatConnectProvider>
-          <ChakraProvider>
-            <RouterProvider router={router}></RouterProvider>
-          </ChakraProvider>
-        </UnisatConnectProvider>
+        <ChakraProvider>
+          <RouterProvider router={router}></RouterProvider>
+        </ChakraProvider>
       </main>
     </StyleProvider>
   );
