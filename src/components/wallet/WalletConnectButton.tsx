@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import type { MenuProps } from 'antd';
 import { useMemo } from 'react';
 import { Button, Popover, Space, Divider, Tag } from 'antd';
@@ -17,7 +18,8 @@ import { tryit } from 'radash';
 import { useCommonStore } from '@/store';
 import { wallet } from '@unisat/wallet-sdk';
 
-const { VITE_BTC_CHAIN, VITE_API_HOST } = import.meta.env;
+const { VITE_BTC_CHAIN, VITE_API_HOST, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN } = import.meta.env;
+
 
 export const WalletConnectButton = () => {
   const { t } = useTranslation();
@@ -30,103 +32,95 @@ export const WalletConnectButton = () => {
     disconnect,
     balance,
     btcWallet,
-    network: curNetwork,
+    network,
     switchNetwork,
   } = useReactWalletStore((state) => state);
-  const items: MenuProps['items'] = [
-    {
-      label: '1st menu item',
-      key: '1',
-      icon: <UserOutlined />,
-    },
-    {
-      label: '2nd menu item',
-      key: '2',
-      icon: <UserOutlined />,
-    },
-    {
-      label: '3rd menu item',
-      key: '3',
-      icon: <UserOutlined />,
-      danger: true,
-    },
-    {
-      label: '4rd menu item',
-      key: '4',
-      icon: <UserOutlined />,
-      danger: true,
-      disabled: true,
-    },
-  ];
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
-    console.log('click', e);
-  };
+
+  const needNetwork = useMemo(() => {
+    return VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet';
+  }, [])
+
+  const curNetwork = useMemo(() => {
+    return network === 'testnet' ? 'testnet' : 'mainnet'
+  }, [network])
+
   const toHistory = () => {
     const url = generateMempoolUrl({
-      network: curNetwork,
+      network: network,
       path: `address/${address}`,
     });
     window.open(url, '_blank');
   };
-  useEffect(() => {
-    console.log('check', connected);
 
+  useEffect(() => {
     check();
-    updateStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (connected && curNetwork && needNetwork !== curNetwork) {
+      disconnect();
+    }
   }, []);
 
 
-  const needNetwork = useMemo(() => {
-    return VITE_BTC_CHAIN === 'mainnet' ? 'livenet' : 'testnet';
-  }, [])
 
-  const updateStatus = async () => {
-    if (connected && needNetwork !== curNetwork) {
-      disconnect();
+  const handleWalletSwitchNetwork = async () => {
+    switch (needNetwork) {
+      case 'testnet':
+        location.href = VITE_MAINNET_DOMAIN;
+        break;
+      case 'mainnet':
+        location.href = VITE_MAINNET_DOMAIN;
+        break;
     }
-  };
-
-  const onConnectSuccess = async () => {
-    // btcWallet?.switchNetwork(curNetwork).then(() => {
-    //   console.log('switchNetwork success');
-    // }).catch((err) => {
-    //   disconnect();
-    //   console.error('switchNetwork error', err);
-    // }).finally(() => {
-    //   console.log('finally');
+  }
+  const onConnectWalletSuccess = async () => {
+    // notification.success({
+    //   message: 'Connect Wallet Success',
+    //   description: t('wallet.connect_success'),
     // })
-    // if (connected && needNetwork !== curNetwork) {
-    //   disconnect();
-    // }
   };
   const onConnectError = (error: any) => {
-    console.error('Connect Wallet Failed', error);
     notification.error({
       message: 'Connect Wallet Failed',
       description: error.message,
     });
   };
-  const handlerDisconnect = async () => {
-    console.log('disconnect success');
-    // disconnect();
+  const handleWalletDisconnect = async () => {
+    notification.success({
+      message: 'Disconnect Wallet Success',
+      description: t('wallet.disconnect_success'),
+    });
   };
-  const accountAndNetworkChange = async () => {
+  const onAccountChanged = async (acountList: string[]) => {
+    console.log('walletConnectButton onAccountChanged, accountList', acountList);
+    const changedAddress = acountList[0];
+    if (changedAddress !== address) {
+      disconnect();
+      return;
+    }
     const [err] = await tryit(check)();
-    console.error(err);
+    if (err) {
+      console.error(err);
+    }
+  };
+  const onNetworkChanged = async (switchedNetwork: string) => {
+    console.log('walletConnectButton onNetworkChanged, switchedNetwork', switchedNetwork);
+    if (needNetwork !== switchedNetwork) {
+      disconnect();
+    }
   };
   useEffect(() => {
-    console.log('connected', connected);
     if (connected) {
-      btcWallet?.on('accountsChanged', accountAndNetworkChange);
-      btcWallet?.on('networkChanged', accountAndNetworkChange);
+      btcWallet?.on('accountsChanged', onAccountChanged);
+      btcWallet?.on('networkChanged', onNetworkChanged);
     } else {
-      btcWallet?.removeListener('accountsChanged', accountAndNetworkChange);
-      btcWallet?.removeListener('networkChanged', accountAndNetworkChange);
+      btcWallet?.removeListener('accountsChanged', onAccountChanged);
+      btcWallet?.removeListener('networkChanged', onNetworkChanged);
     }
     return () => {
-      btcWallet?.removeListener('accountsChanged', accountAndNetworkChange);
-      btcWallet?.removeListener('networkChanged', accountAndNetworkChange);
+      btcWallet?.removeListener('accountsChanged', onAccountChanged);
+      btcWallet?.removeListener('networkChanged', onNetworkChanged);
     };
   }, [connected]);
   const hideAccount = useMemo(() => {
@@ -140,17 +134,19 @@ export const WalletConnectButton = () => {
       }}
       theme='light'
       isSwitchNetwork={true}
-      onConnectSuccess={onConnectSuccess}
+      onConnectSuccess={onConnectWalletSuccess}
       onConnectError={onConnectError}
-      onDisconnectSuccess={handlerDisconnect}
-      children={<Popover
-        content={
-          <div>
-            <div className='flex justify-center items-center'>
-              <span className='mr-2'>{balance.total} SAT</span>
-              <Tag color='error'>{curNetwork}</Tag>
-            </div>
-            {/* <Divider style={{ margin: '10px 0' }} />
+      onDisconnectSuccess={handleWalletDisconnect}
+    >
+      <>
+        <Popover
+          content={
+            <div>
+              <div className='flex justify-center items-center'>
+                <span className='mr-2'>{balance.total} SAT</span>
+                <Tag color='error'>{network}</Tag>
+              </div>
+              {/* <Divider style={{ margin: '10px 0' }} />
             <div className='flex justify-center'>
               <Button
                 type='primary'
@@ -159,34 +155,34 @@ export const WalletConnectButton = () => {
                 {t('buttons.toAccount')}
               </Button>
             </div>  */}
-            <Divider style={{ margin: '10px 0' }} />
-            <div className='flex justify-center'>
-              <Button type='primary' className='w-32' onClick={switchNetwork}>
-                {t('buttons.switchNetwork')}
-              </Button>
+              <Divider style={{ margin: '10px 0' }} />
+              <div className='flex justify-center'>
+                <Button type='primary' className='w-32' onClick={handleWalletSwitchNetwork}>
+                  {t('buttons.switchNetwork')}
+                </Button>
+              </div>
+              <Divider style={{ margin: '10px 0' }} />
+              <div className='flex justify-center'>
+                <Button type='primary' className='w-32' onClick={toHistory}>
+                  {t('buttons.toHistory')}
+                </Button>
+              </div>
+              <Divider style={{ margin: '10px 0' }} />
+              <div className='flex justify-center'>
+                <Button type='primary' className='w-32' onClick={disconnect}>
+                  {t('buttons.disconnect')}
+                </Button>
+              </div>
             </div>
-            <Divider style={{ margin: '10px 0' }} />
-            <div className='flex justify-center'>
-              <Button type='primary' className='w-32' onClick={toHistory}>
-                {t('buttons.toHistory')}
-              </Button>
-            </div>
-            <Divider style={{ margin: '10px 0' }} />
-            <div className='flex justify-center'>
-              <Button type='primary' className='w-32' onClick={disconnect}>
-                {t('buttons.disconnect')}
-              </Button>
-            </div>
-          </div>
-        }>
-        <Button shape='round' size='small'>
-          <Space>
-            {hideAccount}
-            <DownOutlined />
-          </Space>
-        </Button>
-      </Popover>}
-    >
+          }>
+          <Button shape='round' size='small'>
+            <Space>
+              {hideAccount}
+              <DownOutlined />
+            </Space>
+          </Button>
+        </Popover>
+      </>
     </WalletConnectReact>
   );
 };

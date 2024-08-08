@@ -22,9 +22,9 @@ export default function Root() {
       const serviceStatus = heightData >= Number(VITE_TIP_HEIGHT);
       setServiceStatus(serviceStatus ? 1 : 0);
       setHeight(height);
-      getBlockStatus({ height: height, network }).then((res) => {
-        console.log(res);
-      });
+      // getBlockStatus({ height: height, network }).then((res) => {
+      //   console.log(res);
+      // });
     }
   }, [heightData]);
   return (
