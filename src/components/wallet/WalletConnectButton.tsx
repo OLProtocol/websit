@@ -39,22 +39,7 @@ export const WalletConnectButton = () => {
   const needNetwork = VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet'
 
   const curNetwork = useMemo(() => {
-    let ret: string | undefined;
-    switch (network as string) {
-      case 'testnet':
-        ret = 'testnet';
-        break;
-      case 'mainnet':
-      case 'livenet':
-        ret = 'mainnet';
-        break;
-      case undefined:
-        ret = undefined;
-        break;
-    }
-    console.log('ret', ret);
-    return ret;
-    // return network === 'testnet' ? 'testnet' : 'mainnet'
+    return network === 'testnet' ? 'testnet' : 'mainnet'
   }, [network])
 
   const toHistory = () => {
@@ -70,8 +55,6 @@ export const WalletConnectButton = () => {
   }, []);
 
   useEffect(() => {
-    const getNetwork = btcWallet?.getNetwork();
-    console.log('connected', connected, 'curNetwork', curNetwork, 'needNetwork', needNetwork, 'network', network, 'getNetwork', getNetwork);
     if (needNetwork !== curNetwork) {
       disconnect();
     }
