@@ -35,6 +35,8 @@ export const WalletConnectButton = () => {
 
   const needNetwork = VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet'
 
+  const [initNetwork, setInitNetwork] = useState(true);
+
   const curNetwork = useMemo(() => {
     return network === 'testnet' ? 'testnet' : 'mainnet'
   }, [network])
@@ -50,25 +52,15 @@ export const WalletConnectButton = () => {
   useEffect(() => {
     console.log('walletConnectButton needNetwork', needNetwork, 'curNetwork', curNetwork);
     if (needNetwork === curNetwork) {
-      if (address) {
-        console.log('walletConnectButton check');
-        check();
-      }
+      console.log('walletConnectButton check');
+      initNetwork && check();
+      setInitNetwork(false);
     } else {
       console.log('walletConnectButton disconnect');
-      btcWallet?.disconnect();
+      connected && disconnect();
+      // setNetworkState(true);
     }
-  }, [address, btcWallet, check, curNetwork, needNetwork]);
-
-  // useEffect(() => {
-  //   // console.log('walletConnectButton needNetwork', needNetwork, 'curNetwork', curNetwork, 'network', network);
-  //   // if (needNetwork !== curNetwork) {
-  //   //   console.log('walletConnectButton disconnect');
-  //   //   btcWallet?.disconnect();
-  //   // }
-  // }, [btcWallet, curNetwork, needNetwork, network]);
-
-
+  }, [initNetwork, connected, address, disconnect, check, curNetwork, needNetwork]);
 
   const handleWalletSwitchNetwork = async () => {
     switch (needNetwork) {
@@ -80,6 +72,11 @@ export const WalletConnectButton = () => {
         break;
     }
   }
+
+  const disconnectWallet = async () => {
+    disconnect();
+  }
+
   const onConnectWalletSuccess = async () => {
     // notification.success({
     //   message: 'Connect Wallet Success',
@@ -92,7 +89,7 @@ export const WalletConnectButton = () => {
       description: error.message,
     });
   };
-  const handleWalletDisconnect = async () => {
+  const onWalletDisconnectSuccess = async () => {
     notification.success({
       message: 'Disconnect Wallet Success',
       description: t('wallet.disconnect_success'),
@@ -129,9 +126,11 @@ export const WalletConnectButton = () => {
       btcWallet?.removeListener('networkChanged', onNetworkChanged);
     };
   }, [connected]);
+
   const hideAccount = useMemo(() => {
     return hideStr(address, 3, '**');
   }, [address]);
+
   return (
     <WalletConnectReact
       config={{
@@ -142,7 +141,7 @@ export const WalletConnectButton = () => {
       isSwitchNetwork={true}
       onConnectSuccess={onConnectWalletSuccess}
       onConnectError={onConnectError}
-      onDisconnectSuccess={handleWalletDisconnect}
+      onDisconnectSuccess={onWalletDisconnectSuccess}
     >
       <>
         <Popover
@@ -175,7 +174,7 @@ export const WalletConnectButton = () => {
               </div>
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
-                <Button type='primary' className='w-32' onClick={disconnect}>
+                <Button type='primary' className='w-32' onClick={disconnectWallet}>
                   {t('buttons.disconnect')}
                 </Button>
               </div>
