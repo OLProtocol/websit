@@ -43,10 +43,10 @@ export default function InscribeCheck() {
           </Card>
         )}
 
-          <Card title={t('pages.tools.sat.title')} className='w-60 cursor-pointer' onClick={toSat}>
-            {t('pages.tools.sat.des')}
-          </Card>
-        </SimpleGrid>
-      </div>
+        <Card title={t('pages.tools.sat.title')} className='w-60 cursor-pointer' onClick={toSat}>
+          {t('pages.tools.sat.des')}
+        </Card>
+      </SimpleGrid>
+    </div>
   );
 }
