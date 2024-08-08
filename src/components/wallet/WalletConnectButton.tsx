@@ -75,7 +75,7 @@ export const WalletConnectButton = () => {
     if (needNetwork !== curNetwork) {
       disconnect();
     }
-  }, []);
+  }, [curNetwork]);
 
 
 
