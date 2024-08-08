@@ -52,12 +52,12 @@ export const WalletConnectButton = () => {
     if (needNetwork === curNetwork) {
       if (address) {
         console.log('walletConnectButton check');
-        btcWallet?.connect();
+        // btcWallet?.connect();
         check();
       }
     } else {
       console.log('walletConnectButton disconnect');
-      btcWallet?.disconnect();
+      // btcWallet?.disconnect();
     }
   }, [address, btcWallet, check, curNetwork, needNetwork]);
 
@@ -103,7 +103,7 @@ export const WalletConnectButton = () => {
     console.log('walletConnectButton onAccountChanged, accountList', acountList);
     const changedAddress = acountList[0];
     if (changedAddress !== address) {
-      disconnect();
+      // disconnect();
       return;
     }
     const [err] = await tryit(check)();
