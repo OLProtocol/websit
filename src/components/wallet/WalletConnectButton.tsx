@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import type { MenuProps } from 'antd';
 import { useMemo } from 'react';
 import { Button, Popover, Space, Divider, Tag } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
   WalletConnectReact,
@@ -15,9 +16,14 @@ import { notification } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { tryit } from 'radash';
 import { useCommonStore } from '@/store';
+import { wallet } from '@unisat/wallet-sdk';
+
+const { VITE_BTC_CHAIN, VITE_API_HOST, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN } = import.meta.env;
+
 
 export const WalletConnectButton = () => {
   const { t } = useTranslation();
+  const routerLocation = useLocation();
   const router = useNavigate();
   const {
     connected,
@@ -29,73 +35,92 @@ export const WalletConnectButton = () => {
     network,
     switchNetwork,
   } = useReactWalletStore((state) => state);
-  const items: MenuProps['items'] = [
-    {
-      label: '1st menu item',
-      key: '1',
-      icon: <UserOutlined />,
-    },
-    {
-      label: '2nd menu item',
-      key: '2',
-      icon: <UserOutlined />,
-    },
-    {
-      label: '3rd menu item',
-      key: '3',
-      icon: <UserOutlined />,
-      danger: true,
-    },
-    {
-      label: '4rd menu item',
-      key: '4',
-      icon: <UserOutlined />,
-      danger: true,
-      disabled: true,
-    },
-  ];
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
-    console.log('click', e);
-  };
+
+  const needNetwork = useMemo(() => {
+    return VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet';
+  }, [])
+
+  const curNetwork = useMemo(() => {
+    return network === 'testnet' ? 'testnet' : 'mainnet'
+  }, [network])
+
   const toHistory = () => {
     const url = generateMempoolUrl({
-      network,
+      network: network,
       path: `address/${address}`,
     });
     window.open(url, '_blank');
   };
+
   useEffect(() => {
-    console.log('check', connected);
     check();
   }, []);
-  const onConnectSuccess = async () => { };
+
+  useEffect(() => {
+    if (connected && curNetwork && needNetwork !== curNetwork) {
+      disconnect();
+    }
+  }, []);
+
+
+
+  const handleWalletSwitchNetwork = async () => {
+    switch (needNetwork) {
+      case 'testnet':
+        location.href = VITE_MAINNET_DOMAIN;
+        break;
+      case 'mainnet':
+        location.href = VITE_TESTNET_DOMAIN;
+        break;
+    }
+  }
+  const onConnectWalletSuccess = async () => {
+    // notification.success({
+    //   message: 'Connect Wallet Success',
+    //   description: t('wallet.connect_success'),
+    // })
+  };
   const onConnectError = (error: any) => {
-    console.error('Connect Wallet Failed', error);
     notification.error({
       message: 'Connect Wallet Failed',
       description: error.message,
     });
   };
-  const handlerDisconnect = async () => {
-    console.log('disconnect success');
-    await disconnect();
+  const handleWalletDisconnect = async () => {
+    notification.success({
+      message: 'Disconnect Wallet Success',
+      description: t('wallet.disconnect_success'),
+    });
   };
-  const accountAndNetworkChange = async () => {
+  const onAccountChanged = async (acountList: string[]) => {
+    console.log('walletConnectButton onAccountChanged, accountList', acountList);
+    const changedAddress = acountList[0];
+    if (changedAddress !== address) {
+      disconnect();
+      return;
+    }
     const [err] = await tryit(check)();
-    console.error(err);
+    if (err) {
+      console.error(err);
+    }
+  };
+  const onNetworkChanged = async (switchedNetwork: string) => {
+    console.log('walletConnectButton onNetworkChanged, switchedNetwork', switchedNetwork);
+    if (needNetwork !== switchedNetwork) {
+      disconnect();
+    }
   };
   useEffect(() => {
-    console.log('connected', connected);
     if (connected) {
-      btcWallet?.on('accountsChanged', accountAndNetworkChange);
-      btcWallet?.on('networkChanged', accountAndNetworkChange);
+      btcWallet?.on('accountsChanged', onAccountChanged);
+      btcWallet?.on('networkChanged', onNetworkChanged);
     } else {
-      btcWallet?.removeListener('accountsChanged', accountAndNetworkChange);
-      btcWallet?.removeListener('networkChanged', accountAndNetworkChange);
+      btcWallet?.removeListener('accountsChanged', onAccountChanged);
+      btcWallet?.removeListener('networkChanged', onNetworkChanged);
     }
     return () => {
-      btcWallet?.removeListener('accountsChanged', accountAndNetworkChange);
-      btcWallet?.removeListener('networkChanged', accountAndNetworkChange);
+      btcWallet?.removeListener('accountsChanged', onAccountChanged);
+      btcWallet?.removeListener('networkChanged', onNetworkChanged);
     };
   }, [connected]);
   const hideAccount = useMemo(() => {
@@ -104,12 +129,15 @@ export const WalletConnectButton = () => {
   return (
     <WalletConnectReact
       config={{
-        network: 'livenet',
-        defaultConnectorId: 'okx',
+        network: needNetwork,
+        defaultConnectorId: 'unisat',
       }}
       theme='light'
-      onConnectSuccess={onConnectSuccess}
-      onConnectError={onConnectError}>
+      isSwitchNetwork={true}
+      onConnectSuccess={onConnectWalletSuccess}
+      onConnectError={onConnectError}
+      onDisconnectSuccess={handleWalletDisconnect}
+    >
       <>
         <Popover
           content={
@@ -119,17 +147,17 @@ export const WalletConnectButton = () => {
                 <Tag color='error'>{network}</Tag>
               </div>
               {/* <Divider style={{ margin: '10px 0' }} />
-              <div className='flex justify-center'>
-                <Button
-                  type='primary'
-                  className='w-28'
-                  onClick={toAccount}>
-                  {t('buttons.toAccount')}
-                </Button>
-              </div>  */}
+            <div className='flex justify-center'>
+              <Button
+                type='primary'
+                className='w-28'
+                onClick={toAccount}>
+                {t('buttons.toAccount')}
+              </Button>
+            </div>  */}
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
-                <Button type='primary' className='w-32' onClick={switchNetwork}>
+                <Button type='primary' className='w-32' onClick={handleWalletSwitchNetwork}>
                   {t('buttons.switchNetwork')}
                 </Button>
               </div>
