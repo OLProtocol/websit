@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import type { MenuProps } from 'antd';
 import { useMemo } from 'react';
 import { Button, Popover, Space, Divider, Tag } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -15,7 +13,6 @@ import { hideStr } from '@/lib/utils';
 import { notification } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { tryit } from 'radash';
-import { useCommonStore } from '@/store';
 import { wallet } from '@unisat/wallet-sdk';
 
 const { VITE_BTC_CHAIN, VITE_API_HOST, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN } = import.meta.env;
@@ -51,18 +48,24 @@ export const WalletConnectButton = () => {
   };
 
   useEffect(() => {
-    // if (address) {
-    check();
-    // }
-  }, [address]);
-
-  useEffect(() => {
     console.log('walletConnectButton needNetwork', needNetwork, 'curNetwork', curNetwork, 'network', network);
-    if (needNetwork !== curNetwork) {
+    if (needNetwork === curNetwork) {
+      console.log('walletConnectButton disconnect');
+      check();
+    } else {
       console.log('walletConnectButton disconnect');
       btcWallet?.disconnect();
     }
-  }, [btcWallet, curNetwork]);
+    // check();
+  }, [address, btcWallet, check, curNetwork, needNetwork, network]);
+
+  useEffect(() => {
+    // console.log('walletConnectButton needNetwork', needNetwork, 'curNetwork', curNetwork, 'network', network);
+    // if (needNetwork !== curNetwork) {
+    //   console.log('walletConnectButton disconnect');
+    //   btcWallet?.disconnect();
+    // }
+  }, [btcWallet, curNetwork, needNetwork, network]);
 
 
 
