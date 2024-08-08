@@ -36,9 +36,7 @@ export const WalletConnectButton = () => {
     switchNetwork,
   } = useReactWalletStore((state) => state);
 
-  const needNetwork = useMemo(() => {
-    return VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet';
-  }, [])
+  const needNetwork = VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet'
 
   const curNetwork = useMemo(() => {
     return network === 'testnet' ? 'testnet' : 'mainnet'
@@ -58,7 +56,7 @@ export const WalletConnectButton = () => {
 
   useEffect(() => {
     console.log('connected', connected, 'curNetwork', curNetwork, 'needNetwork', needNetwork);
-    if (connected && curNetwork && needNetwork !== curNetwork) {
+    if (curNetwork && needNetwork !== curNetwork) {
       disconnect();
     }
   }, []);
