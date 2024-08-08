@@ -48,18 +48,17 @@ export const WalletConnectButton = () => {
   };
 
   useEffect(() => {
-    console.log('walletConnectButton needNetwork', needNetwork, 'curNetwork', curNetwork, 'network', network);
+    console.log('walletConnectButton needNetwork', needNetwork, 'curNetwork', curNetwork);
     if (needNetwork === curNetwork) {
-      // if (address) {
-      console.log('walletConnectButton check');
-      check();
-      // }
+      if (address) {
+        console.log('walletConnectButton check');
+        check();
+      }
     } else {
       console.log('walletConnectButton disconnect');
       btcWallet?.disconnect();
     }
-    // check();
-  }, [address, btcWallet, check, curNetwork, needNetwork, network]);
+  }, [address, btcWallet, check, curNetwork, needNetwork]);
 
   // useEffect(() => {
   //   // console.log('walletConnectButton needNetwork', needNetwork, 'curNetwork', curNetwork, 'network', network);
