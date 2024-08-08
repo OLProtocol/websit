@@ -1,5 +1,4 @@
 import { Menu, Tag } from 'antd';
-import { UnisatConnectButton } from '@/components/UnisatConnectButton';
 import { WalletConnectButton } from '@/components/wallet/WalletConnectButton';
 import { FeerateSelectButton } from '@/components/FeerateSelectButton';
 import { LanguageSelect } from '@/components/LanguageSelect';

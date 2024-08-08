@@ -31,7 +31,7 @@ export default function Account() {
 
   return (
     <div className='max-w-6xl mx-auto pt-4'>
-      {currentAccount !== '' ? (
+      {currentAccount ? (
         <div>
           <Sat20AccountSummaryList
             address={currentAccount}

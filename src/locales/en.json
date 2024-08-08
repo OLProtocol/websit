@@ -320,5 +320,10 @@
     "split_success": "Split successfully.",
     "cut_success": "Cut successfully.",
     "input_address": "Please input address"
+  },
+  "wallet": {
+    "connect_success": "Connect wallet successfully",
+    "disconnect_success": "Disconnect wallet successfully",
+    "switch_network_success": "Switch wallet network successfully"
   }
 }

@@ -259,13 +259,13 @@ export const AvailableUtxoList = ({
                 }}>
                 {t('buttons.send')}
               </a>
-              <a
+              {/* <a
                 className='text-blue-500 cursor-pointer mr-2'
                 onClick={() => {
                   splitHandler(record);
                 }}>
                 {t('pages.account.cut')}
-              </a>
+              </a> */}
             </div>
           );
         },

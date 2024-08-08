@@ -5,7 +5,7 @@ import version from '@/assets/version.txt?raw';
 import { useBtcHeight, useAppVersion } from '@/api';
 
 export const UpdateVersionModal = () => {
-  console.log('version', version);
+  // console.log('version', version);
   const [open, setOpen] = useState(false);
   const { data: appVersion } = useAppVersion();
   const timer = useRef<any>();
@@ -17,15 +17,15 @@ export const UpdateVersionModal = () => {
     window.location.reload();
   };
   const checkVersion = () => {
-    console.log('appVersion', appVersion);
-    console.log('version', version);
+    // console.log('appVersion', appVersion);
+    // console.log('version', version);
     if (appVersion && appVersion > version) {
       showModal();
     }
   };
   const hideModal = () => {
     if (timer.current) clearTimeout(timer.current);
-    timer.current =  setTimeout(() => {
+    timer.current = setTimeout(() => {
       checkVersion();
     }, 1000 * 60 * 5);
     setOpen(false);
