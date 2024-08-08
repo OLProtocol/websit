@@ -1460,10 +1460,10 @@
     estree-walker "^2.0.2"
     picomatch "^2.3.1"
 
-"@sat20/btc-connect@1.4.37":
-  version "1.4.37"
-  resolved "https://registry.yarnpkg.com/@sat20/btc-connect/-/btc-connect-1.4.37.tgz#040983e01c5e98887975eb88af9ca6656eb1ac7c"
-  integrity sha512-UNOKkgAt+96KZwzUIK/5aC44U7lBE34PLU2nezgejLSAsowjrx/nM4gezXIGDcYLj1Tr1XJu84Nu6X0aNhnAOw==
+"@sat20/btc-connect@1.4.38":
+  version "1.4.38"
+  resolved "https://registry.yarnpkg.com/@sat20/btc-connect/-/btc-connect-1.4.38.tgz#31040c7d1e0e4ac87056b44110fdcab6430573af"
+  integrity sha512-2v9QON5uE1VUAZ67hLZFXJV85dYk5MZ9XVoNuye3EVA+qmFZMf5qQmz2fB/kfkLxKFSo58NJ8SJttnNZq8ErPw==
   optionalDependencies:
     "@types/react-dom" "^18.2.22"
     lint-staged "^15.2.2"
