@@ -1,15 +1,14 @@
 import useSWR from 'swr';
 import * as request from './request';
-import { getStaticUseSwrFunc } from './swr-util';
+import { getCommonUseSwrFunc, getStaticUseSwrFunc } from './swr-util';
 import { BtcNetwork } from '@/types';
 import { fetchChainFeeRate } from '@/lib/utils';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 export const useOrdxVersion = () => {
-    const { data, error, isLoading } = getStaticUseSwrFunc(`health`, request.getHealth, {})();
-    const version = data?.version
+    const { data, error, isLoading } = getCommonUseSwrFunc(`health`, request.getHealth, {})();
     return {
-        version,
+        data,
         error,
         isLoading,
     };
