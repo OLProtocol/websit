@@ -14,6 +14,8 @@ import {
 } from '@chakra-ui/react';
 import { generateMempoolUrl } from '@/lib/utils';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useNetwork } from '@/lib/wallet';
+
 const { Search } = Input;
 
 export const OrdAddressInscriptionList = () => {
@@ -22,7 +24,7 @@ export const OrdAddressInscriptionList = () => {
     const { address } = useParams();
     const [search, setSearch] = useState('');
 
-    const { network } = useReactWalletStore();
+    const network = useNetwork();
     const router = useNavigate();
 
     const [start, setStart] = useState(0);

@@ -14,7 +14,6 @@ import {
 import { useState, useMemo, useEffect } from 'react';
 import { BtcFeeRateItem } from './BtcFeeRateItem';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-import { useBtcFeeRate } from '@/api';
 import { useTranslation } from 'react-i18next';
 
 interface BtcFeeRate {

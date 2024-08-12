@@ -1,6 +1,6 @@
 import { Button, message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useSat20AddressHolders, getUtxoByValue } from '@/api';
+import { useTokenAddressHolders, getUtxoByValue } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useCommonStore } from '@/store';
 import type { ColumnsType } from 'antd/es/table';
@@ -38,10 +38,9 @@ export const Sat20AddressHolders = ({
   const tipAddress =
     network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
 
-  const { data, isLoading, trigger } = useSat20AddressHolders({
+  const { data, isLoading, trigger } = useTokenAddressHolders({
     ticker: tick,
     address,
-    network,
     start,
     limit,
   });
@@ -394,6 +393,7 @@ export const Sat20AddressHolders = ({
     if (address && tick) {
       trigger();
     }
+    console.log('data:', data)
   }, [address, tick, network, start, limit]);
 
   return (

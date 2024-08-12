@@ -1,14 +1,15 @@
-import { getSatTypes } from "@/api";
+import { useSatTypes } from "@/api";
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Card, CardBody, CardHeader, Heading, Tooltip, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-
+import { useNetwork } from '@/lib/wallet';
 
 export const SatTypeBox = () => {
 
   const toast = useToast();
   const [satTypeList, setSatTypeList] = useState<any[]>();
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
+  const { data: satTypeData } = useSatTypes();
 
   const typeMap = {
     mythic: {
@@ -114,39 +115,21 @@ export const SatTypeBox = () => {
   }
 
   const getSatTypeList = async () => {
-    const data = await getSatTypes({
-      network,
-    });
-    if (data.code !== 0) {
-      toast({
-        title: data.msg,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      setSatTypeList([]);
-      return;
-    }
-
-    let tmpTypes: any[] | undefined = [];
-    for (let i = 0; i < data?.data?.length; i++) {
-      if (typeMap[data.data[i]]) {
-        tmpTypes.push(typeMap[data.data[i]]);
+    setSatTypeList([]);
+    const satTypeList: any[] | undefined = [];
+    for (let i = 0; i < satTypeData?.data?.length; i++) {
+      if (typeMap[satTypeData.data[i]]) {
+        satTypeList.push(typeMap[satTypeData.data[i]]);
       } else {
-        tmpTypes.push({
+        satTypeList.push({
           icon: '/images/sat/icon-default.svg',
-          name: data.data[i],
-          tip: data.data[i]
+          name: satTypeData.data[i],
+          tip: satTypeData.data[i]
         })
       }
     }
-
-    setSatTypeList(tmpTypes);
+    setSatTypeList(satTypeList);
   }
-
-  useEffect(() => {
-    getSatTypeList();
-  }, []);
 
   return (
     <Card>

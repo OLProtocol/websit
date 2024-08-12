@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { useAllSat20StatusList } from '@/api';
+import { useFtList } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,8 @@ import { genOrdServiceUrl } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import { useToast } from '@chakra-ui/react';
-import { cacheData, getCachedData } from '@/lib/utils/cache';
+import { setCacheData, getCachedData } from '@/lib/utils/cache';
+import { useNetwork } from '@/lib/wallet';
 
 interface DataType {
   tick: string;
@@ -25,7 +26,7 @@ export const Sat20FullList = () => {
   const toast = useToast();
 
   const { btcHeight } = useCommonStore((state) => state);
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
 
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -35,7 +36,7 @@ export const Sat20FullList = () => {
     nav(`/explorer/${item.tick}`);
   };
 
-  const { data, error, isLoading } = useAllSat20StatusList({ start, limit, network });
+  const { data, error, isLoading } = useFtList({ start, limit });
   const list = useMemo(() => data?.data?.detail || [], [data]);
   const total = useMemo(() => data?.data?.total || 0, [data]);
   const height = useMemo(() => {

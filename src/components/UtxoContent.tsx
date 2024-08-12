@@ -1,19 +1,19 @@
-import { useInscriptiontInfo, useExoticUtxo } from '@/api';
+import { useInscriptiontInfo } from '@/api';
 import { useEffect, useMemo } from 'react';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Spin } from 'antd';
 import { genOrdServiceUrl } from '@/lib/utils';
 import { generateSeed } from '@/lib/utils';
+import { useNetwork } from '@/lib/wallet';
 
 interface UtxoContentProps {
   inscriptionId: string;
   ranges?: any[];
 }
 export function UtxoContent({ inscriptionId, ranges = [] }: UtxoContentProps) {
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const { data, trigger, isLoading } = useInscriptiontInfo({
     inscriptionId: inscriptionId,
-    network,
   });
   const detail = useMemo(() => data?.data || {}, [data]);
   console.log('UtxoContent ranges:', ranges, inscriptionId);
