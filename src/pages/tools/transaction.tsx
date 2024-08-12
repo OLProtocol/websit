@@ -441,8 +441,8 @@ export default function Transaction() {
       });
       const utxosOfTicker: any[] = [];
       // if (data.code === 0) {
-      // const details = data?.data?.detail;
-      // details?.map((detail) => {
+      //   const details = data?.data?.detail;
+      //   details?.map((detail) => {
       // const utxo = {
       //   txid: detail.utxo.split(':')[0],
       //   vout: Number(detail.utxo.split(':')[1]),

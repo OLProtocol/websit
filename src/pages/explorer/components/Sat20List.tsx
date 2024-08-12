@@ -20,7 +20,7 @@ export const Sat20List = () => {
   const { t } = useTranslation();
 
   const [type, setType] = useState('FT');
-  const { version: ordxVersion } = useOrdxVersion();
+  const { data } = useOrdxVersion();
   const segmentedList = ['FT', 'Name', 'NFT'];
 
   return (
@@ -42,7 +42,7 @@ export const Sat20List = () => {
                   {t('pages.explorer.list_title')}
                 </Heading>
                 <Heading as='h6' size='xs' textColor={'gray.500'}>
-                  {t('pages.explorer.ordx_version')}: {ordxVersion}
+                  {t('pages.explorer.ordx_version')}: {data?.version}
                 </Heading>
               </Stack>
             </Box>
