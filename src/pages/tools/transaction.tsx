@@ -440,18 +440,18 @@ export default function Transaction() {
         ticker: item.ticker,
       });
       const utxosOfTicker: any[] = [];
-      if (data.code === 0) {
-        const details = data?.data?.detail;
-        details?.map((detail) => {
-          // const utxo = {
-          //   txid: detail.utxo.split(':')[0],
-          //   vout: Number(detail.utxo.split(':')[1]),
-          //   value: detail.amount,
-          //   assetamount: detail.assetamount,
-          // };
-          // utxosOfTicker.push(utxo);
-        });
-      }
+      // if (data.code === 0) {
+      //   const details = data?.data?.detail;
+      //   details?.map((detail) => {
+      // const utxo = {
+      //   txid: detail.utxo.split(':')[0],
+      //   vout: Number(detail.utxo.split(':')[1]),
+      //   value: detail.amount,
+      //   assetamount: detail.assetamount,
+      // };
+      // utxosOfTicker.push(utxo);
+      // });
+      // }
       tickers.push({
         ticker: item.ticker,
         utxos: utxosOfTicker,
