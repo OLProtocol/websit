@@ -1,43 +1,45 @@
 import { useParams } from 'react-router-dom';
-import { useSat20Info } from '@/api';
+import { useTokenInfo } from '@/api';
 import { useEffect, useState, useMemo } from 'react';
 import { Segmented } from 'antd';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
-import { Sat20TickHistory } from './components/Sat20TickHistory';
+import { TickHistory } from './components/TickHistory';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl, genOrdServiceUrl, genOrdinalsUrl, getAssetTypeLabel } from '@/lib/utils';
 import { Button, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
+import { useNetwork } from '@/lib/wallet';
 
-export default function Sat20Info() {
+export default function TokenInfo() {
   const { t } = useTranslation();
   const { tick } = useParams();
   const { btcHeight } = useCommonStore((state) => state);
   const [tabText, setTabText] = useState(t('common.holders'));
   const nav = useNavigate();
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const handleTabsChange = (type: any) => {
     if (type !== tabText) {
       setTabText(type);
     }
   };
-  const { data, trigger, isLoading } = useSat20Info({ tick, network });
-  const detail = useMemo(() => data?.data || {}, [data]);
+  const { resp: tokenInfoResp, isLoading } = useTokenInfo({ tick });
+  const detail = useMemo(() => {
+    return tokenInfoResp?.data || {};
+  },
+    [tokenInfoResp]
+  );
 
   const status = useMemo(() => {
     let _status;
     if (!detail.ticker) {
       return _status;
     }
-    const isSpecial =
-      detail.rarity !== 'unknow' &&
-      detail.rarity !== 'common' &&
-      !!detail.rarity;
-    console.log(isSpecial);
+    const isSpecial = detail.rarity !== 'unknow' && detail.rarity !== 'common' && !!detail.rarity;
+
     if (!isSpecial && detail.startBlock < 0) {
       if (detail.max > 0 && detail.totalMinted < detail.max) {
         _status = 'Minting';
@@ -82,16 +84,10 @@ export default function Sat20Info() {
     // });
   };
   const attr = useMemo(() => {
-    const { rarity, cn, trz } = detail || {};
+    const { rarity } = detail || {};
     const attrArr: string[] = [];
     if (rarity !== 'unknow' && rarity !== 'common' && !!rarity) {
       attrArr.push(`rar=${rarity}`);
-    }
-    if (cn !== undefined) {
-      attrArr.push(`cn=${cn}`);
-    }
-    if (trz !== undefined) {
-      attrArr.push(`trz=${trz}`);
     }
     let _attr;
     if (attrArr.length > 0) {
@@ -120,9 +116,7 @@ export default function Sat20Info() {
     return detail?.delegate ?? detail?.inscriptionId;
   }, [detail])
   useEffect(() => {
-    if (tick) {
-      trigger();
-    }
+
   }, [tick, network]);
   return (
     <Spin spinning={isLoading}>
@@ -279,7 +273,7 @@ export default function Sat20Info() {
             )}
           {tabText === t('common.minted_history') && tick && (
             <div className='p-4'>
-              <Sat20TickHistory tick={tick} />
+              <TickHistory tick={tick} />
             </div>
           )}
         </div>

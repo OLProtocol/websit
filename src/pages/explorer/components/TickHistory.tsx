@@ -1,27 +1,25 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { Button, Segmented, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useSat20TickHistory } from '@/api';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-
+import { useTokenHistory } from '@/api';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
 import { CopyButton } from '@/components/CopyButton';
+import { useNetwork } from '@/lib/wallet';
 
-interface Sat20HistoryProps {
+interface HistoryProps {
   tick: string;
 }
-export const Sat20TickHistory = ({ tick }: Sat20HistoryProps) => {
+export const TickHistory = ({ tick }: HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { data, isLoading, trigger } = useSat20TickHistory({
+  const { data, isLoading, trigger } = useTokenHistory({
     ticker: tick,
-    network,
     start,
     limit,
   });
@@ -119,7 +117,13 @@ export const Sat20TickHistory = ({ tick }: Sat20HistoryProps) => {
       align: 'center',
     },
   ];
-  const dataSource = useMemo(() => data?.data?.detail.items || [], [data]);
+  const dataSource = useMemo(() => {
+    return (data?.data?.detail?.items || []).map(item => ({
+      ...item,
+      key: item.inscriptionId,
+    }));
+  }, [data]);
+
   const total = useMemo(() => data?.data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);

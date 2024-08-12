@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { Button, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useSat20AddressHistory } from '@/api';
+import { useTokenAddressHistory } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl } from '@/lib/utils';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
+import { useNetwork } from '@/lib/wallet';
 
 interface Ord2HistoryProps {
   tick: string;
@@ -17,13 +18,12 @@ interface Ord2HistoryProps {
 export const Sat20AddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { data, isLoading, trigger } = useSat20AddressHistory({
+  const { data, isLoading, trigger } = useTokenAddressHistory({
     ticker: tick,
     address,
-    network,
     start,
     limit,
   });

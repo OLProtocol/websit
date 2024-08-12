@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { generateMempoolUrl } from '@/lib/utils';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useNetwork } from '@/lib/wallet';
 const { Search } = Input;
 
 export const OrdSatInscriptionList = () => {
@@ -22,7 +23,7 @@ export const OrdSatInscriptionList = () => {
     const { sat } = useParams();
     const [search, setSearch] = useState('');
 
-    const { network } = useReactWalletStore();
+    const network = useNetwork();
     const router = useNavigate();
 
     const [start, setStart] = useState(0);
@@ -186,8 +187,7 @@ export const OrdSatInscriptionList = () => {
     const getInscriptions = async (sat: string) => {
         setLoading(true);
         const resp = await getOrdInscriptionsBySat({
-            sat: sat,
-            network,
+            sat,
             start,
             limit,
         });

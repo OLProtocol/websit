@@ -19,6 +19,7 @@ import {
 } from './index';
 import { getUtxoByValue, pushBTCpmt } from '@/api';
 import { addressToScriptPublicKey } from '@/lib/utils';
+import { getNetwork } from '@/lib/wallet';
 interface FileItem {
   mimetype: string;
   show: string;
@@ -157,8 +158,13 @@ export const getFundingAddress = (sescet: string, network: string) => {
   const pubkey = keys.get_pubkey(seckey, true);
   const script = [pubkey, 'OP_CHECKSIG'];
   const leaf = Tap.encodeScript(script);
+  let btcNetwork: 'main' | 'testnet' = 'main'
+  switch (network) {
+    case 'testnet':
+      btcNetwork = 'testnet';
+  }
   const [tapkey, cblock] = Tap.getPubKey(pubkey, { target: leaf });
-  const address = Address.p2tr.fromPubKey(tapkey, network as any);
+  const address = Address.p2tr.fromPubKey(tapkey, btcNetwork);
   return {
     script,
     leaf,
@@ -548,7 +554,6 @@ export const pushCommitTx = async ({
 
 interface SendBTCProps {
   toAddress: string;
-  network: string;
   value: number;
   feeRate: number;
   fromAddress: string;
@@ -559,7 +564,6 @@ interface SendBTCProps {
 
 export const sendBTC = async ({
   toAddress,
-  network,
   value,
   feeRate = 1,
   fromAddress,
@@ -568,11 +572,7 @@ export const sendBTC = async ({
 }: SendBTCProps) => {
   const hasOrdxUtxo = !!ordxUtxo;
   console.log('hasOrdxUtxo', hasOrdxUtxo);
-  const data = await getUtxoByValue({
-    address: fromAddress,
-    value: 0,
-    network,
-  });
+  const data = await getUtxoByValue({ address: fromAddress, value: 0 });
   const consumUtxos = data?.data || [];
   if (!consumUtxos.length) {
     throw new Error(i18n.t('toast.insufficient_balance'));
@@ -609,6 +609,7 @@ export const sendBTC = async ({
     },
   ];
   console.log(avialableUtxos);
+  const network = getNetwork();
   const psbt = await buildTransaction({
     utxos: avialableUtxos,
     outputs,

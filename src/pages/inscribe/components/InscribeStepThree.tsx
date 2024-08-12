@@ -18,7 +18,7 @@ import { FeeShow } from './FeeShow';
 // import mempoolJS from '@mempool/mempool.js';
 import { generatePrivateKey, generateInscriptions } from '../utils';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-import { useCalcFee } from '@/lib/hooks';
+import { useCalcFee } from '@/lib/utils/useCalcFee';
 import { OrderItemType, useCommonStore, useOrderStore } from '@/store';
 import { InscribeType } from '@/types';
 import { useTranslation } from 'react-i18next';

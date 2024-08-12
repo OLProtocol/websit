@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 interface listTypeItemrops {
   item: {
     tick: string;
-
-    balance: string;
+    balance: number;
   };
   selected?: boolean;
   onClick?: () => void;
@@ -13,9 +12,8 @@ export const ListTypeItem = ({ item, onClick, selected }: listTypeItemrops) => {
   const { t } = useTranslation();
   return (
     <div
-      className={`border-[2px] border-gray-200 rounded-lg overflow-hidden ${
-        selected ? 'border-orange-500 border-[2px]' : ''
-      }`}
+      className={`border-[2px] border-gray-200 rounded-lg overflow-hidden ${selected ? 'border-orange-500 border-[2px]' : ''
+        }`}
       onClick={onClick}>
       <div className='h-10 flex justify-between px-2 items-center bg-gray-200'>
         <span className='text-orange-500'>{item.tick}</span>

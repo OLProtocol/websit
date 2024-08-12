@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { useNsList, health } from '@/api';
+import { useNsList } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
@@ -22,14 +22,15 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { generateMempoolUrl } from '@/lib/utils';
-import { cacheData, getCachedData } from '@/lib/utils/cache';
+import { setCacheData, getCachedData } from '@/lib/utils/cache';
+import { useNetwork } from '@/lib/wallet';
 
 export const Sat20NameList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const toast = useToast();
 
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
 
   const [start, setStart] = useState(0);
   const [limit] = useState(10);
@@ -39,7 +40,7 @@ export const Sat20NameList = () => {
     nav(`/explorer/ns/${item.name}`);
   };
 
-  const { data, error, isLoading } = useNsList({ start, limit, network });
+  const { data, error, isLoading } = useNsList({ start, limit });
   const list = useMemo(() => data?.data?.names || [], [data]);
   const total = useMemo(() => data?.data?.total || 0, [data]);
 
