@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Sat20Item } from './Sat20Item';
-import { getOrdInscriptionsByAddress, getSats, useSat20Summary } from '@/api';
+import { getOrdInscriptionsByAddress, getSats } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
 import { toast } from 'react-hot-toast';
+import { useTokenBalanceSummaryListHook } from '@/hooks/TokenBalanceSummaryList';
 
 interface Sat20SummaryListProps {
   address: string;
@@ -22,8 +23,8 @@ export const Sat20AccountSummaryList = ({
 }: Sat20SummaryListProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
-  const { data, trigger } = useSat20Summary({ address, network });
-  const otherTickers = useMemo(() => data?.data?.detail || [], [data]);
+  const { value } = useTokenBalanceSummaryListHook({ address });
+  const otherTickers = useMemo(() => value?.data?.detail || [], [value]);
   const [rareSatList, setRareSatList] = useState<any[]>();
   const [nftSumBalance, setNftBalance] = useState<any>();
 
@@ -63,7 +64,6 @@ export const Sat20AccountSummaryList = ({
   const getNfts = async () => {
     const data = await getOrdInscriptionsByAddress({
       address,
-      network,
       start: 0,
       limit: 1,
     });
@@ -77,10 +77,7 @@ export const Sat20AccountSummaryList = ({
   };
 
   const getRareSats = async () => {
-    const data = await getSats({
-      address: address,
-      network,
-    });
+    const data = await getSats({ address: address });
     let tmpSats: any[] = [];
     if (data.code !== 0) {
       tmpSats = [];
@@ -88,7 +85,6 @@ export const Sat20AccountSummaryList = ({
       for (let i = 0; i < data.data.length; i++) {
         if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
           data.data[i].sats.forEach((item) => {
-            // item.id = data.data[i].utxo;
             tmpSats.push(item);
           });
         }
@@ -132,7 +128,6 @@ export const Sat20AccountSummaryList = ({
   }, [tickers]);
 
   useEffect(() => {
-    trigger();
     getRareSats();
     getNfts();
   }, [address, network]);

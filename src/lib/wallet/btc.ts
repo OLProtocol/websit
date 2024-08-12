@@ -1,4 +1,7 @@
-import { Transaction, NetworkType } from '.';
+import { useNetwork } from './network';
+import { Transaction } from '.';
+import { NetworkType } from '@/lib/types';
+
 import { type Utxo, BtcUtxo, PsbtInput, PsbtOutput } from './utxo';
 import {
   converUtxosToInputs,
@@ -6,6 +9,7 @@ import {
   convertBtcUtxosToInputs,
 } from './utxo';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
+
 
 export const calcNetworkFee = async ({
   utxos,

@@ -1,18 +1,18 @@
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
+
 import { useEffect, useMemo, useState } from 'react';
 import { Input, Empty, Segmented } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Sat20List } from '@/pages/explorer/components/Sat20List';
-import { Sat20SummaryList } from '@/components/Sat20SummaryList';
 import { Sat20AccountSummaryList } from '@/components/Sat20AccountSummaryList';
 import { useTranslation } from 'react-i18next';
-import { useNsListByAddress } from '@/api'
 import { NameList } from '@/components/NameList';
 import { NftList } from '@/components/NftList';
 import { RareSat } from '@/pages/discover/rareSat';
 import { AvailableUtxoList } from '@/pages/account/components/AvailableUtxoList';
 import { Sat20AddressHolders } from '@/components/Sat20AddressHolders';
+import { useNetwork } from '@/lib/wallet';
+import { useNameListHook } from '@/hooks/NameList';
 
 const { Search } = Input;
 
@@ -26,16 +26,10 @@ export default function Sat20Index() {
   const [searchParams] = useSearchParams();
   const q = searchParams.get('q');
 
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
+  const { value } = useNameListHook({ address, start: 0, limit: 1 });
 
-  const { data } = useNsListByAddress({
-    address: address,
-    start: 0,
-    limit: 1,
-    network,
-  });
-  const nameTotal = useMemo(() => data?.data?.total || 0, [data]);
   const onTotalChange = (total: number) => {
     if (total !== 0) {
       setUtxosTotal(total);
@@ -51,7 +45,6 @@ export default function Sat20Index() {
     }
     setAddress(search);
     history.replaceState(null, '', `/#/explorer?q=${search}`);
-    // nav(`${ROUTE_PATH.SAT20_INDEX}?q=${search}`);
   };
   const summaryEmptyHandler = (b: boolean) => {
     setSummaryEmptyStatus(b);
@@ -64,13 +57,9 @@ export default function Sat20Index() {
     return summaryEmptyStatus && historyEmptyStatus;
   }, [summaryEmptyStatus, historyEmptyStatus]);
 
-
-
   useEffect(() => {
     if (search === '') {
       setAddress('');
-      // history.replaceState(null, '', `/#/explorer`);
-      // nav(`${ROUTE_PATH.SAT20_INDEX}`);
     }
   }, [search]);
   useEffect(() => {
@@ -79,6 +68,7 @@ export default function Sat20Index() {
       setSearch(q);
     }
   }, [q]);
+
   return (
     <div>
       <BtcHeightAlert />
@@ -104,11 +94,6 @@ export default function Sat20Index() {
             onSearch={doSearch}
           />
         </div>
-        {/* {!showAddress && (
-          <div className='mb-12 text-sm text-center'>
-            {t('pages.explorer.des')}
-          </div>
-        )} */}
       </div>
       <div className='max-w-7xl mx-auto px-4'>
         {(showAddress && address != "") && (
@@ -123,7 +108,7 @@ export default function Sat20Index() {
                 onEmpty={summaryEmptyHandler}
                 address={address}
                 utxosTotal={utxosTotal}
-                nameTotal={nameTotal}
+                nameTotal={value?.data?.total || 0}
                 onChange={(tick) => setSelectTick(tick)}
               />
             </div>

@@ -15,32 +15,18 @@ export const NavHeader = () => {
     {
       key: ROUTE_PATH.HOME,
       label: t('nav.home'),
-      // value: ROUTE_PATH.HOME,
       value:
         i18n.language == 'en'
           ? 'https://sat20.org'
           : 'https://sat20.org/index-zh.html',
       type: 'link',
     },
-    // {
-    //   key: ROUTE_PATH.INSCRIBE,
-    //   label: t('nav.inscribe'),
-    //   value: ROUTE_PATH.INSCRIBE,
-    //   type: 'route',
-    // },
     {
       key: ROUTE_PATH.SAT20_INDEX,
       label: t('nav.explorer'),
       value: ROUTE_PATH.SAT20_INDEX,
       type: 'route',
     },
-
-    // {
-    //   key: ROUTE_PATH.MARKET_INDEX,
-    //   label: t('nav.market'),
-    //   value: ROUTE_PATH.MARKET_INDEX,
-    //   type: 'route',
-    // },
     {
       key: ROUTE_PATH.DISCOVER_RARE_SAT,
       label: t('nav.discover'),
@@ -68,21 +54,9 @@ export const NavHeader = () => {
           : 'https://docs.sat20.org/',
       type: 'link',
     },
-    // {
-    //   key: ROUTE_PATH.TOOLS,
-    //   label: t('nav.tools'),
-    //   value: ROUTE_PATH.TOOLS,
-    //   type: 'route',
-    // },
+
   ];
-  // if (['ordx.space'].every((v) => location.hostname !== v)) {
-  //   items.push({
-  //     key: ROUTE_PATH.TOOLS,
-  //     label: t('nav.tools'),
-  //     value: ROUTE_PATH.TOOLS,
-  //     type: 'route',
-  //   });
-  // }
+
   const options = [
     { value: 'en', label: 'EN' },
     { value: 'ZH', label: 'zh' },
@@ -120,28 +94,10 @@ export const NavHeader = () => {
             items={items}
             style={{ flex: 1, minWidth: 0 }}
           />
-          {/* <LinkBox>
-            <LinkOverlay href='/#/'>
-              Home
-            </LinkOverlay>
-          </LinkBox> */}
-          {/* <Divider orientation='vertical' className='mx-4' /> */}
-          {/* <LinkBox>
-            <LinkOverlay href='/#/inscribe'>
-              Inscribe
-            </LinkOverlay>
-          </LinkBox>
-          <Divider orientation='vertical' className='mx-4' />
-          <LinkBox>
-            <LinkOverlay href='/#/ordx'>
-              Ordx
-            </LinkOverlay>
-          </LinkBox> */}
         </div>
 
         <div className='flex justify-center h-full items-center gap-2'>
           <FeerateSelectButton />
-          {/* <UnisatConnectButton /> */}
           <WalletConnectButton />
           <LanguageSelect />
         </div>

@@ -4,9 +4,10 @@ import { keys } from '@cmdcode/crypto-utils';
 import { getFundingAddress } from '@/pages/inscribe/utils';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { pollPushBTCpmt, pushBTCpmt } from '@/api';
+import { useNetwork } from '@/lib/wallet';
 
 export default function Extract() {
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const [txid, setTxid] = useState('');
   const [secret, setSecret] = useState('');
   const [toAddress, setToAddress] = useState('');

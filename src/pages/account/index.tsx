@@ -1,27 +1,20 @@
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Sat20AccountSummaryList } from '@/components/Sat20AccountSummaryList';
 import { RareSat } from '../discover/rareSat';
 import { AvailableUtxoList } from './components/AvailableUtxoList';
 import { Sat20AddressHolders } from '@/components/Sat20AddressHolders';
-import { useNsListByAddress } from '@/api'
 import { NftList } from '@/components/NftList';
 import { NameList } from '@/components/NameList';
+import { useNameListHook } from '@/hooks/NameList';
 
 export default function Account() {
   const { t } = useTranslation();
-  const { network, address: currentAccount } = useReactWalletStore();
+  const { address } = useReactWalletStore();
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
   const [ticker, setTicker] = useState('');
-
-  const { data } = useNsListByAddress({
-    address: currentAccount,
-    start: 0,
-    limit: 1,
-    network,
-  });
-  const nameTotal = useMemo(() => data?.data?.total || 0, [data]);
+  const { value } = useNameListHook({ address, start: 0, limit: 1 });
 
   const onTotalChange = (total: number) => {
     if (total !== 0) {
@@ -31,31 +24,31 @@ export default function Account() {
 
   return (
     <div className='max-w-6xl mx-auto pt-4'>
-      {currentAccount ? (
+      {address ? (
         <div>
           <Sat20AccountSummaryList
-            address={currentAccount}
+            address={address}
             utxosTotal={utxosTotal}
-            nameTotal={nameTotal}
+            nameTotal={value?.data?.total || 0}
             onChange={(tick) => setTicker(tick)}
           />
           {ticker === t('pages.account.name') && (
-            <NameList address={currentAccount} />
+            <NameList address={address} />
           )}
           {ticker === t('pages.account.rare_sats') && (
-            <RareSat canSplit={true} targetAddress={currentAccount} />
+            <RareSat canSplit={true} targetAddress={address} />
           )}
 
           {ticker === t('pages.account.available_utxo') && (
-            <AvailableUtxoList address={currentAccount} onTotalChange={onTotalChange} />
+            <AvailableUtxoList address={address} onTotalChange={onTotalChange} />
           )}
 
           {ticker === t('pages.account.ord_nft') && (
-            <NftList targetAddress={currentAccount} />
+            <NftList targetAddress={address} />
           )}
 
           {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && (
-            <Sat20AddressHolders tick={ticker} address={currentAccount} />
+            <Sat20AddressHolders tick={ticker} address={address} />
           )}
         </div>
       ) : (

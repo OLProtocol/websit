@@ -1,7 +1,7 @@
 import {
-  getSat20Summary,
+  getTokenAddressSummaryList,
   getUtxoByValue,
-  getSat20AddressHolders,
+  getTokenAddressHolders,
   getSats,
 } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
@@ -334,10 +334,7 @@ export default function Transaction() {
   };
 
   const getRareSatTicker = async () => {
-    const data = await getSats({
-      address: currentAccount,
-      network,
-    });
+    const data = await getSats({ address: currentAccount });
 
     let tickers: any[] = [];
 
@@ -424,9 +421,8 @@ export default function Transaction() {
   const getTickers = async () => {
     const tickers: any[] = [];
 
-    let data = await getSat20Summary({
+    let data = await getTokenAddressSummaryList({
       address: currentAccount,
-      network,
     });
 
     if (data.code !== 0) {
@@ -434,27 +430,26 @@ export default function Transaction() {
       messageApi.error(data.msg);
       return;
     }
-    const detail = data.data.detail;
+    const detail = data?.data?.detail;
 
-    detail.map(async (item) => {
-      data = await getSat20AddressHolders({
+    detail?.map(async (item) => {
+      data = await getTokenAddressHolders({
         start: 0,
         limit: 10,
         address: currentAccount,
         ticker: item.ticker,
-        network: network,
       });
       const utxosOfTicker: any[] = [];
       if (data.code === 0) {
-        const details = data.data.detail;
-        details.map((detail) => {
-          const utxo = {
-            txid: detail.utxo.split(':')[0],
-            vout: Number(detail.utxo.split(':')[1]),
-            value: detail.amount,
-            assetamount: detail.assetamount,
-          };
-          utxosOfTicker.push(utxo);
+        const details = data?.data?.detail;
+        details?.map((detail) => {
+          // const utxo = {
+          //   txid: detail.utxo.split(':')[0],
+          //   vout: Number(detail.utxo.split(':')[1]),
+          //   value: detail.amount,
+          //   assetamount: detail.assetamount,
+          // };
+          // utxosOfTicker.push(utxo);
         });
       }
       tickers.push({

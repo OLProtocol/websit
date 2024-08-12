@@ -10,6 +10,7 @@ import { Button, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCommonStore } from '@/store';
+import { useNetwork } from '@/lib/wallet';
 
 export default function Sat20NameInfo() {
   const { t } = useTranslation();
@@ -18,7 +19,7 @@ export default function Sat20NameInfo() {
   const { btcHeight } = useCommonStore((state) => state);
   const [tabText, setTabText] = useState(t('common.holders'));
   const nav = useNavigate();
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const handleTabsChange = (type: any) => {
     if (type !== tabText) {
       setTabText(type);
