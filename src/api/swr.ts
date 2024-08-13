@@ -4,11 +4,14 @@ import {
   TokenInfoReq,
   AddressReq,
   TokenReq,
-  SwrNameListInfo,
+  SwrNameList as SwrAddressNameList,
   NameListResp,
   SwrTokenBalanceSummaryListInfo,
   TokenBalanceSummaryListResp,
   AddressListReq,
+  NameReq,
+  SwrNameInfo,
+  NameInfoResp,
 } from './types';
 
 
@@ -85,20 +88,6 @@ export const useTokenHistory = ({
   };
 };
 
-export const useNsName = ({ name, network }: any) => {
-  const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `ns-name-${network}`,
-    () => request.getNameInfo({ name }),
-  );
-  return {
-    data,
-    error,
-    isLoading: isMutating,
-    trigger,
-    reset,
-  };
-};
-
 
 export const useInscriptiontInfo = ({ inscriptionId }: any) => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
@@ -142,10 +131,10 @@ export const useTokenBalanceSummaryList = ({ address }: AddressReq): SwrTokenBal
   };
 };
 
-export const useNameList = ({ address, start, limit }: AddressListReq): SwrNameListInfo => {
+export const useAddressNameList = ({ address, start, limit }: AddressListReq): SwrAddressNameList => {
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    `name-list-${address}-${start}-${limit}`,
-    () => request.getNameList({ address, start, limit }),
+    `address-name-list-${address}-${start}-${limit}`,
+    () => request.getAddressNameList({ address, start, limit }),
   );
   return {
     resp: data as NameListResp,
@@ -153,5 +142,19 @@ export const useNameList = ({ address, start, limit }: AddressListReq): SwrNameL
     reset,
     error,
     isLoading: isMutating,
+  };
+};
+
+
+export const useNameInfo = ({ name }: NameReq): SwrNameInfo => {
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(`name-info-${name}`,
+    () => request.getNameInfo({ name }),
+  );
+  return {
+    resp: data as NameInfoResp,
+    error,
+    isLoading: isMutating,
+    trigger,
+    reset,
   };
 };

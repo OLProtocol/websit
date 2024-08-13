@@ -32,7 +32,7 @@ export const getStatusList = async (
   return data;
 };
 
-export const getNsList = async ({ start, limit }: any) => {
+export const getNameList = async ({ start, limit }: any) => {
   const { data } = await axios.get(generateUrl(`ns/status?start=${start}&limit=${limit}`));
   return data;
 };
@@ -186,7 +186,7 @@ export const getOrdInscription = async ({ inscriptionId }: any) => {
   return data;
 };
 
-export const getNameList = async ({
+export const getAddressNameList = async ({
   address,
   start,
   limit,

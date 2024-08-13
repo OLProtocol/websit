@@ -5,7 +5,7 @@ import Test from '@/pages/test';
 import Inscribe from '@/pages/inscribe';
 import Sat20Index from '@/pages/explorer';
 import TokenInfo from '@/pages/explorer/TokenInfo';
-import Sat20NameInfo from '@/pages/explorer/Sat20NameInfo';
+import NameInfo from '@/pages/explorer/NameInfo';
 import UtxoInfo from '@/pages/explorer/utxo';
 import Sat20Inscription from '@/pages/explorer/inscription';
 import Account from '@/pages/account';
@@ -99,7 +99,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTE_PATH.SAT20_NS,
-        element: <Sat20NameInfo />,
+        element: <NameInfo />,
       },
       {
         path: ROUTE_PATH.SAT20_UTXO_INFO,
