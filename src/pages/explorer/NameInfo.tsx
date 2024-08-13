@@ -95,7 +95,7 @@ export default function NameInfo() {
           </div>
         </div>
         <div className='border-[1px] border-gray-200 rounded-xl mb-4'>
-          <Table columns={columns} dataSource={dataSource} rowKey="key" />
+          <Table columns={columns} dataSource={dataSource} rowKey="key" pagination={false} />
         </div>
         {/* <div className='border-[1px] border-gray-200 rounded-xl'>
           <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-14 items-center'>
