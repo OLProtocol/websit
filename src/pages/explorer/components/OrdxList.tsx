@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Segmented } from 'antd';
-import { Sat20FullList } from './Sat20FullList';
-import { Sat20NameList } from './Sat20NameList';
+import { Sat20FullList } from './FullList';
+import { NameList } from './NameList';
 import { OrdNftList } from './OrdNftList';
 import { useTranslation } from 'react-i18next';
 
@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { useOrdxVersion } from '@/api';
 
-export const Sat20List = () => {
+export const OrdxList = () => {
   const { t } = useTranslation();
 
   const [type, setType] = useState('FT');
@@ -64,7 +64,7 @@ export const Sat20List = () => {
             />
           </div>
           {type === segmentedList[0] && <Sat20FullList />}
-          {type === segmentedList[1] && <Sat20NameList />}
+          {type === segmentedList[1] && <NameList />}
           {type === segmentedList[2] && <OrdNftList />}
         </CardBody>
       </Card>

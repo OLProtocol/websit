@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Input, Empty, Segmented } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
-import { Sat20List } from '@/pages/explorer/components/Sat20List';
+import { OrdxList } from '@/pages/explorer/components/OrdxList';
 import { Sat20AccountSummaryList } from '@/components/Sat20AccountSummaryList';
 import { useTranslation } from 'react-i18next';
 import { NameList } from '@/components/NameList';
@@ -12,7 +12,7 @@ import { RareSat } from '@/pages/discover/rareSat';
 import { AvailableUtxoList } from '@/pages/account/components/AvailableUtxoList';
 import { Sat20AddressHolders } from '@/components/Sat20AddressHolders';
 import { useNetwork } from '@/lib/wallet';
-import { useNameListHook } from '@/hooks/NameList';
+import { useAddressNameListHook } from '@/hooks/NameList';
 
 const { Search } = Input;
 
@@ -28,7 +28,7 @@ export default function Sat20Index() {
 
   const network = useNetwork();
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
-  const { value } = useNameListHook({ address, start: 0, limit: 1 });
+  const { value } = useAddressNameListHook({ address, start: 0, limit: 1 });
 
   const onTotalChange = (total: number) => {
     if (total !== 0) {
@@ -131,7 +131,7 @@ export default function Sat20Index() {
         )}
         {!showAddress && (
           <div>
-            <Sat20List />
+            <OrdxList />
           </div>
         )}
       </div>

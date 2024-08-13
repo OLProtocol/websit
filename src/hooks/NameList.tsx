@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNameList } from '@/api';
+import { useAddressNameList } from '@/api';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
 import { NameListResp } from '@/api/types';
 
@@ -19,9 +19,9 @@ const prefix = 'nameList_';
 const timeout = 60 * 1000;
 const getKey = (address: string, start: number, limit: number) => prefix + address + '_' + start + '_' + limit;
 
-export const useNameListHook = ({ address, start, limit }: NameListProps) => {
+export const useAddressNameListHook = ({ address, start, limit }: NameListProps) => {
     const [value, setValue] = useState<NameListResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useNameList({
+    const { resp, trigger, isLoading } = useAddressNameList({
         address,
         start,
         limit,

@@ -65,49 +65,7 @@ export interface TokenInfoData {
   txid: string;
 }
 
-// ns/address
-export interface KVItem {
-  key: string;
-  value: string;
-  inscriptionId: string;
-}
 
-export interface NftItem {
-  id: number;
-  name: string;
-  sat: number;
-  address: string;
-  inscriptionId: string;
-  utxo: string;
-  value: number;
-  height: number;
-  time: number;
-  inscriptionAddress: string;
-}
-
-export interface OrdinalsName extends NftItem {
-  kvs: KVItem[];
-}
-
-export interface NamesData {
-  address: string;
-  total: number;
-  names: OrdinalsName[];
-}
-
-export interface NameListResp {
-  code: number;
-  msg: string;
-  data: NamesData;
-}
-
-export interface SwrNameListInfo {
-  resp?: NameListResp;
-  error: any;
-  isLoading: boolean;
-  reset: () => void;
-  trigger: TriggerWithoutArgs<any, any, `name-list-${any}-${any}-${any}`, never>
-}
 
 // token summary list
 
@@ -154,3 +112,64 @@ export interface TxStatusParams {
   network: string;
 }
 
+// name 
+export interface KVItem {
+  key: string;
+  value: string;
+  inscriptionId: string;
+}
+
+export interface NftItem {
+  id: number;
+  name: string;
+  sat: number;
+  address: string;
+  inscriptionId: string;
+  utxo: string;
+  value: number;
+  height: number;
+  time: number;
+  inscriptionAddress: string;
+}
+
+export interface OrdinalsName extends NftItem {
+  kvs: KVItem[];
+}
+
+export interface NamesData {
+  address: string;
+  total: number;
+  names: OrdinalsName[];
+}
+
+// name ns/address
+export interface NameListResp {
+  code: number;
+  msg: string;
+  data: NamesData;
+}
+
+export interface SwrNameList {
+  resp?: NameListResp;
+  error: any;
+  isLoading: boolean;
+  reset: () => void;
+  trigger: TriggerWithoutArgs<any, any, `address-name-list-${any}-${any}-${any}`, never>
+}
+
+// name name info
+export interface NameReq {
+  name?: string;
+}
+
+export interface NameInfoResp extends BaseResp {
+  data?: OrdinalsName;
+}
+
+export interface SwrNameInfo {
+  resp?: NameInfoResp;
+  error: any;
+  isLoading: boolean;
+  reset: () => void;
+  trigger: TriggerWithoutArgs<any, any, `name-info-${string}`, never>
+}
