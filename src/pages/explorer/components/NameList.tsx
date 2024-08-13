@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { useNsList } from '@/api';
+import { useNameList } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +25,7 @@ import { generateMempoolUrl } from '@/lib/utils';
 import { setCacheData, getCachedData } from '@/lib/utils/cache';
 import { useNetwork } from '@/lib/wallet';
 
-export const Sat20NameList = () => {
+export const NameList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const toast = useToast();
@@ -40,12 +40,11 @@ export const Sat20NameList = () => {
     nav(`/explorer/ns/${item.name}`);
   };
 
-  const { data, error, isLoading } = useNsList({ start, limit });
+  const { data, error, isLoading } = useNameList({ start, limit });
   const list = useMemo(() => data?.data?.names || [], [data]);
   const total = useMemo(() => data?.data?.total || 0, [data]);
 
   useEffect(() => {
-    // console.debug("Explorer Names:", "isLoading:", isLoading, "error:", error, "data:", data)
     setLoading(isLoading);
     if (error) {
       toast({

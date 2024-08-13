@@ -10,12 +10,12 @@ import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
 import { useNetwork } from '@/lib/wallet';
 
-interface Ord2HistoryProps {
+interface HistoryProps {
   tick: string;
   address: string;
   onEmpty?: (b: boolean) => void;
 }
-export const Sat20AddressHistory = ({ tick, address, onEmpty }: Ord2HistoryProps) => {
+export const AddressHistory = ({ tick, address, onEmpty }: HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const network = useNetwork();
