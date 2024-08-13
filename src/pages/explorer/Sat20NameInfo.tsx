@@ -15,7 +15,6 @@ import { useNetwork } from '@/lib/wallet';
 export default function Sat20NameInfo() {
   const { t } = useTranslation();
   const { name } = useParams();
-  console.log(name);
   const { btcHeight } = useCommonStore((state) => state);
   const [tabText, setTabText] = useState(t('common.holders'));
   const nav = useNavigate();

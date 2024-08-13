@@ -6,12 +6,10 @@ import { useFtList } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { genOrdServiceUrl } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import { useToast } from '@chakra-ui/react';
-import { setCacheData, getCachedData } from '@/lib/utils/cache';
 import { useNetwork } from '@/lib/wallet';
 
 interface DataType {
@@ -44,7 +42,6 @@ export const Sat20FullList = () => {
   }, [data]);
 
   useEffect(() => {
-    // console.debug("Explorer All Ordx Status List:", "isLoading:", isLoading, "error:", error, "data:", data)
     setLoading(isLoading);
     if (error) {
       toast({
@@ -68,7 +65,6 @@ export const Sat20FullList = () => {
 
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
-    console.log(item);
     // nav('/inscribe', { state: { type: 'ordx', item } });
   };
 
@@ -110,8 +106,6 @@ export const Sat20FullList = () => {
       align: 'center',
       render: (inscriptionId, record) => {
         const showId = record?.delegate ?? inscriptionId;
-        console.log(record.delegate)
-        console.log(showId);
         return record.contenttype === 'text/html' || !!record?.delegate ? (
           <div>
             <iframe
@@ -247,8 +241,6 @@ export const Sat20FullList = () => {
         const isSpecial =
           item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         let status;
-        console.log(item.ticker);
-        console.log(isSpecial, item.startBlock, item.endBlock, btcHeight, btcHeight)
         if (!isSpecial && item.startBlock < 0) {
           if (item.max > 0 && item.totalMinted < item.max) {
             status = 'Minting';

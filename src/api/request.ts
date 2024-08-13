@@ -206,7 +206,6 @@ export const getBestHeight = async () => {
 };
 export const getHeightInfo = async ({ height }: any) => {
   const { data } = await axios.get(generateUrl(`height/${height}`));
-  console.log(data);
   return data;
 };
 
