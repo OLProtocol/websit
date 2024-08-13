@@ -65,6 +65,7 @@ export const Sat20FullList = () => {
 
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
+    console.log(item);
     // nav('/inscribe', { state: { type: 'ordx', item } });
   };
 
