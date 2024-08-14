@@ -114,9 +114,9 @@ export default function Home() {
     let url = ""
     console.log(i18n.language)
     if (i18n.language == 'zh_CN' || i18n.language == 'zh') {
-      url = "https://docs.ordx.space/ordinals-x/xie-yi-bi-jiao/compare"
+      url = "https://docs.sat20.org/ordinals-x/xie-yi-bi-jiao/compare"
     } else {
-      url = "https://docs.ordx.space/v/en/ordinals-x/protocol-comparison/compare"
+      url = "https://docs.sat20.org/en/ordinals-x/protocol-comparison/compare"
     }
     window.open(url, '_blank');
   };
