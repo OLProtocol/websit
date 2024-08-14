@@ -46,11 +46,11 @@ export const NavHeader = () => {
       type: 'link',
     },
     {
-      key: 'https://docs.ordx.space/',
+      key: 'https://docs.sat20.org/',
       label: t('nav.docs'),
       value:
         i18n.language == 'en'
-          ? 'https://docs.sat20.org/v/en/'
+          ? 'https://docs.sat20.org/en/'
           : 'https://docs.sat20.org/',
       type: 'link',
     },
