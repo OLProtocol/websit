@@ -2,7 +2,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Modal, Space } from 'antd';
 import version from '@/assets/version.txt?raw';
-import { useBtcHeight, useAppVersion } from '@/api';
+import { useAppVersion } from '@/api';
 
 export const UpdateVersionModal = () => {
   // console.log('version', version);

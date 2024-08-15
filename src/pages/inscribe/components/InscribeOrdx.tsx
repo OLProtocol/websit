@@ -28,7 +28,7 @@ import { Checkbox } from 'antd';
 import { BusButton } from '@/components/BusButton';
 import { useEffect, useMemo, useState } from 'react';
 import { useMap } from 'react-use';
-import { fetchTipHeight, calcTimeBetweenBlocks, hideStr } from '@/lib/utils';
+import { calcTimeBetweenBlocks, hideStr } from '@/lib/utils';
 import {
   clacTextSize,
   encodeBase64,
@@ -37,7 +37,7 @@ import {
 } from '../utils';
 import { generateMempoolUrl } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { getSat20Info, useSatTypes, getUtxoByType } from '@/api';
+import { getTickInfo, useSatTypes, getUtxoByType } from '@/api';
 import toast from 'react-hot-toast';
 import { useCommonStore } from '@/store';
 import { ColumnsType } from 'antd/es/table';
@@ -85,7 +85,7 @@ export const InscribeOrdx = ({
     mintRarity: '',
     sat: 0,
   });
-  const { data: satTypeData } = useSatTypes({ network });
+  const { data: satTypeData } = useSatTypes();
   const satTypeList = useMemo(() => {
     return satTypeData?.data || [];
   }, [satTypeData]);
@@ -140,14 +140,9 @@ export const InscribeOrdx = ({
     }
   };
   const getOrdXInfo = async (tick: string) => {
-    // If there is no data in localStorage, fetch it
     try {
       const key = `${network}_${tick}`;
-      const cachedData = localStorage.getItem(key);
-      // if (cachedData) {
-      //   return JSON.parse(cachedData);
-      // }
-      const info = await getSat20Info({ tick, network });
+      const info = await getTickInfo({ tick });
       if (info) {
         localStorage.setItem(key, JSON.stringify(info));
       }

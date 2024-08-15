@@ -1,130 +1,106 @@
+import { BtcNetwork } from './../types/common';
 import axios from 'axios';
 import {
-  Sat20ListStatusParams as Sat20StatusListParams,
-  Sat20InfoParams,
-  Sat20SummaryParams,
-  Sat20HistoryParams,
+  ListReq,
+  TokenInfoReq,
+  AddressReq,
+  TokenReq as TokenReq,
   TxStatusParams,
+  TokenBalanceSummaryListResp,
+  AddressListReq,
+  NameListResp,
 } from './types';
+const { VITE_API_HOST, VITE_BTC_CHAIN } = import.meta.env;
 
-export const generateUrl = (url: string, network?: string) => {
-  return `${VITE_API_HOST}${network === 'testnet' ? '/testnet4' : '/mainnet'}/${url}`;
+export const generateUrl = (url: string) => {
+  return `${VITE_API_HOST}/${VITE_BTC_CHAIN}/${url}`;
 };
-const { VITE_API_HOST } = import.meta.env;
-export const responseParse = async (response) => {
-  const { code, msg, data } = response?.data || {};
-  if (code === 0) {
-    return response?.data;
-  } else {
-    console.log('error: ' + msg);
-  }
+
+
+export const getHealth = async () => {
+  const { data } = await axios.get(generateUrl(`health`));
+  return data;
 };
-export const getSat20StatusList = async (
-  params: Sat20StatusListParams,
+
+
+export const getStatusList = async (
+  params: ListReq,
 ): Promise<any> => {
   const { data } = await axios.get(
-    generateUrl(
-      // `status?start=${params.start}&limit=${params.limit}`,
-      `tick/status?start=${params.start}&limit=${params.limit}`,
-      params.network,
-    ),
+    generateUrl(`tick/status?start=${params.start}&limit=${params.limit}`),
   );
   return data;
 };
 
-export const health = async ({ network }) => {
-  const { data } = await axios.get(generateUrl(`health`, network));
+export const getNameList = async ({ start, limit }: any) => {
+  const { data } = await axios.get(generateUrl(`ns/status?start=${start}&limit=${limit}`));
   return data;
 };
 
-export const getSat20Info = async ({ tick, network }: Sat20InfoParams) => {
-  const { data } = await axios.get(
-    generateUrl(`tick/info/${tick}`, network),
-    {
-      timeout: 10000,
-    },
-  );
-  return data;
-};
-
-export const getSat20Summary = async ({
-  address,
-  network,
-}: Sat20SummaryParams) => {
-  const { data } = await axios.get(
-    generateUrl(`address/summary/${address}`, network),
-  );
-  return data;
-};
-export const getSat20TickHolders = async ({ tick, network, start, limit }) => {
-  const { data } = await axios.get(
-    generateUrl(`tick/holders/${tick}?start=${start}&limit=${limit}`, network),
-  );
-  return data;
-};
-
-export const getSat20AddressHistory = async ({
-  address,
-  ticker,
-  network,
+export const getNftList = async ({
   start,
   limit,
-}: Sat20HistoryParams) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `address/history/${address}/${ticker}?start=${start}&limit=${limit}`,
-      network,
-    ),
-  );
+}: any) => {
+  const { data } = await axios.get(generateUrl(`nft/status?start=${start}&limit=${limit}`));
   return data;
 };
 
-export const getSat20AddressHolders = async ({
+export const getTickInfo = async ({ tick }: TokenInfoReq) => {
+  const { data } = await axios.get(generateUrl(`tick/info/${tick}`));
+  return data;
+};
+
+export const getTokenAddressSummaryList = async ({ address }: AddressReq): Promise<TokenBalanceSummaryListResp> => {
+  const { data } = await axios.get(generateUrl(`address/summary/${address}`));
+  return data;
+};
+export const getTokenHolderList = async ({ tick, start, limit }) => {
+  const { data } = await axios.get(generateUrl(`tick/holders/${tick}?start=${start}&limit=${limit}`));
+  return data;
+};
+
+export const getTokenAddressHistory = async ({
   address,
   ticker,
-  network,
   start,
   limit,
-}: Sat20HistoryParams) => {
+}: TokenReq) => {
+  const { data } = await axios.get(generateUrl(`address/history/${address}/${ticker}?start=${start}&limit=${limit}`));
+  return data;
+};
+
+export const getTokenAddressHolders = async ({
+  address,
+  ticker,
+  start,
+  limit,
+}: TokenReq) => {
   const { data } = await axios.get(
-    generateUrl(
-      `address/utxolist/${address}/${ticker}?start=${start}&limit=${limit}`,
-      network,
-    ),
+    generateUrl(`address/utxolist/${address}/${ticker}?start=${start}&limit=${limit}`),
   );
   return data;
 };
 
-export const getSat20TickHistory = async ({
+export const getTokenHistory = async ({
   start,
   limit,
   ticker,
-  network,
-}: Sat20HistoryParams) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `tick/history/${ticker}?start=${start}&limit=${limit}`,
-      network,
-    ),
-  );
+}: TokenReq) => {
+  const { data } = await axios.get(generateUrl(`tick/history/${ticker}?start=${start}&limit=${limit}`));
   return data;
 };
 
 export const getUtxoByValue = async ({
   address,
   value = 600,
-  network,
 }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`utxo/address/${address}/${value}`, network),
-  );
+  const { data } = await axios.get(generateUrl(`utxo/address/${address}/${value}`));
   return data;
 };
 
 // server端无此接口
-export const savePaidOrder = async ({ key, content, network }: any) => {
-  const { data } = await axios.post(
-    generateUrl(`v1/indexer/tx/putkv/${key}`, network),
+export const savePaidOrder = async ({ key, content }: any) => {
+  const { data } = await axios.post(generateUrl(`v1/indexer/tx/putkv/${key}`),
     {
       key,
       content: JSON.stringify(content),
@@ -133,10 +109,8 @@ export const savePaidOrder = async ({ key, content, network }: any) => {
   return data;
 };
 
-export const getInscriptiontInfo = async ({ inscriptionId, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`mint/details/${inscriptionId}`, network),
-  );
+export const getInscriptiontInfo = async ({ inscriptionId }: any) => {
+  const { data } = await axios.get(generateUrl(`mint/details/${inscriptionId}`));
   return data;
 };
 
@@ -145,6 +119,98 @@ export const getAppVersion = async () => {
   return data;
 };
 
+
+
+export const getSats = async ({ address }: any) => {
+  const { data } = await axios.get(
+    generateUrl(`exotic/address/${address}`),
+  );
+  return data;
+};
+
+export const getSplittedSats = async ({ ticker }: any) => {
+  const { data } = await axios.get(generateUrl(`splittedInscriptions/${ticker}`));
+  return data;
+};
+
+export const getAssetByUtxo = async ({ utxo }: any) => {
+  const { data } = await axios.get(generateUrl(`utxo/abbrassets/${utxo}`),);
+  return data;
+};
+
+export const getUtxoByType = async ({ address, type }: any) => {
+  const { data } = await axios.get(generateUrl(`exotic/address/${address}/${type}`));
+  return data;
+};
+
+export const getSatsByAddress = async ({ address, sats }: any) => {
+  const { data } = await axios.post(generateUrl(`sat/FindSatsInAddress`), { address: address, sats: sats });
+  return data;
+};
+
+export const getSatsByUtxo = async ({ utxo }: any) => {
+  const { data } = await axios.get(generateUrl(`exotic/utxo/${utxo}`));
+  return data;
+};
+
+export const getSatTypes = async () => {
+  const { data } = await axios.get(generateUrl(`info/satributes`));
+  return data;
+};
+
+export const getUtxo = async ({ utxo }: any) => {
+  const { data } = await axios.get(generateUrl(`utxo/assets/${utxo}`));
+  return data;
+};
+
+export const getOrdInscriptionsByAddress = async ({
+  address,
+  start,
+  limit,
+}: any) => {
+  const { data } = await axios.get(generateUrl(`nft/address/${address}?start=${start}&limit=${limit}`));
+  return data;
+};
+
+export const getOrdInscriptionsBySat = async ({
+  sat,
+  start,
+  limit,
+}: any) => {
+  const { data } = await axios.get(generateUrl(`nft/sat/${sat}?start=${start}&limit=${limit}`));
+  return data;
+};
+
+export const getOrdInscription = async ({ inscriptionId }: any) => {
+  const { data } = await axios.get(generateUrl(`nft/nftid/${inscriptionId}`));
+  return data;
+};
+
+export const getAddressNameList = async ({
+  address,
+  start,
+  limit,
+}: AddressListReq): Promise<NameListResp> => {
+  const { data } = await axios.get(generateUrl(`ns/address/${address}?start=${start}&limit=${limit}`), { timeout: 10000 });
+  return data;
+};
+
+export const getNameInfo = async ({ name }: any) => {
+  const { data } = await axios.get(generateUrl(`ns/name/${name}`));
+  return data;
+};
+
+export const getBestHeight = async () => {
+  const { data } = await axios.get(generateUrl(`bestheight`));
+  return data;
+};
+export const getHeightInfo = async ({ height }: any) => {
+  const { data } = await axios.get(generateUrl(`height/${height}`));
+  return data;
+};
+
+
+// tx status
 export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
   const { data } = await axios.get(
     `https://blockstream.info/${network === 'testnet' ? 'testnet/' : ''
@@ -152,167 +218,6 @@ export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
   );
   return data;
 };
-
-export const getSats = async ({ address, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`exotic/address/${address}`, network),
-  );
-  return data;
-};
-
-export const getSplittedSats = async ({ ticker, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`splittedInscriptions/${ticker}`, network),
-  );
-  return data;
-};
-
-export const getAssetByUtxo = async ({ utxo, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`utxo/abbrassets/${utxo}`, network),
-  );
-  return data;
-};
-export const getSeedByUtxo = async ({ utxo, network }: any) => {
-  const { data } = await axios.get(generateUrl(`utxo/seed/${utxo}`, network));
-  return data;
-};
-
-export const getUtxoByType = async ({ address, type, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`exotic/address/${address}/${type}`, network),
-  );
-  return data;
-};
-
-export const getSatsByAddress = async ({ address, sats, network }: any) => {
-  const { data } = await axios.post(
-    generateUrl(`sat/FindSatsInAddress`, network),
-    {
-      address: address,
-      sats: sats,
-    },
-  );
-  return data;
-};
-
-export const getSatsByUtxo = async ({ utxo, network }: any) => {
-  const { data } = await axios.get(generateUrl(`exotic/utxo/${utxo}`, network));
-  return data;
-};
-
-export const getSatTypes = async ({ network }: any) => {
-  const { data } = await axios.get(generateUrl(`info/satributes`, network));
-  return data;
-};
-
-export const getUtxo = async ({ utxo, network }: any) => {
-  const { data } = await axios.get(generateUrl(`utxo/assets/${utxo}`, network));
-  return data;
-};
-export const exoticUtxo = async ({ utxo, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`exotic/utxo/${utxo}`, network),
-    {
-      timeout: 10000,
-    },
-  );
-  return data;
-};
-
-export const getOrdInscriptionsByAddress = async ({
-  address,
-  network,
-  start,
-  limit,
-}: any) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `nft/address/${address}?start=${start}&limit=${limit}`,
-      network,
-    ),
-  );
-  return data;
-};
-export const getOrdNftList = async ({
-  network,
-  start,
-  limit,
-}: any) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `nft/status?start=${start}&limit=${limit}`,
-      network,
-    ),
-  );
-  return data;
-};
-
-export const getOrdInscriptionsBySat = async ({
-  sat,
-  network,
-  start,
-  limit,
-}: any) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `nft/sat/${sat}?start=${start}&limit=${limit}`,
-      network,
-    ),
-  );
-  return data;
-};
-
-export const getOrdInscription = async ({ inscriptionId, network }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`nft/nftid/${inscriptionId}`, network),
-  );
-  return data;
-};
-export const getNsList = async ({ network, start, limit }: any) => {
-  const { data } = await axios.get(
-    generateUrl(`ns/status?start=${start}&limit=${limit}`, network),
-  );
-  return data;
-};
-export const getNsListByAddress = async ({
-  address,
-  network,
-  start,
-  limit,
-}: any) => {
-  const { data } = await axios.get(
-    generateUrl(
-      `ns/address/${address}?start=${start}&limit=${limit}`,
-      network,
-    ),
-    {
-      timeout: 10000,
-    },
-  );
-  return data;
-};
-export const getNsName = async ({ name, network }: any) => {
-  const { data } = await axios.get(generateUrl(`ns/name/${name}`, network));
-  return data;
-};
-
-// export const getInscriptionsByGenesesAddress = async ({
-//   address,
-//   network,
-//   start,
-//   limit,
-// }: any) => {
-//   //没有根据创世地址拿到nft的需求
-//   const { data } = await axios.get(
-//     generateUrl(
-//       `inscription/genesesaddress/${address}?start=${start}&limit=${limit}`,
-//       network,
-//     ),
-//   );
-//   return data;
-// };
-
 
 export async function pollGetTxStatus(
   txid: string,
@@ -351,13 +256,3 @@ export async function pollGetTxStatus(
     }
   }
 }
-
-export const getBestHeight = async ({ network }: any) => {
-  const { data } = await axios.get(generateUrl(`bestheight`, network));
-  return data;
-};
-export const getHeightInfo = async ({ height, network }: any) => {
-  const { data } = await axios.get(generateUrl(`height/${height}`, network));
-  console.log(data);
-  return data;
-};

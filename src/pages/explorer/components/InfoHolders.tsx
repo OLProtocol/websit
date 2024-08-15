@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
-import { useSat20TickHolders } from '@/api';
+import { useTokenHolderList } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
 import { CopyButton } from '@/components/CopyButton';
+import { useNetwork } from '@/lib/wallet';
 
 interface DataType {
   rank: string;
@@ -22,12 +23,11 @@ interface InfoHoldersProps {
 export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
   const nav = useNavigate();
   const { t } = useTranslation();
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { data, isLoading, trigger } = useSat20TickHolders({
+  const { data, isLoading, trigger } = useTokenHolderList({
     tick,
-    network,
     start,
     limit
   });

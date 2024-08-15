@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useOrdNftList } from '@/api';
+import { useNftList } from '@/api';
 import { CopyButton } from '@/components/CopyButton';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl } from '@/lib/utils';
@@ -9,25 +9,25 @@ import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
 import { Card, CardBody, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { useNetwork } from '@/lib/wallet';
 
 export const OrdNftList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const toast = useToast();
 
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const router = useNavigate();
 
   const [start, setStart] = useState(0);
   const [limit] = useState(10);
   const [loading, setLoading] = useState(false);
 
-  const { data, error, isLoading } = useOrdNftList({ network, start, limit })
+  const { data, error, isLoading } = useNftList({ start, limit })
   const list = useMemo(() => data?.data?.nfts || [], [data]);
   const total = useMemo(() => data?.data?.total || 0, [data]);
 
   useEffect(() => {
-    // console.debug("Explorer Nft:", "isLoading:", isLoading, "error:", error, "data:", data)
     setLoading(isLoading);
     if (error) {
       toast({

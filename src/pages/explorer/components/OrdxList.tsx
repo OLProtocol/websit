@@ -1,17 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Table, Tag, Button, Segmented } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
-import { getSat20StatusList, health } from '@/api';
-import { useCommonStore } from '@/store';
-import { BlockAndTime } from '@/components/BlockAndTime';
-import { useNavigate } from 'react-router-dom';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-import { Sat20FullList } from './Sat20FullList';
-import { Sat20NameList } from './Sat20NameList';
+import { useState } from 'react';
+import { Segmented } from 'antd';
+import { Sat20FullList } from './FullList';
+import { NameList } from './NameList';
 import { OrdNftList } from './OrdNftList';
 import { useTranslation } from 'react-i18next';
-import { removeObjectEmptyValue } from '../../inscribe/utils';
+
 import {
   Box,
   Card,
@@ -20,33 +13,17 @@ import {
   Heading,
   SimpleGrid,
   Stack,
-  useToast,
 } from '@chakra-ui/react';
-import { cacheData, getCachedData } from '@/lib/utils/cache';
+import { useOrdxVersion } from '@/api';
 
-interface DataType {
-  tick: string;
-  block: string;
-  rarity: string;
-}
-
-export const Sat20List = () => {
+export const OrdxList = () => {
   const { t } = useTranslation();
-  const { network, address: currentAccount } = useReactWalletStore();
+
   const [type, setType] = useState('FT');
-  const [ordxVersion, setOrdxVersion] = useState('');
+  const { data } = useOrdxVersion();
   const segmentedList = ['FT', 'Name', 'NFT'];
-  const getOrdxVersion = async () => {
-    const resp = await health({ network });
-    if (resp.status === 'ok') {
-      setOrdxVersion(resp.version);
-    }
-  };
-  useEffect(() => {
-    getOrdxVersion();
-  }, [network]);
+
   return (
-    // <div className='rounded-3xl p-4 mx-auto bg-gray-200'>
     <div className='flex flex-col max-w-7xl mx-auto mb-4'>
       <Card>
         <CardHeader
@@ -65,7 +42,7 @@ export const Sat20List = () => {
                   {t('pages.explorer.list_title')}
                 </Heading>
                 <Heading as='h6' size='xs' textColor={'gray.500'}>
-                  {t('pages.explorer.ordx_version')}: {ordxVersion}
+                  {t('pages.explorer.ordx_version')}: {data?.version}
                 </Heading>
               </Stack>
             </Box>
@@ -74,7 +51,6 @@ export const Sat20List = () => {
               display='flex'
               alignItems='center'
               justifyContent='right'>
-              {/* <Button onClick={getAllOrdxs}>{t('buttons.fresh')}</Button> */}
             </Box>
           </SimpleGrid>
         </CardHeader>
@@ -88,7 +64,7 @@ export const Sat20List = () => {
             />
           </div>
           {type === segmentedList[0] && <Sat20FullList />}
-          {type === segmentedList[1] && <Sat20NameList />}
+          {type === segmentedList[1] && <NameList />}
           {type === segmentedList[2] && <OrdNftList />}
         </CardBody>
       </Card>
