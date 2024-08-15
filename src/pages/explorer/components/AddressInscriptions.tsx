@@ -15,14 +15,15 @@ import {
 import { generateMempoolUrl } from '@/lib/utils';
 import { useNavigate, useParams } from 'react-router-dom';
 const { Search } = Input;
+import { useNetwork } from '@/lib/wallet';
 
-export const Sat20AddressInscriptionList = () => {
+export const AddressInscriptionList = () => {
     const { t } = useTranslation();
     const nav = useNavigate();
     const { address } = useParams();
     const [search, setSearch] = useState('');
 
-    const { network } = useReactWalletStore();
+    const network = useNetwork();
     const router = useNavigate();
 
     const [start, setStart] = useState(0);

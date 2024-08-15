@@ -44,7 +44,6 @@ export const SplitSatButton = ({
         let value = 0;
         const resp = await getUtxo({
             utxo: sat.utxo,
-            network,
         });
         if (resp.code === 0) {
             value = Number(resp.data.detail.value);

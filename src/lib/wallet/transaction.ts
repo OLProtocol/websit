@@ -12,7 +12,8 @@ import {
   AddressType,
 } from '@unisat/wallet-sdk';
 import { WalletUtilsError, ErrorCodes } from './error';
-import { toPsbtNetwork, NetworkType } from '../hooks/network';
+import { toPsbtNetwork } from '@/lib/utils/network';
+import { NetworkType } from '@/lib/types';
 interface TxInput {
   data: {
     hash: string;
@@ -285,7 +286,7 @@ export class Transaction {
     if (totalInput < totalOutput) {
       const { selectedUtxos, remainingUtxos } =
         transaction.utxoHelper.selectBtcUtxos(this._cacheBtcUtxos, totalOutput - totalInput);
-      
+
       if (selectedUtxos.length == 0) {
         throw new WalletUtilsError(ErrorCodes.INSUFFICIENT_BTC_UTXO);
       }
@@ -387,25 +388,25 @@ Summary
 ----------------------------------------------------------------------------------------------
 Inputs
 ${this.inputs
-  .map((input, index) => {
-    const str = `
+        .map((input, index) => {
+          const str = `
 =>${index} ${input.data.witnessUtxo.value} Sats
         lock-size: ${input.data.witnessUtxo.script.length}
         via ${input.data.hash} [${input.data.index}]
 `;
-    return str;
-  })
-  .join('')}
+          return str;
+        })
+        .join('')}
 total: ${this.getTotalInput()} Sats
 ----------------------------------------------------------------------------------------------
 Outputs
 ${this.outputs
-  .map((output, index) => {
-    const str = `
+        .map((output, index) => {
+          const str = `
 =>${index} ${output.address} ${output.value} Sats`;
-    return str;
-  })
-  .join('')}
+          return str;
+        })
+        .join('')}
 
 total: ${this.getTotalOutput()} Sats
 =============================================================================================

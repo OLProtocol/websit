@@ -5,12 +5,13 @@ import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { setSatIcon } from '@/lib/utils/sat';
 import { hideStr } from '@/lib/utils';
 import { generateMempoolUrl } from '@/lib/utils';
+import { useNetwork } from '@/lib/wallet';
 
 interface SatItemProps {
   utxo: any;
 }
 export const SatItem = ({ utxo }: SatItemProps) => {
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
 
   const txid = utxo.utxo.replace(/:0$/m, '');
   const href = generateMempoolUrl({

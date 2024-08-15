@@ -9,12 +9,13 @@ import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
 import { Card, CardBody, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { useNetwork } from '@/lib/wallet';
 
 export const NftList = ({ targetAddress }) => {
   const { t } = useTranslation();
   const nav = useNavigate();
 
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const router = useNavigate();
   const [address] = useState(targetAddress);
 
@@ -179,7 +180,6 @@ export const NftList = ({ targetAddress }) => {
     try {
       const resp = await getOrdInscriptionsByAddress({
         address,
-        network,
         start,
         limit,
       });

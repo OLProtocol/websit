@@ -137,7 +137,6 @@ export default function SearchSat() {
     const data = await getSatsByAddress({
       address: address,
       sats: searchSatList.items.map((item) => Number(item.sat)),
-      network,
     });
 
     if (data.code !== 0) {

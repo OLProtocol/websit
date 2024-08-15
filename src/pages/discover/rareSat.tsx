@@ -14,8 +14,9 @@ import { SatTable } from './components/SatTable';
 import { SatTypeBox } from './components/SatTypeBox';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
-import { cacheData, getCachedData } from '@/lib/utils/cache';
+import { setCacheData, getCachedData } from '@/lib/utils/cache';
 import { Input } from 'antd';
+import { useNetwork } from '@/lib/wallet';
 
 const { Search } = Input;
 
@@ -33,7 +34,7 @@ export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
 
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const [uniqueTypes, setUniqueTypes] = useState<string[]>([]);
 
   useEffect(() => {
@@ -82,10 +83,7 @@ export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
     setLoading(true);
     setAllSatList([]);
     setSatList([]);
-    const data = await getSats({
-      address: address,
-      network,
-    });
+    const data = await getSats({ address: address });
     if (data.code !== 0) {
       toast({
         title: data.msg,
@@ -111,7 +109,7 @@ export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
       (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
     );
     setAllSatList(tmpSats);
-    cacheData('all_sat_list_' + address, tmpSats);
+    setCacheData('all_sat_list_' + address, tmpSats);
 
     tmpSats.forEach((item) => {
       if (item.satributes.length === 1) {

@@ -4,15 +4,15 @@ import Home from '@/pages/home';
 import Test from '@/pages/test';
 import Inscribe from '@/pages/inscribe';
 import Sat20Index from '@/pages/explorer';
-import Sat20Info from '@/pages/explorer/Sat20Info';
-import Sat20NameInfo from '@/pages/explorer/Sat20NameInfo';
+import TokenInfo from '@/pages/explorer/TokenInfo';
+import NameInfo from '@/pages/explorer/NameInfo';
 import UtxoInfo from '@/pages/explorer/utxo';
 import Sat20Inscription from '@/pages/explorer/inscription';
-import InscribeCheck from '@/pages/inscribe_check';
-import Tools from '@/pages/tools';
 import Account from '@/pages/account';
 import SplittedInscription from '@/pages/tools/splittedInscription';
 import Utxo from '@/pages/tools/utxo';
+import InscribeCheck from '@/pages/inscribe_check';
+import Tools from '@/pages/tools';
 import { RareSat } from '@/pages/discover/rareSat';
 import Transaction from '@/pages/tools/transaction';
 import SearchSat from '@/pages/tools/searchSat';
@@ -95,11 +95,11 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTE_PATH.SAT20_INFO,
-        element: <Sat20Info />,
+        element: <TokenInfo />,
       },
       {
         path: ROUTE_PATH.SAT20_NS,
-        element: <Sat20NameInfo />,
+        element: <NameInfo />,
       },
       {
         path: ROUTE_PATH.SAT20_UTXO_INFO,

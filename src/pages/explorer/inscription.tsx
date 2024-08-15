@@ -8,16 +8,16 @@ import { Spin } from 'antd';
 import { UtxoContent } from '@/components/UtxoContent';
 import { useTranslation } from 'react-i18next';
 import { generateMempoolUrl, genOrdinalsUrl } from '@/lib/utils';
+import { useNetwork } from '@/lib/wallet';
 
 export default function Sat20Inscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const nav = useNavigate();
 
   const { data, trigger, isLoading } = useInscriptiontInfo({
     inscriptionId: inscriptionId,
-    network,
   });
 
   const detail = useMemo(() => data?.data || {}, [data]);
