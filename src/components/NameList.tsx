@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useNsListByAddress } from '@/api';
-import { useCommonStore } from '@/store';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { genOrdinalsUrl, hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { CopyButton } from '@/components/CopyButton';
 import { useToast } from '@chakra-ui/react';
-import { generateMempoolUrl } from '@/lib/utils';
+import { useAddressNameListHook } from '@/hooks/NameList';
 
 interface NameListProps {
   address: string;
@@ -18,30 +16,25 @@ interface NameListProps {
 export const NameList = ({ onTotalChange, address }: NameListProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
-  const { btcHeight } = useCommonStore((state) => state);
   const { network, } = useReactWalletStore();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-
-  // const [data, setData] = useState<any>();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const { value } = useAddressNameListHook({ address, start, limit });
 
   const clickHandler = (item) => {
     nav(`/explorer/ns/${item.name}`);
   };
-  const { data } = useNsListByAddress({
-    address: address,
-    start,
-    limit,
-    network,
-  });
-  const list = useMemo(() => data?.data?.names || [], [data]);
-  const total = useMemo(() => data?.data?.total || 0, [data]);
+
+  const list = useMemo(() => value?.data?.names || [], [value]);
+  const total = useMemo(() => value?.data?.total || 0, [value]);
 
   useEffect(() => {
     onTotalChange?.(total), [total];
   }, [total]);
+
+
   const columns: ColumnsType<any> = [
     {
       title: t('common.index'),
@@ -66,10 +59,8 @@ export const NameList = ({ onTotalChange, address }: NameListProps) => {
       key: 'inscriptionId',
       align: 'center',
       render: (t) => {
-        // const txid = t.replace(/i0$/m, '');
         const inscriptionId = t;
         const href = genOrdinalsUrl({ network, path: `inscription/${inscriptionId}` })
-        // const href = generateMempoolUrl({ network, path: `tx/${txid}` });
         return (
           <a
             className='text-blue-500 cursor-pointer'

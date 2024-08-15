@@ -11,11 +11,10 @@ import {
   hideStr,
   signAndPushPsbt,
   filterUtxosByValue,
-  addressToScriptPublicKey,
   buildTransaction,
 } from '@/lib/utils';
 import { useCommonStore } from '@/store';
-import { cacheData, getCachedData } from '@/lib/utils/cache';
+
 import {
   Button,
   Card,
@@ -309,7 +308,6 @@ export const AvailableUtxoList = ({
     }
     setLoading(false);
     setData(resp);
-    cacheData('available_ordx_list_' + address, resp);
   };
 
   useEffect(() => {

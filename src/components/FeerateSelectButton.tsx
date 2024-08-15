@@ -8,7 +8,7 @@ export const FeerateSelectButton = () => {
   const { network } = useReactWalletStore(state => state);
   const [fee, setFee] = useState(1);
   const { setFeeRate, feeRate } = useCommonStore((state) => state);
-  const { data: feeRateData, error } = useBtcFeeRate(network as any);
+  const { data: feeRateData } = useBtcFeeRate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOk = () => {
     setFeeRate({ value: fee, type: 'custom' });

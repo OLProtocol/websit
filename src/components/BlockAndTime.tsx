@@ -1,4 +1,4 @@
-import { fetchTipHeight, calcTimeBetweenBlocks } from '@/lib/utils';
+import { calcTimeBetweenBlocks } from '@/lib/utils';
 
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useCommonStore } from '@/store';

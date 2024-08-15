@@ -7,16 +7,16 @@ import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { generateMempoolUrl } from '@/lib/utils';
+import { useNetwork } from '@/lib/wallet';
 
 export default function OrdInscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
   const nav = useNavigate();
 
   const { data, trigger, isLoading } = useOrdInscriptiontInfo({
     inscriptionId: inscriptionId,
-    network,
   });
 
   const detail = useMemo(() => data?.data || {}, [data]);

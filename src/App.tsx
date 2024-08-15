@@ -5,15 +5,26 @@ import { Toaster } from 'react-hot-toast';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
-
+import { BtcWalletConnectOptions, BtcWalletNetwork, useReactWalletStore } from '@sat20/btc-connect/dist/react';
+import { getNetwork } from './lib/wallet';
 
 function App() {
   const { t, i18n } = useTranslation();
+  const { init } = useReactWalletStore();
+
+  useEffect(() => {
+    const config: BtcWalletConnectOptions = {
+      network: getNetwork() as BtcWalletNetwork,
+      defaultConnectorId: 'sat20',
+    };
+    init(config);
+
+  }, [init]);
 
   useEffect(() => {
     const defaultLanguage = i18n.language;
     i18n.changeLanguage(defaultLanguage);
-  }, [i18n.language]);
+  }, [i18n, i18n.language]);
 
   return (
     <StyleProvider hashPriority='high'>

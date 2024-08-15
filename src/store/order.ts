@@ -61,7 +61,7 @@ interface OrderState {
   ) => void;
   changeStatus: (orderId: string, status: OrderStatus) => void;
   checkAllList: () => void;
-  savePaidOrder: (address: string, network: string) => void;
+  savePaidOrder: (address: string) => void;
   setFunding: (orderId: string, funding: any) => void;
   setCommitTx: (orderId: string, tx: any) => void;
   findOrder: (orderId: string) => OrderItemType | undefined;
@@ -153,14 +153,14 @@ export const useOrderStore = create<OrderState>()(
             list,
           });
         },
-        savePaidOrder: async (address, network) => {
+        savePaidOrder: async (address) => {
           const { list, saveLength } = get();
           const paidList = list.filter(
             (item) =>
               item.status == 'inscribe_fail' || item.status == 'commit_error',
           );
           if (paidList.length && saveLength !== paidList.length) {
-            await savePaidOrder({ address, list: paidList, network });
+            await savePaidOrder({ address, list: paidList });
             set({
               saveLength: paidList.length,
             });
