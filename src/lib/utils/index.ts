@@ -19,13 +19,13 @@ export const getAssetTypeLabel = (tickerType?: string) => {
 };
 
 
-export const getTimeByHeight = async (height: number, network: string) => {
-  const key = `height-time-${height}-${network}`;
+export const getTimeByHeight = async (height: number) => {
+  const key = `height-time-${height}`;
   const lcoalCache = sessionStorage.getItem(key);
   if (lcoalCache) {
     return +lcoalCache;
   }
-  const { info } = await getHeightInfo({ height, network });
+  const { info } = await getHeightInfo({ height });
   const timestamp = info?.timestamp || 0;
   const time = timestamp * 1000;
   if (time) {
@@ -38,14 +38,13 @@ export const calcTimeBetweenBlocks = async ({
   height,
   start,
   end,
-  network,
 }: any) => {
   try {
     const now = +new Date();
     let startTime: any = now;
     let endTime: any = now;
     if (start && start < height) {
-      startTime = await getTimeByHeight(start, network);
+      startTime = await getTimeByHeight(start);
       // console.log('startTime', startTime);
     } else {
       const startDis = start - height;
@@ -53,7 +52,7 @@ export const calcTimeBetweenBlocks = async ({
     }
 
     if (end && end < height) {
-      endTime = await getTimeByHeight(end, network);
+      endTime = await getTimeByHeight(end);
     } else {
       const endDis = Math.ceil(end - height);
       endTime = add(now, { minutes: endDis * 10 });

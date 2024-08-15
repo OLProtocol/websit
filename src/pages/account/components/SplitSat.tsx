@@ -88,7 +88,6 @@ export default function SplitSat() {
         setLoading(true);
         const resp = await getUtxo({
             utxo,
-            network,
         });
         if (resp.code !== 0) {
             toast({

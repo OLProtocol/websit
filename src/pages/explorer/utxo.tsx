@@ -1,28 +1,25 @@
 import { useParams } from 'react-router-dom';
 import {
-  useGetAssetByUtxo,
-  getSat20Info,
-  getInscriptiontInfo,
   useGetUtxo,
 } from '@/api';
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Divider, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { UtxoContent } from '@/components/UtxoContent';
 import { hideStr } from '@/lib/utils';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl, getAssetTypeLabel } from '@/lib/utils';
 import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useNetwork } from '@/lib/wallet';
 
 export default function UtxoInfo() {
   const { t } = useTranslation();
   const { utxo } = useParams();
   const [tabText, setTabText] = useState(t('common.holders'));
   const nav = useNavigate();
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
 
   const { data: assetData, isLoading } = useGetUtxo({ utxo, network });
 

@@ -2,16 +2,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { useAllSat20StatusList } from '@/api';
+import { useFtList } from '@/api';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { genOrdServiceUrl } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { removeObjectEmptyValue } from '../../inscribe/utils';
 import { useToast } from '@chakra-ui/react';
-import { cacheData, getCachedData } from '@/lib/utils/cache';
+import { useNetwork } from '@/lib/wallet';
 
 interface DataType {
   tick: string;
@@ -25,7 +24,7 @@ export const Sat20FullList = () => {
   const toast = useToast();
 
   const { btcHeight } = useCommonStore((state) => state);
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
 
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -35,7 +34,7 @@ export const Sat20FullList = () => {
     nav(`/explorer/${item.tick}`);
   };
 
-  const { data, error, isLoading } = useAllSat20StatusList({ start, limit, network });
+  const { data, error, isLoading } = useFtList({ start, limit });
   const list = useMemo(() => data?.data?.detail || [], [data]);
   const total = useMemo(() => data?.data?.total || 0, [data]);
   const height = useMemo(() => {
@@ -43,7 +42,6 @@ export const Sat20FullList = () => {
   }, [data]);
 
   useEffect(() => {
-    // console.debug("Explorer All Ordx Status List:", "isLoading:", isLoading, "error:", error, "data:", data)
     setLoading(isLoading);
     if (error) {
       toast({
@@ -109,8 +107,6 @@ export const Sat20FullList = () => {
       align: 'center',
       render: (inscriptionId, record) => {
         const showId = record?.delegate ?? inscriptionId;
-        console.log(record.delegate)
-        console.log(showId);
         return record.contenttype === 'text/html' || !!record?.delegate ? (
           <div>
             <iframe
@@ -246,8 +242,6 @@ export const Sat20FullList = () => {
         const isSpecial =
           item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         let status;
-        console.log(item.ticker);
-        console.log(isSpecial, item.startBlock, item.endBlock, btcHeight, btcHeight)
         if (!isSpecial && item.startBlock < 0) {
           if (item.max > 0 && item.totalMinted < item.max) {
             status = 'Minting';

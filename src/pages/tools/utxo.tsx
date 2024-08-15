@@ -7,6 +7,7 @@ import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { UtxoAssetTable } from './components/UtxoAssetTable';
 import { setSatIcon } from '@/lib/utils/sat';
 import { Input } from 'antd';
+import { useNetwork } from '@/lib/wallet';
 
 const { Search } = Input;
 
@@ -22,7 +23,7 @@ export default function Utxo() {
   const [rareSatList, setRareSatList] = useState<any[]>();
 
   const [loading, setLoading] = useState(false);
-  const { network } = useReactWalletStore();
+  const network = useNetwork();
 
   function handleKeyDown(event) {
     if (event.key === 'Enter') {
@@ -58,7 +59,6 @@ export default function Utxo() {
     setSatList([]);
     const data = await getSatsByUtxo({
       utxo: utxo,
-      network,
     });
 
     if (data.code !== 0) {
@@ -82,9 +82,9 @@ export default function Utxo() {
       return
     }
     let tmpSatSize: number = 0;
-    let tmpSatList: any[] = [];
+    const tmpSatList: any[] = [];
     let tmpRareSatSize = 0
-    let tmpRareSatList: any[] = [];
+    const tmpRareSatList: any[] = [];
     data.data.sats.map((item) => {
       const sat = {
         start: item.start,
@@ -112,10 +112,7 @@ export default function Utxo() {
   const getAssets = async () => {
     setLoading(true);
     setAssetList([]);
-    const data = await getAssetByUtxo({
-      utxo: utxo,
-      network,
-    });
+    const data = await getAssetByUtxo({ utxo: utxo });
 
     if (data.code !== 0) {
       setLoading(false);

@@ -1460,10 +1460,10 @@
     estree-walker "^2.0.2"
     picomatch "^2.3.1"
 
-"@sat20/btc-connect@1.4.38":
-  version "1.4.38"
-  resolved "https://registry.yarnpkg.com/@sat20/btc-connect/-/btc-connect-1.4.38.tgz#31040c7d1e0e4ac87056b44110fdcab6430573af"
-  integrity sha512-2v9QON5uE1VUAZ67hLZFXJV85dYk5MZ9XVoNuye3EVA+qmFZMf5qQmz2fB/kfkLxKFSo58NJ8SJttnNZq8ErPw==
+"@sat20/btc-connect@1.4.41":
+  version "1.4.41"
+  resolved "https://registry.yarnpkg.com/@sat20/btc-connect/-/btc-connect-1.4.41.tgz#b906e8aa355ef75d24bc554d4e554e8c2db6bb96"
+  integrity sha512-0CMwruR5gVBTafBCiBqmXqghHu92EUrZQoZ41KCzUMhknnxJS9HggE9xNYOV/k0SCyie8kXxBWn4IyvDv3BqdA==
   optionalDependencies:
     "@types/react-dom" "^18.2.22"
     lint-staged "^15.2.2"
@@ -1982,12 +1982,12 @@ axios@0.24.0:
   dependencies:
     follow-redirects "^1.14.4"
 
-axios@1.6.0:
-  version "1.6.0"
-  resolved "https://registry.npmjs.org/axios/-/axios-1.6.0.tgz"
-  integrity sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==
+axios@1.7.3:
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.3.tgz#a1125f2faf702bc8e8f2104ec3a76fab40257d85"
+  integrity sha512-Ar7ND9pU99eJ9GpoGQKhKf58GpUOgnzuaB7ueNQ5BMi0p+LZ5oaEnfF999fAArcTIBwXTCHAmGcHOZJaWPq9Nw==
   dependencies:
-    follow-redirects "^1.15.0"
+    follow-redirects "^1.15.6"
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
@@ -2992,10 +2992,15 @@ focus-lock@^1.0.0:
   dependencies:
     tslib "^2.0.3"
 
-follow-redirects@^1.14.4, follow-redirects@^1.15.0:
+follow-redirects@^1.14.4:
   version "1.15.3"
   resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.3.tgz"
   integrity sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==
+
+follow-redirects@^1.15.6:
+  version "1.15.6"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.6.tgz#7f815c0cda4249c74ff09e95ef97c23b5fd0399b"
+  integrity sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==
 
 for-each@^0.3.3:
   version "0.3.3"

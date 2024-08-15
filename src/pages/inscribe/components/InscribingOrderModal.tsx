@@ -82,7 +82,7 @@ export const InscribingOrderModal = ({
             toAddress: inscriptions[0].inscriptionAddress,
             value: fee.totalFee,
             feeRate: feeRate,
-            network: network,
+
             fromAddress: currentAccount,
             fromPubKey: publicKey,
             ordxUtxo: order.utxo,
@@ -92,7 +92,7 @@ export const InscribingOrderModal = ({
             toAddress: inscriptions[0].inscriptionAddress,
             value: fee.totalFee,
             feeRate: feeRate,
-            network: network,
+
             fromAddress: currentAccount,
             fromPubKey: publicKey,
           });
@@ -130,7 +130,7 @@ export const InscribingOrderModal = ({
             toAddress: fundingData.address,
             value: fee.totalFee,
             feeRate: feeRate,
-            network: network,
+
             fromAddress: currentAccount,
             fromPubKey: publicKey,
           });
