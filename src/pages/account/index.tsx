@@ -1,6 +1,6 @@
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Sat20AccountSummaryList } from '@/components/Sat20AccountSummaryList';
 import { RareSat } from '../discover/rareSat';
 import { AvailableUtxoList } from './components/AvailableUtxoList';
@@ -17,10 +17,24 @@ export default function Account() {
   const { value } = useAddressNameListHook({ address, start: 0, limit: 1 });
 
   const onTotalChange = (total: number) => {
-    if (total !== 0) {
+    if (total >= 0) {
       setUtxosTotal(total);
     }
   }
+
+  useEffect(() => {
+    if (address) {
+      console.log('address', address);
+
+    }
+  }, [address])
+
+  useEffect(() => {
+    if (utxosTotal >= 0) {
+      console.log('utxosTotal', utxosTotal);
+
+    }
+  }, [utxosTotal])
 
   return (
     <div className='max-w-6xl mx-auto pt-4'>
