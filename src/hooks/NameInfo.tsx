@@ -34,27 +34,26 @@ export const useNameInfoHook = ({ name }: NameInfoProps) => {
                 trigger();
                 return;
             }
+            setValue(record.resp);
         }
     }, [name, trigger]);
 
     useEffect(() => {
-        if (!name) return;
-
+        if (!resp) return;
         const key = getKey(name);
         const cache = getCachedData(key);
         if (cache) {
             setValue((cache as NameInfoRespRecord).resp);
             return;
         }
-        if (resp) {
-            const nameListRespRecord: NameInfoRespRecord = {
-                resp: resp,
-                timeStamp: Date.now(),
-            };
-            setCacheData(key, nameListRespRecord);
-            setValue(resp);
-        }
-    }, [name, resp]);
+        const record: NameInfoRespRecord = {
+            resp: resp,
+            timeStamp: Date.now(),
+        };
+        setCacheData(key, record);
+        setValue(resp);
+
+    }, [resp]);
 
     return { value, isLoading };
 };
