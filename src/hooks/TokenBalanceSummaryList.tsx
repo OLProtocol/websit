@@ -34,26 +34,26 @@ export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryL
                 trigger();
                 return;
             }
+            setValue(record.resp);
         }
     }, [address, trigger]);
 
     useEffect(() => {
-        if (!address) return;
+        //  if (!address) return;
+        if (!resp) return;
         const key = getKey(address);
         const cache = getCachedData(key);
         if (cache) {
             setValue((cache as TokenBalanceSummaryRespRecord).resp);
             return;
         }
-        if (resp) {
-            const nameListRespRecord: TokenBalanceSummaryRespRecord = {
-                resp: resp,
-                timeStamp: Date.now(),
-            };
-            setCacheData(key, nameListRespRecord);
-            setValue(resp);
-        }
-    }, [address, resp]);
+        const record: TokenBalanceSummaryRespRecord = {
+            resp: resp,
+            timeStamp: Date.now(),
+        };
+        setCacheData(key, record);
+        setValue(resp);
+    }, [resp]);
 
     return { value, isLoading };
 };

@@ -40,27 +40,27 @@ export const useAddressNameListHook = ({ address, start, limit }: NameListProps)
                 trigger();
                 return;
             }
+            setValue(record.resp);
         }
     }, [address, limit, start, trigger]);
 
     useEffect(() => {
-        if (!address) return;
-        if (limit === undefined || start === undefined) return;
+        // if (!address) return;
+        // if (limit === undefined || start === undefined) return;
+        if (!resp) return;
         const key = getKey(address, start, limit);
         const cache = getCachedData(key);
         if (cache) {
             setValue((cache as NameListRespRecord).resp);
             return;
         }
-        if (resp) {
-            const nameListRespRecord: NameListRespRecord = {
-                resp: resp,
-                timeStamp: Date.now(),
-            };
-            setCacheData(key, nameListRespRecord);
-            setValue(resp);
-        }
-    }, [address, resp, limit, start]);
+        const record: NameListRespRecord = {
+            resp: resp,
+            timeStamp: Date.now(),
+        };
+        setCacheData(key, record);
+        setValue(resp);
+    }, [resp]);
 
     return { value, isLoading };
 };
