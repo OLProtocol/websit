@@ -113,7 +113,7 @@ export const OrdSatInscriptionList = () => {
                 align: 'center',
                 render: (t) => {
                     return (
-                        <span>{new Date(t).toLocaleString('af')}</span>
+                        <span>{new Date(t * 1000).toLocaleString('af')}</span>
                     )
                 }
             },
