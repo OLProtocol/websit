@@ -78,6 +78,7 @@
   },
   "nav": {
     "home": "Home",
+    "chain": "Network",
     "inscribe": "Inscribe",
     "docs": "Docs",
     "tools": "Toolbox",
