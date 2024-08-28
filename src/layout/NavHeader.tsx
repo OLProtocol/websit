@@ -5,12 +5,16 @@ import { LanguageSelect } from '@/components/LanguageSelect';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from '@/router';
 import { useTranslation } from 'react-i18next';
+import { ChainSelect } from '@/components/ChainSelect';
 
 export const NavHeader = () => {
   const nav = useNavigate();
   const { t, i18n } = useTranslation();
   const routerLocation = useLocation();
   const { pathname } = routerLocation;
+
+  const { VITE_BTC_CHAIN, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN } = import.meta.env;
+  const needNetwork = VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet'
   const items: any[] = [
     {
       key: ROUTE_PATH.HOME,
@@ -54,7 +58,15 @@ export const NavHeader = () => {
           : 'https://docs.sat20.org/',
       type: 'link',
     },
-
+    {
+      key: "chain",
+      label: t('nav.chain'),
+      value:
+        needNetwork == 'mainnet'
+          ? VITE_MAINNET_DOMAIN
+          : VITE_TESTNET_DOMAIN,
+      type: 'link',
+    },
   ];
 
   const options = [
@@ -74,9 +86,6 @@ export const NavHeader = () => {
     }
   };
 
-  function changeLanguage(lang) {
-    i18n.changeLanguage(lang);
-  }
 
   return (
     <header className='h-full'>
@@ -100,6 +109,7 @@ export const NavHeader = () => {
           <FeerateSelectButton />
           <WalletConnectButton />
           <LanguageSelect />
+          <ChainSelect />
         </div>
       </div>
     </header>
