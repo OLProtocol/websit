@@ -9,12 +9,13 @@ export const LanguageSelect = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const language = searchParams.get('language');
   const items: MenuProps['items'] = [
-    { key: 'en', label: 'EN' },
-    { key: 'ZH', label: 'zh' },
+    { key: 'en', label: 'english' },
+    { key: 'zh', label: '中文' },
   ];
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     i18n.changeLanguage(e.key);
   };
+
   useEffect(() => {
     if (language) {
       i18n.changeLanguage(language);
@@ -26,6 +27,8 @@ export const LanguageSelect = () => {
       menu={{
         items,
         onClick: handleMenuClick,
+        defaultSelectedKeys: [language || "zh"],
+        selectable: true,
       }}>
       <Button
         size='middle'
