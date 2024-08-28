@@ -24,5 +24,5 @@ VERSION1=$(cat "$VERSION_FILE1")
 VERSION2=$(cat "$VERSION_FILE2")
 NEW_VERSION1=$((VERSION1 + 1))
 NEW_VERSION2=$((VERSION2 + 1))
-git checkout main && echo "$NEW_VERSION1" >"$VERSION_FILE1" && echo "$NEW_VERSION2" >"$VERSION_FILE2" && git add . && git commit -m "publish: add version for next publish" && git push
+git checkout main && printf "%s" "$NEW_VERSION1" >"$VERSION_FILE1" && printf "%s" "$NEW_VERSION2" >"$VERSION_FILE2" && git add . && git commit -m "publish: add version for next publish" && git push
 # git checkout main && yarn build:app && git add . && git commit -m "publish: generate prd dist" && git push
