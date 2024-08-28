@@ -10,6 +10,7 @@ set -x
 # git checkout dev && git pull && rm -rf dist && git add . && git commit -m "publish: clean dev dist"
 # git checkout dev.testnet4 && git pull && rm -rf dist && git add . && git commit -m "publish: clean dev.testnet4 dist"
 
+git add . && git commit -m "publish: update" && git push
 git checkout app && git merge main --no-edit && yarn build:app && git add . && git commit -m "publish: generate app dist" && git push origin app
 git checkout app.testnet4 && git merge main --no-edit && yarn build:app.testnet4 && git add . && git commit -m "publish: generate app.testnet4 dist" && git push origin app.testnet4
 git checkout test && git merge main --no-edit && yarn build:test && git add . && git commit -m "publish: generate test dist" && git push origin test
