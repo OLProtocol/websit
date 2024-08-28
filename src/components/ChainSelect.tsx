@@ -16,10 +16,10 @@ export const ChainSelect = () => {
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
-      case 'testnet':
+      case 'mainnet':
         location.href = VITE_MAINNET_DOMAIN;
         break;
-      case 'mainnet':
+      case 'testnet':
         location.href = VITE_TESTNET_DOMAIN;
         break;
     }
