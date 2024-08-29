@@ -54,16 +54,18 @@ export const OrdNftList = () => {
       key: 'id',
       align: 'center',
       render: (t) => {
-        const txid = t?.replace(/i0$/m, '');
-        const href = generateMempoolUrl({
-          network,
-          path: `tx/${txid}`,
-        });
+        // const txid = t?.replace(/i0$/m, '');
+        // const href = generateMempoolUrl({
+        //   network,
+        //   path: `tx/${txid}`,
+        // });
+        const href = `#/explorer/inscription/${t}`;
         return (
           <a
             className='text-blue-500 cursor-pointer'
             href={href}
-            target='_blank'>
+          // target='_blank'
+          >
             {hideStr(t)}
           </a>
         );
