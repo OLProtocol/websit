@@ -36,9 +36,6 @@ export const NameList = () => {
   const [limit] = useState(10);
   const [loading, setLoading] = useState(false);
 
-  const clickHandler = (item) => {
-    nav(`/explorer/ns/${item.name}`);
-  };
 
   const { data, error, isLoading } = useNameList({ start, limit });
   const list = useMemo(() => data?.data?.names || [], [data]);
@@ -101,18 +98,22 @@ export const NameList = () => {
       key: 'inscriptionId',
       align: 'center',
       render: (t) => {
-        const txid = t.replace(/i0$/m, '');
-        const href = generateMempoolUrl({
-          network,
-          path: `tx/${txid}`,
-        });
+        // const txid = t.replace(/i0$/m, '');
+        // const href = generateMempoolUrl({
+        //   network,
+        //   path: `tx/${txid}`,
+        // });
         return (
-          <a
+          <div
             className='text-blue-500 cursor-pointer'
-            href={href}
-            target='_blank'>
+            onClick={(e) => {
+              e.stopPropagation();
+              nav(`/explorer/inscription/${t}`)
+            }
+            }
+          >
             {hideStr(t)}
-          </a>
+          </div>
         );
       },
     },
@@ -126,7 +127,10 @@ export const NameList = () => {
           <div className='flex item-center justify-center'>
             <span
               className='text-blue-500 cursor-pointer mr-2'
-              onClick={() => nav(`/explorer/utxo/${t}`)}>
+              onClick={(e) => {
+                e.stopPropagation();
+                nav(`/explorer/utxo/${t}`)
+              }}>
               {hideStr(t)}
             </span>
             <CopyButton text={t} tooltip='Copy Tick' />
@@ -168,7 +172,10 @@ export const NameList = () => {
       scroll={{ x: 1000 }}
       onRow={(record) => {
         return {
-          onClick: () => clickHandler(record), // 点击行
+          onClick: (e) => {
+            e.stopPropagation();
+            nav(`/explorer/ns/${record.name}`);
+          }
         };
       }}
     />
