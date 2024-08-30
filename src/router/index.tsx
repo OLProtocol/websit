@@ -7,7 +7,7 @@ import Sat20Index from '@/pages/explorer';
 import TokenInfo from '@/pages/explorer/TokenInfo';
 import NameInfo from '@/pages/explorer/NameInfo';
 import UtxoInfo from '@/pages/explorer/utxo';
-import Sat20Inscription from '@/pages/explorer/inscription';
+import Inscription from '@/pages/explorer/inscription';
 import Account from '@/pages/account';
 import SplittedInscription from '@/pages/tools/splittedInscription';
 import Utxo from '@/pages/tools/utxo';
@@ -107,7 +107,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTE_PATH.SAT20_INSCRIPTION,
-        element: <Sat20Inscription />,
+        element: <Inscription />,
       },
       {
         path: ROUTE_PATH.ORD_INSCRIPTIONS_BY_ADDRESS,
