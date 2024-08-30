@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { generateMempoolUrl, genOrdinalsUrl } from '@/lib/utils';
 import { useNetwork } from '@/lib/wallet';
 
-export default function Sat20Inscription() {
+export default function Inscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
   const network = useNetwork();

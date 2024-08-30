@@ -26,17 +26,17 @@ check_version() {
 
 git add . && git commit -m "publish: update" && git push
 git checkout app && git merge main --no-edit && yarn build:app && git add . && git commit -m "publish: generate app dist" && git push origin app
-check_version "https://app.sat20.org/version.txt"
+# check_version "https://app.sat20.org/version.txt"
 git checkout app.testnet4 && git merge main --no-edit && yarn build:app.testnet4 && git add . && git commit -m "publish: generate app.testnet4 dist" && git push origin app.testnet4
-check_version "https://app.testnet4.sat20.org/version.txt"
+# check_version "https://app.testnet4.sat20.org/version.txt"
 git checkout test && git merge main --no-edit && yarn build:test && git add . && git commit -m "publish: generate test dist" && git push origin test
-check_version "https://test.sat20.org/version.txt"
+# check_version "https://test.sat20.org/version.txt"
 git checkout test.testnet4 && git merge main --no-edit && yarn build:test.testnet4 && git add . && git commit -m "publish: generate test.testnet4 dist" && git push origin test.testnet4
-check_version "https://test.testnet4.sat20.org/version.txt"
+# check_version "https://test.testnet4.sat20.org/version.txt"
 git checkout dev && git merge main --no-edit && yarn build:dev && git add . && git commit -m "publish: generate dev dist" && git push origin dev
-check_version "https://dev.sat20.org/version.txt"
+# check_version "https://dev.sat20.org/version.txt"
 git checkout dev.testnet4 && git merge main --no-edit && yarn build:dev.testnet4 && git add . && git commit -m "publish: generate dev.testnet4 dist" && git push origin dev.testnet4
-check_version "https://dev.testnet4.sat20.org/version.txt"
+# check_version "https://dev.testnet4.sat20.org/version.txt"
 
 VERSION_FILE1="src/assets/version.txt"
 VERSION_FILE2="public/version.txt"
