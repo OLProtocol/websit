@@ -54,19 +54,19 @@ export const NavHeader = () => {
       label: t('nav.docs'),
       value:
         i18n.language == 'en'
-          ? 'https://docs.sat20.org/en/'
+          ? 'https://docs.sat20.org/v/english/'
           : 'https://docs.sat20.org/',
       type: 'link',
     },
-    {
-      key: "chain",
-      label: t('nav.chain'),
-      value:
-        needNetwork == 'mainnet'
-          ? VITE_MAINNET_DOMAIN
-          : VITE_TESTNET_DOMAIN,
-      type: 'link',
-    },
+    // {
+    //   key: "chain",
+    //   label: t('nav.chain'),
+    //   value:
+    //     needNetwork == 'mainnet'
+    //       ? VITE_MAINNET_DOMAIN
+    //       : VITE_TESTNET_DOMAIN,
+    //   type: 'link',
+    // },
   ];
 
   const options = [
