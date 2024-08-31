@@ -131,7 +131,6 @@ export const WalletConnectButton = () => {
     <WalletConnectReact
       config={{
         network: needNetwork,
-        defaultConnectorId: 'unisat',
       }}
       theme='light'
       isSwitchNetwork={true}
