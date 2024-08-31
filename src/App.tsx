@@ -15,7 +15,6 @@ function App() {
   useEffect(() => {
     const config: BtcWalletConnectOptions = {
       network: getNetwork() as BtcWalletNetwork,
-      defaultConnectorId: 'sat20',
     };
     init(config);
 

@@ -98,6 +98,9 @@ export const signAndPushPsbt = async (psbt) => {
     throw new Error('No wallet connected');
   }
   const signed = await btcWallet.signPsbt(psbt.toHex());
+  if (!signed) {
+    throw new Error('Sign failed');
+  }
   const pushedTxId = await btcWallet.pushPsbt(signed);
   return pushedTxId;
 };
