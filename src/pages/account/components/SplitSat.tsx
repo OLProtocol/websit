@@ -59,6 +59,9 @@ export default function SplitSat() {
             })
 
             const signed = await btcWallet.signPsbt(psbt.toHex());
+            if (!signed) {
+                throw new Error('Sign failed');
+            }
             const pushedTxId = await btcWallet.pushPsbt(signed);
             const signedToPsbt = bitcoin.Psbt.fromHex(signed, {
                 network: psbtNetwork,
