@@ -126,7 +126,7 @@ export const InscribingOrderModal = ({
           //     feeRate: feeRate,
           //   },
           // );
-          fundingTxid = await sendBTC({
+          const txid = await sendBTC({
             toAddress: fundingData.address,
             value: fee.totalFee,
             feeRate: feeRate,
@@ -134,8 +134,11 @@ export const InscribingOrderModal = ({
             fromAddress: currentAccount,
             fromPubKey: publicKey,
           });
+          if (!txid) {
+            throw new Error('No txid');
+        }
           funding = {
-            txid: fundingTxid,
+            txid: txid,
             vout: 0,
             amount: fee.totalFee,
             ...fundingData,

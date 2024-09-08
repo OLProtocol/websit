@@ -131,7 +131,6 @@ export const WalletConnectButton = () => {
     <WalletConnectReact
       config={{
         network: needNetwork,
-        defaultConnectorId: 'unisat',
       }}
       theme='light'
       isSwitchNetwork={true}
@@ -156,12 +155,12 @@ export const WalletConnectButton = () => {
                 {t('buttons.toAccount')}
               </Button>
             </div>  */}
-              <Divider style={{ margin: '10px 0' }} />
+              {/* <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
                 <Button type='primary' className='w-32' onClick={handleWalletSwitchNetwork}>
                   {t('buttons.switchNetwork')}
                 </Button>
-              </div>
+              </div> */}
               <Divider style={{ margin: '10px 0' }} />
               <div className='flex justify-center'>
                 <Button type='primary' className='w-32' onClick={toHistory}>
