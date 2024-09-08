@@ -116,7 +116,7 @@ export default function Home() {
     if (i18n.language == 'zh_CN' || i18n.language == 'zh') {
       url = "https://docs.sat20.org/ordinals-x/xie-yi-bi-jiao/compare"
     } else {
-      url = "https://docs.sat20.org/en/ordinals-x/protocol-comparison/compare"
+      url = "https://docs.sat20.org/v/english/ordinals-x/protocol-comparison/compare"
     }
     window.open(url, '_blank');
   };

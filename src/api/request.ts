@@ -10,12 +10,13 @@ import {
   AddressListReq,
   NameListResp,
 } from './types';
-const { VITE_API_HOST, VITE_BTC_CHAIN } = import.meta.env;
+const { VITE_API_HOST, VITE_BTC_CHAIN, VITE_ORDX_API_AUTHORIZATION } = import.meta.env;
+
+axios.defaults.headers.common['Authorization'] = VITE_ORDX_API_AUTHORIZATION;
 
 export const generateUrl = (url: string) => {
   return `${VITE_API_HOST}/${VITE_BTC_CHAIN}/${url}`;
 };
-
 
 export const getHealth = async () => {
   const { data } = await axios.get(generateUrl(`health`));
