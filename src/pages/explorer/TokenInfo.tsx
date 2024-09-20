@@ -21,6 +21,11 @@ export default function TokenInfo() {
   const [tabText, setTabText] = useState(t('common.holders'));
   const nav = useNavigate();
   const network = useNetwork();
+
+
+  const { VITE_ORDX_MINT_URL } = import.meta.env;
+  // VITE_ORDX_MINT_URL is https://ordx.market/inscribe?ticker=%s
+
   const handleTabsChange = (type: any) => {
     if (type !== tabText) {
       setTabText(type);
@@ -72,6 +77,8 @@ export default function TokenInfo() {
   }, [detail, btcHeight]);
   const toInscribe = () => {
     console.log(detail);
+    const url = VITE_ORDX_MINT_URL.replace('%s', detail.ticker);
+    window.open(url, '_blank');
     // nav('/inscribe', {
     //   state: {
     //     type: 'ordx',
