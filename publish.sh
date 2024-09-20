@@ -24,6 +24,8 @@ check_version() {
     done
 }
 
+git fetch --all
+git checkout main
 git add . && git commit -m "publish: update" && git push
 git checkout app && git merge -X theirs main --no-edit && yarn build:app && git add . && git commit -m "publish: generate app dist" && git push origin app
 # check_version "https://app.sat20.org/version.txt"
