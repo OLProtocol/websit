@@ -10,6 +10,12 @@ set -x
 # git checkout dev && git pull && rm -rf dist && git add . && git commit -m "publish: clean dev dist"
 # git checkout dev.testnet4 && git pull && rm -rf dist && git add . && git commit -m "publish: clean dev.testnet4 dist"
 
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$CURRENT_BRANCH" != "main" ]; then
+    echo "当前分支不是 main，请切换到 main 分支后再运行脚本"
+    exit 1
+fi
+
 check_version() {
     URL=$1
     while true; do
@@ -24,6 +30,7 @@ check_version() {
     done
 }
 
+git fetch --all
 git add . && git commit -m "publish: update" && git push
 git checkout app && git merge -X theirs main --no-edit && yarn build:app && git add . && git commit -m "publish: generate app dist" && git push origin app
 # check_version "https://app.sat20.org/version.txt"
