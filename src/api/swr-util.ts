@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 
@@ -15,7 +16,7 @@ const staticSwrConfig = {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     dedupingInterval: 5000,
-    refreshInterval: 60000,
+    refreshInterval: 30000,
     revalidateOnMount: false,
     revalidateIfStale: false,
     keepPreviousData: true,
@@ -25,7 +26,7 @@ const fullSwrConfig = {
     revalidateOnFocus: false, // default true 聚焦时重新获取数据
     revalidateOnReconnect: false, // default true 网络重新连接时重新获取数据
     dedupingInterval: 60000, // default 2000 N秒内不会重复请求
-    refreshInterval: 60000, // default 0 自动重新获取数据
+    refreshInterval: 30000, // default 0 自动重新获取数据
     revalidateOnMount: false, // default true 组件挂载时是否重新获取数据
     revalidateIfStale: false,// default true 如果数据过期，组件挂载时重新获取数据
     keepPreviousData: true, // default false 重新获取数据时保留之前的数据
@@ -46,28 +47,24 @@ export const getStaticUseSwrFunc = (key: string, reqFunc: (any) => Promise<any>,
 };
 
 export const getUseSwrFunc = (key: string, swrConf, reqFunc: (any) => Promise<any>, params) => {
-    const maxRetries = 3;
-    let retries = 0;
-
-    // const fetcher = async () => {
-    //     try {
-    //         return await reqFunc(params);
-    //     } catch (error) {
-    //         if (retries < maxRetries) {
-    //             retries++;
-    //             return await fetcher();
-    //         } else {
-    //             throw error;
-    //         }
-    //     }
-    // };
-
     return () => {
         const { data, error, isLoading, mutate } = useSWR(key, () => reqFunc(params), swrConf);
         // const { data, error, isLoading, mutate } = useSWR(key, fetcher, swrConf);
-        if (!data) {
-            mutate();
+
+        const lastFetchTime = localStorage.getItem(`swr-lastFetchTime_${key}`);
+        const currentTime = Date.now();
+        const lastFetchTimestamp = lastFetchTime ? parseInt(lastFetchTime, 10) : 0;
+
+        useEffect(() => {
+            if ((data && (currentTime - lastFetchTimestamp > 30 * 1000)) || !data) {
+                mutate();
+            }
+        }, [currentTime, lastFetchTimestamp]);
+
+        if (data) {
+            localStorage.setItem(`swr-lastFetchTime_${key}`, currentTime.toString());
         }
+
         return {
             data,
             error,
