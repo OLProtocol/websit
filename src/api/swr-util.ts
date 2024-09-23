@@ -4,7 +4,7 @@ import useSWRMutation from 'swr/mutation';
 const commonSwrConfig = {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
-    dedupingInterval: 60000,
+    dedupingInterval: 5000,
     refreshInterval: 0,
     revalidateOnMount: true,
     revalidateIfStale: true,
@@ -14,7 +14,7 @@ const commonSwrConfig = {
 const staticSwrConfig = {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    dedupingInterval: 60000,
+    dedupingInterval: 5000,
     refreshInterval: 60000,
     revalidateOnMount: false,
     revalidateIfStale: false,
@@ -38,23 +38,40 @@ const fullSwrConfig = {
 }
 
 export const getCommonUseSwrFunc = (key: string, reqFunc: (any) => Promise<any>, params) => {
-    return () => {
-        const { data, error, isLoading } = useSWR(key, () => reqFunc(params), commonSwrConfig);
-        return {
-            data,
-            error,
-            isLoading,
-        };
-    }
+    return getUseSwrFunc(key, commonSwrConfig, reqFunc, params);
 };
 
 export const getStaticUseSwrFunc = (key: string, reqFunc: (any) => Promise<any>, params) => {
+    return getUseSwrFunc(key, staticSwrConfig, reqFunc, params);
+};
+
+export const getUseSwrFunc = (key: string, swrConf, reqFunc: (any) => Promise<any>, params) => {
+    const maxRetries = 3;
+    let retries = 0;
+
+    // const fetcher = async () => {
+    //     try {
+    //         return await reqFunc(params);
+    //     } catch (error) {
+    //         if (retries < maxRetries) {
+    //             retries++;
+    //             return await fetcher();
+    //         } else {
+    //             throw error;
+    //         }
+    //     }
+    // };
+
     return () => {
-        const { data, error, isLoading } = useSWR(key, () => reqFunc(params), staticSwrConfig);
+        const { data, error, isLoading, mutate } = useSWR(key, () => reqFunc(params), swrConf);
+        // const { data, error, isLoading, mutate } = useSWR(key, fetcher, swrConf);
+        if (!data) {
+            mutate();
+        }
         return {
             data,
             error,
             isLoading,
         };
-    }
+    };
 };
