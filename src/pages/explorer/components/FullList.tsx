@@ -86,7 +86,7 @@ export const Sat20FullList = () => {
       title: t('common.index'),
       dataIndex: 'id',
       key: 'id',
-      width: 60,
+      width: 20,
       align: 'center',
     },
     {
@@ -129,13 +129,21 @@ export const Sat20FullList = () => {
       key: 'description',
       width: 120,
       align: 'center',
-      render: (t) => t || '-',
+      render: (t) => (
+        <div style={{
+          maxWidth: '150px',
+          overflowWrap: 'break-word',
+          textAlign: 'center',
+        }}>
+          {t || '-'}
+        </div>
+      ),
     },
     {
       title: t('common.block'),
       dataIndex: 'block',
       key: 'block',
-      width: 130,
+      width: 140,
       align: 'center',
       render: (block, record) => {
         return block === '-' ? (
@@ -152,7 +160,7 @@ export const Sat20FullList = () => {
       title: t('common.limit'),
       dataIndex: 'limit',
       key: 'limit',
-      width: 80,
+      width: 20,
       align: 'center',
     },
     {
@@ -166,7 +174,7 @@ export const Sat20FullList = () => {
       title: t('common.selfmint'),
       dataIndex: 'selfmint',
       key: 'selfmint',
-      width: 80,
+      width: 60,
       align: 'center',
       render: (selfmint) => {
         return selfmint ? `${selfmint}%` : '-';
@@ -201,7 +209,7 @@ export const Sat20FullList = () => {
       title: t('common.holders'),
       dataIndex: 'holders',
       key: 'holders',
-      width: 60,
+      width: 80,
       align: 'center',
     },
     {
@@ -350,3 +358,4 @@ export const Sat20FullList = () => {
     />
   );
 };
+
