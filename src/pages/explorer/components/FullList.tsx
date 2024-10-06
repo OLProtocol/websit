@@ -29,6 +29,7 @@ export const Sat20FullList = () => {
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
+  const { VITE_ORDX_MINT_URL } = import.meta.env;
 
   const clickHandler = (item) => {
     nav(`/explorer/${item.tick}`);
@@ -65,7 +66,9 @@ export const Sat20FullList = () => {
 
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
-    console.log(item);
+    const url = VITE_ORDX_MINT_URL.replace('%s', item.tick);
+    window.open(url, '_blank');
+    // console.log(item);
     // nav('/inscribe', { state: { type: 'ordx', item } });
   };
 
