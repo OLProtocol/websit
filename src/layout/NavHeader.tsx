@@ -7,11 +7,28 @@ import { ROUTE_PATH } from '@/router';
 import { useTranslation } from 'react-i18next';
 import { ChainSelect } from '@/components/ChainSelect';
 
+import { useState, useEffect } from 'react';
+import './navheader.css';
+
+
 export const NavHeader = () => {
+  const [isMobile, setIsMobile] = useState(false);
   const nav = useNavigate();
   const { t, i18n } = useTranslation();
   const routerLocation = useLocation();
   const { pathname } = routerLocation;
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsMobile(true);
+      } else {
+        setIsMobile(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+  }, []);
 
   const { VITE_BTC_CHAIN, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN } = import.meta.env;
   const needNetwork = VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet'
@@ -105,8 +122,10 @@ export const NavHeader = () => {
           />
         </div>
 
-        <div className='flex justify-center h-full items-center gap-2'>
-          <FeerateSelectButton />
+        <div className="flex justify-center h-full items-center gap-2" style={{ flexWrap: 'wrap' }}>
+          <div className={isMobile ? 'hidden' : ''}>
+            <FeerateSelectButton />
+          </div>
           <WalletConnectButton />
           <LanguageSelect />
           <ChainSelect />
