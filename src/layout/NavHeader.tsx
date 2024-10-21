@@ -30,7 +30,9 @@ export const NavHeader = () => {
     handleResize();
   }, []);
 
-  const { VITE_BTC_CHAIN, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN } = import.meta.env;
+  const { VITE_BTC_CHAIN, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN,
+    VITE_SATSNET_DOMAIN, VITE_SATSTESTNET_DOMAIN,
+  } = import.meta.env;
   const needNetwork = VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet'
   const items: any[] = [
     {
@@ -45,9 +47,18 @@ export const NavHeader = () => {
     {
       key: ROUTE_PATH.SAT20_INDEX,
       label: t('nav.explorer'),
-      value: ROUTE_PATH.SAT20_INDEX,
-      type: 'route',
+      value:
+        needNetwork == 'mainnet'
+          ? VITE_SATSNET_DOMAIN
+          : VITE_SATSTESTNET_DOMAIN,
+      type: 'link',
     },
+    // {
+    //   key: ROUTE_PATH.SAT20_INDEX,
+    //   label: t('nav.explorer'),
+    //   value: ROUTE_PATH.SAT20_INDEX,
+    //   type: 'route',
+    // },
     {
       key: ROUTE_PATH.DISCOVER_RARE_SAT,
       label: t('nav.discover'),
