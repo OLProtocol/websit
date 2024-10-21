@@ -7,6 +7,8 @@ VITE_TIP_MIN=1000
 VITE_BTC_CHAIN=mainnet
 VITE_MAINNET_DOMAIN=https://app.sat20.org
 VITE_TESTNET_DOMAIN=https://app.testnet4.sat20.org
+VITE_SATSNET_DOMAIN=https://satstestnet.sat20.org/
+VITE_SATSTESTNET_DOMAIN=https://satstestnet.sat20.org/
 VITE_ORDX_MINT_URL=https://app.ordx.market/inscribe?ticker=%s
 VITE_ORDX_API_AUTHORIZATION=ueZdkm8s93ZL4QjHcVbb
 NODE_ENV=production
