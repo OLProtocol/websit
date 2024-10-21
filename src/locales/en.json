@@ -85,7 +85,8 @@
     "discover": "Discover",
     "explorer": "Explorer",
     "assets": "Assets",
-    "market": "Market"
+    "market": "Market",
+    "satsnet_browser": "satsnet"
   },
   "buttons": {
     "submit": "Submit",
