@@ -44,15 +44,6 @@ export const NavHeader = () => {
           : 'https://sat20.org/index-zh.html',
       type: 'link',
     },
-    // {
-    //   key: ROUTE_PATH.SAT20_INDEX,
-    //   label: t('nav.explorer'),
-    //   value:
-    //     needNetwork == 'mainnet'
-    //       ? VITE_SATSNET_DOMAIN
-    //       : VITE_SATSTESTNET_DOMAIN,
-    //   type: 'link',
-    // },
     {
       key: ROUTE_PATH.SAT20_INDEX,
       label: t('nav.explorer'),
@@ -84,6 +75,15 @@ export const NavHeader = () => {
         i18n.language == 'en'
           ? 'https://docs.sat20.org/v/english/'
           : 'https://docs.sat20.org/',
+      type: 'link',
+    },
+    {
+      key: "satsnet_browser",
+      label: t('nav.satsnet_browser'),
+      value:
+        needNetwork == 'mainnet'
+          ? VITE_SATSNET_DOMAIN
+          : VITE_SATSTESTNET_DOMAIN,
       type: 'link',
     },
     // {
