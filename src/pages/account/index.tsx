@@ -1,7 +1,7 @@
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
-import { AccountSummaryList } from '@/components/AccountSummaryList';
+import { MyAssetsSummary } from '@/components/MyAssetsSummary';
 import { RareSat } from '../discover/rareSat';
 import { AvailableUtxoList } from './components/AvailableUtxoList';
 import { AddressHolders } from '@/components/AddressHolders';
@@ -36,11 +36,11 @@ export default function Account() {
     }
   }, [utxosTotal])
 
-  const content = (
+  const btcAssets = (
     <div className='max-w-6xl mx-auto pt-4'>
       {address ? (
         <div>
-          <AccountSummaryList
+          <MyAssetsSummary
             address={address}
             utxosTotal={utxosTotal}
             nameTotal={value?.data?.total || 0}
@@ -72,8 +72,8 @@ export default function Account() {
   );
   return (
     <div className="flex">
-      <div className="w-1/2 pr-2">{content}</div>
-      <div className="w-1/2 pl-2">{content}</div>
+      <div className="w-1/2 pr-2">{btcAssets}</div>
+      <div className="w-1/2 pl-2">{btcAssets}</div>
     </div>
   );
 }
