@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { getAssetTypeLabel } from '@/lib/utils';
-interface MyAssetProps {
+interface AssetProps {
   item: {
     tick: string;
     balance: number;
@@ -8,7 +8,7 @@ interface MyAssetProps {
   selected?: boolean;
   onClick?: () => void;
 }
-export const AssetSummary = ({ item, onClick, selected }: MyAssetProps) => {
+export const AssetSummary = ({ item, onClick, selected }: AssetProps) => {
   const { t } = useTranslation();
   return (
     <div key={item.tick}
