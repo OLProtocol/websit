@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Sat20Item } from './Sat20Item';
+import { Item } from './Item';
 import { getOrdInscriptionsByAddress, getSats } from '@/api';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
@@ -7,20 +7,20 @@ import { Wrap, WrapItem } from '@chakra-ui/react';
 import { toast } from 'react-hot-toast';
 import { useTokenBalanceSummaryListHook } from '@/hooks/TokenBalanceSummaryList';
 
-interface Sat20SummaryListProps {
+interface SummaryListProps {
   address: string;
   utxosTotal: number;
   nameTotal: number;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
-export const Sat20AccountSummaryList = ({
+export const AccountSummaryList = ({
   address,
   onChange,
   onEmpty,
   utxosTotal,
   nameTotal,
-}: Sat20SummaryListProps) => {
+}: SummaryListProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
   const { value } = useTokenBalanceSummaryListHook({ address });
@@ -137,7 +137,7 @@ export const Sat20AccountSummaryList = ({
       <Wrap>
         {tickers?.map((item, index) => (
           <WrapItem key={index}>
-            <Sat20Item
+            <Item
               key={item.ticker}
               selected={select === item.ticker}
               onClick={() => {
@@ -154,7 +154,7 @@ export const Sat20AccountSummaryList = ({
       <hr />
       <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
         {filteredTickers?.map((item) => (
-          <Sat20Item
+          <Item
             key={item.ticker}
             selected={select === item.ticker}
             onClick={() => {

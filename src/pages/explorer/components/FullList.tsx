@@ -18,7 +18,7 @@ interface DataType {
   rarity: string;
 }
 
-export const Sat20FullList = () => {
+export const FullList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const toast = useToast();

@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Sat20Item } from './Sat20Item';
+import { Item } from './Item';
 
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useNetwork } from '@/lib/wallet';
 import { useTokenBalanceSummaryListHook } from '@/hooks/TokenBalanceSummaryList';
 
-interface Sat20SummaryListProps {
+interface SummaryListProps {
   address: string;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
-export const Sat20SummaryList = ({
+export const SummaryList = ({
   address,
   onChange,
   onEmpty,
-}: Sat20SummaryListProps) => {
+}: SummaryListProps) => {
   const network = useNetwork();
   const { value } = useTokenBalanceSummaryListHook({ address });
   const [select, setSelect] = useState('');
@@ -37,7 +37,7 @@ export const Sat20SummaryList = ({
   return (
     <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
       {list.map((item) => (
-        <Sat20Item key={Math.random()}
+        <Item key={Math.random()}
           selected={select === item.ticker}
           onClick={() => {
             onClick(item);

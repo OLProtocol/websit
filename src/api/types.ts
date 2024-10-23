@@ -100,13 +100,6 @@ export interface TokenReq {
   limit: number;
 }
 
-export interface Sat20HistoryDetailParams {
-  address?: string;
-  ticker?: string;
-  network: string;
-  start?: number;
-  limit?: number;
-}
 export interface TxStatusParams {
   txid: string;
   network: string;

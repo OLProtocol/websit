@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Segmented } from 'antd';
-import { Sat20FullList } from './FullList';
+import { FullList } from './FullList';
 import { NameList } from './NameList';
 import { OrdNftList } from './OrdNftList';
 import { useTranslation } from 'react-i18next';
@@ -63,7 +63,7 @@ export const OrdxList = () => {
               }}
             />
           </div>
-          {type === segmentedList[0] && <Sat20FullList />}
+          {type === segmentedList[0] && <FullList />}
           {type === segmentedList[1] && <NameList />}
           {type === segmentedList[2] && <OrdNftList />}
         </CardBody>

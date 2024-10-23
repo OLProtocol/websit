@@ -14,18 +14,18 @@ import {
 } from '@/lib/utils';
 import { CopyButton } from './CopyButton';
 
-interface Sat20HistoryProps {
+interface HistoryProps {
   tick: string;
   address: string;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
 }
-export const Sat20AddressHolders = ({
+export const AddressHolders = ({
   tick,
   address,
   onEmpty,
   onTransfer,
-}: Sat20HistoryProps) => {
+}: HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { feeRate } = useCommonStore((state) => state);

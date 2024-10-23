@@ -4,19 +4,19 @@ import { Input, Empty, Segmented } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { OrdxList } from '@/pages/explorer/components/OrdxList';
-import { Sat20AccountSummaryList } from '@/components/Sat20AccountSummaryList';
+import { AccountSummaryList } from '@/components/AccountSummaryList';
 import { useTranslation } from 'react-i18next';
 import { NameList } from '@/components/NameList';
 import { NftList } from '@/components/NftList';
 import { RareSat } from '@/pages/discover/rareSat';
 import { AvailableUtxoList } from '@/pages/account/components/AvailableUtxoList';
-import { Sat20AddressHolders } from '@/components/Sat20AddressHolders';
+import { AddressHolders } from '@/components/AddressHolders';
 import { useNetwork } from '@/lib/wallet';
 import { useAddressNameListHook } from '@/hooks/NameList';
 
 const { Search } = Input;
 
-export default function Sat20Index() {
+export default function Index() {
   const [address, setAddress] = useState('');
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
@@ -104,7 +104,7 @@ export default function Sat20Index() {
               </div>
             )}
             <div className='mb-4'>
-              <Sat20AccountSummaryList
+              <AccountSummaryList
                 onEmpty={summaryEmptyHandler}
                 address={address}
                 utxosTotal={utxosTotal}
@@ -125,7 +125,7 @@ export default function Sat20Index() {
               <NftList targetAddress={address} />
             )}
             {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
-              <Sat20AddressHolders tick={selectTick} address={address} />
+              <AddressHolders tick={selectTick} address={address} />
             )}
           </>
         )}
