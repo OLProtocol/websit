@@ -87,10 +87,10 @@ export default function SplitSat() {
     };
 
     const getValueOfUtxo = async () => {
-        setLoading(true);
         if (!utxo) {
             return
         }
+        setLoading(true);
         const resp = await indexer.utxo.getAssetList(utxo);
         if (resp.code !== 0) {
             toast({

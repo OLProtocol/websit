@@ -29,8 +29,7 @@ const handleApiRequest = async <T>(requestFn: () => Promise<AxiosResponse<ApiRes
 
 const getPlainUtxoList = async (param: PlainUtxoListReq) => {
   const url = `utxo/address/${param.address}/${param.value}?start=${param.start}&limit=${param.limit}`;
-  const { data } = await axios.get<PlainUtxoListResp>(generateUrl(url));
-  return data;
+  return handleApiRequest(() => axios.get<ApiResponse<PlainUtxoListResp>>(generateUrl(url)));
 };
 
 const getAbbrAssetList = async (utxo: string): Promise<AbbrAssetListResp> => {
@@ -41,8 +40,7 @@ const getAbbrAssetList = async (utxo: string): Promise<AbbrAssetListResp> => {
 
 const getAssetList = async (utxo: string) => {
   const url = `utxo/assets/${utxo}`
-  const { data } = await axios.get<AssetListResp>(generateUrl(url));
-  return data;
+  return handleApiRequest(() => axios.get<ApiResponse<AssetListResp>>(generateUrl(url)));
 };
 
 const utxo = {
