@@ -37,7 +37,8 @@ import {
 } from '../utils';
 import { generateMempoolUrl } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { getTickInfo, useSatTypes, getUtxoByType } from '@/api';
+import indexer from '@/api/indexer';
+import { useSatTypes } from '@/swr';
 import toast from 'react-hot-toast';
 import { useCommonStore } from '@/store';
 import { ColumnsType } from 'antd/es/table';
@@ -124,13 +125,11 @@ export const InscribeOrdx = ({
     set('fileName', '');
     set('fileType', '');
   };
-  const getOrdxUtxoByType = async (type: string, amount: number) => {
+  const getOrdxUtxoByType = async (type: string) => {
     try {
-      const resp = await getUtxoByType({
+      const resp = await indexer.exotic.getSpecificExoticAsset({
         address: currentAccount,
         type,
-        amount,
-        network,
       });
       return resp;
     } catch (error) {
@@ -142,7 +141,7 @@ export const InscribeOrdx = ({
   const getOrdXInfo = async (tick: string) => {
     try {
       const key = `${network}_${tick}`;
-      const info = await getTickInfo({ tick });
+      const info = await indexer.tick.getStatus({ ticker: tick });
       if (info) {
         localStorage.setItem(key, JSON.stringify(info));
       }
@@ -191,8 +190,6 @@ export const InscribeOrdx = ({
 
       const {
         rarity,
-        trz,
-        cn,
         startBlock,
         endBlock,
         limit,
@@ -247,7 +244,7 @@ export const InscribeOrdx = ({
           set('mintRarity', rarity);
         } else if (isSpecial) {
           setSpecialStatus(true);
-          const resp = await getOrdxUtxoByType(rarity, 1);
+          const resp = await getOrdxUtxoByType(rarity);
           if (resp.code !== 0) {
             checkStatus = false;
             setErrorText(resp.msg);
@@ -259,15 +256,15 @@ export const InscribeOrdx = ({
             return checkStatus;
           }
 
-          resp.data = resp.data.sort(
-            (a, b) =>
-              b.sats?.reduce((acc, cur) => {
-                return acc + cur.size;
-              }, 0) -
-              a.sats?.reduce((acc, cur) => {
-                return acc + cur.size;
-              }, 0),
-          );
+          // resp.data = resp.data.sort(
+          //   (a, b) =>
+          //     b.sats?.reduce((acc, cur) => {
+          //       return acc + cur.size;
+          //     }, 0) -
+          //     a.sats?.reduce((acc, cur) => {
+          //       return acc + cur.size;
+          //     }, 0),
+          // );
 
           setUtxoList(resp.data);
           set('rarity', rarity);

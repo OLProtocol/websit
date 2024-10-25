@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { Tooltip } from 'antd';
 import { ROUTE_PATH } from '@/router';
 import { useNavigate } from 'react-router-dom';
-import { getUtxo, getUtxoByValue } from '@/api';
+import indexer from '@/api/indexer';
 import { calculateRate } from '@/lib/utils';
 import { useCommonStore } from '@/store';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
@@ -42,9 +42,7 @@ export const SplitSatButton = ({
 
     const getValueOfUtxo = async () => {
         let value = 0;
-        const resp = await getUtxo({
-            utxo: sat.utxo,
-        });
+        const resp = await indexer.utxo.getAssetList(sat.utxo);
         if (resp.code === 0) {
             value = Number(resp.data.detail.value);
         }
@@ -53,9 +51,8 @@ export const SplitSatButton = ({
 
     const getAvailableUtxos = async () => {
         let availableUtxos: any[] = [];
-        const resp = await getUtxoByValue({
+        const resp = await indexer.utxo.getPlainUtxoList({
             address: currentAccount,
-            network,
             value: 0,
         });
         if (resp.code === 0) {

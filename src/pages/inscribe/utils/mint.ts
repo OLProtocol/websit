@@ -17,8 +17,8 @@ import {
   serializeInscriptionId,
   createLittleEndianInteger,
 } from './index';
-import { getUtxoByValue, pushBTCpmt } from '@/api';
-import { addressToScriptPublicKey } from '@/lib/utils';
+import indexer from '@/api/indexer';
+import { pushBTCpmt} from '@/api/blockStream';
 import { getNetwork } from '@/lib/wallet';
 interface FileItem {
   mimetype: string;
@@ -572,7 +572,7 @@ export const sendBTC = async ({
 }: SendBTCProps) => {
   const hasOrdxUtxo = !!ordxUtxo;
   console.log('hasOrdxUtxo', hasOrdxUtxo);
-  const data = await getUtxoByValue({ address: fromAddress, value: 0 });
+  const data = await indexer.utxo.getPlainUtxoList({ address: fromAddress, value: 0 });
   const consumUtxos = data?.data || [];
   if (!consumUtxos.length) {
     throw new Error(i18n.t('toast.insufficient_balance'));

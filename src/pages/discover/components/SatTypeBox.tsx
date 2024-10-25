@@ -1,4 +1,4 @@
-import { useSatTypes } from "@/api";
+import { useSatTypes } from "@/swr";
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Card, CardBody, CardHeader, Heading, Tooltip, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ export const SatTypeBox = () => {
   const toast = useToast();
   const [satTypeList, setSatTypeList] = useState<any[]>();
   const network = useNetwork();
-  const { data: satTypeData } = useSatTypes();
+  const { data: resp } = useSatTypes();
 
   const typeMap = {
     mythic: {
@@ -115,16 +115,17 @@ export const SatTypeBox = () => {
   }
 
   const getSatTypeList = async () => {
+    if (!resp) return;
     setSatTypeList([]);
     const satTypeList: any[] | undefined = [];
-    for (let i = 0; i < satTypeData?.data?.length; i++) {
-      if (typeMap[satTypeData.data[i]]) {
-        satTypeList.push(typeMap[satTypeData.data[i]]);
+    for (let i = 0; i < resp?.data?.length; i++) {
+      if (typeMap[resp.data[i]]) {
+        satTypeList.push(typeMap[resp.data[i]]);
       } else {
         satTypeList.push({
           icon: '/images/sat/icon-default.svg',
-          name: satTypeData.data[i],
-          tip: satTypeData.data[i]
+          name: resp.data[i],
+          tip: resp.data[i]
         })
       }
     }

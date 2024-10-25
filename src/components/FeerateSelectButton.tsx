@@ -2,7 +2,7 @@ import { Button, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 import { useCommonStore } from '@/store';
 import { BtcFeeRate } from './BtcFeeRate';
-import { useBtcFeeRate } from '@/api';
+import { useBtcFeeRate } from '@/swr';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 export const FeerateSelectButton = () => {
   const { network } = useReactWalletStore(state => state);

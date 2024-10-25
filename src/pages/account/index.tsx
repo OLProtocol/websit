@@ -7,14 +7,14 @@ import { AvailableUtxoList } from './components/AvailableUtxoList';
 import { AddressHolders } from '@/components/AddressHolders';
 import { NftList } from '@/components/NftList';
 import { NameList } from '@/components/NameList';
-import { useAddressNameListHook } from '@/hooks/NameList';
+import { useNameListHook } from '@/hooks/NameList';
 
 export default function Account() {
   const { t } = useTranslation();
   const { address } = useReactWalletStore();
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
   const [ticker, setTicker] = useState('');
-  const { value } = useAddressNameListHook({ address, start: 0, limit: 1 });
+  const { value } = useNameListHook({ address, start: 0, limit: 1 });
 
   const onTotalChange = (total: number) => {
     if (total >= 0) {

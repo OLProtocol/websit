@@ -6,14 +6,13 @@ import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 const { Header, Content, Footer, Sider } = Layout;
 import { useCommonStore } from './store';
 import { UpdateVersionModal } from './components/UpdateVersionModal';
-import { useBtcHeight, getBlockStatus } from '@/api';
+import { useIndexHeight } from '@/swr';
 import { useEffect } from 'react';
-import { BtcNetwork } from './types';
 import { useTranslation } from 'react-i18next';
 
 export default function Root() {
   const { network } = useReactWalletStore((state) => state);
-  const { data: btcHeight } = useBtcHeight();
+  const { data: btcHeight } = useIndexHeight();
 
   const { setHeight, setServiceStatus, setAppVersion } = useCommonStore(
     (state) => state,
@@ -25,7 +24,7 @@ export default function Root() {
   useEffect(() => {
     const height = btcHeight?.data?.height || 0;
     if (height) {
-      const serviceStatus = btcHeight >= Number(VITE_TIP_HEIGHT);
+      const serviceStatus = height >= Number(VITE_TIP_HEIGHT);
       setServiceStatus(serviceStatus ? 1 : 0);
       setHeight(height);
     }

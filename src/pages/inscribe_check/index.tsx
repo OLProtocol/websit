@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { Card, Input } from 'antd';
 import { useState } from 'react';
-import { getInscriptiontInfo } from '@/api';
+import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 const { Search } = Input;
@@ -19,10 +19,7 @@ export default function InscribeCheck() {
   const toast = useToast();
 
   const doSearch = async () => {
-    const data = await getInscriptiontInfo({
-      inscribId: inscribId,
-      network,
-    });
+    const data = await indexer.mint.getMintDetailInfo(inscribId);
     if (data.code === 0) {
       setResultMsg(
         t('pages.inscribe_check.success_result', {

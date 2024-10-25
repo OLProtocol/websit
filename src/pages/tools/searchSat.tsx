@@ -20,7 +20,7 @@ import {
   FormControl,
   InputLeftAddon,
 } from '@chakra-ui/react';
-import { getSatsByAddress } from '@/api';
+import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import { useMap } from 'react-use';
@@ -134,7 +134,7 @@ export default function SearchSat() {
   const doSearch = async () => {
     setLoading(true);
     setSatList([]);
-    const data = await getSatsByAddress({
+    const data = await indexer.sat.getSpecificSat({
       address: address,
       sats: searchSatList.items.map((item) => Number(item.sat)),
     });

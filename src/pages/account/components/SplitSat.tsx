@@ -1,6 +1,5 @@
-import { getUtxo, getUtxoByValue } from '@/api';
+import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-
 import { addressToScriptPublicKey, calculateRate } from '@/lib/utils';
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Grid, GridItem, Heading, Input, InputGroup, InputLeftAddon, InputRightAddon, Stack, useToast } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
@@ -89,9 +88,10 @@ export default function SplitSat() {
 
     const getValueOfUtxo = async () => {
         setLoading(true);
-        const resp = await getUtxo({
-            utxo,
-        });
+        if (!utxo) {
+            return
+        }
+        const resp = await indexer.utxo.getAssetList(utxo);
         if (resp.code !== 0) {
             toast({
                 title: resp.msg,
@@ -112,10 +112,8 @@ export default function SplitSat() {
         }
 
         setLoading(true);
-        const resp = await getUtxoByValue({
+        const resp = await indexer.utxo.getPlainUtxoList({
             address,
-            network,
-            // value: 10,
             value: 0,
         });
         if (resp.code !== 0) {

@@ -1,6 +1,7 @@
 import { Button, message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useTokenAddressHolders, getUtxoByValue } from '@/api';
+import { useAddressUtxoList } from '@/swr';
+import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useCommonStore } from '@/store';
 import type { ColumnsType } from 'antd/es/table';
@@ -38,7 +39,7 @@ export const AddressHolders = ({
   const tipAddress =
     network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
 
-  const { data, isLoading, trigger } = useTokenAddressHolders({
+  const { resp, isLoading, trigger } = useAddressUtxoList({
     ticker: tick,
     address,
     start,
@@ -60,11 +61,11 @@ export const AddressHolders = ({
         vout: Number(inscriptionVout),
         value: Number(inscriptionValue),
       };
-      const data = await getUtxoByValue({
+      const data = await indexer.utxo.getPlainUtxoList({
         address: currentAccount,
         // value: 600,
         value: 0,
-        network,
+        
       });
       const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
@@ -132,11 +133,9 @@ export const AddressHolders = ({
         setLoading(false);
         return;
       }
-      const data = await getUtxoByValue({
+      const data = await indexer.utxo.getPlainUtxoList({
         address: currentAccount,
-        // value: 500,
         value: 0,
-        network,
       });
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length || consumUtxos.length < 2) {
@@ -340,7 +339,7 @@ export const AddressHolders = ({
 
   // const [dataSource, setDataSource] = useState<any[]>();
   const generateData = () => {
-    const details = data?.data?.detail;
+    const details = resp?.data?.detail;
     const datas: any[] = [];
     if (details) {
       for (const detail of details) {
@@ -374,8 +373,8 @@ export const AddressHolders = ({
   // const dataSource = useMemo(() => data?.data?.detail || [], []);
   const dataSource = useMemo(() => {
     return generateData();
-  }, [data]);
-  const total = useMemo(() => data?.data?.total || 10, [data]);
+  }, [resp]);
+  const total = useMemo(() => resp?.data?.total || 10, [resp]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
     console.log(page, pageSize);
@@ -393,7 +392,7 @@ export const AddressHolders = ({
     if (address && tick) {
       trigger();
     }
-    console.log('data:', data)
+    console.log('data:', resp)
   }, [address, tick, network, start, limit]);
 
   return (

@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AssetSummary } from './AssetSummary';
-import { getOrdInscriptionsByAddress, getSats } from '@/api';
+import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
-import { toast } from 'react-hot-toast';
+
 import { useTokenBalanceSummaryListHook } from '@/hooks/TokenBalanceSummaryList';
 
 interface MyAssetsSummaryProps {
@@ -62,7 +62,7 @@ export const MyAssetsSummary = ({
     };
   }, [nameTotal]);
   const getNfts = async () => {
-    const data = await getOrdInscriptionsByAddress({
+    const data = await indexer.nft.getNftListWithAddress({
       address,
       start: 0,
       limit: 1,
@@ -77,7 +77,7 @@ export const MyAssetsSummary = ({
   };
 
   const getRareSats = async () => {
-    const data = await getSats({ address: address });
+    const data = await indexer.exotic.getExoticSatInfoList({ address: address });
     let tmpSats: any[] = [];
     if (data.code !== 0) {
       tmpSats = [];

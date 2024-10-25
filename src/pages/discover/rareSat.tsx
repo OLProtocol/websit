@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { SatRareBox } from './components/SatRareBox';
-import { getSats } from '@/api';
+import indexer from '@/api/indexer';
 import { SatTable } from './components/SatTable';
 import { SatTypeBox } from './components/SatTypeBox';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
@@ -17,6 +17,7 @@ import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { setCacheData, getCachedData } from '@/lib/utils/cache';
 import { Input } from 'antd';
 import { useNetwork } from '@/lib/wallet';
+import { ExoticSatInfo, Sat } from '@/api/type';
 
 const { Search } = Input;
 
@@ -83,10 +84,10 @@ export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
     setLoading(true);
     setAllSatList([]);
     setSatList([]);
-    const data = await getSats({ address: address });
-    if (data.code !== 0) {
+    const resp = await indexer.exotic.getExoticSatInfoList({ address: address });
+    if (resp.code !== 0) {
       toast({
-        title: data.msg,
+        title: resp.msg,
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -95,19 +96,21 @@ export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
       return;
     }
 
-    const tmpSats: any[] = [];
-    for (let i = 0; i < data.data.length; i++) {
-      if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
-        data.data[i].sats.forEach((item) => {
-          item.utxo = data.data[i].utxo;
-          item.value = data.data[i].value;
+    const tmpSats: Sat[] = [];
+    const exoticSatInfoList = resp.data;
+    for (let i = 0; i < exoticSatInfoList.length; i++) {
+      const exoticSatInfo = exoticSatInfoList[i];
+      if (exoticSatInfo.sats && exoticSatInfo.sats.length > 0) {
+        exoticSatInfo.sats.forEach((item) => {
+          // item.utxo = exoticSatInfo.utxo;
+          // item.value = exoticSatInfo.value;
           tmpSats.push(item);
         })
       }
     }
-    tmpSats.sort(
-      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-    );
+    // tmpSats.sort(
+    //   (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
+    // );
     setAllSatList(tmpSats);
     setCacheData('all_sat_list_' + address, tmpSats);
 

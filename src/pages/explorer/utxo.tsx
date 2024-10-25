@@ -1,7 +1,5 @@
 import { useParams } from 'react-router-dom';
-import {
-  useGetUtxo,
-} from '@/api';
+import {useGetUtxo } from '@/swr';
 import { useState, useMemo } from 'react';
 import { Divider, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -24,7 +22,7 @@ export default function UtxoInfo() {
   const { data: assetData, isLoading } = useGetUtxo({ utxo, network });
 
   const allAssetList = useMemo(() => {
-    return assetData?.data?.detail || {};
+    return assetData?.data?.detail;
   }, [assetData]);
 
   // console.log("allAssetList", allAssetList);
@@ -67,8 +65,8 @@ export default function UtxoInfo() {
         width: 200,
         align: 'center',
         render: (t) => {
-          const ranges = t?.map((r: any) => (
-            <div>
+          const ranges = t?.map((r: any, index) => (
+            <div key={index}>
               <span>
                 {r.size === 1 ? r.start : `${r.start}-${r.start + r.size - 1}`}
               </span>
@@ -149,7 +147,7 @@ export default function UtxoInfo() {
             <div className='mb-2'>
               <p className='text-gray-400'>Sat Ranges:</p>
               <div>
-                {allAssetList.ranges?.map((r: any, index: number) => (
+                {allAssetList?.ranges?.map((r: any, index: number) => (
                   <div key={index}>
                     <span>
                       {r.size === 1
@@ -204,6 +202,7 @@ export default function UtxoInfo() {
                   dataSource={asset?.assets?.map((a: any) => ({
                     ...a,
                     type: asset.type,
+                    key: `${index}`,
                   }))}
                   scroll={{ x: 460 }}
                   pagination={{

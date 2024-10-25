@@ -1,9 +1,4 @@
-import {
-  getTokenAddressSummaryList,
-  getUtxoByValue,
-  getTokenAddressHolders,
-  getSats,
-} from '@/api';
+import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import {
@@ -76,7 +71,7 @@ export default function Transaction() {
     unit: 'sats',
   });
 
-  const { address: currentAccount, network, publicKey } = useReactWalletStore();
+  const { address, network, publicKey } = useReactWalletStore();
   const [tickerList, setTickerList] = useState<any[]>();
   const [loading, setLoading] = useState(false);
   const [messageApi] = message.useMessage();
@@ -228,7 +223,7 @@ export default function Transaction() {
       })),
       feeRate: feeRate.value,
       network,
-      address: currentAccount,
+      address: address,
       publicKey,
     });
     setFee(fee);
@@ -252,7 +247,7 @@ export default function Transaction() {
   };
 
   const splitHandler = async () => {
-    if (!currentAccount) {
+    if (!address) {
       return;
     }
     setLoading(true);
@@ -282,7 +277,7 @@ export default function Transaction() {
         })),
         feeRate: feeRate.value,
         network,
-        address: currentAccount,
+        address: address,
         publicKey,
       });
       if (inTotal - outTotal - fee < 0) {
@@ -310,7 +305,7 @@ export default function Transaction() {
         })),
         feeRate: feeRate.value,
         network,
-        address: currentAccount,
+        address: address,
         publicKey,
       });
       await signAndPushPsbt(psbt);
@@ -334,12 +329,12 @@ export default function Transaction() {
   };
 
   const getRareSatTicker = async () => {
-    const data = await getSats({ address: currentAccount });
+    const resp = await indexer.exotic.getExoticSatInfoList({ address: address });
 
     let tickers: any[] = [];
 
-    if (data.code === 0) {
-      data.data.map((item) => {
+    if (resp.code === 0) {
+      resp.data.map((item) => {
         let hasRareStats = false;
         if (item.sats && item.sats.length > 0) {
           item.sats.map((sat) => {
@@ -400,11 +395,9 @@ export default function Transaction() {
   };
 
   const getAvialableTicker = async () => {
-    const data = await getUtxoByValue({
-      address: currentAccount,
-      // value: 600,
+    const data = await indexer.utxo.getPlainUtxoList({
+      address: address,
       value: 0,
-      network,
     });
     if (data.code !== 0) {
       setLoading(false);
@@ -421,27 +414,24 @@ export default function Transaction() {
   const getTickers = async () => {
     const tickers: any[] = [];
 
-    let data = await getTokenAddressSummaryList({
-      address: currentAccount,
-    });
-
-    if (data.code !== 0) {
+    let resp = await indexer.address.getAssetsSummary({start:0, limit: 100, address});
+    if (resp.code !== 0) {
       setLoading(false);
-      messageApi.error(data.msg);
+      messageApi.error(resp.msg);
       return;
     }
-    const detail = data?.data?.detail;
+    const detail = resp?.data?.detail;
 
     detail?.map(async (item) => {
-      data = await getTokenAddressHolders({
+      let resp = await indexer.address.getUtxoList({
         start: 0,
         limit: 10,
-        address: currentAccount,
+        address,
         ticker: item.ticker,
       });
       const utxosOfTicker: any[] = [];
-      // if (data.code === 0) {
-      //   const details = data?.data?.detail;
+      // if (resp.code === 0) {
+      //   const details = resp?.data?.detail;
       //   details?.map((detail) => {
       // const utxo = {
       //   txid: detail.utxo.split(':')[0],
@@ -516,12 +506,12 @@ export default function Transaction() {
       },
     ]);
     getAllTickers();
-  }, [currentAccount]);
+  }, [address]);
 
   useEffect(() => {
     const outputItems: any[] = [];
     if (initOutputList && initOutputList.length > 0) {
-      if (initOutputList[0].address === currentAccount) {
+      if (initOutputList[0].address === address) {
         initOutputList.map((item) => {
           const newItem = {
             id: outputItems.length + 1,
@@ -711,7 +701,7 @@ export default function Transaction() {
                       value={item.value.address}
                       onChange={(e) => setBtcAddress(item.id, e.target.value)}
                     />
-                    <InputRightAddon onClick={() => setBtcAddress(item.id, currentAccount)}>
+                    <InputRightAddon onClick={() => setBtcAddress(item.id, address)}>
                       <Tooltip title='Fill the BTC address of the current account'>
                         <AddIcon color='teal' />
                       </Tooltip>
@@ -791,7 +781,7 @@ export default function Transaction() {
                 <Flex key={Math.random()} whiteSpace={'nowrap'} gap={4} pt={2}>
                   <InputGroup w={'60%'}>
                     <InputLeftAddon>Current Address</InputLeftAddon>
-                    <Input size='md' value={currentAccount} readOnly />
+                    <Input size='md' value={address} readOnly />
                   </InputGroup>
 
                   <InputGroup w={'30%'}>

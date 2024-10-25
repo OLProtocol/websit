@@ -14,13 +14,13 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
-import { useOrdxVersion } from '@/api';
+import { useIndexHealth } from '@/swr';
 
 export const OrdxList = () => {
   const { t } = useTranslation();
 
   const [type, setType] = useState('FT');
-  const { data } = useOrdxVersion();
+  const { data } = useIndexHealth();
   const segmentedList = ['FT', 'Name', 'NFT'];
 
   return (

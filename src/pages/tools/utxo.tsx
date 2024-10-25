@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, InputGroup, InputRightElement, IconButton, CardFooter, Button } from '@chakra-ui/react';
-import { getAssetByUtxo, getSatsByUtxo } from '@/api';
+import indexer from '@/api/indexer';
 import { useNavigate } from 'react-router-dom';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { UtxoAssetTable } from './components/UtxoAssetTable';
 import { setSatIcon } from '@/lib/utils/sat';
 import { Input } from 'antd';
@@ -57,21 +56,19 @@ export default function Utxo() {
   const getSats = async () => {
     setLoading(true);
     setSatList([]);
-    const data = await getSatsByUtxo({
-      utxo: utxo,
-    });
+    const resp = await indexer.exotic.getExoticSatInfo(utxo);
 
-    if (data.code !== 0) {
+    if (resp.code !== 0) {
       setLoading(false);
       toast({
-        title: data.msg,
+        title: resp.msg,
         status: 'error',
         duration: 3000,
         isClosable: true,
       });
       return;
     }
-    if (data.data === null || data.data.sats === null || data.data.sats.length === 0) {
+    if (resp.data === null || resp.data.sats === null || resp.data.sats.length === 0) {
       setLoading(false);
       toast({
         title: 'No data',
@@ -85,7 +82,7 @@ export default function Utxo() {
     const tmpSatList: any[] = [];
     let tmpRareSatSize = 0
     const tmpRareSatList: any[] = [];
-    data.data.sats.map((item) => {
+    resp.data.sats.map((item) => {
       const sat = {
         start: item.start,
         end: item.start + item.size - 1,
@@ -112,40 +109,22 @@ export default function Utxo() {
   const getAssets = async () => {
     setLoading(true);
     setAssetList([]);
-    const data = await getAssetByUtxo({ utxo: utxo });
-
-    if (data.code !== 0) {
+    try {
+      const resp = await indexer.utxo.getAbbrAssetList(utxo);
+      setAssetList(resp.data);
       setLoading(false);
-      toast({
-        title: data.msg,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
     }
-    if (data.data === null) {
+    catch (e) {
       setLoading(false);
-      toast({
-        title: 'No data',
-        status: 'info',
-        duration: 3000,
-        isClosable: true,
-      });
-      return
+      if (e instanceof Error) {
+        toast({title: e.message,status: 'error',duration: 3000,isClosable: true});
+      } else {
+        toast({title: 'An unknown error occurred',status: 'error',duration: 3000,isClosable: true});
+      }
     }
-    setAssetList(data.data);
-    setLoading(false);
   };
 
-  const splitHandler = async () => {
-    toast({
-      title: 'Coming soon!',
-      status: 'info',
-      duration: 3000,
-      isClosable: true,
-    });
-  };
+  const splitHandler = async () => toast({title: 'Coming soon!',status: 'info',duration: 3000,isClosable: true});
 
   return (
     <div className='flex flex-col max-w-[56rem] mx-auto pt-8'>

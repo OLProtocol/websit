@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNameInfo, useAddressNameList } from '@/api';
+import { useEffect, useState } from 'react';
+import { useNameInfo } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { NameInfoResp } from '@/api/types';
+import { NameResp } from '@/api/type';
 
 
-interface NameInfoProps {
+interface NameProps {
     name: string;
 }
 
-interface NameInfoRespRecord {
-    resp: NameInfoResp
+interface NameRespRecord {
+    resp: NameResp
     timeStamp: number
 }
 
@@ -17,14 +17,14 @@ const prefix = 'nameInfo_';
 const timeout = 60 * 1000;
 const getKey = (name: string) => prefix + name;
 
-export const useNameInfoHook = ({ name }: NameInfoProps) => {
-    const [value, setValue] = useState<NameInfoResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useNameInfo({ name });
+export const useNameInfoHook = ({ name }: NameProps) => {
+    const [value, setValue] = useState<NameResp | undefined>(undefined);
+    const { resp, trigger, isLoading } = useNameInfo( name );
 
     useEffect(() => {
         if (name) {
             const key = getKey(name);
-            const record: NameInfoRespRecord = getCachedData(key);
+            const record: NameRespRecord = getCachedData(key);
             if (!record) {
                 trigger();
                 return;
@@ -43,10 +43,10 @@ export const useNameInfoHook = ({ name }: NameInfoProps) => {
         const key = getKey(name);
         const cache = getCachedData(key);
         if (cache) {
-            setValue((cache as NameInfoRespRecord).resp);
+            setValue((cache as NameRespRecord).resp);
             return;
         }
-        const record: NameInfoRespRecord = {
+        const record: NameRespRecord = {
             resp: resp,
             timeStamp: Date.now(),
         };

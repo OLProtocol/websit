@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, useToast, Card, CardHeader, CardBody, Tabs, Tab, TabList, TabPanels, TabPanel } from '@chakra-ui/react';
-import { getSplittedSats } from '@/api';
+import indexer from '@/api/indexer';
 import { useNavigate } from 'react-router-dom';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Input } from 'antd';
@@ -26,10 +26,7 @@ export default function SplittedInscription() {
   const doSearch = async () => {
     setLoading(true);
     setInscriptionList([]);
-    const data = await getSplittedSats({
-      ticker: ticker,
-      network,
-    });
+    const data = await indexer.common.getSplittedSatNameList(ticker);
 
     if (data.code !== 0) {
       setLoading(false);

@@ -12,7 +12,7 @@ import { RareSat } from '@/pages/discover/rareSat';
 import { AvailableUtxoList } from '@/pages/account/components/AvailableUtxoList';
 import { AddressHolders } from '@/components/AddressHolders';
 import { useNetwork } from '@/lib/wallet';
-import { useAddressNameListHook } from '@/hooks/NameList';
+import { useNameListHook } from '@/hooks/NameList';
 
 const { Search } = Input;
 
@@ -26,9 +26,9 @@ export default function Index() {
   const [searchParams] = useSearchParams();
   const q = searchParams.get('q');
 
-  const network = useNetwork();
+ 
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
-  const { value } = useAddressNameListHook({ address, start: 0, limit: 1 });
+  const { value: resp } = useNameListHook({ address, start: 0, limit: 1 });
 
   const onTotalChange = (total: number) => {
     if (total !== 0) {
@@ -108,7 +108,7 @@ export default function Index() {
                 onEmpty={summaryEmptyHandler}
                 address={address}
                 utxosTotal={utxosTotal}
-                nameTotal={value?.data?.total || 0}
+                nameTotal={resp?.data?.total || 0}
                 onChange={(tick) => setSelectTick(tick)}
               />
             </div>

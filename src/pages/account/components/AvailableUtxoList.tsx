@@ -1,8 +1,7 @@
 import { message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
-import { getUtxoByValue } from '@/api';
+import indexer from '@/api/indexer';
 import { CopyButton } from '@/components/CopyButton';
-import * as bitcoin from 'bitcoinjs-lib';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 import type { ColumnsType } from 'antd/es/table';
@@ -127,11 +126,9 @@ export const AvailableUtxoList = ({
         vout: selectItem.vout,
         value: Number(inscriptionValue),
       };
-      const data = await getUtxoByValue({
+      const data = await indexer.utxo.getPlainUtxoList({
         address: currentAccount,
-        // value: 600,
         value: 0,
-        network,
       });
       const virtualFee = (148 * 4 + 34 * 3 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
@@ -291,9 +288,8 @@ export const AvailableUtxoList = ({
 
   const getAvailableUtxos = async () => {
     setLoading(true);
-    const resp = await getUtxoByValue({
+    const resp = await indexer.utxo.getPlainUtxoList({
       address,
-      network,
       value: 0,
     });
     if (resp.code !== 0) {

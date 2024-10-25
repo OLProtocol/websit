@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { useNavigate, useParams } from 'react-router-dom';
-import { useOrdInscriptiontInfo } from '@/api';
-import { useEffect, useState, useMemo } from 'react';
+import { useOrdInscriptiontInfo } from '@/swr';
+import { useEffect, useMemo } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { generateMempoolUrl } from '@/lib/utils';
@@ -15,11 +14,11 @@ export default function OrdInscription() {
   const network = useNetwork();
   const nav = useNavigate();
 
-  const { data, trigger, isLoading } = useOrdInscriptiontInfo({
+  const { resp, trigger, isLoading } = useOrdInscriptiontInfo({
     inscriptionId: inscriptionId,
   });
 
-  const detail = useMemo(() => data?.data || {}, [data]);
+  const detail = useMemo(() => resp?.data , [resp]);
 
   const ordinalLink = useMemo(() => {
     if (network === 'testnet') {
@@ -88,7 +87,7 @@ export default function OrdInscription() {
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
-                {new Date(detail?.time).toLocaleString('af')}
+                {detail && new Date(detail?.time).toLocaleString('af')}
               </p>
             </div>
 

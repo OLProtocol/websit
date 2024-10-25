@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useTokenBalanceSummaryList } from '@/api';
+import { useEffect, useState } from 'react';
+import { useAddressAssetsSummary } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { NameListResp, TokenBalanceSummaryListResp } from '@/api/types';
+import { AssetsSummaryResp } from '@/api/type';
 
 
 interface TokenBalanceSummaryListProps {
@@ -9,7 +9,7 @@ interface TokenBalanceSummaryListProps {
 }
 
 interface TokenBalanceSummaryRespRecord {
-    resp: TokenBalanceSummaryListResp
+    resp: AssetsSummaryResp
     timeStamp: number
 }
 
@@ -18,8 +18,8 @@ const timeout = 60 * 1000;
 const getKey = (address: string) => prefix + address;
 
 export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryListProps) => {
-    const [value, setValue] = useState<TokenBalanceSummaryListResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useTokenBalanceSummaryList({ address });
+    const [value, setValue] = useState<AssetsSummaryResp | undefined>(undefined);
+    const { resp, trigger, isLoading } = useAddressAssetsSummary({ start:0, limit: 100, address });
 
     useEffect(() => {
         if (address) {

@@ -1,13 +1,11 @@
 import { Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useNftList } from '@/api';
+import { useNftList } from '@/swr';
 import { CopyButton } from '@/components/CopyButton';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-import { generateMempoolUrl } from '@/lib/utils';
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
-import { Card, CardBody, useToast } from '@chakra-ui/react';
+import { useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useNetwork } from '@/lib/wallet';
 

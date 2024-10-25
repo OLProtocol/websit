@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { useFtList } from '@/api';
+import { useFtList } from '@/swr';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
@@ -285,12 +285,12 @@ export const FullList = () => {
         if (isSpecial) {
           attrArr.push(`rar=${item.rarity}`);
         }
-        if (item.cn) {
-          attrArr.push(`cn=${item.cn}`);
-        }
-        if (item.trz) {
-          attrArr.push(`trz=${item.trz}`);
-        }
+        // if (item.cn) {
+        //   attrArr.push(`cn=${item.cn}`);
+        // }
+        // if (item.trz) {
+        //   attrArr.push(`trz=${item.trz}`);
+        // }
         let attr;
         if (attrArr.length) {
           attr = attrArr.join(';');
@@ -300,7 +300,7 @@ export const FullList = () => {
             p: 'ordx',
             op: 'deploy',
             tick: item.ticker?.toString(),
-            block: item.blockChecked ? item.block?.toString() : undefined,
+            block: undefined,
             lim: item.limit?.toString(),
             attr,
             des: item.description?.toString(),
@@ -314,9 +314,7 @@ export const FullList = () => {
           startBlock: item.startBlock,
           endBlock: item.endBlock,
           rarity: item.rarity,
-
           description: item.description,
-          reg: item.reg,
           content: value,
           holders: item.holdersCount,
           delegate: item.delegate,
