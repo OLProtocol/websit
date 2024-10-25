@@ -3,17 +3,20 @@ import { AssetsSummaryReq, UtxoListReq, UtxoListResp, AssetsSummaryResp, MintHis
 import { generateUrl } from './common';
 
 const getAssetsSummary = async (param: AssetsSummaryReq): Promise<AssetsSummaryResp> => {
-    const { data } = await axios.get<AssetsSummaryResp>(generateUrl(`address/summary/${param.address}?start=${param.start}&limit=${param.limit}`));
+    const url = `address/summary/${param.address}?start=${param.start}&limit=${param.limit}`
+    const { data } = await axios.get<AssetsSummaryResp>(generateUrl(url));
     return data;
 };
 
 const getMintHistory = async (param: MintHistoryReq) : Promise<MintHistoryResp> => {
-    const { data } = await axios.get<MintHistoryResp>(generateUrl(`address/history/${param.address}/${param.ticker}?start=${param.start}&limit=${param.limit}`));
+    const url = `address/history/${param.address}/${param.ticker}?start=${param.start}&limit=${param.limit}`;
+    const { data } = await axios.get<MintHistoryResp>(generateUrl(url));
     return data;
 };
 
 const getUtxoList = async (param: UtxoListReq): Promise<UtxoListResp> => {
-    const { data } = await axios.get(generateUrl(`address/utxolist/${param.address}/${param.ticker}?start=${param.start}&limit=${param.limit}`));
+    const url = `address/utxolist/${param.address}/${param.ticker}?start=${param.start}&limit=${param.limit}`;
+    const { data } = await axios.get(generateUrl(url));
     return data;
 };
 

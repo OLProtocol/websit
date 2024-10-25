@@ -15,7 +15,7 @@ export const NameList = () => {
   const [start, setStart] = useState(0);
   const [limit] = useState(10);
   const [loading, setLoading] = useState(false);
-  const { data: resp, error, isLoading } = useNameStatusList({ start, limit });
+  const { resp, error, isLoading } = useNameStatusList({ start, limit });
   const list = useMemo(() => resp?.data?.names || [], [resp]);
   const total = useMemo(() => resp?.data?.total || 0, [resp]);
 

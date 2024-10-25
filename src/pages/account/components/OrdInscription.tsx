@@ -14,10 +14,7 @@ export default function OrdInscription() {
   const network = useNetwork();
   const nav = useNavigate();
 
-  const { resp, trigger, isLoading } = useOrdInscriptiontInfo({
-    inscriptionId: inscriptionId,
-  });
-
+  const { resp, trigger, isLoading } = inscriptionId ? useOrdInscriptiontInfo(inscriptionId) : { resp: undefined, trigger: () => {}, isLoading: false };
   const detail = useMemo(() => resp?.data , [resp]);
 
   const ordinalLink = useMemo(() => {

@@ -1,9 +1,6 @@
 import useSWR from 'swr';
-import { useEffect } from 'react';
-import { useMemo } from 'react';
-import { useDebounce } from 'use-debounce';
 import indexer from '@/api/indexer';
-import { ListReq, NameStatusListReq, TickerStatusReq } from '@/api/type';
+import { ListReq, NameStatusListReq, NftStatusListReq, TickerStatusReq } from '@/api/type';
 import { fetchChainFeeRate } from '@/lib/utils';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
@@ -45,73 +42,56 @@ const fullSwrConfig = {
   loadingTimeout: 3000, // default 3000 数据加载超时时间为3秒
 }
 
-export const getCommonUseSwrFunc = <T, P>(key: string, reqFunc: (param: P) => Promise<T>, param: P) => {
-  return getUseSwrFunc<T, P>(key, commonSwrConfig, reqFunc, param);
+export const createCommonUseSwrHook = <T, P>(key: string, reqFunc: (param: P) => Promise<T>, param: P) => {
+  return createUseSwrHook<T, P>(key, commonSwrConfig, reqFunc, param);
 };
 
-export const getStaticUseSwrFunc = <T, P>(key: string, reqFunc: (param: P) => Promise<T>, param: P) => {
-  return getUseSwrFunc<T, P>(key, staticSwrConfig, reqFunc, param);
+export const creatStaticUseSwrHook = <T, P>(key: string, reqFunc: (param: P) => Promise<T>, param: P) => {
+  return createUseSwrHook<T, P>(key, staticSwrConfig, reqFunc, param);
 };
 
-export const getUseSwrFunc = <T, P>(key: string, swrConf, reqFunc: (param: P) => Promise<T>, param: P) => {
+export const createUseSwrHook = <T, P>(key: string, swrConf, reqFunc: (param: P) => Promise<T>, param: P) => {
   return () => {
     const { data, error, isLoading, mutate } = useSWR(key, () => reqFunc(param), swrConf);
-    // const lastFetchTime = localStorage.getItem(`swr-lastFetchTime_${key}`);
-    // const currentTime = Date.now();
-    // const lastFetchTimestamp = lastFetchTime ? parseInt(lastFetchTime, 10) : 0;
-
-    // useEffect(() => {
-    //   if ((data && (currentTime - lastFetchTimestamp > 60 * 1000)) || !data) {
-    //     mutate();
-    //   }
-    // }, [currentTime, lastFetchTimestamp]);
-
-    // if (data) {
-    //   localStorage.setItem(`swr-lastFetchTime_${key}`, currentTime.toString());
-    // }
-
     return {
-      data,
+      resp: data,
       error,
       isLoading,
+      mutate
     };
   };
 };
 
 // common 
 export const useFtList = (param: ListReq) => {
-  return getCommonUseSwrFunc(`ft-List-${param.start}-${param.limit}`, indexer.tick.getStatusList, param)();
+  const key = `ft-List-${param.start}-${param.limit}`;
+  return createCommonUseSwrHook(key, indexer.tick.getStatusList, param)();
 };
 
 export const useNameStatusList = (param: NameStatusListReq) => {
-  const [debouncedStart] = useDebounce(param.start, 300);
-  const [debouncedLimit] = useDebounce(param.limit, 300);
-  const key = useMemo(() => `name-status-List-${debouncedStart}-${debouncedLimit}`, [debouncedStart, debouncedLimit]);
-  const debouncedParam = useMemo(() => ({
-    ...param,
-    start: debouncedStart,
-    limit: debouncedLimit
-  }), [param, debouncedStart, debouncedLimit]);
-  return getCommonUseSwrFunc(key, indexer.ns.getNameStatusList, debouncedParam)();
-  // return getCommonUseSwrFunc(`name-status-List-${param.start}-${param.limit}`, indexer.ns.getNameStatusList, param)();
+  const key = `name-status-List-${param.start}-${param.limit}`;
+  return createCommonUseSwrHook(key, indexer.ns.getNameStatusList, param)();
 };
 
-export const useNftList = (param: ListReq) => {
-  return getCommonUseSwrFunc(`nft-List-${param.start}-${param.limit}`, indexer.nft.getNftStatusList, param)();
+export const useNftList = (param: NftStatusListReq) => {
+  const key = `nft-List-${param.start}-${param.limit}`;
+  return createCommonUseSwrHook(key, indexer.nft.getNftStatusList, param)();
 };
 
-export const useGetUtxo = ({ utxo }: any) => {
-  return getCommonUseSwrFunc(`utxo-assets-${utxo}`, indexer.utxo.getAssetList, utxo)();
+export const useGetUtxo = (utxo: string) => {
+  const key = `utxo-assets-${utxo}`;
+  return createCommonUseSwrHook(key, indexer.utxo.getAssetList, utxo)();
 };
 
-export const useTickerStatus = ({ ticker }: TickerStatusReq) => {
-  return getCommonUseSwrFunc(`token-info-${ticker}`, indexer.tick.getStatus, { ticker })();
+export const useTickerStatus = (param: TickerStatusReq) => {
+  const key = `token-info-${param.ticker}`;
+  return createCommonUseSwrHook(key, indexer.tick.getStatus, param)();
 };
 
 export const useIndexHealth = () => {
-  const { data, error, isLoading } = getCommonUseSwrFunc(`health`, indexer.common.getHealth, null)();
+  const { resp, error, isLoading } = createCommonUseSwrHook(`health`, indexer.common.getHealth, null)();
   return {
-    data,
+    resp,
     error,
     isLoading,
   };
@@ -119,18 +99,18 @@ export const useIndexHealth = () => {
 
 // static
 export const useIndexHeight = () => {
-  return getStaticUseSwrFunc(`indexHeight`, indexer.common.getBestHeight, {})();
+  return creatStaticUseSwrHook(`indexHeight`, indexer.common.getBestHeight, {})();
 }
 
 export const useBtcFeeRate = () => {
   const { network } = useReactWalletStore(state => state);
-  return getStaticUseSwrFunc(`fee-${network}`, fetchChainFeeRate, network)();
+  return creatStaticUseSwrHook(`fee-${network}`, fetchChainFeeRate, network)();
 }
 
 export const useSatTypes = () => {
-  return getStaticUseSwrFunc(`sat-types`, indexer.common.getSatributeList, {})();
+  return creatStaticUseSwrHook(`sat-types`, indexer.common.getSatributeList, {})();
 }
 
 export const useAppVersion = () => {
-  return getStaticUseSwrFunc(`app-version`, indexer.common.getAppVersion, {})();
+  return creatStaticUseSwrHook(`app-version`, indexer.common.getAppVersion, {})();
 }

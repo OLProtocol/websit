@@ -11,9 +11,7 @@ interface UtxoContentProps {
 }
 export function UtxoContent({ inscriptionId, ranges = [] }: UtxoContentProps) {
   const network = useNetwork();
-  const { resp, trigger, isLoading } = useInscriptiontInfo({
-    inscriptionId: inscriptionId,
-  });
+  const { resp, trigger, isLoading } = inscriptionId ? useInscriptiontInfo(inscriptionId) : { resp: undefined, trigger: () => {}, isLoading: false };
   const detail = useMemo(() => resp?.data , [resp]);
   // console.log('UtxoContent ranges:', ranges, inscriptionId);
   const seed = useMemo(

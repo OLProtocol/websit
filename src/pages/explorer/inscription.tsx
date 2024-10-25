@@ -8,17 +8,15 @@ import { UtxoContent } from '@/components/UtxoContent';
 import { useTranslation } from 'react-i18next';
 import { generateMempoolUrl, genOrdinalsUrl } from '@/lib/utils';
 import { useNetwork } from '@/lib/wallet';
+import { MintDetailInfoResp } from '@/api/type';
+import { TriggerWithoutArgs } from 'swr/mutation';
 
 export default function Inscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
   const network = useNetwork();
   const nav = useNavigate();
-
-  const { resp, trigger, isLoading } = useInscriptiontInfo({
-    inscriptionId: inscriptionId,
-  });
-
+  const { resp, trigger, isLoading } = inscriptionId ? useInscriptiontInfo(inscriptionId) : { resp: undefined, trigger: () => {}, isLoading: false };
   const detail = useMemo(() => resp?.data , [resp]);
 
   const satsText = useMemo(() => {

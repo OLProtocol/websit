@@ -35,6 +35,6 @@ const nft = {
   getNftStatusList,
   getNftListWithAddress,
   getNftListWithSat,
-  getOrdInscription: getNftDetail
+  getNftDetail
 }
 export default nft;
