@@ -13,15 +13,15 @@ const handleApiRequest = async <T>(requestFn: () => Promise<AxiosResponse<ApiRes
   try {
     const resp = await requestFn();
     if (resp.status !== 200) {
-      throw new Error(`Failed to get data, status code: ${resp.status}`);
+      throw new Error(`API request failed, HTTP status code: ${resp.status}`);
     }
     if (resp.data.code !== 0) {
-      throw new Error(resp.data.msg);
+      throw new Error(`API request failed, code: ${resp.data.code}, msg: ${resp.data.msg}`);
     }
     return resp.data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw new Error(`API request failed: ${error.message}`);
+      throw new Error(`API request failed, axios error: ${error.message}`);
     }
     throw error;
   }
