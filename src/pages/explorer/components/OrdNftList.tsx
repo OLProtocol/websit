@@ -21,9 +21,9 @@ export const OrdNftList = () => {
   const [limit] = useState(10);
   const [loading, setLoading] = useState(false);
 
-  const { resp, error, isLoading } = useNftList({ start, limit })
-  const list = useMemo(() => resp?.data?.nfts || [], [resp]);
-  const total = useMemo(() => resp?.data?.total || 0, [resp]);
+  const { data, error, isLoading } = useNftList({ start, limit })
+  const list = useMemo(() => data?.nfts || [], [data]);
+  const total = useMemo(() => data?.total || 0, [data]);
 
   useEffect(() => {
     setLoading(isLoading);
@@ -35,15 +35,7 @@ export const OrdNftList = () => {
         isClosable: true,
       });
     }
-    if (resp && resp.code !== 0) {
-      toast({
-        title: resp?.msg,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  }, [error, isLoading, resp, toast]);
+  }, [error, isLoading, data, toast]);
 
   const columns: ColumnsType<any> = [
     {

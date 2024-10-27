@@ -7,28 +7,28 @@ import {
     NftStatusListResp,
 } from '../type';
 
-import { generateUrl } from './common';
+import { generateUrl, handleApiRequest } from './common';
 
 
 
 export const getNftStatusList = async (param: NftStatusListReq): Promise<NftStatusListResp> => {
-    const { data } = await axios.get<NftStatusListResp>(generateUrl(`nft/status?start=${param.start}&limit=${param.limit}`));
-    return data;
+    const url = `nft/status?start=${param.start}&limit=${param.limit}`;
+    return handleApiRequest(() => axios.get<NftStatusListResp>(generateUrl(url)));
 };
 
 export const getNftListWithAddress = async (param: NftListReq): Promise<NftListResp> => {
-    const { data } = await axios.get<NftListResp>(generateUrl(`nft/address/${param.address}?start=${param.start}&limit=${param.limit}`));
-    return data;
+    const url = `nft/address/${param.address}?start=${param.start}&limit=${param.limit}`
+    return handleApiRequest(() => axios.get<NftListResp>(generateUrl(url)));
   };
   
   export const getNftListWithSat = async (param: NftListReq): Promise<NftListResp> => {
-    const { data } = await axios.get<NftListResp>(generateUrl(`nft/sat/${param.sat}?start=${param.start}&limit=${param.limit}`));
-    return data;
+    const url = `nft/sat/${param.sat}?start=${param.start}&limit=${param.limit}`
+    return handleApiRequest(() => axios.get<NftListResp>(generateUrl(url)));
   };
   
   export const getNftDetail = async ( inscriptionId : string): Promise<NftDetailResp> => {
-    const { data } = await axios.get<NftDetailResp>(generateUrl(`nft/nftid/${inscriptionId}`));
-    return data;
+    const url = `nft/nftid/${inscriptionId}`
+    return handleApiRequest(() => axios.get<NftDetailResp>(generateUrl(url)));
   };
 
 const nft = {

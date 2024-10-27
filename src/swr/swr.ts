@@ -54,7 +54,7 @@ export const createUseSwrHook = <T, P>(key: string, swrConf, reqFunc: (param: P)
   return () => {
     const { data, error, isLoading, mutate } = useSWR(key, () => reqFunc(param), swrConf);
     return {
-      resp: data,
+      data,
       error,
       isLoading,
       mutate
@@ -63,54 +63,109 @@ export const createUseSwrHook = <T, P>(key: string, swrConf, reqFunc: (param: P)
 };
 
 // common 
-export const useFtList = (param: ListReq) => {
-  const key = `ft-List-${param.start}-${param.limit}`;
-  return createCommonUseSwrHook(key, indexer.tick.getStatusList, param)();
+export const useTickerStatusList = (param: ListReq) => {
+  const key = `ticker-status-list-${param.start}-${param.limit}`;
+  const resp = createCommonUseSwrHook(key, indexer.tick.getStatusList, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 };
 
 export const useNameStatusList = (param: NameStatusListReq) => {
-  const key = `name-status-List-${param.start}-${param.limit}`;
-  return createCommonUseSwrHook(key, indexer.ns.getNameStatusList, param)();
+  const key = `name-status-list-${param.start}-${param.limit}`;
+  const resp = createCommonUseSwrHook(key, indexer.ns.getNameStatusList, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 };
 
 export const useNftList = (param: NftStatusListReq) => {
-  const key = `nft-List-${param.start}-${param.limit}`;
-  return createCommonUseSwrHook(key, indexer.nft.getNftStatusList, param)();
+  const key = `nft-list-${param.start}-${param.limit}`;
+  const resp = createCommonUseSwrHook(key, indexer.nft.getNftStatusList, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 };
 
-export const useGetUtxo = (utxo: string) => {
+export const useGetAssetList = (utxo: string) => {
   const key = `utxo-assets-${utxo}`;
-  return createCommonUseSwrHook(key, indexer.utxo.getAssetList, utxo)();
+  const resp = createCommonUseSwrHook(key, indexer.utxo.getAssetList, utxo)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 };
 
 export const useTickerStatus = (param: TickerStatusReq) => {
   const key = `token-info-${param.ticker}`;
-  return createCommonUseSwrHook(key, indexer.tick.getStatus, param)();
+  const resp = createCommonUseSwrHook(key, indexer.tick.getStatus, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 };
 
 export const useIndexHealth = () => {
-  const { resp, error, isLoading } = createCommonUseSwrHook(`health`, indexer.common.getHealth, null)();
+  const resp = createCommonUseSwrHook(`health`, indexer.common.getHealth, null)();
   return {
-    resp,
-    error,
-    isLoading,
-  };
+    data: resp.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 }
 
 // static
 export const useIndexHeight = () => {
-  return creatStaticUseSwrHook(`indexHeight`, indexer.common.getBestHeight, {})();
+  const resp = creatStaticUseSwrHook(`indexHeight`, indexer.common.getBestHeight, {})();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 }
 
 export const useBtcFeeRate = () => {
   const { network } = useReactWalletStore(state => state);
-  return creatStaticUseSwrHook(`fee-${network}`, fetchChainFeeRate, network)();
+  const resp = creatStaticUseSwrHook(`fee-${network}`, fetchChainFeeRate, network)();
+  return {
+    data: resp.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 }
 
 export const useSatTypes = () => {
-  return creatStaticUseSwrHook(`sat-types`, indexer.common.getSatributeList, {})();
+  const resp = creatStaticUseSwrHook(`sat-types`, indexer.common.getSatributeList, {})();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 }
 
 export const useAppVersion = () => {
-  return creatStaticUseSwrHook(`app-version`, indexer.common.getAppVersion, {})();
+  const resp = creatStaticUseSwrHook(`app-version`, indexer.common.getAppVersion, {})();
+  return {
+    data: resp.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 }

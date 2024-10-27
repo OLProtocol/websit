@@ -7,7 +7,7 @@ import { useBtcFeeRate } from '@/swr';
 export const FeerateSelectButton = () => {
   const [fee, setFee] = useState(1);
   const { setFeeRate, feeRate } = useCommonStore((state) => state);
-  const { resp } = useBtcFeeRate();
+  const { data: resp } = useBtcFeeRate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOk = () => {
     setFeeRate({ value: fee, type: 'custom' });

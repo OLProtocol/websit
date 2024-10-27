@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAddressAssetsSummary } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { AssetsSummaryResp } from '@/api/type';
+import { AssetsSummary, AssetsSummaryResp } from '@/api/type';
 
 
 interface TokenBalanceSummaryListProps {
@@ -9,7 +9,7 @@ interface TokenBalanceSummaryListProps {
 }
 
 interface TokenBalanceSummaryRespRecord {
-    resp: AssetsSummaryResp
+    data: AssetsSummary
     timeStamp: number
 }
 
@@ -18,8 +18,8 @@ const timeout = 60 * 1000;
 const getKey = (address: string) => prefix + address;
 
 export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryListProps) => {
-    const [value, setValue] = useState<AssetsSummaryResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useAddressAssetsSummary({ start:0, limit: 100, address });
+    const [value, setValue] = useState<AssetsSummary | undefined>(undefined);
+    const { data, trigger, isLoading } = useAddressAssetsSummary({ start:0, limit: 100, address });
 
     useEffect(() => {
         if (address) {
@@ -34,26 +34,26 @@ export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryL
                 trigger();
                 return;
             }
-            setValue(record.resp);
+            setValue(record.data);
         }
     }, [address, trigger]);
 
     useEffect(() => {
         //  if (!address) return;
-        if (!resp) return;
+        if (!data) return;
         const key = getKey(address);
         const cache = getCachedData(key);
         if (cache) {
-            setValue((cache as TokenBalanceSummaryRespRecord).resp);
+            setValue((cache as TokenBalanceSummaryRespRecord).data);
             return;
         }
         const record: TokenBalanceSummaryRespRecord = {
-            resp: resp,
+            data: data,
             timeStamp: Date.now(),
         };
         setCacheData(key, record);
-        setValue(resp);
-    }, [resp]);
+        setValue(data);
+    }, [data]);
 
     return { value, isLoading };
 };

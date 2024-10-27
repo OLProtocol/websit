@@ -24,7 +24,7 @@ export const MyAssetsSummary = ({
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
   const { value } = useTokenBalanceSummaryListHook({ address });
-  const otherTickers = useMemo(() => value?.data?.detail || [], [value]);
+  const otherTickers = useMemo(() => value?.detail || [], [value]);
   const [rareSatList, setRareSatList] = useState<any[]>();
   const [nftSumBalance, setNftBalance] = useState<any>();
 
@@ -62,26 +62,20 @@ export const MyAssetsSummary = ({
     };
   }, [nameTotal]);
   const getNfts = async () => {
-    const data = await indexer.nft.getNftListWithAddress({
-      address,
-      start: 0,
-      limit: 1,
-    });
-    let sum = 0;
-    if (data.code !== 0) {
-      sum = 0;
-    } else {
-      sum = data.data.total;
+    try {
+      const data = await indexer.nft.getNftListWithAddress({ address, start: 0, limit: 1 });
+      setNftBalance(data.data.total);
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      setNftBalance(0);
     }
-    setNftBalance(sum);
   };
 
   const getRareSats = async () => {
-    const data = await indexer.exotic.getExoticSatInfoList({ address: address });
     let tmpSats: any[] = [];
-    if (data.code !== 0) {
-      tmpSats = [];
-    } else {
+    try {
+      const data = await indexer.exotic.getExoticSatInfoList({ address: address });
       for (let i = 0; i < data.data.length; i++) {
         if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
           data.data[i].sats.forEach((item) => {
@@ -89,9 +83,10 @@ export const MyAssetsSummary = ({
           });
         }
       }
+      setRareSatList(tmpSats);
+    } catch (error: any) {
+      console.error(error);
     }
-
-    setRareSatList(tmpSats);
   };
 
   const [select, setSelect] = useState('');

@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { generateUrl } from './common';
+import { ApiResponse, generateUrl, handleApiRequest } from './common';
 import { SpecificSatListReq, SpecificSatListResp } from '../type';
 
 export const getSpecificSat = async (param: SpecificSatListReq): Promise<SpecificSatListResp> => {
-    const { data } = await axios.post<SpecificSatListResp>(generateUrl(`sat/FindSatsInAddress`), param);
-    return data;
+    let url = `sat/FindSatsInAddress?start=${param.address}&sats=${param.sats[0]}`;
+    return handleApiRequest(() => axios.post<SpecificSatListResp>(generateUrl(url),param));
 };
 
 const sat = {

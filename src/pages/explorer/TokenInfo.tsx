@@ -15,7 +15,7 @@ import { useNetwork } from '@/lib/wallet';
 
 export default function TokenInfo() {
   const { t } = useTranslation();
-  const { tick } = useParams();
+  const { ticker } = useParams();
   const { btcHeight } = useCommonStore((state) => state);
   const [tabText, setTabText] = useState(t('common.holders'));
   const nav = useNavigate();
@@ -29,11 +29,7 @@ export default function TokenInfo() {
       setTabText(type);
     }
   };
-  const { resp, isLoading } = typeof tick === 'string' && useTickerStatus({ ticker: tick || '' }) || {};
-  const tickerStatus = useMemo(() => {
-    return resp?.data;
-  }, [resp]);
-
+  const { data: tickerStatus, isLoading } = typeof ticker === 'string' && useTickerStatus({ ticker }) || {};
   const status = useMemo(() => {
     let _status = '';
     if (!tickerStatus) {
@@ -120,13 +116,13 @@ export default function TokenInfo() {
   }, [tickerStatus])
   useEffect(() => {
 
-  }, [tick, network]);
+  }, [ticker, network]);
   return (
     <Spin spinning={isLoading}>
       <BtcHeightAlert />
       <div className='max-w-4xl mx-auto mt-8'>
         <div className='flex justify-between mb-4 items-center'>
-          <span className='text-orange-400 text-2xl '>{getAssetTypeLabel(tick)}</span>
+          <span className='text-orange-400 text-2xl '>{getAssetTypeLabel(ticker)}</span>
           <span>
             {status === 'Pending' && (
               <Tag color='orange'>{t('common.waiting')}</Tag>
@@ -222,7 +218,7 @@ export default function TokenInfo() {
               <p className='text-gray-400'>{t('common.minted_total')}:</p>
               <p className='indent-2'>
                 {tickerStatus?.totalMinted}
-                {tick === 'Pearl' && (
+                {ticker === 'Pearl' && (
                   <>
                     <span>(</span>
                     <a
@@ -233,7 +229,7 @@ export default function TokenInfo() {
                     <span>)</span>
                   </>
                 )}
-                {tick === '龙' && (
+                {ticker === '龙' && (
                   <>
                     <span>(</span>
                     <a
@@ -268,15 +264,15 @@ export default function TokenInfo() {
             />
           </div>
           {tabText === t('common.holders') &&
-            tick &&
+            ticker &&
             tickerStatus?.totalMinted !== undefined && (
               <div className='p-4'>
-                <InfoHolders ticker={tick} totalQuantity={tickerStatus?.totalMinted} />
+                <InfoHolders ticker={ticker} totalQuantity={tickerStatus?.totalMinted} />
               </div>
             )}
-          {tabText === t('common.minted_history') && tick && (
+          {tabText === t('common.minted_history') && ticker && (
             <div className='p-4'>
-              <TickHistory tick={tick} />
+              <TickHistory tick={ticker} />
             </div>
           )}
         </div>

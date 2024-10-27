@@ -20,7 +20,7 @@ export const OrdxList = () => {
   const { t } = useTranslation();
 
   const [type, setType] = useState('FT');
-  const { resp } = useIndexHealth();
+  const { data: ordxVersion } = useIndexHealth();
   const segmentedList = ['FT', 'Name', 'NFT'];
 
   return (
@@ -42,7 +42,7 @@ export const OrdxList = () => {
                   {t('pages.explorer.list_title')}
                 </Heading>
                 <Heading as='h6' size='xs' textColor={'gray.500'}>
-                  {t('pages.explorer.ordx_version')}: {resp?.version}
+                  {t('pages.explorer.ordx_version')}: {ordxVersion?.version}
                 </Heading>
               </Stack>
             </Box>

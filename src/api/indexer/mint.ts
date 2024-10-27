@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { generateUrl } from './common';
+import { generateUrl, handleApiRequest } from './common';
 import { MintDetailInfoResp } from '../type';
 
 export const getMintDetailInfo = async (inscriptionId : string): Promise<MintDetailInfoResp> => {
-  const { data } = await axios.get<MintDetailInfoResp>(generateUrl(`mint/details/${inscriptionId}`));
-  return data;
+  const url = `mint/details/${inscriptionId}`
+  return handleApiRequest(() => axios.get<MintDetailInfoResp>(generateUrl(url)));
 };
 
 const mint = {

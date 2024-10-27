@@ -23,6 +23,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { fi } from 'date-fns/locale';
 
 interface AvailableUtxoListProps {
   address: string;
@@ -288,22 +289,19 @@ export const AvailableUtxoList = ({
 
   const getAvailableUtxos = async () => {
     setLoading(true);
-    const resp = await indexer.utxo.getPlainUtxoList({
-      address,
-      value: 0,
-    });
-    if (resp.code !== 0) {
+    try {
+      const resp = await indexer.utxo.getPlainUtxoList({address,value: 0});
+      setData(resp);
+    } catch (error: any) {
       toast({
-        title: resp.msg,
+        title: error.msg,
         status: 'error',
         duration: 3000,
         isClosable: true,
       });
+    } finally {
       setLoading(false);
-      return;
     }
-    setLoading(false);
-    setData(resp);
   };
 
   useEffect(() => {

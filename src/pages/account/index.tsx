@@ -43,7 +43,7 @@ export default function Account() {
           <MyAssetsSummary
             address={address}
             utxosTotal={utxosTotal}
-            nameTotal={value?.data?.total || 0}
+            nameTotal={value?.total || 0}
             onChange={(tick) => setTicker(tick)}
           />
           {ticker === t('pages.account.name') && (
@@ -62,7 +62,7 @@ export default function Account() {
           )}
 
           {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && (
-            <AddressHolders tick={ticker} address={address} />
+            <AddressHolders ticker={ticker} address={address} />
           )}
         </div>
       ) : (

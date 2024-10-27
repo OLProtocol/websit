@@ -176,26 +176,18 @@ export const NftList = ({ targetAddress }) => {
   const getNfts = async () => {
     setLoading(true);
     try {
-      const resp = await indexer.nft.getNftListWithAddress({
-        address,
-        start,
-        limit,
-      });
-      if (resp.code !== 0) {
-        toast({
-          title: resp.msg,
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-        });
-        setLoading(false);
-        return;
-      }
+      const resp = await indexer.nft.getNftListWithAddress({address,start,limit});
       setLoading(false);
       setData(resp);
-    } catch (error) {
+    } catch (error: any) {
+      toast({
+        title: error.msg,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       console.error(error);
-
+    } finally {
       setLoading(false);
     }
   };

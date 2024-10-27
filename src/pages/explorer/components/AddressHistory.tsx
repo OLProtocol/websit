@@ -20,7 +20,7 @@ export const AddressHistory = ({ ticker, address, onEmpty }: HistoryProps) => {
   const network = useNetwork();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { resp, isLoading, trigger } = useAddressMintHistory({
+  const { data, isLoading, trigger } = useAddressMintHistory({
     ticker,
     address,
     start,
@@ -93,8 +93,8 @@ export const AddressHistory = ({ ticker, address, onEmpty }: HistoryProps) => {
       align: 'center',
     },
   ];
-  const dataSource = useMemo(() => resp?.data?.detail?.items || [], [resp]);
-  const total = useMemo(() => resp?.data?.total || 10, [resp]);
+  const dataSource = useMemo(() => data?.detail?.items || [], [data]);
+  const total = useMemo(() => data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
     console.log(page, pageSize);

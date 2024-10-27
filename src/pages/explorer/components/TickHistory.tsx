@@ -18,7 +18,7 @@ export const TickHistory = ({ tick: ticker }: HistoryProps) => {
   const network = useNetwork();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { resp, isLoading, trigger } = useTickMintHistory({
+  const { data: resp, isLoading, trigger } = useTickMintHistory({
     ticker,
     start,
     limit,
@@ -118,13 +118,13 @@ export const TickHistory = ({ tick: ticker }: HistoryProps) => {
     },
   ];
   const dataSource = useMemo(() => {
-    return (resp?.data?.detail?.items || []).map(item => ({
+    return (resp?.detail?.items || []).map(item => ({
       ...item,
       key: item.inscriptionId,
     }));
   }, [resp]);
 
-  const total = useMemo(() => resp?.data?.total || 10, [resp]);
+  const total = useMemo(() => resp?.total || 10, [resp]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
   };

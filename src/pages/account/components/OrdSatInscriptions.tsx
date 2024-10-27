@@ -185,23 +185,19 @@ export const OrdSatInscriptionList = () => {
 
     const getInscriptions = async (sat: string) => {
         setLoading(true);
-        const resp = await indexer.nft.getNftListWithSat({
-            sat: Number(sat),
-            start,
-            limit,
-        });
-        if (resp.code !== 0) {
+        try {
+        const resp = await indexer.nft.getNftListWithSat({sat: Number(sat),start,limit});
+        setData(resp);
+        } catch (error: any) {
             toast({
-                title: resp.msg,
+                title: error.msg,
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
-            });
+            });    
+        } finally {
             setLoading(false);
-            return;
         }
-        setLoading(false);
-        setData(resp);
     };
 
     const paginationChange = (page: number, pageSize: number) => {

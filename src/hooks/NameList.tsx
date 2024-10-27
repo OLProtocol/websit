@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNameList } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { NameListResp } from '@/api/type';
+import { NameList, NameListResp } from '@/api/type';
 
 
 interface NameListProps {
@@ -11,7 +11,7 @@ interface NameListProps {
 }
 
 interface NameListRespRecord {
-    resp: NameListResp
+    resp: NameList
     timeStamp: number
 }
 
@@ -20,8 +20,8 @@ const timeout = 60 * 1000;
 const getKey = (address: string, start: number, limit: number) => prefix + address + '_' + start + '_' + limit;
 
 export const useNameListHook = ({ address, start, limit }: NameListProps) => {
-    const [value, setValue] = useState<NameListResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useNameList({
+    const [value, setValue] = useState<NameList | undefined>(undefined);
+    const { data: resp, trigger, isLoading } = useNameList({
         address,
         start,
         limit,

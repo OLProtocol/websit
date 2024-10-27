@@ -42,28 +42,34 @@ export const SplitSatButton = ({
 
     const getValueOfUtxo = async () => {
         let value = 0;
-        const resp = await indexer.utxo.getAssetList(sat.utxo);
-        if (resp.code === 0) {
+        try {
+            const resp = await indexer.utxo.getAssetList(sat.utxo);
             value = Number(resp.data.detail.value);
+        } catch (error: any) {
+            
         }
         return value;
     }
 
     const getAvailableUtxos = async () => {
         let availableUtxos: any[] = [];
-        const resp = await indexer.utxo.getPlainUtxoList({
-            address: currentAccount,
-            value: 0,
-        });
-        if (resp.code === 0) {
-            availableUtxos = resp.data.filter((v) => v.value >= 330).sort((a, b) => a.value - b.value);// 排序：小->大
+        try {
+            const resp = await indexer.utxo.getPlainUtxoList({address: currentAccount,value: 0});
+            availableUtxos = resp.data.filter((v) => v.value >= 330).sort((a, b) => a.value - b.value);
+            
+        } catch (error: any) {
+            toast({
+                title: error.msg,
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            });
         }
         return availableUtxos;
     };
 
     const generateInputsAndOutputs = async () => {
         const utxoValue = await getValueOfUtxo();
-
         const inputList: any[] = [];
         const outputList: any[] = [];
 

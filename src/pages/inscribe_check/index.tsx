@@ -19,21 +19,24 @@ export default function InscribeCheck() {
   const toast = useToast();
 
   const doSearch = async () => {
-    const data = await indexer.mint.getMintDetailInfo(inscribId);
-    if (data.code === 0) {
+    try {
+      const data = await indexer.mint.getMintDetailInfo(inscribId);
       setResultMsg(
         t('pages.inscribe_check.success_result', {
           inscribeId: inscribId,
         }),
       );
       // setResultData(data.data);
-    } else {
+    } catch (error: any) {
       setResultMsg(
         t('pages.inscribe_check.failed_result', {
           inscribeId: inscribId,
         }),
       );
+      console.log(error);
       // setResultData('');
+    } finally {
+
     }
   };
 

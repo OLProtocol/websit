@@ -40,7 +40,7 @@ export const ROUTE_PATH = {
   INSCRIBE: '/inscribe',
   INSCRIBE_TEST: '/inscribe_test',
   INDEX: '/explorer',
-  INFO: '/explorer/:tick',
+  INFO: '/explorer/:ticker',
   NS: '/explorer/ns/:name',
   UTXO_INFO: '/explorer/utxo/:utxo',
   INSCRIPTION: '/explorer/inscription/:inscriptionId',

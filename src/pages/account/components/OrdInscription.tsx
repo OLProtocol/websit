@@ -14,8 +14,7 @@ export default function OrdInscription() {
   const network = useNetwork();
   const nav = useNavigate();
 
-  const { resp, trigger, isLoading } = inscriptionId ? useOrdInscriptiontInfo(inscriptionId) : { resp: undefined, trigger: () => {}, isLoading: false };
-  const detail = useMemo(() => resp?.data , [resp]);
+  const { data: detail, trigger, isLoading } = inscriptionId ? useOrdInscriptiontInfo(inscriptionId) : { data: undefined, trigger: () => {}, isLoading: false };
 
   const ordinalLink = useMemo(() => {
     if (network === 'testnet') {

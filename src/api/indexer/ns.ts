@@ -7,25 +7,21 @@ import {
     NameResp,
 } from '../type';
 
-import { generateUrl } from './common';
+import { generateUrl, handleApiRequest } from './common';
 
 export const getNameStatusList = async (param: NameStatusListReq) :Promise<NameStatusListResp> => {
-    
     const url = `ns/status?start=${param.start}&limit=${param.limit}`;
-    const { data } = await axios.get<NameStatusListResp>(generateUrl(url));
-    return data;
+    return handleApiRequest(() => axios.get<NameStatusListResp>(generateUrl(url)));
 };
 
 export const getNameList = async (param: NameListReq): Promise<NameListResp> => {
     const url = `ns/address/${param.address}?start=${param.start}&limit=${param.limit}`
-    const { data } = await axios.get<NameListResp>(generateUrl(url));
-    return data;
+    return handleApiRequest(() => axios.get<NameListResp>(generateUrl(url)));
 };
 
 export const getName = async (name: string): Promise<NameResp> => {
     const url = `ns/name/${name}`
-    const { data } = await axios.get<NameResp>(generateUrl(url));
-    return data;
+    return handleApiRequest(() => axios.get<NameResp>(generateUrl(url)));
 };
 
 const ns = {

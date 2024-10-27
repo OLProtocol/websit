@@ -27,8 +27,8 @@ export const NameList = ({ onTotalChange, address }: NameListProps) => {
     nav(`/explorer/ns/${item.name}`);
   };
 
-  const list = useMemo(() => value?.data?.names || [], [value]);
-  const total = useMemo(() => value?.data?.total || 0, [value]);
+  const list = useMemo(() => value?.names || [], [value]);
+  const total = useMemo(() => value?.total || 0, [value]);
 
   useEffect(() => {
     onTotalChange?.(total), [total];

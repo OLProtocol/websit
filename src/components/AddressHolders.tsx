@@ -16,13 +16,13 @@ import {
 import { CopyButton } from './CopyButton';
 
 interface HistoryProps {
-  tick: string;
+  ticker: string;
   address: string;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
 }
 export const AddressHolders = ({
-  tick,
+  ticker,
   address,
   onEmpty,
   onTransfer,
@@ -39,8 +39,8 @@ export const AddressHolders = ({
   const tipAddress =
     network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
 
-  const { resp, isLoading, trigger } = useAddressUtxoList({
-    ticker: tick,
+  const { data, isLoading, trigger } = useAddressUtxoList({
+    ticker,
     address,
     start,
     limit,
@@ -63,9 +63,7 @@ export const AddressHolders = ({
       };
       const data = await indexer.utxo.getPlainUtxoList({
         address: currentAccount,
-        // value: 600,
         value: 0,
-        
       });
       const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
@@ -339,7 +337,7 @@ export const AddressHolders = ({
 
   // const [dataSource, setDataSource] = useState<any[]>();
   const generateData = () => {
-    const details = resp?.data?.detail;
+    const details = data?.detail;
     const datas: any[] = [];
     if (details) {
       for (const detail of details) {
@@ -373,15 +371,15 @@ export const AddressHolders = ({
   // const dataSource = useMemo(() => data?.data?.detail || [], []);
   const dataSource = useMemo(() => {
     return generateData();
-  }, [resp]);
-  const total = useMemo(() => resp?.data?.total || 10, [resp]);
+  }, [data]);
+  const total = useMemo(() => data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
     console.log(page, pageSize);
   };
 
   const toInfo = () => {
-    nav(`/explorer/${tick}`);
+    nav(`/explorer/${ticker}`);
   };
 
   useEffect(() => {
@@ -389,24 +387,24 @@ export const AddressHolders = ({
   }, [dataSource]);
 
   useEffect(() => {
-    if (address && tick) {
+    if (address && ticker) {
       trigger();
     }
-    console.log('data:', resp)
-  }, [address, tick, network, start, limit]);
+    console.log('data:', data)
+  }, [address, ticker, network, start, limit]);
 
   return (
     <>
       {dataSource !== undefined && dataSource.length ? (
         <div className='rounded-2xl bg-gray-200 p-4'>
           <div className='mb-2'>
-            <span className='text-orange-500'> {tick}</span>
+            <span className='text-orange-500'> {ticker}</span>
             <span className='text-gray-500'>, {t('common.holder')}: </span>
             <span>{address}</span>
           </div>
           <div className='flex items-center mb-2'>
             <Button className='mr-2' color='rgb(249 115 22)' onClick={toInfo}>
-              {t('buttons.view')} {tick}
+              {t('buttons.view')} {ticker}
             </Button>
           </div>
           <Table
