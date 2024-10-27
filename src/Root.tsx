@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function Root() {
   const { network } = useReactWalletStore((state) => state);
-  const { data: btcHeight } = useIndexHeight();
+  const { resp } = useIndexHeight();
 
   const { setHeight, setServiceStatus, setAppVersion } = useCommonStore(
     (state) => state,
@@ -22,13 +22,13 @@ export default function Root() {
   const { VITE_BTC_CHAIN, VITE_API_HOST, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN } = import.meta.env;
 
   useEffect(() => {
-    const height = btcHeight?.data?.height || 0;
+    const height = resp?.data?.height || 0;
     if (height) {
       const serviceStatus = height >= Number(VITE_TIP_HEIGHT);
       setServiceStatus(serviceStatus ? 1 : 0);
       setHeight(height);
     }
-  }, [btcHeight]);
+  }, [resp]);
   return (
     <Layout className='h-full'>
       <UpdateVersionModal />

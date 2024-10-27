@@ -19,11 +19,11 @@ export default function UtxoInfo() {
   const nav = useNavigate();
   const network = useNetwork();
 
-  const { data: assetData, isLoading } = useGetUtxo({ utxo, network });
+  const { resp, isLoading } = typeof utxo === 'string' && useGetUtxo(utxo) || {};
 
   const allAssetList = useMemo(() => {
-    return assetData?.data?.detail;
-  }, [assetData]);
+    return resp?.data?.detail;
+  }, [resp]);
 
   // console.log("allAssetList", allAssetList);
   const toInscriptionInfo = (inscriptionId) => {

@@ -9,7 +9,7 @@ export const SatTypeBox = () => {
   const toast = useToast();
   const [satTypeList, setSatTypeList] = useState<any[]>();
   const network = useNetwork();
-  const { data: resp } = useSatTypes();
+  const { resp } = useSatTypes();
 
   const typeMap = {
     mythic: {
@@ -119,8 +119,8 @@ export const SatTypeBox = () => {
     setSatTypeList([]);
     const satTypeList: any[] | undefined = [];
     for (let i = 0; i < resp?.data?.length; i++) {
-      if (typeMap[resp.data[i]]) {
-        satTypeList.push(typeMap[resp.data[i]]);
+      if (typeMap[resp?.data[i]]) {
+        satTypeList.push(typeMap[resp?.data[i]]);
       } else {
         satTypeList.push({
           icon: '/images/sat/icon-default.svg',

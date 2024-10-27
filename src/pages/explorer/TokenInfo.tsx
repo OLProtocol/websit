@@ -29,7 +29,7 @@ export default function TokenInfo() {
       setTabText(type);
     }
   };
-  const { data: resp, isLoading } = useTickerStatus({ ticker: tick || '' });
+  const { resp, isLoading } = typeof tick === 'string' && useTickerStatus({ ticker: tick || '' }) || {};
   const tickerStatus = useMemo(() => {
     return resp?.data;
   }, [resp]);

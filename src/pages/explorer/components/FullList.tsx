@@ -35,12 +35,12 @@ export const FullList = () => {
     nav(`/explorer/${item.tick}`);
   };
 
-  const { data, error, isLoading } = useFtList({ start, limit });
-  const list = useMemo(() => data?.data?.detail || [], [data]);
-  const total = useMemo(() => data?.data?.total || 0, [data]);
+  const { resp, error, isLoading } = useFtList({ start, limit });
+  const list = useMemo(() => resp?.data?.detail || [], [resp]);
+  const total = useMemo(() => resp?.data?.total || 0, [resp]);
   const height = useMemo(() => {
-    return data?.data?.height;
-  }, [data]);
+    return resp?.data?.height;
+  }, [resp]);
 
   useEffect(() => {
     setLoading(isLoading);
@@ -53,16 +53,16 @@ export const FullList = () => {
       });
       return
     }
-    if (data && data.code !== 0) {
+    if (resp && resp.code !== 0) {
       toast({
-        title: data?.msg,
+        title: resp?.msg,
         status: 'error',
         duration: 3000,
         isClosable: true,
       });
       return
     }
-  }, [error, isLoading, data, toast]);
+  }, [error, isLoading, resp, toast]);
 
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();

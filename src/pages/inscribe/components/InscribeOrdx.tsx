@@ -86,10 +86,10 @@ export const InscribeOrdx = ({
     mintRarity: '',
     sat: 0,
   });
-  const { data: satTypeData } = useSatTypes();
+  const { resp } = useSatTypes();
   const satTypeList = useMemo(() => {
-    return satTypeData?.data || [];
-  }, [satTypeData]);
+    return resp?.data || [];
+  }, [resp]);
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
   const [tickLoading, setTickLoading] = useState(false);

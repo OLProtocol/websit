@@ -6,7 +6,7 @@ import { useAppVersion } from '@/swr';
 export const UpdateVersionModal = () => {
   // console.log('version', version);
   const [open, setOpen] = useState(false);
-  const { data } = useAppVersion();
+  const { resp } = useAppVersion();
   const timer = useRef<any>();
   const showModal = () => {
     setOpen(true);
@@ -18,7 +18,7 @@ export const UpdateVersionModal = () => {
   const checkVersion = () => {
     // console.log('appVersion', appVersion);
     // console.log('version', version);
-    if (data && data > version) {
+    if (resp && resp > version) {
       showModal();
     }
   };
@@ -31,7 +31,7 @@ export const UpdateVersionModal = () => {
   };
   useEffect(() => {
     checkVersion();
-  }, [data]);
+  }, [resp]);
   return (
     <Modal
       title='有新版本，是否更新'
