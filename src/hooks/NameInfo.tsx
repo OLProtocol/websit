@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNameInfo, useAddressNameList } from '@/api';
+import { useEffect, useState } from 'react';
+import { useNameInfo } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { NameInfoResp } from '@/api/types';
+import { Name } from '@/api/type';
 
 
-interface NameInfoProps {
+interface NameProps {
     name: string;
 }
 
-interface NameInfoRespRecord {
-    resp: NameInfoResp
+interface NameRespRecord {
+    resp: Name
     timeStamp: number
 }
 
@@ -17,14 +17,14 @@ const prefix = 'nameInfo_';
 const timeout = 60 * 1000;
 const getKey = (name: string) => prefix + name;
 
-export const useNameInfoHook = ({ name }: NameInfoProps) => {
-    const [value, setValue] = useState<NameInfoResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useNameInfo({ name });
+export const useNameInfoHook = ({ name }: NameProps) => {
+    const [value, setValue] = useState<Name | undefined>(undefined);
+    const { data, trigger, isLoading } = useNameInfo( name );
 
     useEffect(() => {
         if (name) {
             const key = getKey(name);
-            const record: NameInfoRespRecord = getCachedData(key);
+            const record: NameRespRecord = getCachedData(key);
             if (!record) {
                 trigger();
                 return;
@@ -39,21 +39,21 @@ export const useNameInfoHook = ({ name }: NameInfoProps) => {
     }, [name, trigger]);
 
     useEffect(() => {
-        if (!resp) return;
+        if (!data) return;
         const key = getKey(name);
         const cache = getCachedData(key);
         if (cache) {
-            setValue((cache as NameInfoRespRecord).resp);
+            setValue((cache as NameRespRecord).resp);
             return;
         }
-        const record: NameInfoRespRecord = {
-            resp: resp,
+        const record: NameRespRecord = {
+            resp: data,
             timeStamp: Date.now(),
         };
         setCacheData(key, record);
-        setValue(resp);
+        setValue(data);
 
-    }, [resp]);
+    }, [data]);
 
     return { value, isLoading };
 };

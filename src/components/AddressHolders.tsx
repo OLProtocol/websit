@@ -1,6 +1,7 @@
 import { Button, message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useTokenAddressHolders, getUtxoByValue } from '@/api';
+import { useAddressUtxoList } from '@/swr';
+import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useCommonStore } from '@/store';
 import type { ColumnsType } from 'antd/es/table';
@@ -13,19 +14,22 @@ import {
   signAndPushPsbt,
 } from '@/lib/utils';
 import { CopyButton } from './CopyButton';
+import { IndexerLayer } from '@/api/type';
 
-interface Sat20HistoryProps {
-  tick: string;
+interface HistoryProps {
+  ticker: string;
   address: string;
+  indexerLayer?: IndexerLayer;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
 }
-export const Sat20AddressHolders = ({
-  tick,
+export const AddressHolders = ({
+  ticker,
   address,
+  indexerLayer = IndexerLayer.Base,
   onEmpty,
   onTransfer,
-}: Sat20HistoryProps) => {
+}: HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { feeRate } = useCommonStore((state) => state);
@@ -38,8 +42,8 @@ export const Sat20AddressHolders = ({
   const tipAddress =
     network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
 
-  const { data, isLoading, trigger } = useTokenAddressHolders({
-    ticker: tick,
+  const { data, isLoading, trigger } = useAddressUtxoList({
+    ticker,
     address,
     start,
     limit,
@@ -60,11 +64,11 @@ export const Sat20AddressHolders = ({
         vout: Number(inscriptionVout),
         value: Number(inscriptionValue),
       };
-      const data = await getUtxoByValue({
+      const data = await indexer.utxo.getPlainUtxoList({
         address: currentAccount,
         // value: 600,
         value: 0,
-        network,
+        
       });
       const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
@@ -132,12 +136,7 @@ export const Sat20AddressHolders = ({
         setLoading(false);
         return;
       }
-      const data = await getUtxoByValue({
-        address: currentAccount,
-        // value: 500,
-        value: 0,
-        network,
-      });
+      const data = await indexer.utxo.getPlainUtxoList({address: currentAccount,value: 0}, indexerLayer);
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length || consumUtxos.length < 2) {
         message.error(t('messages.no_available_utxo'));
@@ -340,7 +339,7 @@ export const Sat20AddressHolders = ({
 
   // const [dataSource, setDataSource] = useState<any[]>();
   const generateData = () => {
-    const details = data?.data?.detail;
+    const details = data?.detail;
     const datas: any[] = [];
     if (details) {
       for (const detail of details) {
@@ -375,14 +374,14 @@ export const Sat20AddressHolders = ({
   const dataSource = useMemo(() => {
     return generateData();
   }, [data]);
-  const total = useMemo(() => data?.data?.total || 10, [data]);
+  const total = useMemo(() => data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
     console.log(page, pageSize);
   };
 
   const toInfo = () => {
-    nav(`/explorer/${tick}`);
+    nav(`/explorer/${ticker}`);
   };
 
   useEffect(() => {
@@ -390,24 +389,24 @@ export const Sat20AddressHolders = ({
   }, [dataSource]);
 
   useEffect(() => {
-    if (address && tick) {
+    if (address && ticker) {
       trigger();
     }
     console.log('data:', data)
-  }, [address, tick, network, start, limit]);
+  }, [address, ticker, network, start, limit]);
 
   return (
     <>
       {dataSource !== undefined && dataSource.length ? (
         <div className='rounded-2xl bg-gray-200 p-4'>
           <div className='mb-2'>
-            <span className='text-orange-500'> {tick}</span>
+            <span className='text-orange-500'> {ticker}</span>
             <span className='text-gray-500'>, {t('common.holder')}: </span>
             <span>{address}</span>
           </div>
           <div className='flex items-center mb-2'>
             <Button className='mr-2' color='rgb(249 115 22)' onClick={toInfo}>
-              {t('buttons.view')} {tick}
+              {t('buttons.view')} {ticker}
             </Button>
           </div>
           <Table

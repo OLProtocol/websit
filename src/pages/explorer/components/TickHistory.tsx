@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
-import { Button, Segmented, Table } from 'antd';
+import { Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useTokenHistory } from '@/api';
+import { useTickMintHistory } from '@/swr';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -12,14 +12,14 @@ import { useNetwork } from '@/lib/wallet';
 interface HistoryProps {
   tick: string;
 }
-export const TickHistory = ({ tick }: HistoryProps) => {
+export const TickHistory = ({ tick: ticker }: HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const network = useNetwork();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { data, isLoading, trigger } = useTokenHistory({
-    ticker: tick,
+  const { data: resp, isLoading, trigger } = useTickMintHistory({
+    ticker,
     start,
     limit,
   });
@@ -118,24 +118,24 @@ export const TickHistory = ({ tick }: HistoryProps) => {
     },
   ];
   const dataSource = useMemo(() => {
-    return (data?.data?.detail?.items || []).map(item => ({
+    return (resp?.detail?.items || []).map(item => ({
       ...item,
       key: item.inscriptionId,
     }));
-  }, [data]);
+  }, [resp]);
 
-  const total = useMemo(() => data?.data?.total || 10, [data]);
+  const total = useMemo(() => resp?.total || 10, [resp]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
   };
   const toInfo = () => {
-    nav(`/explorer/${tick}`);
+    nav(`/explorer/${ticker}`);
   };
   useEffect(() => {
-    if (tick) {
+    if (ticker) {
       trigger();
     }
-  }, [tick, network, start, limit]);
+  }, [ticker, network, start, limit]);
 
   return (
     <div>

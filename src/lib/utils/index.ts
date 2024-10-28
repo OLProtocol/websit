@@ -2,7 +2,7 @@ export * from './mempool';
 export * from './url';
 export * from '../wallet/utxo';
 export * from '../wallet/btc';
-import { getHeightInfo } from '@/api';
+import indexer from '@/api/indexer';
 import { add, format } from 'date-fns';
 import { flat, sum } from 'radash';
 import crypto from 'crypto';
@@ -18,20 +18,24 @@ export const getAssetTypeLabel = (tickerType?: string) => {
   return tickMap[tickerType] || tickerType;
 };
 
-
 export const getTimeByHeight = async (height: number) => {
   const key = `height-time-${height}`;
   const lcoalCache = sessionStorage.getItem(key);
   if (lcoalCache) {
     return +lcoalCache;
   }
-  const { info } = await getHeightInfo({ height });
-  const timestamp = info?.timestamp || 0;
+  try {
+  const  { data: blockInfo }  = await indexer.common.getBlockInfo(height);
+  const timestamp = blockInfo?.timestamp || 0;
   const time = timestamp * 1000;
   if (time) {
     sessionStorage.setItem(key, time.toString());
   }
   return time;
+  } catch (error) {
+    console.log(error);
+    return 0;
+  }
 };
 
 export const calcTimeBetweenBlocks = async ({

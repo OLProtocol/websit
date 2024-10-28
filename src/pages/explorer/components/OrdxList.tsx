@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Segmented } from 'antd';
-import { Sat20FullList } from './FullList';
+import { FullList } from './FullList';
 import { NameList } from './NameList';
 import { OrdNftList } from './OrdNftList';
 import { useTranslation } from 'react-i18next';
@@ -14,13 +14,13 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
-import { useOrdxVersion } from '@/api';
+import { useIndexHealth } from '@/swr';
 
 export const OrdxList = () => {
   const { t } = useTranslation();
 
   const [type, setType] = useState('FT');
-  const { data } = useOrdxVersion();
+  const { data: ordxVersion } = useIndexHealth();
   const segmentedList = ['FT', 'Name', 'NFT'];
 
   return (
@@ -42,7 +42,7 @@ export const OrdxList = () => {
                   {t('pages.explorer.list_title')}
                 </Heading>
                 <Heading as='h6' size='xs' textColor={'gray.500'}>
-                  {t('pages.explorer.ordx_version')}: {data?.version}
+                  {t('pages.explorer.ordx_version')}: {ordxVersion?.version}
                 </Heading>
               </Stack>
             </Box>
@@ -63,7 +63,7 @@ export const OrdxList = () => {
               }}
             />
           </div>
-          {type === segmentedList[0] && <Sat20FullList />}
+          {type === segmentedList[0] && <FullList />}
           {type === segmentedList[1] && <NameList />}
           {type === segmentedList[2] && <OrdNftList />}
         </CardBody>

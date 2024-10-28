@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast, Card, CardHeader, Heading, CardBody, TabList, Tab, Tabs, TabPanels, TabPanel, Divider, Box, Tooltip, Image, InputGroup, InputRightElement, IconButton, CardFooter, Button } from '@chakra-ui/react';
-import { getAssetByUtxo, getSatsByUtxo } from '@/api';
+import indexer from '@/api/indexer';
 import { useNavigate } from 'react-router-dom';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { UtxoAssetTable } from './components/UtxoAssetTable';
 import { setSatIcon } from '@/lib/utils/sat';
 import { Input } from 'antd';
@@ -23,7 +22,6 @@ export default function Utxo() {
   const [rareSatList, setRareSatList] = useState<any[]>();
 
   const [loading, setLoading] = useState(false);
-  const network = useNetwork();
 
   function handleKeyDown(event) {
     if (event.key === 'Enter') {
@@ -57,95 +55,74 @@ export default function Utxo() {
   const getSats = async () => {
     setLoading(true);
     setSatList([]);
-    const data = await getSatsByUtxo({
-      utxo: utxo,
-    });
+    try {
+      const resp = await indexer.exotic.getExoticSatInfo(utxo);
+      if (resp.data.sats.length === 0) {
+        setLoading(false);
+        toast({
+          title: 'No data',
+          status: 'info',
+          duration: 3000,
+          isClosable: true,
+        });
+        return
+      }
+      let tmpSatSize: number = 0;
+      const tmpSatList: any[] = [];
+      let tmpRareSatSize = 0
+      const tmpRareSatList: any[] = [];
+      resp.data.sats.map((item) => {
+        const sat = {
+          start: item.start,
+          end: item.start + item.size - 1,
+          size: item.size,
+          satributes: item.satributes,
+        }
+        if (item.satributes && item.satributes.length > 0) {
+          tmpRareSatList.push(sat)
+          tmpRareSatSize += sat.size;
+        } else {
+          tmpSatList.push(sat)
+          tmpSatSize += sat.size;
+        }
+      })
+      setSatList(tmpSatList);
+      setSatSize('(total: ' + tmpSatSize + ')')
 
-    if (data.code !== 0) {
+      setRareSatList(tmpRareSatList);
+      setRareSatSize('(total: ' + tmpRareSatSize + ')')
+    } catch (error: any) {
       setLoading(false);
       toast({
-        title: data.msg,
+        title: error.msg,
         status: 'error',
         duration: 3000,
         isClosable: true,
       });
-      return;
-    }
-    if (data.data === null || data.data.sats === null || data.data.sats.length === 0) {
+    } finally {
       setLoading(false);
-      toast({
-        title: 'No data',
-        status: 'info',
-        duration: 3000,
-        isClosable: true,
-      });
-      return
     }
-    let tmpSatSize: number = 0;
-    const tmpSatList: any[] = [];
-    let tmpRareSatSize = 0
-    const tmpRareSatList: any[] = [];
-    data.data.sats.map((item) => {
-      const sat = {
-        start: item.start,
-        end: item.start + item.size - 1,
-        size: item.size,
-        satributes: item.satributes,
-      }
-      if (item.satributes && item.satributes.length > 0) {
-        tmpRareSatList.push(sat)
-        tmpRareSatSize += sat.size;
-      } else {
-        tmpSatList.push(sat)
-        tmpSatSize += sat.size;
-      }
-    })
-    setSatList(tmpSatList);
-    setSatSize('(total: ' + tmpSatSize + ')')
-
-    setRareSatList(tmpRareSatList);
-    setRareSatSize('(total: ' + tmpRareSatSize + ')')
-
-    setLoading(false);
   };
 
   const getAssets = async () => {
     setLoading(true);
     setAssetList([]);
-    const data = await getAssetByUtxo({ utxo: utxo });
-
-    if (data.code !== 0) {
+    try {
+      const resp = await indexer.utxo.getAbbrAssetList(utxo);
+      setAssetList(resp.data);
       setLoading(false);
-      toast({
-        title: data.msg,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
     }
-    if (data.data === null) {
+    catch (e) {
       setLoading(false);
-      toast({
-        title: 'No data',
-        status: 'info',
-        duration: 3000,
-        isClosable: true,
-      });
-      return
+      if (e instanceof Error) {
+        toast({ title: e.message, status: 'error', duration: 3000, isClosable: true });
+      } else {
+        toast({ title: 'An unknown error occurred', status: 'error', duration: 3000, isClosable: true });
+      }
     }
-    setAssetList(data.data);
-    setLoading(false);
   };
 
-  const splitHandler = async () => {
-    toast({
-      title: 'Coming soon!',
-      status: 'info',
-      duration: 3000,
-      isClosable: true,
-    });
-  };
+  const splitHandler = async () => toast({ title: 'Coming soon!', status: 'info', duration: 3000, isClosable: true });
 
   return (
     <div className='flex flex-col max-w-[56rem] mx-auto pt-8'>

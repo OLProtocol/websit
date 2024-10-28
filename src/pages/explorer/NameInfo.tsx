@@ -15,8 +15,10 @@ export default function NameInfo() {
   const { name } = useParams();
   const nav = useNavigate();
   const network = useNetwork();
-  const { value, isLoading } = useNameInfoHook({ name: name || '' });
-  const detail = useMemo(() => value?.data, [value]);
+  const { value, isLoading } = typeof name === 'string' && useNameInfoHook({ name }) || {};
+  const detail = useMemo(() => {
+    return value;
+  }, [value]);
 
   const getOrdinalLink = (inscriptionId: string) => {
     if (!inscriptionId) {

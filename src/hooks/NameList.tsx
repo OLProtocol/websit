@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useAddressNameList } from '@/api';
+import { useEffect, useState } from 'react';
+import { useNameList } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { NameListResp } from '@/api/types';
+import { IndexerLayer, NameList, NameListResp } from '@/api/type';
 
 
 interface NameListProps {
@@ -11,7 +11,7 @@ interface NameListProps {
 }
 
 interface NameListRespRecord {
-    resp: NameListResp
+    resp: NameList
     timeStamp: number
 }
 
@@ -19,13 +19,18 @@ const prefix = 'nameList_';
 const timeout = 60 * 1000;
 const getKey = (address: string, start: number, limit: number) => prefix + address + '_' + start + '_' + limit;
 
-export const useAddressNameListHook = ({ address, start, limit }: NameListProps) => {
-    const [value, setValue] = useState<NameListResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useAddressNameList({
-        address,
-        start,
-        limit,
-    });
+export const useNameListHook = ({ address, start, limit }: NameListProps, indexerLayer: IndexerLayer = IndexerLayer.Base) => {
+    const [value, setValue] = useState<NameList | undefined>(undefined);
+    let keyPreFix = "";
+    switch (indexerLayer) {
+        case IndexerLayer.Base:
+            keyPreFix = "base"
+            break;
+        case IndexerLayer.Satsnet:
+            keyPreFix = "satsnet"
+            break;
+    }
+    const { data: resp, trigger, isLoading } = useNameList({address, start,limit}, keyPreFix, indexerLayer);
 
     useEffect(() => {
         if (address && limit !== undefined && start !== undefined) {

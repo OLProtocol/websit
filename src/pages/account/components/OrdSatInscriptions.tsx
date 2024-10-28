@@ -1,15 +1,13 @@
 import { Input, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { getOrdInscriptionsBySat } from '@/api';
+import indexer from '@/api/indexer';
 import { CopyButton } from '@/components/CopyButton';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import { hideStr, } from '@/lib/utils';
 import {
     Card,
     CardBody,
-    CardHeader,
     useToast,
 } from '@chakra-ui/react';
 import { generateMempoolUrl } from '@/lib/utils';
@@ -171,6 +169,7 @@ export const OrdSatInscriptionList = () => {
                 utxo: v.utxo,
                 mintTime: v.time,
                 genesesAddress: v.inscriptionAddress,
+                key: v.inscriptionId
             })) || [],
         [data],
     );
@@ -186,23 +185,19 @@ export const OrdSatInscriptionList = () => {
 
     const getInscriptions = async (sat: string) => {
         setLoading(true);
-        const resp = await getOrdInscriptionsBySat({
-            sat,
-            start,
-            limit,
-        });
-        if (resp.code !== 0) {
+        try {
+        const resp = await indexer.nft.getNftListWithSat({sat: Number(sat),start,limit});
+        setData(resp);
+        } catch (error: any) {
             toast({
-                title: resp.msg,
+                title: error.msg,
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
-            });
+            });    
+        } finally {
             setLoading(false);
-            return;
         }
-        setLoading(false);
-        setData(resp);
     };
 
     const paginationChange = (page: number, pageSize: number) => {

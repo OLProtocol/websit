@@ -1,21 +1,19 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-import { getUtxoByValue } from '@/api';
+import indexer from '@/api/indexer';
+import { Utxo } from '@/lib/wallet/utxo';
+
 export enum UtxoStatus {
   AVIALABLE,
   UNAVALABLE,
 }
-export interface UtxoStroeItem {
-  txid: string;
-  vout: number;
-  value: number;
+export interface UtxoStroeItem extends Utxo {
   status: UtxoStatus;
 }
 interface UtxoState {
   list: UtxoStroeItem[];
   reset: () => void;
-  getRemoteList: () => Promise<UtxoStroeItem[]>;
   setList: (list: UtxoStroeItem[]) => void;
   changeStatus: (txid: string, vout: number, status: UtxoStatus) => void;
   changeListStatus: (list: any[], status: UtxoStatus) => void;
@@ -32,25 +30,6 @@ export const useOrderStore = create<UtxoState>()(
           set({
             list,
           });
-        },
-        getRemoteList: async () => {
-          const { address, network } = useReactWalletStore.getState();
-          if (!address) {
-            return [];
-          }
-          const utxoList = await getUtxoByValue({ address, network, value: 0 });
-          const list = utxoList.map((item) => {
-            return {
-              txid: item.txid,
-              vout: item.vout,
-              value: item.value,
-              status: UtxoStatus.AVIALABLE,
-            };
-          });
-          set({
-            list,
-          });
-          return list;
         },
         changeStatus: (txid: string, vout: number, status: UtxoStatus) => {
           const list = get().list.map((item) => {

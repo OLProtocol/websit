@@ -7,13 +7,15 @@ import { genOrdinalsUrl, hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { CopyButton } from '@/components/CopyButton';
 import { useToast } from '@chakra-ui/react';
-import { useAddressNameListHook } from '@/hooks/NameList';
+import { useNameListHook } from '@/hooks/NameList';
+import { IndexerLayer } from '@/api/type';
 
 interface NameListProps {
   address: string;
+  indexerLayer?: IndexerLayer;
   onTotalChange?: (total: number) => void;
 }
-export const NameList = ({ onTotalChange, address }: NameListProps) => {
+export const NameList = ({ onTotalChange, address, indexerLayer = IndexerLayer.Base }: NameListProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { network, } = useReactWalletStore();
@@ -21,14 +23,14 @@ export const NameList = ({ onTotalChange, address }: NameListProps) => {
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const { value } = useAddressNameListHook({ address, start, limit });
+  const { value } = useNameListHook({ address, start, limit }, indexerLayer);
 
   const clickHandler = (item) => {
     nav(`/explorer/ns/${item.name}`);
   };
 
-  const list = useMemo(() => value?.data?.names || [], [value]);
-  const total = useMemo(() => value?.data?.total || 0, [value]);
+  const list = useMemo(() => value?.names || [], [value]);
+  const total = useMemo(() => value?.total || 0, [value]);
 
   useEffect(() => {
     onTotalChange?.(total), [total];
@@ -100,14 +102,15 @@ export const NameList = ({ onTotalChange, address }: NameListProps) => {
   };
 
   const dataSource: any[] = useMemo(
-    () =>
-      list.map((item, i) => {
+    () => {
+      return list.map((item, i) => {
         return {
           key: item.inscriptionId,
           index: i + 1,
           ...item,
         };
-      }),
+      })
+    },
     [list],
   );
 

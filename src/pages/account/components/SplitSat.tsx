@@ -1,6 +1,5 @@
-import { getUtxo, getUtxoByValue } from '@/api';
+import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-
 import { addressToScriptPublicKey, calculateRate } from '@/lib/utils';
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, Grid, GridItem, Heading, Input, InputGroup, InputLeftAddon, InputRightAddon, Stack, useToast } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
@@ -88,48 +87,43 @@ export default function SplitSat() {
     };
 
     const getValueOfUtxo = async () => {
+        if (!utxo) {
+            return
+        }
         setLoading(true);
-        const resp = await getUtxo({
-            utxo,
-        });
-        if (resp.code !== 0) {
+        try {
+            const resp = await indexer.utxo.getAssetList(utxo);
+            setUtxoValue(Number(resp.data.detail.value));
+        } catch (error: any) {
             toast({
-                title: resp.msg,
+                title: error.msg,
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
             });
+        } finally {
             setLoading(false);
-            return
         }
-        setLoading(false);
-        setUtxoValue(Number(resp.data.detail.value));
     }
 
     const getAvailableUtxos = async () => {
         if (!address) {
             return
         }
-
         setLoading(true);
-        const resp = await getUtxoByValue({
-            address,
-            network,
-            // value: 10,
-            value: 0,
-        });
-        if (resp.code !== 0) {
+        try {
+            const resp = await indexer.utxo.getPlainUtxoList({ address, value: 0 });
+            setAvailableUtxos(resp.data.filter((v) => v.value >= 330).sort((a, b) => a.value - b.value));// 排序：小->大
+        } catch (error: any) {
             toast({
-                title: resp.msg,
+                title: error.msg,
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
             });
+        } finally {
             setLoading(false);
-            return
         }
-        setLoading(false);
-        setAvailableUtxos(resp.data.filter((v) => v.value >= 330).sort((a, b) => a.value - b.value));// 排序：小->大
     };
 
     useEffect(() => {

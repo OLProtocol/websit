@@ -45,9 +45,9 @@ export const NavHeader = () => {
       type: 'link',
     },
     {
-      key: ROUTE_PATH.SAT20_INDEX,
+      key: ROUTE_PATH.INDEX,
       label: t('nav.explorer'),
-      value: ROUTE_PATH.SAT20_INDEX,
+      value: ROUTE_PATH.INDEX,
       type: 'route',
     },
     {

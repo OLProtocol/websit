@@ -1,15 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { getAssetTypeLabel } from '@/lib/utils';
-interface Ord2ItemProps {
+interface AssetProps {
   item: {
     tick: string;
-
     balance: number;
   };
   selected?: boolean;
   onClick?: () => void;
 }
-export const Sat20Item = ({ item, onClick, selected }: Ord2ItemProps) => {
+export const AssetSummary = ({ item, onClick, selected }: AssetProps) => {
   const { t } = useTranslation();
   return (
     <div key={item.tick}

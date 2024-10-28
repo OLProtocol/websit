@@ -8,11 +8,11 @@ interface ListTypesProps {
   onEmpty?: (b: boolean) => void;
 }
 export const ListTypes = ({ onChange, onEmpty }: ListTypesProps) => {
-  const { network, address } = useReactWalletStore();
+  const { address } = useReactWalletStore();
   const { value } = useTokenBalanceSummaryListHook({ address });
 
   const [select, setSelect] = useState('');
-  const list = useMemo(() => value?.data?.detail || [], [value]);
+  const list = useMemo(() => value?.detail || [], [value]);
   const onClick = (item) => {
     setSelect(item.ticker);
     onChange?.(item.ticker);

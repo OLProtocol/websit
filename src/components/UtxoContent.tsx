@@ -1,6 +1,5 @@
-import { useInscriptiontInfo } from '@/api';
+import { useInscriptiontInfo } from '@/swr';
 import { useEffect, useMemo } from 'react';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Spin } from 'antd';
 import { genOrdServiceUrl } from '@/lib/utils';
 import { generateSeed } from '@/lib/utils';
@@ -12,11 +11,8 @@ interface UtxoContentProps {
 }
 export function UtxoContent({ inscriptionId, ranges = [] }: UtxoContentProps) {
   const network = useNetwork();
-  const { data, trigger, isLoading } = useInscriptiontInfo({
-    inscriptionId: inscriptionId,
-  });
-  const detail = useMemo(() => data?.data || {}, [data]);
-  console.log('UtxoContent ranges:', ranges, inscriptionId);
+  const { data: detail, trigger, isLoading } = inscriptionId ? useInscriptiontInfo(inscriptionId) : { data: undefined, trigger: () => {}, isLoading: false };
+  // console.log('UtxoContent ranges:', ranges, inscriptionId);
   const seed = useMemo(
     () => {
       // console.log("utxoContent ranges:" + JSON.stringify(ranges));
@@ -27,7 +23,7 @@ export function UtxoContent({ inscriptionId, ranges = [] }: UtxoContentProps) {
     [ranges],
   );
   const contentSrc = useMemo(() => {
-    console.log("utxoContent delegate:", detail?.delegate, "inscriptionid:", inscriptionId, "seed:", seed);
+    // console.log("utxoContent delegate:", detail?.delegate, "inscriptionid:", inscriptionId, "seed:", seed);
     if (detail?.delegate && inscriptionId && seed) {
       return genOrdServiceUrl({
         network,

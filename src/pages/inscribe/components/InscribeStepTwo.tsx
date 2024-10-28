@@ -22,7 +22,7 @@ import {
 import { useState } from 'react';
 import { useMap } from 'react-use';
 import { InscribeCheckItem } from './InscribeCheckItem';
-import { InscribeType } from '@/types';
+import { InscribeType } from '@/type';
 import { useTranslation } from 'react-i18next';
 
 interface Brc20SetpOneProps {
