@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAddressAssetsSummary } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { AssetsSummaryResp } from '@/api/type';
+import { AssetsSummaryResp, IndexerLayer } from '@/api/type';
 
 
 interface TokenBalanceSummaryListProps {
@@ -17,9 +17,18 @@ const prefix = 'token_balance_summary_list_';
 const timeout = 60 * 1000;
 const getKey = (address: string) => prefix + address;
 
-export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryListProps) => {
+export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryListProps, indexerLayer: IndexerLayer = IndexerLayer.Base) => {
     const [value, setValue] = useState<AssetsSummaryResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useAddressAssetsSummary({ start:0, limit: 100, address });
+    let keyPreFix = "";
+    switch (indexerLayer) {
+        case IndexerLayer.Base:
+            keyPreFix = "base"
+            break;
+        case IndexerLayer.Satsnet:
+            keyPreFix = "satsnet"
+            break;
+    }
+    const { resp, trigger, isLoading } = useAddressAssetsSummary({ start:0, limit: 100, address },keyPreFix, indexerLayer);
 
     useEffect(() => {
         if (address) {

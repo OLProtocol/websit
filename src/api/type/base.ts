@@ -22,3 +22,7 @@ export interface ListResp {
     total: number
 }
 
+export enum IndexerLayer {
+    Base = 1,
+    Satsnet = 2
+}

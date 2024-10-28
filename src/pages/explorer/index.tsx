@@ -125,7 +125,7 @@ export default function Index() {
               <NftList targetAddress={address} />
             )}
             {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
-              <AddressHolders tick={selectTick} address={address} />
+              <AddressHolders ticker={selectTick} address={address} />
             )}
           </>
         )}

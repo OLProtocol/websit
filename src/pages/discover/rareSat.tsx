@@ -17,16 +17,17 @@ import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { setCacheData, getCachedData } from '@/lib/utils/cache';
 import { Input } from 'antd';
 import { useNetwork } from '@/lib/wallet';
-import { ExoticSatInfo, Sat } from '@/api/type';
+import { ExoticSatInfo, IndexerLayer, Sat } from '@/api/type';
 
 const { Search } = Input;
 
 interface RareSatProps {
   canSplit: boolean;
   targetAddress: string;
+  indexerLayer?: IndexerLayer;
 }
 
-export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
+export const RareSat = ({ canSplit, targetAddress, indexerLayer = IndexerLayer.Base }: RareSatProps) => {
   const { t } = useTranslation();
   const [address, setAddress] = useState(targetAddress);
   const [allSatList, setAllSatList] = useState<any[]>();
@@ -84,7 +85,7 @@ export const RareSat = ({ canSplit, targetAddress }: RareSatProps) => {
     setLoading(true);
     setAllSatList([]);
     setSatList([]);
-    const resp = await indexer.exotic.getExoticSatInfoList({ address: address });
+    const resp = await indexer.exotic.getExoticSatInfoList({ address: address }, indexerLayer);
     if (resp.code !== 0) {
       toast({
         title: resp.msg,

@@ -6,11 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
 
 import { useTokenBalanceSummaryListHook } from '@/hooks/TokenBalanceSummaryList';
+import { IndexerLayer } from '@/api/type';
 
 interface MyAssetsSummaryProps {
   address: string;
   utxosTotal: number;
   nameTotal: number;
+  indexerLayer?: IndexerLayer;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
@@ -20,10 +22,11 @@ export const MyAssetsSummary = ({
   onEmpty,
   utxosTotal,
   nameTotal,
+  indexerLayer = IndexerLayer.Base,
 }: MyAssetsSummaryProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
-  const { value } = useTokenBalanceSummaryListHook({ address });
+  const { value } = useTokenBalanceSummaryListHook({ address },indexerLayer);
   const otherTickers = useMemo(() => value?.data?.detail || [], [value]);
   const [rareSatList, setRareSatList] = useState<any[]>();
   const [nftSumBalance, setNftBalance] = useState<any>();
@@ -62,11 +65,7 @@ export const MyAssetsSummary = ({
     };
   }, [nameTotal]);
   const getNfts = async () => {
-    const data = await indexer.nft.getNftListWithAddress({
-      address,
-      start: 0,
-      limit: 1,
-    });
+    const data = await indexer.nft.getNftListWithAddress({address,start: 0,limit: 1}, indexerLayer);
     let sum = 0;
     if (data.code !== 0) {
       sum = 0;
@@ -77,7 +76,7 @@ export const MyAssetsSummary = ({
   };
 
   const getRareSats = async () => {
-    const data = await indexer.exotic.getExoticSatInfoList({ address: address });
+    const data = await indexer.exotic.getExoticSatInfoList({ address: address }, indexerLayer);
     let tmpSats: any[] = [];
     if (data.code !== 0) {
       tmpSats = [];

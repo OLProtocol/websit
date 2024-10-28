@@ -8,11 +8,18 @@ import { hideStr } from '@/lib/utils';
 import { useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useNetwork } from '@/lib/wallet';
+import { IndexerLayer } from '@/api/type';
 
-export const NftList = ({ targetAddress }) => {
+interface NftListProps {
+  targetAddress: string;
+  indexerLayer?: IndexerLayer;
+}
+
+
+export const NftList = ({ targetAddress, indexerLayer = IndexerLayer.Base } : NftListProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
-
+1
   const network = useNetwork();
   const router = useNavigate();
   const [address] = useState(targetAddress);
@@ -176,11 +183,7 @@ export const NftList = ({ targetAddress }) => {
   const getNfts = async () => {
     setLoading(true);
     try {
-      const resp = await indexer.nft.getNftListWithAddress({
-        address,
-        start,
-        limit,
-      });
+      const resp = await indexer.nft.getNftListWithAddress({address,start,limit}, indexerLayer);
       if (resp.code !== 0) {
         toast({
           title: resp.msg,

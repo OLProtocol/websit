@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { generateUrl } from './common';
 import { AbbrAssetListResp, AssetListResp, PlainUtxoListReq, PlainUtxoListResp } from '../type/utxo';
+import { IndexerLayer } from '../type';
 
 
 interface ApiResponse<T> {
@@ -27,21 +28,21 @@ const handleApiRequest = async <T>(requestFn: () => Promise<AxiosResponse<ApiRes
   }
 };
 
-const getPlainUtxoList = async (param: PlainUtxoListReq) => {
+const getPlainUtxoList = async (param: PlainUtxoListReq, indexerLayer = IndexerLayer.Base) => {
   const url = `utxo/address/${param.address}/${param.value}?start=${param.start}&limit=${param.limit}`;
-  const { data } = await axios.get<PlainUtxoListResp>(generateUrl(url));
+  const { data } = await axios.get<PlainUtxoListResp>(generateUrl(url, indexerLayer));
   return data;
 };
 
-const getAbbrAssetList = async (utxo: string): Promise<AbbrAssetListResp> => {
+const getAbbrAssetList = async (utxo: string, indexerLayer = IndexerLayer.Base): Promise<AbbrAssetListResp> => {
   const url = `utxo/abbrassets/${utxo}`;
-  return handleApiRequest(() => axios.get<ApiResponse<AbbrAssetListResp>>(generateUrl(url)));
+  return handleApiRequest(() => axios.get<ApiResponse<AbbrAssetListResp>>(generateUrl(url, indexerLayer)));
 };
 
 
-const getAssetList = async (utxo: string) => {
+const getAssetList = async (utxo: string, indexerLayer = IndexerLayer.Base) => {
   const url = `utxo/assets/${utxo}`
-  const { data } = await axios.get<AssetListResp>(generateUrl(url));
+  const { data } = await axios.get<AssetListResp>(generateUrl(url,indexerLayer));
   return data;
 };
 

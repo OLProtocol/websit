@@ -14,16 +14,19 @@ import {
   signAndPushPsbt,
 } from '@/lib/utils';
 import { CopyButton } from './CopyButton';
+import { IndexerLayer } from '@/api/type';
 
 interface HistoryProps {
-  tick: string;
+  ticker: string;
   address: string;
+  indexerLayer?: IndexerLayer;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
 }
 export const AddressHolders = ({
-  tick,
+  ticker,
   address,
+  indexerLayer = IndexerLayer.Base,
   onEmpty,
   onTransfer,
 }: HistoryProps) => {
@@ -39,12 +42,16 @@ export const AddressHolders = ({
   const tipAddress =
     network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
 
-  const { resp, isLoading, trigger } = useAddressUtxoList({
-    ticker: tick,
-    address,
-    start,
-    limit,
-  });
+  let keyPrefix = 'base';
+  switch (indexerLayer) {
+    case IndexerLayer.Base:
+      keyPrefix = 'base';
+      break;
+    case IndexerLayer.Satsnet:
+      keyPrefix = 'satsnet';
+      break;
+  }
+  const { resp, isLoading, trigger } = useAddressUtxoList({ticker,address,start,limit}, keyPrefix, indexerLayer);
 
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,12 +68,7 @@ export const AddressHolders = ({
         vout: Number(inscriptionVout),
         value: Number(inscriptionValue),
       };
-      const data = await indexer.utxo.getPlainUtxoList({
-        address: currentAccount,
-        // value: 600,
-        value: 0,
-        
-      });
+      const data = await indexer.utxo.getPlainUtxoList({address: currentAccount,value: 0}, indexerLayer);
       const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
@@ -133,10 +135,7 @@ export const AddressHolders = ({
         setLoading(false);
         return;
       }
-      const data = await indexer.utxo.getPlainUtxoList({
-        address: currentAccount,
-        value: 0,
-      });
+      const data = await indexer.utxo.getPlainUtxoList({address: currentAccount,value: 0}, indexerLayer);
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length || consumUtxos.length < 2) {
         message.error(t('messages.no_available_utxo'));
@@ -381,7 +380,7 @@ export const AddressHolders = ({
   };
 
   const toInfo = () => {
-    nav(`/explorer/${tick}`);
+    nav(`/explorer/${ticker}`);
   };
 
   useEffect(() => {
@@ -389,24 +388,24 @@ export const AddressHolders = ({
   }, [dataSource]);
 
   useEffect(() => {
-    if (address && tick) {
+    if (address && ticker) {
       trigger();
     }
     console.log('data:', resp)
-  }, [address, tick, network, start, limit]);
+  }, [address, ticker, network, start, limit]);
 
   return (
     <>
       {dataSource !== undefined && dataSource.length ? (
         <div className='rounded-2xl bg-gray-200 p-4'>
           <div className='mb-2'>
-            <span className='text-orange-500'> {tick}</span>
+            <span className='text-orange-500'> {ticker}</span>
             <span className='text-gray-500'>, {t('common.holder')}: </span>
             <span>{address}</span>
           </div>
           <div className='flex items-center mb-2'>
             <Button className='mr-2' color='rgb(249 115 22)' onClick={toInfo}>
-              {t('buttons.view')} {tick}
+              {t('buttons.view')} {ticker}
             </Button>
           </div>
           <Table

@@ -11,16 +11,18 @@ import {
   AssetsSummaryReq,
   TickerHolderResp,
   NameListReq,
+  IndexerLayer,
 } from '@/api/type';
 
 
 const createSWRMutationHook = <P extends Record<string, any>, T>(
   keyPrefix: string,
   param: P,
-  fetcher: (param: P) => Promise<T>,
+  fetcher: (param: P, IndexerLayer) => Promise<T>,
+  indexerLayer: IndexerLayer = IndexerLayer.Base
 ) => {
   const key = `${keyPrefix}-${genKeyParams(param)}`;
-  const { data, error, isMutating, trigger, reset } = useSWRMutation(key, _ => fetcher(param));
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(key, _ => fetcher(param, indexerLayer));
   return {
     resp: data,
     trigger,
@@ -36,11 +38,10 @@ export const useAddressMintHistory = (param: MintHistoryReq, prefix: string = 'd
   return createSWRMutationHook<MintHistoryReq, MintHistoryResp>(key, param, indexer.address.getMintHistory);
 }
 
-export const useAddressUtxoList = (param: UtxoListReq, prefix: string = 'default') => {
+export const useAddressUtxoList = (param: UtxoListReq, prefix: string = 'default', indexerLayer: IndexerLayer = IndexerLayer.Base) => {
   const key = `${prefix}-address-utxo-list`;
-  return createSWRMutationHook<UtxoListReq, UtxoListResp>(key, param, indexer.address.getUtxoList);
+  return createSWRMutationHook<UtxoListReq, UtxoListResp>(key, param, indexer.address.getUtxoList, indexerLayer);
 };
-
 
 export const useTickHolderList = (param: TickerHolderReq, prefix: string = 'default') => {
   const key = `${prefix}-tick-holder-list`;
@@ -83,9 +84,9 @@ export const useOrdInscriptiontInfo = ({ inscriptionId }: any) => {
   };
 };
 
-export const useAddressAssetsSummary = (param: AssetsSummaryReq, keyPrefix: string = 'default') => {
+export const useAddressAssetsSummary = (param: AssetsSummaryReq, keyPrefix: string = 'default', indexerLayer: IndexerLayer = IndexerLayer.Base) => {
   const key = `${keyPrefix}-address-assets-summary-${param.address}-${param.start}-${param.limit}`;
-  const { data, error, isMutating, trigger, reset } = useSWRMutation(key, _ => indexer.address.getAssetsSummary(param));
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(key, _ => indexer.address.getAssetsSummary(param, indexerLayer));
   return {
     resp: data,
     trigger,
@@ -95,9 +96,9 @@ export const useAddressAssetsSummary = (param: AssetsSummaryReq, keyPrefix: stri
   };
 };
 
-export const useNameList = (param: NameListReq, keyPrefix: string = 'default') => {
+export const useNameList = (param: NameListReq, keyPrefix: string = 'default', indexerLayer: IndexerLayer = IndexerLayer.Base) => {
   const key = `${keyPrefix}-name-list-${param.address}-${param.start}-${param.limit}`;
-  const { data, error, isMutating, trigger, reset } = useSWRMutation(key, _ => indexer.ns.getNameList(param));
+  const { data, error, isMutating, trigger, reset } = useSWRMutation(key, _ => indexer.ns.getNameList(param, indexerLayer));
   return {
     resp: data,
     trigger,

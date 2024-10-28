@@ -23,15 +23,18 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { IndexerLayer } from '@/api/type';
 
 interface AvailableUtxoListProps {
   address: string;
+  indexerLayer?: IndexerLayer;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
   onTotalChange?: (total: number) => void;
 }
 export const AvailableUtxoList = ({
   address,
+  indexerLayer = IndexerLayer.Base,
   onEmpty,
   onTransfer,
   onTotalChange,
@@ -126,10 +129,7 @@ export const AvailableUtxoList = ({
         vout: selectItem.vout,
         value: Number(inscriptionValue),
       };
-      const data = await indexer.utxo.getPlainUtxoList({
-        address: currentAccount,
-        value: 0,
-      });
+      const data = await indexer.utxo.getPlainUtxoList({address: currentAccount,value: 0}, indexerLayer);
       const virtualFee = (148 * 4 + 34 * 3 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
@@ -288,10 +288,7 @@ export const AvailableUtxoList = ({
 
   const getAvailableUtxos = async () => {
     setLoading(true);
-    const resp = await indexer.utxo.getPlainUtxoList({
-      address,
-      value: 0,
-    });
+    const resp = await indexer.utxo.getPlainUtxoList({address,value: 0,start:0, limit:1}, indexerLayer);
     if (resp.code !== 0) {
       toast({
         title: resp.msg,
