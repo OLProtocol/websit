@@ -329,11 +329,9 @@ export default function Transaction() {
   };
 
   const getRareSatTicker = async () => {
-    const resp = await indexer.exotic.getExoticSatInfoList({ address: address });
-
     let tickers: any[] = [];
-
-    if (resp.code === 0) {
+    try {
+      const resp = await indexer.exotic.getExoticSatInfoList({ address: address });
       resp.data.map((item) => {
         let hasRareStats = false;
         if (item.sats && item.sats.length > 0) {
@@ -390,74 +388,83 @@ export default function Transaction() {
         }
       });
     }
-
+    catch (error) {
+    }
+    finally {
+    }
     return tickers;
   };
 
   const getAvialableTicker = async () => {
-    const data = await indexer.utxo.getPlainUtxoList({
-      address: address,
-      value: 0,
-    });
-    if (data.code !== 0) {
+    try {
+      const resp = await indexer.utxo.getPlainUtxoList({ address: address, value: 0 });
+      return {
+        ticker: t('pages.tools.transaction.available_utxo'),
+        utxos: resp.data,
+      };
+    } catch (error: any) {
+      messageApi.error(error.msg);
+    } finally {
       setLoading(false);
-      messageApi.error(data.msg);
-      return;
     }
-
-    return {
-      ticker: t('pages.tools.transaction.available_utxo'),
-      utxos: data.data,
-    };
   };
 
   const getTickers = async () => {
     const tickers: any[] = [];
+    setLoading(true);
+    try {
+      let resp = await indexer.address.getAssetsSummary({ start: 0, limit: 100, address });
+      const detail = resp?.data?.detail;
 
-    let resp = await indexer.address.getAssetsSummary({start:0, limit: 100, address});
-    if (resp.code !== 0) {
+      detail?.map(async (item) => {
+        let resp = await indexer.address.getUtxoList({
+          start: 0,
+          limit: 10,
+          address,
+          ticker: item.ticker,
+        });
+        const utxosOfTicker: any[] = [];
+        // if (resp.code === 0) {
+        //   const details = resp?.data?.detail;
+        //   details?.map((detail) => {
+        // const utxo = {
+        //   txid: detail.utxo.split(':')[0],
+        //   vout: Number(detail.utxo.split(':')[1]),
+        //   value: detail.amount,
+        //   assetamount: detail.assetamount,
+        // };
+        // utxosOfTicker.push(utxo);
+        // });
+        // }
+        tickers.push({
+          ticker: item.ticker,
+          utxos: utxosOfTicker,
+        });
+      });
+    } catch (error: any) {
+      messageApi.error(error.msg);
+    } finally {
       setLoading(false);
-      messageApi.error(resp.msg);
-      return;
     }
-    const detail = resp?.data?.detail;
-
-    detail?.map(async (item) => {
-      let resp = await indexer.address.getUtxoList({
-        start: 0,
-        limit: 10,
-        address,
-        ticker: item.ticker,
-      });
-      const utxosOfTicker: any[] = [];
-      // if (resp.code === 0) {
-      //   const details = resp?.data?.detail;
-      //   details?.map((detail) => {
-      // const utxo = {
-      //   txid: detail.utxo.split(':')[0],
-      //   vout: Number(detail.utxo.split(':')[1]),
-      //   value: detail.amount,
-      //   assetamount: detail.assetamount,
-      // };
-      // utxosOfTicker.push(utxo);
-      // });
-      // }
-      tickers.push({
-        ticker: item.ticker,
-        utxos: utxosOfTicker,
-      });
-    });
-
     return tickers;
   };
 
   const getAllTickers = async () => {
     const tickers = await getTickers();
+    if (!tickers) {
+      return;
+    }
+
     const avialableTicker = await getAvialableTicker();
+    if (!avialableTicker) {
+      return;
+    }
     tickers?.push(avialableTicker);
 
     const rareSatTickers = await getRareSatTicker();
-
+    if (!rareSatTickers) {
+      return;
+    }
     const combinedArray = tickers?.concat(rareSatTickers);
 
     setTickerList(combinedArray);

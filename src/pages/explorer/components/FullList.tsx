@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { useFtList } from '@/swr';
+import { useTickerStatusList } from '@/swr';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ import { useToast } from '@chakra-ui/react';
 import { useNetwork } from '@/lib/wallet';
 
 interface DataType {
-  tick: string;
+  ticker: string;
   block: string;
   rarity: string;
 }
@@ -32,15 +32,10 @@ export const FullList = () => {
   const { VITE_ORDX_MINT_URL } = import.meta.env;
 
   const clickHandler = (item) => {
-    nav(`/explorer/${item.tick}`);
+    nav(`/explorer/${item.ticker}`);
   };
 
-  const { data, error, isLoading } = useFtList({ start, limit });
-  const list = useMemo(() => data?.data?.detail || [], [data]);
-  const total = useMemo(() => data?.data?.total || 0, [data]);
-  const height = useMemo(() => {
-    return data?.data?.height;
-  }, [data]);
+  const { data, error, isLoading } = useTickerStatusList({ start, limit });
 
   useEffect(() => {
     setLoading(isLoading);
@@ -53,20 +48,11 @@ export const FullList = () => {
       });
       return
     }
-    if (data && data.code !== 0) {
-      toast({
-        title: data?.msg,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return
-    }
   }, [error, isLoading, data, toast]);
 
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
-    const url = VITE_ORDX_MINT_URL.replace('%s', item.tick);
+    const url = VITE_ORDX_MINT_URL.replace('%s', item.ticker);
     window.open(url, '_blank');
     // console.log(item);
     // nav('/inscribe', { state: { type: 'ordx', item } });
@@ -94,12 +80,12 @@ export const FullList = () => {
     },
     {
       title: t('common.tick'),
-      dataIndex: 'tick',
-      key: 'tick',
+      dataIndex: 'ticker',
+      key: 'ticker',
       width: 80,
       align: 'center',
-      render: (tick) => {
-        return <div className='cursor-pointer'>{tick}</div>;
+      render: (ticker) => {
+        return <div className='cursor-pointer'>{ticker}</div>;
       },
     },
     {
@@ -247,9 +233,9 @@ export const FullList = () => {
     },
   ];
 
-  const dataSource: DataType[] = useMemo(
+  const dataSource = useMemo(
     () =>
-      list.map((item) => {
+      data?.detail?.map((item) => {
         const isSpecial =
           item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         let status;
@@ -299,7 +285,7 @@ export const FullList = () => {
           removeObjectEmptyValue({
             p: 'ordx',
             op: 'deploy',
-            tick: item.ticker?.toString(),
+            ticker: item.ticker?.toString(),
             block: undefined,
             lim: item.limit?.toString(),
             attr,
@@ -308,7 +294,7 @@ export const FullList = () => {
         );
         return {
           id: item.id + 1,
-          tick: item.ticker,
+          ticker: item.ticker,
           block:
             item.startBlock > 0 ? `${item.startBlock}-${item.endBlock}` : '-',
           startBlock: item.startBlock,
@@ -329,7 +315,7 @@ export const FullList = () => {
           deploy_time: new Date(item.deployBlocktime).toLocaleString('af'),
         };
       }),
-    [list, height],
+    [data],
   );
 
   const paginationChange = (page: number, pageSize: number) => {
@@ -346,7 +332,7 @@ export const FullList = () => {
       pagination={{
         position: ['bottomCenter'],
         defaultPageSize: 10,
-        total: total,
+        total: data?.total,
         onChange: paginationChange,
         showSizeChanger: false,
       }}

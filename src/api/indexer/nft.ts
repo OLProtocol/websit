@@ -7,32 +7,33 @@ import {
   NftStatusListReq,
   NftStatusListResp,
 } from '../type';
-import { generateUrl } from './common';
 
-export const getNftStatusList = async (param: NftStatusListReq, indexerLayer = IndexerLayer.Base): Promise<NftStatusListResp> => {
-  const { data } = await axios.get<NftStatusListResp>(generateUrl(`nft/status?start=${param.start}&limit=${param.limit}`, indexerLayer));
-  return data;
+import { generateUrl, handleApiRequest } from './common';
+
+export const getNftStatusList = async (param: NftStatusListReq, indexerLayer: IndexerLayer = IndexerLayer.Base): Promise<NftStatusListResp> => {
+    const url = `nft/status?start=${param.start}&limit=${param.limit}`;
+    return handleApiRequest(() => axios.get<NftStatusListResp>(generateUrl(url, indexerLayer)));
 };
 
-export const getNftListWithAddress = async (param: NftListReq, indexerLayer = IndexerLayer.Base,): Promise<NftListResp> => {
-  const { data } = await axios.get<NftListResp>(generateUrl(`nft/address/${param.address}?start=${param.start}&limit=${param.limit}`, indexerLayer));
-  return data;
-};
-
-export const getNftListWithSat = async (param: NftListReq, indexerLayer = IndexerLayer.Base): Promise<NftListResp> => {
-  const { data } = await axios.get<NftListResp>(generateUrl(`nft/sat/${param.sat}?start=${param.start}&limit=${param.limit}`, indexerLayer));
-  return data;
-};
-
-export const getNftDetail = async (inscriptionId: string, indexerLayer = IndexerLayer.Base): Promise<NftDetailResp> => {
-  const { data } = await axios.get<NftDetailResp>(generateUrl(`nft/nftid/${inscriptionId}`, indexerLayer));
-  return data;
-};
+export const getNftListWithAddress = async (param: NftListReq, indexerLayer: IndexerLayer = IndexerLayer.Base): Promise<NftListResp> => {
+    const url = `nft/address/${param.address}?start=${param.start}&limit=${param.limit}`
+    return handleApiRequest(() => axios.get<NftListResp>(generateUrl(url, indexerLayer)));
+  };
+  
+  export const getNftListWithSat = async (param: NftListReq, indexerLayer: IndexerLayer = IndexerLayer.Base): Promise<NftListResp> => {
+    const url = `nft/sat/${param.sat}?start=${param.start}&limit=${param.limit}`
+    return handleApiRequest(() => axios.get<NftListResp>(generateUrl(url, indexerLayer)));
+  };
+  
+  export const getNftDetail = async ( inscriptionId : string, indexerLayer: IndexerLayer = IndexerLayer.Base): Promise<NftDetailResp> => {
+    const url = `nft/nftid/${inscriptionId}`
+    return handleApiRequest(() => axios.get<NftDetailResp>(generateUrl(url, indexerLayer)));
+  };
 
 const nft = {
   getNftStatusList,
   getNftListWithAddress,
   getNftListWithSat,
-  getOrdInscription: getNftDetail
+  getNftDetail
 }
 export default nft;

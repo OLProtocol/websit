@@ -1,22 +1,22 @@
 import axios from 'axios';
 import { ExoticSatInfoListResp, ExoticSatInfoResp, IndexerLayer, SpecificExoticAssetReq, SpecificExoticAssetResp } from '../type';
-import { generateUrl } from './common';
+import { generateUrl, handleApiRequest } from './common';
 
 
-const getSpecificExoticAsset = async (param: SpecificExoticAssetReq, indexerLayer = IndexerLayer.Base): Promise<SpecificExoticAssetResp> => {
-    const { data } = await axios.get<SpecificExoticAssetResp>(generateUrl(`exotic/address/${param.address}/${param.type}`, indexerLayer));
-    return data;
+const getSpecificExoticAsset = async (param: SpecificExoticAssetReq, indexerLayer: IndexerLayer = IndexerLayer.Base): Promise<SpecificExoticAssetResp> => {
+    const url = `exotic/address/${param.address}/${param.type}`
+    return handleApiRequest(() => axios.get<SpecificExoticAssetResp>(generateUrl(url, indexerLayer)));
 };
 
-const getExoticSatInfo = async (utxo: string, indexerLayer = IndexerLayer.Base): Promise<ExoticSatInfoResp> => {
-    const { data } = await axios.get<ExoticSatInfoResp>(generateUrl(`exotic/utxo/${utxo}`, indexerLayer));
-    return data;
+const getExoticSatInfo = async (utxo: string, indexerLayer: IndexerLayer = IndexerLayer.Base): Promise<ExoticSatInfoResp> => {
+    const url = `exotic/utxo/${utxo}`
+    return handleApiRequest(() => axios.get<ExoticSatInfoResp>(generateUrl(url, indexerLayer)));
 };
 
 
-const getExoticSatInfoList = async ({ address }: any, indexerLayer = IndexerLayer.Base): Promise<ExoticSatInfoListResp> => {
-    const { data } = await axios.get<ExoticSatInfoListResp>(generateUrl(`exotic/address/${address}`, indexerLayer));
-    return data;
+const getExoticSatInfoList = async ({ address }: any, indexerLayer: IndexerLayer = IndexerLayer.Base): Promise<ExoticSatInfoListResp> => {
+    const url = `exotic/address/${address}`
+    return handleApiRequest(() => axios.get<ExoticSatInfoListResp>(generateUrl(url, indexerLayer)));
 };
 
 const exotic = {

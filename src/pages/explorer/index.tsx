@@ -108,7 +108,7 @@ export default function Index() {
                 onEmpty={summaryEmptyHandler}
                 address={address}
                 utxosTotal={utxosTotal}
-                nameTotal={resp?.data?.total || 0}
+                nameTotal={resp?.total || 0}
                 onChange={(tick) => setSelectTick(tick)}
               />
             </div>

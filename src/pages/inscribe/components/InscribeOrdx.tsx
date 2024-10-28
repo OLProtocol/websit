@@ -86,10 +86,7 @@ export const InscribeOrdx = ({
     mintRarity: '',
     sat: 0,
   });
-  const { data: satTypeData } = useSatTypes();
-  const satTypeList = useMemo(() => {
-    return satTypeData?.data || [];
-  }, [satTypeData]);
+  const { data: satTypeList } = useSatTypes();
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
   const [tickLoading, setTickLoading] = useState(false);
@@ -138,14 +135,14 @@ export const InscribeOrdx = ({
       throw error;
     }
   };
-  const getOrdXInfo = async (tick: string) => {
+  const getOrdXInfo = async (ticker: string) => {
     try {
-      const key = `${network}_${tick}`;
-      const info = await indexer.tick.getStatus({ ticker: tick });
-      if (info) {
-        localStorage.setItem(key, JSON.stringify(info));
+      const key = `${network}_${ticker}`;
+      const resp = await indexer.tick.getStatus({ ticker });
+      if (resp) {
+        localStorage.setItem(key, JSON.stringify(resp));
       }
-      return info;
+      return resp;
     } catch (error) {
       toast.error(t('toast.system_error'));
       console.error('Failed to fetch ordXInfo:', error);
@@ -647,7 +644,7 @@ export const InscribeOrdx = ({
                       placeholder={t('common.select_option')}
                       value={data.rarity}
                       onChange={(e) => rarityChange(e.target.value)}>
-                      {satTypeList.map((item) => {
+                      {satTypeList?.map((item) => {
                         return <option value={item}>{item}</option>;
                       })}
                     </Select>

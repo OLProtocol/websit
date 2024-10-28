@@ -572,52 +572,57 @@ export const sendBTC = async ({
 }: SendBTCProps) => {
   const hasOrdxUtxo = !!ordxUtxo;
   console.log('hasOrdxUtxo', hasOrdxUtxo);
-  const data = await indexer.utxo.getPlainUtxoList({ address: fromAddress, value: 0 });
-  const consumUtxos = data?.data || [];
-  if (!consumUtxos.length) {
-    throw new Error(i18n.t('toast.insufficient_balance'));
-  }
-  console.log(value);
-  console.log(hasOrdxUtxo);
-  const fee = (148 * (hasOrdxUtxo ? 2 : 1) + 34 * 2 + 10) * feeRate;
-  console.log(fee);
-  const filterTotalValue = hasOrdxUtxo ? 546 + fee : value + 546 + fee;
-  console.log(consumUtxos);
-  const { utxos: avialableUtxos } = filterUtxosByValue(
-    consumUtxos,
-    filterTotalValue,
-  );
-  if (!avialableUtxos.length) {
-    throw new Error(i18n.t('toast.insufficient_balance'));
+
+  try {
+    const resp = await indexer.utxo.getPlainUtxoList({ address: fromAddress, value: 0 });
+    const consumUtxos = resp.data;
+    if (!consumUtxos.length) {
+      throw new Error(i18n.t('toast.insufficient_balance'));
+    }
+  
+    const fee = (148 * (hasOrdxUtxo ? 2 : 1) + 34 * 2 + 10) * feeRate;
+    const filterTotalValue = hasOrdxUtxo ? 546 + fee : value + 546 + fee;
+    const { utxos: avialableUtxos } = filterUtxosByValue(
+      consumUtxos,
+      filterTotalValue,
+    );
+    if (!avialableUtxos.length) {
+      throw new Error(i18n.t('toast.insufficient_balance'));
+    }
+  
+    if (hasOrdxUtxo) {
+      const { utxo, value } = ordxUtxo;
+      const ordxTxid = utxo.split(':')[0];
+      const ordxVout = utxo.split(':')[1];
+      avialableUtxos.unshift({
+        txid: ordxTxid,
+        vout: Number(ordxVout),
+        value: value,
+      });
+    }
+    const toValue = value;
+    const outputs = [
+      {
+        address: toAddress,
+        value: toValue,
+      },
+    ];
+    
+    const network = getNetwork();
+    const psbt = await buildTransaction({
+      utxos: avialableUtxos,
+      outputs,
+      feeRate,
+      network,
+      address: fromAddress,
+      publicKey: fromPubKey,
+    });
+    return await signAndPushPsbt(psbt);
+    // return await signAndPushPsbt(inputs, outputs, network);
+  } catch (error) {
+    
+  } finally {
+    
   }
 
-  if (hasOrdxUtxo) {
-    const { utxo, value } = ordxUtxo;
-    const ordxTxid = utxo.split(':')[0];
-    const ordxVout = utxo.split(':')[1];
-    avialableUtxos.unshift({
-      txid: ordxTxid,
-      vout: Number(ordxVout),
-      value: value,
-    });
-  }
-  const toValue = value;
-  const outputs = [
-    {
-      address: toAddress,
-      value: toValue,
-    },
-  ];
-  console.log(avialableUtxos);
-  const network = getNetwork();
-  const psbt = await buildTransaction({
-    utxos: avialableUtxos,
-    outputs,
-    feeRate,
-    network,
-    address: fromAddress,
-    publicKey: fromPubKey,
-  });
-  return await signAndPushPsbt(psbt);
-  // return await signAndPushPsbt(inputs, outputs, network);
 };

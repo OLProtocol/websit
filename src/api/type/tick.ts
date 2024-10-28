@@ -25,11 +25,12 @@ export interface TickerStatus {
     txid: string
 }
 export interface TickerStatusListReq extends ListReq { }
+export interface TickerStatusList extends ListResp {
+    height: number
+    detail?: TickerStatus[]
+}
 export interface TickerStatusListResp extends BaseResp {
-    data: ListResp & {
-        height: number
-        detail?: TickerStatus[]
-    }
+    data: TickerStatusList
 }
 
 export interface TickerStatusReq extends TickerReq { }

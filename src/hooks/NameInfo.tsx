@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNameInfo } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { NameResp } from '@/api/type';
+import { Name } from '@/api/type';
 
 
 interface NameProps {
@@ -9,7 +9,7 @@ interface NameProps {
 }
 
 interface NameRespRecord {
-    resp: NameResp
+    resp: Name
     timeStamp: number
 }
 
@@ -18,8 +18,8 @@ const timeout = 60 * 1000;
 const getKey = (name: string) => prefix + name;
 
 export const useNameInfoHook = ({ name }: NameProps) => {
-    const [value, setValue] = useState<NameResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useNameInfo( name );
+    const [value, setValue] = useState<Name | undefined>(undefined);
+    const { data, trigger, isLoading } = useNameInfo( name );
 
     useEffect(() => {
         if (name) {
@@ -39,7 +39,7 @@ export const useNameInfoHook = ({ name }: NameProps) => {
     }, [name, trigger]);
 
     useEffect(() => {
-        if (!resp) return;
+        if (!data) return;
         const key = getKey(name);
         const cache = getCachedData(key);
         if (cache) {
@@ -47,13 +47,13 @@ export const useNameInfoHook = ({ name }: NameProps) => {
             return;
         }
         const record: NameRespRecord = {
-            resp: resp,
+            resp: data,
             timeStamp: Date.now(),
         };
         setCacheData(key, record);
-        setValue(resp);
+        setValue(data);
 
-    }, [resp]);
+    }, [data]);
 
     return { value, isLoading };
 };

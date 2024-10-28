@@ -1,9 +1,32 @@
-import axios from 'axios';
-
+import axios, { AxiosResponse } from 'axios';
 import { BestHeightResp, HealthStatusResp, BlockInfoResp, SatributeListResp, SplittedSatNameListResp, IndexerLayer } from '../type';
 
-const { VITE_API_HOST, VITE_API_SATSNET_INDEX_HOST, VITE_BTC_CHAIN, VITE_ORDX_API_AUTHORIZATION } = import.meta.env;
+export interface ApiResponse<T> {
+    code: number;
+    msg: string;
+    data: T;
+}
+
+const { VITE_API_HOST, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN, VITE_API_SATSNET_INDEX_HOST, VITE_BTC_CHAIN, VITE_ORDX_API_AUTHORIZATION } = import.meta.env;
 axios.defaults.headers.common['Authorization'] = VITE_ORDX_API_AUTHORIZATION;
+
+export const handleApiRequest = async <T>(requestFn: () => Promise<AxiosResponse<ApiResponse<T>>>) => {
+    try {
+        const resp = await requestFn();
+        if (resp.status !== 200) {
+            throw new Error(`API request failed, HTTP status code: ${resp.status}`);
+        }
+        if (resp.data.code !== 0) {
+            throw new Error(`API request failed, code: ${resp.data.code}, msg: ${resp.data.msg}`);
+        }
+        return resp.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(`API request failed, axios error: ${error.message}`);
+        }
+        throw error;
+    }
+};
 
 export const generateUrl = (url: string, indexerLayer: IndexerLayer = IndexerLayer.Base) => {
     switch (indexerLayer) {
@@ -15,33 +38,44 @@ export const generateUrl = (url: string, indexerLayer: IndexerLayer = IndexerLay
 };
 
 const getAppVersion = async (): Promise<string> => {
-    const { data } = await axios.get<string>(`/version.txt`);
+    let domain = '';
+    switch (VITE_BTC_CHAIN) {
+        case 'mainnet':
+            domain = VITE_MAINNET_DOMAIN;
+            break;
+        case 'testnet':
+            domain = VITE_TESTNET_DOMAIN;
+            break;
+    }
+    const { data } = await axios.get<string>(`${domain}/version.txt`);
     return data;
 };
 
 const getHealth = async (indexerLayer = IndexerLayer.Base): Promise<HealthStatusResp> => {
-    const { data } = await axios.get<HealthStatusResp>(generateUrl(`health`, indexerLayer));
+    const url = `health`;
+    const { data } = await axios.get<HealthStatusResp>(generateUrl(url, indexerLayer));
     return data;
 };
 
 const getBestHeight = async (indexerLayer = IndexerLayer.Base): Promise<BestHeightResp> => {
-    const { data } = await axios.get<BestHeightResp>(generateUrl(`bestheight`, indexerLayer));
+    const url = `bestheight`;
+    const { data } = await axios.get<BestHeightResp>(generateUrl(url, indexerLayer));
     return data;
 };
 
 const getBlockInfo = async (height, indexerLayer = IndexerLayer.Base): Promise<BlockInfoResp> => {
-    const { data } = await axios.get<BlockInfoResp>(generateUrl(`height/${height}`, indexerLayer));
-    return data;
+    const url = `height/${height}`
+    return handleApiRequest(() => axios.get<BlockInfoResp>(generateUrl(url, indexerLayer)));
 };
 
 const getSatributeList = async (indexerLayer = IndexerLayer.Base): Promise<SatributeListResp> => {
-    const { data } = await axios.get<SatributeListResp>(generateUrl(`info/satributes`, indexerLayer));
-    return data;
+    const url = `info/satributes`
+    return handleApiRequest(() => axios.get<SatributeListResp>(generateUrl(url, indexerLayer)));
 };
 
 const getSplittedSatNameList = async (ticker: string, indexerLayer = IndexerLayer.Base): Promise<SplittedSatNameListResp> => {
-    const { data } = await axios.get<SplittedSatNameListResp>(generateUrl(`splittedInscriptions/${ticker}`, indexerLayer));
-    return data;
+    const url = `splittedInscriptions/${ticker}`
+    return handleApiRequest(() => axios.get<SplittedSatNameListResp>(generateUrl(url, indexerLayer)));
 };
 
 const common = {

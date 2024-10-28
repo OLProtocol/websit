@@ -18,15 +18,17 @@ export default function InscribeCheck() {
   const toast = useToast();
 
   const doSearch = async () => {
-    const resp = await indexer.mint.getMintDetailInfo(inscribId);
-    if (resp.code === 0) {
+    try {
+      const resp = await indexer.mint.getMintDetailInfo(inscribId);
       setResultMsg(
         t('pages.inscribe_check.success_result', {
           inscribeId: inscribId,
         }),
       );
       // setResultData(data.data);
-    } else {
+    } catch (error: any) {
+      console.log(error);
+    } finally {
       setResultMsg(
         t('pages.inscribe_check.failed_result', {
           inscribeId: inscribId,

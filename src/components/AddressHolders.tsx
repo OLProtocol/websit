@@ -42,16 +42,12 @@ export const AddressHolders = ({
   const tipAddress =
     network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
 
-  let keyPrefix = 'base';
-  switch (indexerLayer) {
-    case IndexerLayer.Base:
-      keyPrefix = 'base';
-      break;
-    case IndexerLayer.Satsnet:
-      keyPrefix = 'satsnet';
-      break;
-  }
-  const { resp, isLoading, trigger } = useAddressUtxoList({ticker,address,start,limit}, keyPrefix, indexerLayer);
+  const { data, isLoading, trigger } = useAddressUtxoList({
+    ticker,
+    address,
+    start,
+    limit,
+  });
 
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,7 +64,12 @@ export const AddressHolders = ({
         vout: Number(inscriptionVout),
         value: Number(inscriptionValue),
       };
-      const data = await indexer.utxo.getPlainUtxoList({address: currentAccount,value: 0}, indexerLayer);
+      const data = await indexer.utxo.getPlainUtxoList({
+        address: currentAccount,
+        // value: 600,
+        value: 0,
+        
+      });
       const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
@@ -338,7 +339,7 @@ export const AddressHolders = ({
 
   // const [dataSource, setDataSource] = useState<any[]>();
   const generateData = () => {
-    const details = resp?.data?.detail;
+    const details = data?.detail;
     const datas: any[] = [];
     if (details) {
       for (const detail of details) {
@@ -372,8 +373,8 @@ export const AddressHolders = ({
   // const dataSource = useMemo(() => data?.data?.detail || [], []);
   const dataSource = useMemo(() => {
     return generateData();
-  }, [resp]);
-  const total = useMemo(() => resp?.data?.total || 10, [resp]);
+  }, [data]);
+  const total = useMemo(() => data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
     console.log(page, pageSize);
@@ -391,7 +392,7 @@ export const AddressHolders = ({
     if (address && ticker) {
       trigger();
     }
-    console.log('data:', resp)
+    console.log('data:', data)
   }, [address, ticker, network, start, limit]);
 
   return (

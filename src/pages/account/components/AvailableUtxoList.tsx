@@ -24,6 +24,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { IndexerLayer } from '@/api/type';
+import { fi } from 'date-fns/locale';
 
 interface AvailableUtxoListProps {
   address: string;
@@ -289,18 +290,19 @@ export const AvailableUtxoList = ({
   const getAvailableUtxos = async () => {
     setLoading(true);
     const resp = await indexer.utxo.getPlainUtxoList({address,value: 0,start:0, limit:1}, indexerLayer);
-    if (resp.code !== 0) {
+    try {
+      const resp = await indexer.utxo.getPlainUtxoList({address,value: 0});
+      setData(resp);
+    } catch (error: any) {
       toast({
-        title: resp.msg,
+        title: error.msg,
         status: 'error',
         duration: 3000,
         isClosable: true,
       });
+    } finally {
       setLoading(false);
-      return;
     }
-    setLoading(false);
-    setData(resp);
   };
 
   useEffect(() => {

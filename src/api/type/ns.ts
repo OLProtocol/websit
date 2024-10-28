@@ -22,12 +22,13 @@ export interface Name extends ListResp, Nft {
 export interface NameListReq extends AddressListReq {
     sub?: string;
 }
+export interface NameList extends ListResp {
+    address: string
+    total: number
+    names: Name[]
+}
 export interface NameListResp extends BaseResp {
-    data: ListResp & {
-        address: string
-        total: number
-        names: Name[]
-    }
+    data: NameList
 }
 
 export interface NameResp extends BaseResp {

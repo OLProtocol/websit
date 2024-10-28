@@ -8,7 +8,7 @@ import { AddressHolders } from '@/components/AddressHolders';
 import { NftList } from '@/components/NftList';
 import { NameList } from '@/components/NameList';
 import { useNameListHook } from '@/hooks/NameList';
-import { IndexerLayer, NameListResp } from '@/api/type';
+import { IndexerLayer, NameList as NameListResp } from '@/api/type';
 
 export default function Account() {
   const { t } = useTranslation();
@@ -24,17 +24,17 @@ export default function Account() {
   const { value: satsnetNameListResp } = useNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Satsnet);
 
   useEffect(() => {
-    if (address) {
-      console.log('address', address);
+    // if (address) {
+    //   console.log('address', address);
 
-    }
+    // }
   }, [address])
 
   useEffect(() => {
-    if (baseUtxosTotal >= 0) {
-      console.log('utxosTotal', baseUtxosTotal);
+    // if (baseUtxosTotal >= 0) {
+    //   console.log('utxosTotal', baseUtxosTotal);
 
-    }
+    // }
   }, [baseUtxosTotal])
 
   const btcAssets = (indexerLayer: IndexerLayer,
@@ -49,7 +49,7 @@ export default function Account() {
             indexerLayer={indexerLayer}
             address={address}
             utxosTotal={utxosTotal}
-            nameTotal={nameListResp?.data?.total || 0}
+            nameTotal={nameListResp?.total || 0}
             onChange={(ticker) => setTicker(ticker)}
           />
           {ticker === t('pages.account.available_utxo') && (

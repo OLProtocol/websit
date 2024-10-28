@@ -1,9 +1,6 @@
 import useSWR from 'swr';
-import { useEffect } from 'react';
-import { useMemo } from 'react';
-import { useDebounce } from 'use-debounce';
 import indexer from '@/api/indexer';
-import { ListReq, NameStatusListReq, TickerStatusReq } from '@/api/type';
+import { ListReq, NameStatusListReq, NftStatusListReq, TickerStatusReq } from '@/api/type';
 import { fetchChainFeeRate } from '@/lib/utils';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
@@ -45,92 +42,130 @@ const fullSwrConfig = {
   loadingTimeout: 3000, // default 3000 数据加载超时时间为3秒
 }
 
-export const getCommonUseSwrFunc = <T, P>(key: string, reqFunc: (param: P) => Promise<T>, param: P) => {
-  return getUseSwrFunc<T, P>(key, commonSwrConfig, reqFunc, param);
+export const createCommonUseSwrHook = <T, P>(key: string, reqFunc: (param: P) => Promise<T>, param: P) => {
+  return createUseSwrHook<T, P>(key, commonSwrConfig, reqFunc, param);
 };
 
-export const getStaticUseSwrFunc = <T, P>(key: string, reqFunc: (param: P) => Promise<T>, param: P) => {
-  return getUseSwrFunc<T, P>(key, staticSwrConfig, reqFunc, param);
+export const creatStaticUseSwrHook = <T, P>(key: string, reqFunc: (param: P) => Promise<T>, param: P) => {
+  return createUseSwrHook<T, P>(key, staticSwrConfig, reqFunc, param);
 };
 
-export const getUseSwrFunc = <T, P>(key: string, swrConf, reqFunc: (param: P) => Promise<T>, param: P) => {
+export const createUseSwrHook = <T, P>(key: string, swrConf, reqFunc: (param: P) => Promise<T>, param: P) => {
   return () => {
     const { data, error, isLoading, mutate } = useSWR(key, () => reqFunc(param), swrConf);
-    // const lastFetchTime = localStorage.getItem(`swr-lastFetchTime_${key}`);
-    // const currentTime = Date.now();
-    // const lastFetchTimestamp = lastFetchTime ? parseInt(lastFetchTime, 10) : 0;
-
-    // useEffect(() => {
-    //   if ((data && (currentTime - lastFetchTimestamp > 60 * 1000)) || !data) {
-    //     mutate();
-    //   }
-    // }, [currentTime, lastFetchTimestamp]);
-
-    // if (data) {
-    //   localStorage.setItem(`swr-lastFetchTime_${key}`, currentTime.toString());
-    // }
-
     return {
       data,
       error,
       isLoading,
+      mutate
     };
   };
 };
 
 // common 
-export const useFtList = (param: ListReq) => {
-  return getCommonUseSwrFunc(`ft-List-${param.start}-${param.limit}`, indexer.tick.getStatusList, param)();
+export const useTickerStatusList = (param: ListReq) => {
+  const key = `ticker-status-list-${param.start}-${param.limit}`;
+  const resp = createCommonUseSwrHook(key, indexer.tick.getStatusList, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 };
 
 export const useNameStatusList = (param: NameStatusListReq) => {
-  const [debouncedStart] = useDebounce(param.start, 300);
-  const [debouncedLimit] = useDebounce(param.limit, 300);
-  const key = useMemo(() => `name-status-List-${debouncedStart}-${debouncedLimit}`, [debouncedStart, debouncedLimit]);
-  const debouncedParam = useMemo(() => ({
-    ...param,
-    start: debouncedStart,
-    limit: debouncedLimit
-  }), [param, debouncedStart, debouncedLimit]);
-  return getCommonUseSwrFunc(key, indexer.ns.getNameStatusList, debouncedParam)();
-  // return getCommonUseSwrFunc(`name-status-List-${param.start}-${param.limit}`, indexer.ns.getNameStatusList, param)();
+  const key = `name-status-list-${param.start}-${param.limit}`;
+  const resp = createCommonUseSwrHook(key, indexer.ns.getNameStatusList, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 };
 
-export const useNftList = (param: ListReq) => {
-  return getCommonUseSwrFunc(`nft-List-${param.start}-${param.limit}`, indexer.nft.getNftStatusList, param)();
+export const useNftList = (param: NftStatusListReq) => {
+  const key = `nft-list-${param.start}-${param.limit}`;
+  const resp = createCommonUseSwrHook(key, indexer.nft.getNftStatusList, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 };
 
-export const useGetUtxo = ({ utxo }: any) => {
-  return getCommonUseSwrFunc(`utxo-assets-${utxo}`, indexer.utxo.getAssetList, utxo)();
+export const useGetAssetList = (utxo: string) => {
+  const key = `utxo-assets-${utxo}`;
+  const resp = createCommonUseSwrHook(key, indexer.utxo.getAssetList, utxo)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 };
 
-export const useTickerStatus = ({ ticker }: TickerStatusReq) => {
-  return getCommonUseSwrFunc(`token-info-${ticker}`, indexer.tick.getStatus, { ticker })();
+export const useTickerStatus = (param: TickerStatusReq) => {
+  const key = `token-info-${param.ticker}`;
+  const resp = createCommonUseSwrHook(key, indexer.tick.getStatus, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 };
 
 export const useIndexHealth = () => {
-  const { data, error, isLoading } = getCommonUseSwrFunc(`health`, indexer.common.getHealth, null)();
+  const resp = createCommonUseSwrHook(`health`, indexer.common.getHealth, undefined)();
   return {
-    data,
-    error,
-    isLoading,
-  };
+    data: resp.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 }
 
 // static
 export const useIndexHeight = () => {
-  return getStaticUseSwrFunc(`indexHeight`, indexer.common.getBestHeight, {})();
+  const resp = creatStaticUseSwrHook(`indexHeight`, indexer.common.getBestHeight, undefined)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 }
 
 export const useBtcFeeRate = () => {
   const { network } = useReactWalletStore(state => state);
-  return getStaticUseSwrFunc(`fee-${network}`, fetchChainFeeRate, network)();
+  const resp = creatStaticUseSwrHook(`fee-${network}`, fetchChainFeeRate, network)();
+  return {
+    data: resp.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 }
 
 export const useSatTypes = () => {
-  return getStaticUseSwrFunc(`sat-types`, indexer.common.getSatributeList, {})();
+  const resp = creatStaticUseSwrHook(`sat-types`, indexer.common.getSatributeList, undefined)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 }
 
 export const useAppVersion = () => {
-  return getStaticUseSwrFunc(`app-version`, indexer.common.getAppVersion, {})();
+  const resp = creatStaticUseSwrHook(`app-version`, indexer.common.getAppVersion, undefined)();
+  return {
+    data: resp.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
 }

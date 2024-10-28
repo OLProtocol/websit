@@ -15,9 +15,9 @@ export const NameList = () => {
   const [start, setStart] = useState(0);
   const [limit] = useState(10);
   const [loading, setLoading] = useState(false);
-  const { data: resp, error, isLoading } = useNameStatusList({ start, limit });
-  const list = useMemo(() => resp?.data?.names || [], [resp]);
-  const total = useMemo(() => resp?.data?.total || 0, [resp]);
+  const { data, error, isLoading } = useNameStatusList({ start, limit });
+  const list = useMemo(() => data?.names || [], [data]);
+  const total = useMemo(() => data?.total || 0, [data]);
 
   useEffect(() => {
     setLoading(isLoading);
@@ -30,18 +30,7 @@ export const NameList = () => {
       });
       return
     }
-    if (resp && resp.code !== 0) {
-      toast({
-        title: resp?.msg,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return
-    }
-  }, [error, isLoading, resp, toast]);
-
-
+  }, [error, isLoading, data, toast]);
 
   const columns: ColumnsType<any> = [
     {

@@ -184,21 +184,17 @@ export const NftList = ({ targetAddress, indexerLayer = IndexerLayer.Base } : Nf
     setLoading(true);
     try {
       const resp = await indexer.nft.getNftListWithAddress({address,start,limit}, indexerLayer);
-      if (resp.code !== 0) {
-        toast({
-          title: resp.msg,
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-        });
-        setLoading(false);
-        return;
-      }
       setLoading(false);
       setData(resp);
-    } catch (error) {
+    } catch (error: any) {
+      toast({
+        title: error.msg,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       console.error(error);
-
+    } finally {
       setLoading(false);
     }
   };

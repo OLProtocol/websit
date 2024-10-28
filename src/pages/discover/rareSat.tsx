@@ -66,9 +66,7 @@ export const RareSat = ({ canSplit, targetAddress, indexerLayer = IndexerLayer.B
     if (satType === 'all') {
       setSatFilterList([]);
     } else {
-      if (satList !== undefined) {
-        setSatFilterList(satList.filter((item) => item.satributes.includes(satType)));
-      }
+      setSatFilterList(satList?.filter((item) => item.satributes.includes(satType)));
     }
   }
 
@@ -85,58 +83,56 @@ export const RareSat = ({ canSplit, targetAddress, indexerLayer = IndexerLayer.B
     setLoading(true);
     setAllSatList([]);
     setSatList([]);
-    const resp = await indexer.exotic.getExoticSatInfoList({ address: address }, indexerLayer);
-    if (resp.code !== 0) {
+    try {
+      const resp = await indexer.exotic.getExoticSatInfoList({ address: address}, indexerLayer);
+      const tmpSats: Sat[] = [];
+      const exoticSatInfoList = resp.data;
+      for (let i = 0; i < exoticSatInfoList.length; i++) {
+        const exoticSatInfo = exoticSatInfoList[i];
+        if (exoticSatInfo.sats && exoticSatInfo.sats.length > 0) {
+          exoticSatInfo.sats.forEach((item: any) => {
+            item.utxo = exoticSatInfo.utxo;
+            item.value = exoticSatInfo.value;
+            tmpSats.push(item);
+          })
+        }
+      }
+      // tmpSats.sort(
+      //   (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
+      // );
+      setAllSatList(tmpSats);
+      setCacheData('all_sat_list_' + address, tmpSats);
+      tmpSats.forEach((item) => {
+        if (item.satributes.length === 1) {
+          const satType = item.satributes[0];
+          if (satType !== 'uncommon'
+            && satType !== 'rare'
+            && satType !== 'epic'
+            && satType !== 'legendary'
+            && satType !== 'mythic') {
+            return item;
+          }
+        } else {
+          return item;
+        }
+      });
+      // tmpSats = tmpSats
+      //   .filter((item) => !item.satributes.includes('uncommon') && item.satributes.length > 1)
+      //   .filter((item) => !item.satributes.includes('rare'))
+      //   .filter((item) => !item.satributes.includes('epic'))
+      //   .filter((item) => !item.satributes.includes('legendary'))
+      //   .filter((item) => !item.satributes.includes('mythic'));
+      setSatList(tmpSats);
+    } catch (error: any) {
       toast({
-        title: resp.msg,
+        title: error.msg,
         status: 'error',
         duration: 3000,
         isClosable: true,
       });
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const tmpSats: Sat[] = [];
-    const exoticSatInfoList = resp.data;
-    for (let i = 0; i < exoticSatInfoList.length; i++) {
-      const exoticSatInfo = exoticSatInfoList[i];
-      if (exoticSatInfo.sats && exoticSatInfo.sats.length > 0) {
-        exoticSatInfo.sats.forEach((item) => {
-          // item.utxo = exoticSatInfo.utxo;
-          // item.value = exoticSatInfo.value;
-          tmpSats.push(item);
-        })
-      }
-    }
-    // tmpSats.sort(
-    //   (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-    // );
-    setAllSatList(tmpSats);
-    setCacheData('all_sat_list_' + address, tmpSats);
-
-    tmpSats.forEach((item) => {
-      if (item.satributes.length === 1) {
-        const satType = item.satributes[0];
-        if (satType !== 'uncommon'
-          && satType !== 'rare'
-          && satType !== 'epic'
-          && satType !== 'legendary'
-          && satType !== 'mythic') {
-          return item;
-        }
-      } else {
-        return item;
-      }
-    });
-    // tmpSats = tmpSats
-    //   .filter((item) => !item.satributes.includes('uncommon') && item.satributes.length > 1)
-    //   .filter((item) => !item.satributes.includes('rare'))
-    //   .filter((item) => !item.satributes.includes('epic'))
-    //   .filter((item) => !item.satributes.includes('legendary'))
-    //   .filter((item) => !item.satributes.includes('mythic'));
-    setSatList(tmpSats);
-    setLoading(false);
   };
 
   const countSats = (sats: any[], satType: string) => {
@@ -210,7 +206,7 @@ export const RareSat = ({ canSplit, targetAddress, indexerLayer = IndexerLayer.B
               <SatTypeBox />
             </div>
             <div className='max-w-7xl mx-auto px-4'>
-              {allSatList !== undefined && satList !== undefined ? (
+              {allSatList && satList ? (
                 <div>
                   <SatRareBox sats={allSatList} canSplit={canSplit} />
                   <div className='pt-4' />

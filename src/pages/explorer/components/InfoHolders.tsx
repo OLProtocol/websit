@@ -23,13 +23,13 @@ export const InfoHolders = ({ ticker, totalQuantity }: InfoHoldersProps) => {
   const network = useNetwork();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { resp, isLoading, trigger } = useTickHolderList({
+  const { data: resp, isLoading, error,trigger } = useTickHolderList({
     ticker,
     start,
     limit
   });
 
-  const list = useMemo(() => resp?.data?.detail || [], [resp]);
+  const list = useMemo(() => resp?.detail, [resp]);
   useEffect(() => {
     trigger();
   }, [network, ticker]);
@@ -66,9 +66,9 @@ export const InfoHolders = ({ ticker, totalQuantity }: InfoHoldersProps) => {
       key: 'percentage',
     },
   ];
-  const dataSource: DataType[] = useMemo(
+  const dataSource = useMemo(
     () =>
-      list.map((item, index) => ({
+      list?.map((item, index) => ({
         key: index,
         address: item.wallet,
         value: item.total_balance,
@@ -76,7 +76,7 @@ export const InfoHolders = ({ ticker, totalQuantity }: InfoHoldersProps) => {
       })),
     [list],
   );
-  const total = useMemo(() => resp?.data?.total || 10, [resp]);
+  const total = useMemo(() => resp?.total || 10, [resp]);
 
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);

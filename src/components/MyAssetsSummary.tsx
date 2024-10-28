@@ -26,8 +26,8 @@ export const MyAssetsSummary = ({
 }: MyAssetsSummaryProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
-  const { value } = useTokenBalanceSummaryListHook({ address },indexerLayer);
-  const otherTickers = useMemo(() => value?.data?.detail || [], [value]);
+  const { value } = useTokenBalanceSummaryListHook({ address }, indexerLayer);
+  const otherTickers = useMemo(() => value?.detail || [], [value]);
   const [rareSatList, setRareSatList] = useState<any[]>();
   const [nftSumBalance, setNftBalance] = useState<any>();
 
@@ -78,9 +78,8 @@ export const MyAssetsSummary = ({
   const getRareSats = async () => {
     const data = await indexer.exotic.getExoticSatInfoList({ address: address }, indexerLayer);
     let tmpSats: any[] = [];
-    if (data.code !== 0) {
-      tmpSats = [];
-    } else {
+    try {
+      const data = await indexer.exotic.getExoticSatInfoList({ address: address }, indexerLayer);
       for (let i = 0; i < data.data.length; i++) {
         if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
           data.data[i].sats.forEach((item) => {
@@ -88,9 +87,10 @@ export const MyAssetsSummary = ({
           });
         }
       }
+      setRareSatList(tmpSats);
+    } catch (error: any) {
+      console.error(error);
     }
-
-    setRareSatList(tmpSats);
   };
 
   const [select, setSelect] = useState('');

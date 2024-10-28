@@ -15,7 +15,6 @@ export default function SplittedInscription() {
   const [ticker, setTicker] = useState('');
   const [inscriptionList, setInscriptionList] = useState<any[]>();
   const [loading, setLoading] = useState(false);
-  const { network } = useReactWalletStore();
 
   function handleKeyDown(event) {
     if (event.key === 'Enter') {
@@ -26,31 +25,21 @@ export default function SplittedInscription() {
   const doSearch = async () => {
     setLoading(true);
     setInscriptionList([]);
+    try {
     const data = await indexer.common.getSplittedSatNameList(ticker);
-
-    if (data.code !== 0) {
-      setLoading(false);
+    setInscriptionList(data.data);
+    } catch (error: any) {
       toast({
-        title: data.msg,
+        title: error.msg,
         status: 'error',
         duration: 3000,
         isClosable: true,
       });
-      return;
-    }
-    if (data.data === null) {
+    } finally {
       setLoading(false);
-      toast({
-        title: 'No data',
-        status: 'info',
-        duration: 3000,
-        isClosable: true,
-      });
-      return
     }
-    setInscriptionList(data.data);
-    setLoading(false);
   };
+
   const toInscriptionInfo = (inscriptionId) => {
     nav(`/explorer/inscription/${inscriptionId}`);
   };

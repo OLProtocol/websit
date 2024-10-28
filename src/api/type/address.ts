@@ -3,16 +3,14 @@ import { Range } from './common'
 
 export interface AssetsSummaryReq extends ListReq, AddressReq { }
 
-export interface AssetsSummary {
-    type: string
+export interface AssetsSummary extends ListResp{
+    detail: {type: string
     ticker: string
-    balance: number
+    balance: number}[]
 }
 
 export interface AssetsSummaryResp extends BaseResp {
-    data: ListResp & {
-        detail: AssetsSummary[]
-    }
+    data: AssetsSummary
 }
 
 export interface MintHistoryReq extends ListReq {

@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { generateUrl } from './common';
+import { generateUrl, handleApiRequest } from './common';
 import { IndexerLayer, MintDetailInfoResp } from '../type';
 
-export const getMintDetailInfo = async (inscriptionId: string, indexerLayer = IndexerLayer.Base): Promise<MintDetailInfoResp> => {
-  const { data } = await axios.get<MintDetailInfoResp>(generateUrl(`mint/details/${inscriptionId}`, indexerLayer));
-  return data;
+export const getMintDetailInfo = async (inscriptionId : string, indexerLayer: IndexerLayer = IndexerLayer.Base): Promise<MintDetailInfoResp> => {
+  const url = `mint/details/${inscriptionId}`
+  return handleApiRequest(() => axios.get<MintDetailInfoResp>(generateUrl(url, indexerLayer)));
 };
 
 const mint = {

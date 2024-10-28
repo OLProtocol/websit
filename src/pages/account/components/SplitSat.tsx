@@ -87,47 +87,43 @@ export default function SplitSat() {
     };
 
     const getValueOfUtxo = async () => {
-        setLoading(true);
         if (!utxo) {
             return
         }
-        const resp = await indexer.utxo.getAssetList(utxo);
-        if (resp.code !== 0) {
+        setLoading(true);
+        try {
+            const resp = await indexer.utxo.getAssetList(utxo);
+            setUtxoValue(Number(resp.data.detail.value));
+        } catch (error: any) {
             toast({
-                title: resp.msg,
+                title: error.msg,
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
             });
+        } finally {
             setLoading(false);
-            return
         }
-        setLoading(false);
-        setUtxoValue(Number(resp.data.detail.value));
     }
 
     const getAvailableUtxos = async () => {
         if (!address) {
             return
         }
-
         setLoading(true);
-        const resp = await indexer.utxo.getPlainUtxoList({
-            address,
-            value: 0,
-        });
-        if (resp.code !== 0) {
+        try {
+            const resp = await indexer.utxo.getPlainUtxoList({ address, value: 0 });
+            setAvailableUtxos(resp.data.filter((v) => v.value >= 330).sort((a, b) => a.value - b.value));// 排序：小->大
+        } catch (error: any) {
             toast({
-                title: resp.msg,
+                title: error.msg,
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
             });
+        } finally {
             setLoading(false);
-            return
         }
-        setLoading(false);
-        setAvailableUtxos(resp.data.filter((v) => v.value >= 330).sort((a, b) => a.value - b.value));// 排序：小->大
     };
 
     useEffect(() => {
