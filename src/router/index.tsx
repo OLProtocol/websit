@@ -20,6 +20,7 @@ import { OrdAddressInscriptionList } from '@/pages/account/components/OrdAddress
 import OrdInscription from '@/pages/account/components/OrdInscription';
 import { OrdSatInscriptionList } from '@/pages/account/components/OrdSatInscriptions';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
+import { IndexerLayer } from '@/api/type';
 
 interface RareSatContainerProps {
   canSplit: boolean;
@@ -27,7 +28,7 @@ interface RareSatContainerProps {
 
 export const RareSatContainer: React.FC<RareSatContainerProps> = ({ canSplit }) => {
   const { address: currentAccount } = useReactWalletStore();
-  return <RareSat canSplit={canSplit} targetAddress={""} />;
+  return <RareSat canSplit={canSplit} targetAddress={""} indexerLayer={IndexerLayer.Base} />;
 };
 
 const resolveHashPath = (path: string) => {
