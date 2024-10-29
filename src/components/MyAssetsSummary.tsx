@@ -12,7 +12,7 @@ interface MyAssetsSummaryProps {
   address: string;
   utxosTotal: number;
   nameTotal: number;
-  indexerLayer?: IndexerLayer;
+  indexerLayer: IndexerLayer;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
@@ -22,7 +22,7 @@ export const MyAssetsSummary = ({
   onEmpty,
   utxosTotal,
   nameTotal,
-  indexerLayer = IndexerLayer.Base,
+  indexerLayer,
 }: MyAssetsSummaryProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();

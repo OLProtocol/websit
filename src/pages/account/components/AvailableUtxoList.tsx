@@ -28,14 +28,14 @@ import { fi } from 'date-fns/locale';
 
 interface AvailableUtxoListProps {
   address: string;
-  indexerLayer?: IndexerLayer;
+  indexerLayer: IndexerLayer;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
   onTotalChange?: (total: number) => void;
 }
 export const AvailableUtxoList = ({
   address,
-  indexerLayer = IndexerLayer.Base,
+  indexerLayer,
   onEmpty,
   onTransfer,
   onTotalChange,

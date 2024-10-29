@@ -2,7 +2,7 @@ import axios from 'axios';
 import { AssetsSummaryReq, UtxoListReq, UtxoListResp, AssetsSummaryResp, MintHistoryReq, MintHistoryResp, IndexerLayer } from '../type';
 import { generateUrl, handleApiRequest } from './common';
 
-const getAssetsSummary = async (param: AssetsSummaryReq, indexerLayer: IndexerLayer = IndexerLayer.Base): Promise<AssetsSummaryResp> => {
+const getAssetsSummary = async (param: AssetsSummaryReq, indexerLayer: IndexerLayer): Promise<AssetsSummaryResp> => {
     const url = `address/summary/${param.address}?start=${param.start}&limit=${param.limit}`;
     return handleApiRequest(() => axios.get<AssetsSummaryResp>(generateUrl(url, indexerLayer)));
 };

@@ -19,14 +19,14 @@ import { IndexerLayer } from '@/api/type';
 interface HistoryProps {
   ticker: string;
   address: string;
-  indexerLayer?: IndexerLayer;
+  indexerLayer: IndexerLayer;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
 }
 export const AddressHolders = ({
   ticker,
   address,
-  indexerLayer = IndexerLayer.Base,
+  indexerLayer,
   onEmpty,
   onTransfer,
 }: HistoryProps) => {

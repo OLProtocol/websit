@@ -24,10 +24,10 @@ const { Search } = Input;
 interface RareSatProps {
   canSplit: boolean;
   targetAddress: string;
-  indexerLayer?: IndexerLayer;
+  indexerLayer: IndexerLayer;
 }
 
-export const RareSat = ({ canSplit, targetAddress, indexerLayer = IndexerLayer.Base }: RareSatProps) => {
+export const RareSat = ({ canSplit, targetAddress, indexerLayer }: RareSatProps) => {
   const { t } = useTranslation();
   const [address, setAddress] = useState(targetAddress);
   const [allSatList, setAllSatList] = useState<any[]>();

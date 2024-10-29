@@ -12,10 +12,10 @@ import { IndexerLayer } from '@/api/type';
 
 interface NameListProps {
   address: string;
-  indexerLayer?: IndexerLayer;
+  indexerLayer: IndexerLayer;
   onTotalChange?: (total: number) => void;
 }
-export const NameList = ({ onTotalChange, address, indexerLayer = IndexerLayer.Base }: NameListProps) => {
+export const NameList = ({ onTotalChange, address, indexerLayer }: NameListProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { network, } = useReactWalletStore();
