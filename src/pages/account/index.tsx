@@ -23,20 +23,6 @@ export default function Account() {
   const { value: baseNameListResp } = useNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
   const { value: satsnetNameListResp } = useNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Satsnet);
 
-  useEffect(() => {
-    // if (address) {
-    //   console.log('address', address);
-
-    // }
-  }, [address])
-
-  useEffect(() => {
-    // if (baseUtxosTotal >= 0) {
-    //   console.log('utxosTotal', baseUtxosTotal);
-
-    // }
-  }, [baseUtxosTotal])
-
   const btcAssets = (indexerLayer: IndexerLayer,
     ticker: string, setTicker: Dispatch<SetStateAction<string>>,
     utxosTotal: number, setUtxosTotal: Dispatch<SetStateAction<number>>,
