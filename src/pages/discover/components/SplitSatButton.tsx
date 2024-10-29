@@ -46,7 +46,7 @@ export const SplitSatButton = ({
             const resp = await indexer.utxo.getAssetList(sat.utxo);
             value = Number(resp.data.detail.value);
         } catch (error: any) {
-            
+            console.error(error);
         }
         return value;
     }

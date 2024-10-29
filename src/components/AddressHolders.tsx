@@ -39,37 +39,35 @@ export const AddressHolders = ({
   const [selectItem, setSelectItem] = useState<any>();
 
   const { VITE_TESTNET_TIP_ADDRESS, VITE_MAIN_TIP_ADDRESS } = import.meta.env;
-  const tipAddress =
-    network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
+  const tipAddress = network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
 
-  const { data, isLoading, trigger } = useAddressUtxoList({
-    ticker,
-    address,
-    start,
-    limit,
-  });
+  let keyPrefix = "";
+  switch (indexerLayer) {
+    case IndexerLayer.Base:
+      keyPrefix = 'base';
+      break;
+    case IndexerLayer.Satsnet:
+      keyPrefix = 'satsnet';
+      break;
+  }
+  const { data, isLoading, trigger } = useAddressUtxoList({ ticker, address, start, limit }, keyPrefix, indexerLayer);
 
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const transferHander = async () => {
+    const inscriptionUtxo = selectItem.utxo;
+    const inscriptionValue = selectItem.amount;
+    const inscriptionTxid = inscriptionUtxo.split(':')[0];
+    const inscriptionVout = inscriptionUtxo.split(':')[1];
+    const firstUtxo = {
+      txid: inscriptionTxid,
+      vout: Number(inscriptionVout),
+      value: Number(inscriptionValue),
+    };
     try {
-      const inscriptionUtxo = selectItem.utxo;
-      const inscriptionValue = selectItem.amount;
-      const inscriptionTxid = inscriptionUtxo.split(':')[0];
-      const inscriptionVout = inscriptionUtxo.split(':')[1];
-      const firstUtxo = {
-        txid: inscriptionTxid,
-        vout: Number(inscriptionVout),
-        value: Number(inscriptionValue),
-      };
-      const data = await indexer.utxo.getPlainUtxoList({
-        address: currentAccount,
-        // value: 600,
-        value: 0,
-        
-      });
+      const data = await indexer.utxo.getPlainUtxoList({address: currentAccount,value: 0, start: 0, limit: 1}, indexerLayer);
       const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
@@ -99,10 +97,10 @@ export const AddressHolders = ({
       await signAndPushPsbt(psbt);
       message.success(t('messages.transfer_success'));
       onTransfer?.();
-      setLoading(false);
     } catch (error: any) {
       console.error(error.message || 'Split failed');
       message.error(error.message || 'Transfer failed');
+    } finally {
       setLoading(false);
     }
   };
@@ -120,29 +118,28 @@ export const AddressHolders = ({
   const splitHandler = async (item: any) => {
     setLoading(true);
     // const utxos = await getUtxo();
+    const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
+    const inscriptionUtxo = item.utxo;
+    const inscriptionValue = item.amount;
+    const inscriptionTxid = inscriptionUtxo.split(':')[0];
+    const inscriptionVout = inscriptionUtxo.split(':')[1];
+    const splitUtxo = {
+      txid: inscriptionTxid,
+      vout: Number(inscriptionVout),
+      value: Number(inscriptionValue),
+    };
+    if (splitUtxo.value < 331) {
+      message.warning(t('messages.no_enough_utxo'));
+      setLoading(false);
+      return;
+    }
     try {
-      const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
-      const inscriptionUtxo = item.utxo;
-      const inscriptionValue = item.amount;
-      const inscriptionTxid = inscriptionUtxo.split(':')[0];
-      const inscriptionVout = inscriptionUtxo.split(':')[1];
-      const splitUtxo = {
-        txid: inscriptionTxid,
-        vout: Number(inscriptionVout),
-        value: Number(inscriptionValue),
-      };
-      if (splitUtxo.value < 331) {
-        message.warning(t('messages.no_enough_utxo'));
-        setLoading(false);
-        return;
-      }
-      const data = await indexer.utxo.getPlainUtxoList({address: currentAccount,value: 0}, indexerLayer);
+      const data = await indexer.utxo.getPlainUtxoList({ address: currentAccount, value: 0, start: 0, limit: 1 }, indexerLayer);
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length || consumUtxos.length < 2) {
         message.error(t('messages.no_available_utxo'));
         return;
       }
-
       const {
         utxos: filterConsumUtxos,
         minUtxo: serviceUtxo,
@@ -154,7 +151,6 @@ export const AddressHolders = ({
       }
 
       const utxos: any[] = [serviceUtxo, splitUtxo, ...filterConsumUtxos];
-
       const serviceOutputValue = serviceUtxo.value + 1;
       const splitOutputValue = splitUtxo.value - 1;
       const outputs = [
@@ -178,12 +174,13 @@ export const AddressHolders = ({
       console.log(psbt);
       await signAndPushPsbt(psbt);
       message.success(t('messages.split_success'));
-      setLoading(false);
     } catch (error: any) {
       console.error(error);
       message.error(error.message || 'Split failed');
+    } finally {
       setLoading(false);
     }
+
   };
   const handleOk = async () => {
     if (!transferAddress) {
