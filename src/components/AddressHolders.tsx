@@ -389,7 +389,7 @@ export const AddressHolders = ({
     if (address && ticker) {
       trigger();
     }
-    console.log('data:', data)
+    // console.log('data:', data)
   }, [address, ticker, network, start, limit]);
 
   return (

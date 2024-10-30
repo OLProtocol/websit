@@ -123,7 +123,7 @@ export const useAddressAssetsSummary = (param: AssetsSummaryReq, keyPrefix: stri
   }
 };
 
-export const useNameList = (param: NameListReq, keyPrefix: string = 'default', indexerLayer: IndexerLayer = IndexerLayer.Base) => {
+export const useNameList = (param: NameListReq, keyPrefix: string = 'default', indexerLayer: IndexerLayer) => {
   const key = `${keyPrefix}-name-list-${param.address}-${param.start}-${param.limit}`;
   const { data, trigger, reset, isLoading, error } = createSWRMutationHook<NameListReq, NameListResp>(key, param, indexer.ns.getNameList, indexerLayer);
   return {

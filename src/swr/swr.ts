@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import indexer from '@/api/indexer';
-import { ListReq, NameStatusListReq, NftStatusListReq, TickerStatusReq } from '@/api/type';
+import { IndexerLayer, ListReq, NameListReq, NameStatusListReq, NftStatusListReq, TickerStatusReq } from '@/api/type';
 import { fetchChainFeeRate } from '@/lib/utils';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
@@ -66,6 +66,18 @@ export const createUseSwrHook = <T, P>(key: string, swrConf, reqFunc: (param: P)
 export const useTickerStatusList = (param: ListReq) => {
   const key = `ticker-status-list-${param.start}-${param.limit}`;
   const resp = createCommonUseSwrHook(key, indexer.tick.getStatusList, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
+};
+
+export const useNameList1 = (param: NameListReq, keyPrefix: string = 'default', indexerLayer: IndexerLayer) => {
+  // const key = `name-list-${param.start}-${param.limit}`;
+  const key = `${keyPrefix}-name-list-${param.address}-${param.start}-${param.limit}`;
+  const resp = createCommonUseSwrHook(key, indexer.ns.getNameList, param)();
   return {
     data: resp.data?.data,
     isLoading: resp.isLoading,

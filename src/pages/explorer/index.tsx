@@ -11,7 +11,6 @@ import { NftList } from '@/components/NftList';
 import { RareSat } from '@/pages/discover/rareSat';
 import { AvailableUtxoList } from '@/pages/account/components/AvailableUtxoList';
 import { AddressHolders } from '@/components/AddressHolders';
-import { useNetwork } from '@/lib/wallet';
 import { useNameListHook } from '@/hooks/NameList';
 import { IndexerLayer } from '@/api/type';
 
@@ -29,7 +28,7 @@ export default function Index() {
 
  
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
-  const { value: resp } = useNameListHook({ address, start: 0, limit: 1 });
+  const { value: resp } = useNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
 
   const onTotalChange = (total: number) => {
     if (total !== 0) {
