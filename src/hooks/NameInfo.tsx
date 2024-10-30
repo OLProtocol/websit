@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNameInfo } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { Name } from '@/api/type';
+import { IndexerLayer, Name } from '@/api/type';
+import { getIndexerLayerKey } from '@/api/type/util';
 
 
 interface NameProps {
@@ -15,15 +16,17 @@ interface NameRespRecord {
 
 const prefix = 'nameInfo_';
 const timeout = 60 * 1000;
-const getKey = (name: string) => prefix + name;
+const getKey = (name: string, indexerLayer: IndexerLayer) => {
+    return prefix + getIndexerLayerKey(indexerLayer) + name;
+}
 
-export const useNameInfoHook = ({ name }: NameProps) => {
+export const useNameInfoHook = ({ name }: NameProps, indexerLayer: IndexerLayer) => {
     const [value, setValue] = useState<Name | undefined>(undefined);
     const { data, trigger, isLoading } = useNameInfo( name );
 
     useEffect(() => {
         if (name) {
-            const key = getKey(name);
+            const key = getKey(name, indexerLayer);
             const record: NameRespRecord = getCachedData(key);
             if (!record) {
                 trigger();
@@ -40,7 +43,7 @@ export const useNameInfoHook = ({ name }: NameProps) => {
 
     useEffect(() => {
         if (!data) return;
-        const key = getKey(name);
+        const key = getKey(name, indexerLayer);
         const cache = getCachedData(key);
         if (cache) {
             setValue((cache as NameRespRecord).resp);
