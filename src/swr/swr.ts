@@ -74,18 +74,6 @@ export const useTickerStatusList = (param: ListReq) => {
   }
 };
 
-export const useNameList1 = (param: NameListReq, keyPrefix: string = 'default', indexerLayer: IndexerLayer) => {
-  // const key = `name-list-${param.start}-${param.limit}`;
-  const key = `${keyPrefix}-name-list-${param.address}-${param.start}-${param.limit}`;
-  const resp = createCommonUseSwrHook(key, indexer.ns.getNameList, param)();
-  return {
-    data: resp.data?.data,
-    isLoading: resp.isLoading,
-    error: resp.error,
-    mutate: resp.mutate,
-  }
-};
-
 export const useNameStatusList = (param: NameStatusListReq) => {
   const key = `name-status-list-${param.start}-${param.limit}`;
   const resp = createCommonUseSwrHook(key, indexer.ns.getNameStatusList, param)();
