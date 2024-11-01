@@ -4,11 +4,9 @@ VITE_MAIN_TIP_ADDRESS=bc1psj92hjzcmhlr7n23lxve9gl4eqkqmpyja3nmyvsdl2lphzpyha0sj2
 VITE_TIP_STATUS=1
 VITE_TIP_HEIGHT=22828800
 VITE_TIP_MIN=1000
-VITE_BTC_CHAIN=testnet
+VITE_BTC_CHAIN=mainnet
 VITE_MAINNET_DOMAIN=https://app.sat20.org
 VITE_TESTNET_DOMAIN=https://app.testnet4.sat20.org
-VITE_SATSNET_DOMAIN=""
-VITE_SATSTESTNET_DOMAIN=""
 VITE_ORDX_MINT_URL=https://app.ordx.market/inscribe?ticker=%s
 VITE_ORDX_API_AUTHORIZATION=ueZdkm8s93ZL4QjHcVbb
 NODE_ENV=production
