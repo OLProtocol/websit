@@ -33,6 +33,7 @@ import {
 } from '@/lib/wallet/btc';
 import { hideStr } from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
+import { IndexerLayer } from '@/api/type';
 
 export default function Transaction() {
 
@@ -413,7 +414,7 @@ export default function Transaction() {
     const tickers: any[] = [];
     setLoading(true);
     try {
-      let resp = await indexer.address.getAssetsSummary({ start: 0, limit: 100, address });
+      let resp = await indexer.address.getAssetsSummary({ start: 0, limit: 100, address }, IndexerLayer.Base);
       const detail = resp?.data?.detail;
 
       detail?.map(async (item) => {

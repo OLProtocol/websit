@@ -9,13 +9,14 @@ import { useTranslation } from 'react-i18next';
 import { useNetwork } from '@/lib/wallet';
 import { useNameInfoHook } from "@/hooks/NameInfo";
 import { Table } from 'antd';
+import { IndexerLayer } from '@/api/type';
 
 export default function NameInfo() {
   const { t } = useTranslation();
   const { name } = useParams();
   const nav = useNavigate();
   const network = useNetwork();
-  const { value, isLoading } = typeof name === 'string' && useNameInfoHook({ name }) || {};
+  const { value, isLoading } = typeof name === 'string' && useNameInfoHook({ name }, IndexerLayer.Base) || {};
   const detail = useMemo(() => {
     return value;
   }, [value]);

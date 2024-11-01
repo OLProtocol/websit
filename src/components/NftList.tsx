@@ -12,11 +12,11 @@ import { IndexerLayer } from '@/api/type';
 
 interface NftListProps {
   targetAddress: string;
-  indexerLayer?: IndexerLayer;
+  indexerLayer: IndexerLayer;
 }
 
 
-export const NftList = ({ targetAddress, indexerLayer = IndexerLayer.Base } : NftListProps) => {
+export const NftList = ({ targetAddress, indexerLayer } : NftListProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
 1

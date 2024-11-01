@@ -12,7 +12,7 @@ interface MyAssetsSummaryProps {
   address: string;
   utxosTotal: number;
   nameTotal: number;
-  indexerLayer?: IndexerLayer;
+  indexerLayer: IndexerLayer;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
@@ -22,14 +22,14 @@ export const MyAssetsSummary = ({
   onEmpty,
   utxosTotal,
   nameTotal,
-  indexerLayer = IndexerLayer.Base,
+  indexerLayer,
 }: MyAssetsSummaryProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
   const { value } = useTokenBalanceSummaryListHook({ address }, indexerLayer);
   const otherTickers = useMemo(() => value?.detail || [], [value]);
   const [rareSatList, setRareSatList] = useState<any[]>();
-  const [nftSumBalance, setNftBalance] = useState<any>();
+  const [nftSumBalance, setNftBalance] = useState<number>();
 
   const avialableTicker = useMemo(() => {
     return {
@@ -55,13 +55,13 @@ export const MyAssetsSummary = ({
   const ordNftTicker = useMemo(() => {
     return {
       ticker: t('pages.account.ord_nft'),
-      balance: nftSumBalance || 0,
+      balance: nftSumBalance,
     };
   }, [nftSumBalance]);
   const nameTicker = useMemo(() => {
     return {
       ticker: t('pages.account.name'),
-      balance: nameTotal || 0,
+      balance: nameTotal,
     };
   }, [nameTotal]);
   const getNfts = async () => {
@@ -76,10 +76,9 @@ export const MyAssetsSummary = ({
   };
 
   const getRareSats = async () => {
-    const data = await indexer.exotic.getExoticSatInfoList({ address: address }, indexerLayer);
     let tmpSats: any[] = [];
     try {
-      const data = await indexer.exotic.getExoticSatInfoList({ address: address }, indexerLayer);
+      const data = await indexer.exotic.getExoticSatInfoList({ address }, indexerLayer);
       for (let i = 0; i < data.data.length; i++) {
         if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
           data.data[i].sats.forEach((item) => {
@@ -143,8 +142,8 @@ export const MyAssetsSummary = ({
                 onClick(item);
               }}
               item={{
-                tick: item.ticker,
-                balance: item.balance,
+                ticker: item.ticker,
+                balance: item.balance || 0,
               }}
             />
           </WrapItem>
@@ -160,7 +159,7 @@ export const MyAssetsSummary = ({
               onClick(item);
             }}
             item={{
-              tick: item.ticker,
+              ticker: item.ticker,
               balance: item.balance,
             }}
           />

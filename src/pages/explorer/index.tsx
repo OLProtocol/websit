@@ -11,8 +11,8 @@ import { NftList } from '@/components/NftList';
 import { RareSat } from '@/pages/discover/rareSat';
 import { AvailableUtxoList } from '@/pages/account/components/AvailableUtxoList';
 import { AddressHolders } from '@/components/AddressHolders';
-import { useNetwork } from '@/lib/wallet';
 import { useNameListHook } from '@/hooks/NameList';
+import { IndexerLayer } from '@/api/type';
 
 const { Search } = Input;
 
@@ -28,7 +28,7 @@ export default function Index() {
 
  
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
-  const { value: resp } = useNameListHook({ address, start: 0, limit: 1 });
+  const { value: resp } = useNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
 
   const onTotalChange = (total: number) => {
     if (total !== 0) {
@@ -105,6 +105,7 @@ export default function Index() {
             )}
             <div className='mb-4'>
               <MyAssetsSummary
+                indexerLayer={IndexerLayer.Base}
                 onEmpty={summaryEmptyHandler}
                 address={address}
                 utxosTotal={utxosTotal}
@@ -113,19 +114,19 @@ export default function Index() {
               />
             </div>
             {selectTick === t('pages.account.available_utxo') && (
-              <AvailableUtxoList address={address} onTotalChange={onTotalChange} />
+              <AvailableUtxoList address={address} onTotalChange={onTotalChange} indexerLayer={IndexerLayer.Base} />
             )}
             {selectTick === t('pages.account.name') && (
-              <NameList address={address} />
+              <NameList address={address} indexerLayer={IndexerLayer.Base} />
             )}
             {selectTick === t('pages.account.rare_sats') && (
-              <RareSat canSplit={true} targetAddress={address} />
+              <RareSat canSplit={true} targetAddress={address} indexerLayer={IndexerLayer.Base} />
             )}
             {selectTick === t('pages.account.ord_nft') && (
-              <NftList targetAddress={address} />
+              <NftList targetAddress={address} indexerLayer={IndexerLayer.Base} />
             )}
             {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
-              <AddressHolders ticker={selectTick} address={address} />
+              <AddressHolders ticker={selectTick} address={address} indexerLayer={IndexerLayer.Base} />
             )}
           </>
         )}
