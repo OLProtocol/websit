@@ -13,7 +13,7 @@ import { InscribeStepThree } from './components/InscribeStepThree';
 import { useMap, useList } from 'react-use';
 import { InscribingOrderModal } from './components/InscribingOrderModal';
 import { removeObjectEmptyValue, generteFiles, hexString } from './utils';
-import { InscribeType } from '@/types';
+import { InscribeType } from '@/type';
 import { useTranslation } from 'react-i18next';
 import { OrderList } from './components/OrderList';
 import { useCommonStore } from '@/store';

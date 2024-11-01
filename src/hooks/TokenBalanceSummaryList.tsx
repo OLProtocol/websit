@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useTokenBalanceSummaryList } from '@/api';
+import { useEffect, useState } from 'react';
+import { useAddressAssetsSummary } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { NameListResp, TokenBalanceSummaryListResp } from '@/api/types';
+import { AssetsSummary, AssetsSummaryResp, IndexerLayer } from '@/api/type';
+import { getIndexerLayerKey } from '@/api/type/util';
 
 
 interface TokenBalanceSummaryListProps {
@@ -9,21 +10,24 @@ interface TokenBalanceSummaryListProps {
 }
 
 interface TokenBalanceSummaryRespRecord {
-    resp: TokenBalanceSummaryListResp
+    data: AssetsSummary
     timeStamp: number
 }
 
 const prefix = 'token_balance_summary_list_';
 const timeout = 60 * 1000;
-const getKey = (address: string) => prefix + address;
+const getKey = (address: string, indexerLayer: IndexerLayer) => {
+    return prefix + getIndexerLayerKey(indexerLayer) + address;
+}
 
-export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryListProps) => {
-    const [value, setValue] = useState<TokenBalanceSummaryListResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useTokenBalanceSummaryList({ address });
+export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryListProps, indexerLayer: IndexerLayer = IndexerLayer.Base) => {
+    const [value, setValue] = useState<AssetsSummary | undefined>(undefined);
+    let keyPreFix = getIndexerLayerKey(indexerLayer);
+    const { data, trigger, isLoading } = useAddressAssetsSummary({ start:0, limit: 100, address }, keyPreFix, indexerLayer);
 
     useEffect(() => {
         if (address) {
-            const key = getKey(address);
+            const key = getKey(address, indexerLayer);
             const record: TokenBalanceSummaryRespRecord = getCachedData(key);
             if (!record) {
                 trigger();
@@ -34,26 +38,26 @@ export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryL
                 trigger();
                 return;
             }
-            setValue(record.resp);
+            setValue(record.data);
         }
     }, [address, trigger]);
 
     useEffect(() => {
         //  if (!address) return;
-        if (!resp) return;
-        const key = getKey(address);
+        if (!data) return;
+        const key = getKey(address, indexerLayer);
         const cache = getCachedData(key);
         if (cache) {
-            setValue((cache as TokenBalanceSummaryRespRecord).resp);
+            setValue((cache as TokenBalanceSummaryRespRecord).data);
             return;
         }
         const record: TokenBalanceSummaryRespRecord = {
-            resp: resp,
+            data: data,
             timeStamp: Date.now(),
         };
         setCacheData(key, record);
-        setValue(resp);
-    }, [resp]);
+        setValue(data);
+    }, [data]);
 
     return { value, isLoading };
 };

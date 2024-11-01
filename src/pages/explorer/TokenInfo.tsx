@@ -1,12 +1,11 @@
 import { useParams } from 'react-router-dom';
-import { useTokenInfo } from '@/api';
+import { useTickerStatus } from '@/swr';
 import { useEffect, useState, useMemo } from 'react';
 import { Segmented } from 'antd';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { InfoHolders } from './components/InfoHolders';
 import { TickHistory } from './components/TickHistory';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { generateMempoolUrl, genOrdServiceUrl, genOrdinalsUrl, getAssetTypeLabel } from '@/lib/utils';
 import { Button, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +15,7 @@ import { useNetwork } from '@/lib/wallet';
 
 export default function TokenInfo() {
   const { t } = useTranslation();
-  const { tick } = useParams();
+  const { ticker } = useParams();
   const { btcHeight } = useCommonStore((state) => state);
   const [tabText, setTabText] = useState(t('common.holders'));
   const nav = useNavigate();
@@ -24,60 +23,53 @@ export default function TokenInfo() {
 
 
   const { VITE_ORDX_MINT_URL } = import.meta.env;
-  // VITE_ORDX_MINT_URL is https://ordx.market/inscribe?ticker=%s
 
   const handleTabsChange = (type: any) => {
     if (type !== tabText) {
       setTabText(type);
     }
   };
-  const { resp: tokenInfoResp, isLoading } = useTokenInfo({ tick });
-  const detail = useMemo(() => {
-    return tokenInfoResp?.data || {};
-  },
-    [tokenInfoResp]
-  );
-
+  const { data: tickerStatus, isLoading } = typeof ticker === 'string' && useTickerStatus({ ticker }) || {};
   const status = useMemo(() => {
-    let _status;
-    if (!detail.ticker) {
+    let _status = '';
+    if (!tickerStatus) {
       return _status;
     }
-    const isSpecial = detail.rarity !== 'unknow' && detail.rarity !== 'common' && !!detail.rarity;
+    const isSpecial = tickerStatus.rarity !== 'unknow' && tickerStatus.rarity !== 'common' && !!tickerStatus.rarity;
 
-    if (!isSpecial && detail.startBlock < 0) {
-      if (detail.max > 0 && detail.totalMinted < detail.max) {
+    if (!isSpecial && tickerStatus.startBlock < 0) {
+      if (tickerStatus.max > 0 && tickerStatus.totalMinted < tickerStatus.max) {
         _status = 'Minting';
-      } else if (detail.max < 0) {
+      } else if (tickerStatus.max < 0) {
         _status = 'Minting';
       }
-    } else if (isSpecial && detail.startBlock < 0) {
-      if (detail.max > 0 && detail.totalMinted < detail.max) {
+    } else if (isSpecial && tickerStatus.startBlock < 0) {
+      if (tickerStatus.max > 0 && tickerStatus.totalMinted < tickerStatus.max) {
         _status = 'Minting';
-      } else if (detail.max < 0) {
+      } else if (tickerStatus.max < 0) {
         _status = 'Minting';
       }
     } else if (
-      detail.startBlock &&
-      detail.endBlock &&
-      btcHeight <= detail.endBlock &&
-      btcHeight >= detail.startBlock
+      tickerStatus.startBlock &&
+      tickerStatus.endBlock &&
+      btcHeight <= tickerStatus.endBlock &&
+      btcHeight >= tickerStatus.startBlock
     ) {
-      if (detail.max > 0 && detail.totalMinted < detail.max) {
+      if (tickerStatus.max > 0 && tickerStatus.totalMinted < tickerStatus.max) {
         _status = 'Minting';
-      } else if (detail.max < 0) {
+      } else if (tickerStatus.max < 0) {
         _status = 'Minting';
       }
-    } else if (btcHeight < detail.startBlock) {
+    } else if (btcHeight < tickerStatus.startBlock) {
       _status = 'Pending';
     } else {
       _status = 'Completed';
     }
     return _status;
-  }, [detail, btcHeight]);
+  }, [tickerStatus, btcHeight]);
   const toInscribe = () => {
-    console.log(detail);
-    const url = VITE_ORDX_MINT_URL.replace('%s', detail.ticker);
+    console.log(tickerStatus);
+    const url = VITE_ORDX_MINT_URL.replace('%s', tickerStatus?.ticker);
     window.open(url, '_blank');
     // nav('/inscribe', {
     //   state: {
@@ -91,7 +83,7 @@ export default function TokenInfo() {
     // });
   };
   const attr = useMemo(() => {
-    const { rarity } = detail || {};
+    const { rarity } = tickerStatus || {};
     const attrArr: string[] = [];
     if (rarity !== 'unknow' && rarity !== 'common' && !!rarity) {
       attrArr.push(`rar=${rarity}`);
@@ -101,36 +93,36 @@ export default function TokenInfo() {
       _attr = attrArr.join(';');
     }
     return _attr;
-  }, [detail]);
+  }, [tickerStatus]);
   const specialStatus = useMemo(() => !!attr, [attr]);
   const ordinalLink = useMemo(() => {
     return genOrdinalsUrl({
       network,
-      path: `inscription/${detail?.inscriptionId}`,
+      path: `inscription/${tickerStatus?.inscriptionId}`,
     });
-  }, [network, detail]);
+  }, [network, tickerStatus]);
   const txLink = useMemo(() => {
     const href = generateMempoolUrl({
       network,
-      path: `tx/${detail?.txid}`,
+      path: `tx/${tickerStatus?.txid}`,
     });
     return href;
-  }, [network, detail]);
+  }, [network, tickerStatus]);
   const showContent = useMemo(() => {
-    return detail?.contenttype === 'text/html' || !!detail?.delegate;
-  }, [detail])
+    return tickerStatus?.contenttype === 'text/html' || !!tickerStatus?.delegate;
+  }, [tickerStatus])
   const showContentId = useMemo(() => {
-    return detail?.delegate ?? detail?.inscriptionId;
-  }, [detail])
+    return tickerStatus?.delegate ?? tickerStatus?.inscriptionId;
+  }, [tickerStatus])
   useEffect(() => {
 
-  }, [tick, network]);
+  }, [ticker, network]);
   return (
     <Spin spinning={isLoading}>
       <BtcHeightAlert />
       <div className='max-w-4xl mx-auto mt-8'>
         <div className='flex justify-between mb-4 items-center'>
-          <span className='text-orange-400 text-2xl '>{getAssetTypeLabel(tick)}</span>
+          <span className='text-orange-400 text-2xl '>{getAssetTypeLabel(ticker)}</span>
           <span>
             {status === 'Pending' && (
               <Tag color='orange'>{t('common.waiting')}</Tag>
@@ -169,21 +161,21 @@ export default function TokenInfo() {
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.inscriptionId')}:</p>
               <a href={ordinalLink} className='indent-2' target='_blank'>
-                {detail?.inscriptionId || '-'}
+                {tickerStatus?.inscriptionId || '-'}
               </a>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.description')}:</p>
-              <p className='indent-2'>{detail?.description || '-'}</p>
+              <p className='indent-2'>{tickerStatus?.description || '-'}</p>
             </div>
 
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.block')}:</p>
               <div className='indent-2 flex'>
-                {detail?.startBlock > 0 && detail?.endBlock > 0 ? (
+                {tickerStatus && tickerStatus.startBlock > 0 && tickerStatus.endBlock > 0 ? (
                   <BlockAndTime
-                    startBlock={detail.startBlock}
-                    endBlock={detail.endBlock}
+                    startBlock={tickerStatus?.startBlock}
+                    endBlock={tickerStatus?.endBlock}
                   />
                 ) : (
                   '-'
@@ -192,27 +184,27 @@ export default function TokenInfo() {
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_height')}:</p>
-              <p className='indent-2'>{detail?.deployHeight}</p>
+              <p className='indent-2'>{tickerStatus?.deployHeight}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.limit_per_mint')}:</p>
-              <p className='indent-2'>{detail?.limit}</p>
+              <p className='indent-2'>{tickerStatus?.limit}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.max')}:</p>
-              <p className='indent-2'>{detail?.max > 0 ? detail?.max : '-'}</p>
+              <p className='indent-2'>{tickerStatus && tickerStatus.max > 0 ? tickerStatus.max : '-'}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.selfmint')}:</p>
               <p className='indent-2'>
-                {detail?.selfmint ? `${detail?.selfmint}%` : '-'}
+                {tickerStatus?.selfmint ? `${tickerStatus?.selfmint}%` : '-'}
               </p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
-                {detail?.deployBlocktime
-                  ? new Date(detail?.deployBlocktime * 1000).toLocaleString(
+                {tickerStatus?.deployBlocktime
+                  ? new Date(tickerStatus?.deployBlocktime * 1000).toLocaleString(
                     'af',
                   )
                   : '-'}
@@ -220,13 +212,13 @@ export default function TokenInfo() {
             </div>
             <div className=''>
               <p className='text-gray-400'>{t('common.holders')}:</p>
-              <p className='indent-2'>{detail?.holdersCount}</p>
+              <p className='indent-2'>{tickerStatus?.holdersCount}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.minted_total')}:</p>
               <p className='indent-2'>
-                {detail?.totalMinted}
-                {tick === 'Pearl' && (
+                {tickerStatus?.totalMinted}
+                {ticker === 'Pearl' && (
                   <>
                     <span>(</span>
                     <a
@@ -237,7 +229,7 @@ export default function TokenInfo() {
                     <span>)</span>
                   </>
                 )}
-                {tick === '龙' && (
+                {ticker === '龙' && (
                   <>
                     <span>(</span>
                     <a
@@ -257,7 +249,7 @@ export default function TokenInfo() {
             <div className=''>
               <p className='text-gray-400'>{t('common.deployTx')}:</p>
               <a href={txLink} className='indent-2' target='_blank'>
-                {detail?.txid || '-'}
+                {tickerStatus?.txid || '-'}
               </a>
             </div>
           </div>
@@ -272,15 +264,15 @@ export default function TokenInfo() {
             />
           </div>
           {tabText === t('common.holders') &&
-            tick &&
-            detail?.totalMinted !== undefined && (
+            ticker &&
+            tickerStatus?.totalMinted !== undefined && (
               <div className='p-4'>
-                <InfoHolders tick={tick} totalQuantity={detail?.totalMinted} />
+                <InfoHolders ticker={ticker} totalQuantity={tickerStatus?.totalMinted} />
               </div>
             )}
-          {tabText === t('common.minted_history') && tick && (
+          {tabText === t('common.minted_history') && ticker && (
             <div className='p-4'>
-              <TickHistory tick={tick} />
+              <TickHistory tick={ticker} />
             </div>
           )}
         </div>

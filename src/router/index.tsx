@@ -3,7 +3,7 @@ import Root from '@/Root';
 import Home from '@/pages/home';
 import Test from '@/pages/test';
 import Inscribe from '@/pages/inscribe';
-import Sat20Index from '@/pages/explorer';
+import Index from '@/pages/explorer';
 import TokenInfo from '@/pages/explorer/TokenInfo';
 import NameInfo from '@/pages/explorer/NameInfo';
 import UtxoInfo from '@/pages/explorer/utxo';
@@ -20,6 +20,7 @@ import { OrdAddressInscriptionList } from '@/pages/account/components/OrdAddress
 import OrdInscription from '@/pages/account/components/OrdInscription';
 import { OrdSatInscriptionList } from '@/pages/account/components/OrdSatInscriptions';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
+import { IndexerLayer } from '@/api/type';
 
 interface RareSatContainerProps {
   canSplit: boolean;
@@ -27,7 +28,7 @@ interface RareSatContainerProps {
 
 export const RareSatContainer: React.FC<RareSatContainerProps> = ({ canSplit }) => {
   const { address: currentAccount } = useReactWalletStore();
-  return <RareSat canSplit={canSplit} targetAddress={""} />;
+  return <RareSat canSplit={canSplit} targetAddress={""} indexerLayer={IndexerLayer.Base} />;
 };
 
 const resolveHashPath = (path: string) => {
@@ -39,11 +40,11 @@ export const ROUTE_PATH = {
   TEST: '/test',
   INSCRIBE: '/inscribe',
   INSCRIBE_TEST: '/inscribe_test',
-  SAT20_INDEX: '/explorer',
-  SAT20_INFO: '/explorer/:tick',
-  SAT20_NS: '/explorer/ns/:name',
-  SAT20_UTXO_INFO: '/explorer/utxo/:utxo',
-  SAT20_INSCRIPTION: '/explorer/inscription/:inscriptionId',
+  INDEX: '/explorer',
+  INFO: '/explorer/:ticker',
+  NS: '/explorer/ns/:name',
+  UTXO_INFO: '/explorer/utxo/:utxo',
+  INSCRIPTION: '/explorer/inscription/:inscriptionId',
   ORDX_INSCRIPTIONS_BY_ADDRESS: '/explorer/inscriptions/:address',
   INSCRIBE_CHECK: '/inscribe_check',
   TOOLS: '/tools',
@@ -75,7 +76,7 @@ export const routes: RouteObject[] = [
     children: [
       {
         path: ROUTE_PATH.HOME,
-        element: <Sat20Index />,
+        element: <Index />,
       },
       {
         path: ROUTE_PATH.TEST,
@@ -90,23 +91,23 @@ export const routes: RouteObject[] = [
         element: <Inscribe />,
       },
       {
-        path: ROUTE_PATH.SAT20_INDEX,
-        element: <Sat20Index />,
+        path: ROUTE_PATH.INDEX,
+        element: <Index />,
       },
       {
-        path: ROUTE_PATH.SAT20_INFO,
+        path: ROUTE_PATH.INFO,
         element: <TokenInfo />,
       },
       {
-        path: ROUTE_PATH.SAT20_NS,
+        path: ROUTE_PATH.NS,
         element: <NameInfo />,
       },
       {
-        path: ROUTE_PATH.SAT20_UTXO_INFO,
+        path: ROUTE_PATH.UTXO_INFO,
         element: <UtxoInfo />,
       },
       {
-        path: ROUTE_PATH.SAT20_INSCRIPTION,
+        path: ROUTE_PATH.INSCRIPTION,
         element: <Inscription />,
       },
       {

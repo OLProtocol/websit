@@ -22,7 +22,6 @@ import {
   sendBTC,
 } from '../utils';
 import { generateMempoolUrl } from '@/lib/utils';
-import { savePaidOrder } from '@/api';
 import { useEffect, useMemo, useState } from 'react';
 import { _0n } from '@cmdcode/crypto-utils/dist/const';
 import { hideStr } from '@/lib/utils';
@@ -208,17 +207,17 @@ export const InscribingOrderModal = ({
         inscribeHandler();
       } catch (error: any) {
         console.log(error);
-        try {
-          await savePaidOrder({
-            key: orderId,
-            content: {
-              order,
-              address: currentAccount,
-            },
-          });
-        } catch (error) {
-          console.log(error);
-        }
+        // try {
+        //   await savePaidOrder({
+        //     key: orderId,
+        //     content: {
+        //       order,
+        //       address: currentAccount,
+        //     },
+        //   });
+        // } catch (error) {
+        //   console.log(error);
+        // }
         setLoading(false);
         changeStatus(orderId, 'commit_error');
         toast({
@@ -294,17 +293,17 @@ export const InscribingOrderModal = ({
       }
       setLoading(false);
     } catch (error: any) {
-      try {
-        await savePaidOrder({
-          key: orderId,
-          content: {
-            order,
-            address: currentAccount,
-          },
-        });
-      } catch (error) {
+      // try {
+      //   await savePaidOrder({
+      //     key: orderId,
+      //     content: {
+      //       order,
+      //       address: currentAccount,
+      //     },
+      //   });
+      // } catch (error) {
         console.log(error);
-      }
+      // }
 
       setLoading(false);
       changeStatus(orderId, 'inscribe_fail');

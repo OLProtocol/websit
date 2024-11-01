@@ -1,7 +1,5 @@
 import { useParams } from 'react-router-dom';
-import {
-  useGetUtxo,
-} from '@/api';
+import {useGetAssetList } from '@/swr';
 import { useState, useMemo } from 'react';
 import { Divider, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -21,11 +19,11 @@ export default function UtxoInfo() {
   const nav = useNavigate();
   const network = useNetwork();
 
-  const { data: assetData, isLoading } = useGetUtxo({ utxo, network });
+  const { data: resp, isLoading } = typeof utxo === 'string' && useGetAssetList(utxo) || {};
 
   const allAssetList = useMemo(() => {
-    return assetData?.data?.detail || {};
-  }, [assetData]);
+    return resp?.detail;
+  }, [resp]);
 
   // console.log("allAssetList", allAssetList);
   const toInscriptionInfo = (inscriptionId) => {
@@ -36,8 +34,8 @@ export default function UtxoInfo() {
     return utxo?.split(':')[0];
   }, [utxo]);
 
-  const toTick = (tick) => {
-    nav(`/explorer/${tick}`);
+  const toTicker = (ticker) => {
+    nav(`/explorer/${ticker}`);
   };
 
   const toName = (name) => {
@@ -67,8 +65,8 @@ export default function UtxoInfo() {
         width: 200,
         align: 'center',
         render: (t) => {
-          const ranges = t?.map((r: any) => (
-            <div>
+          const ranges = t?.map((r: any, index) => (
+            <div key={index}>
               <span>
                 {r.size === 1 ? r.start : `${r.start}-${r.start + r.size - 1}`}
               </span>
@@ -149,7 +147,7 @@ export default function UtxoInfo() {
             <div className='mb-2'>
               <p className='text-gray-400'>Sat Ranges:</p>
               <div>
-                {allAssetList.ranges?.map((r: any, index: number) => (
+                {allAssetList?.ranges?.map((r: any, index: number) => (
                   <div key={index}>
                     <span>
                       {r.size === 1
@@ -173,7 +171,7 @@ export default function UtxoInfo() {
                   <div className='mb-2'>
                     <p className='text-gray-400'>{t('common.asset_name')}:</p>
                     <a
-                      onClick={() => toTick(asset.ticker)}
+                      onClick={() => toTicker(asset.ticker)}
                       className='indent-2'
                       target='_blank'
                       style={{ cursor: 'pointer' }}>
@@ -204,6 +202,7 @@ export default function UtxoInfo() {
                   dataSource={asset?.assets?.map((a: any) => ({
                     ...a,
                     type: asset.type,
+                    key: `${index}`,
                   }))}
                   scroll={{ x: 460 }}
                   pagination={{
