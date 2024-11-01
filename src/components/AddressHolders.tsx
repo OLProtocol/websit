@@ -1,6 +1,7 @@
 import { Button, message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useTokenAddressHolders, getUtxoByValue } from '@/api';
+import { useAddressUtxoList } from '@/swr';
+import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useCommonStore } from '@/store';
 import type { ColumnsType } from 'antd/es/table';
@@ -13,19 +14,22 @@ import {
   signAndPushPsbt,
 } from '@/lib/utils';
 import { CopyButton } from './CopyButton';
+import { IndexerLayer } from '@/api/type';
 
-interface Sat20HistoryProps {
-  tick: string;
+interface HistoryProps {
+  ticker: string;
   address: string;
+  indexerLayer: IndexerLayer;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
 }
-export const Sat20AddressHolders = ({
-  tick,
+export const AddressHolders = ({
+  ticker,
   address,
+  indexerLayer,
   onEmpty,
   onTransfer,
-}: Sat20HistoryProps) => {
+}: HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { feeRate } = useCommonStore((state) => state);
@@ -35,37 +39,35 @@ export const Sat20AddressHolders = ({
   const [selectItem, setSelectItem] = useState<any>();
 
   const { VITE_TESTNET_TIP_ADDRESS, VITE_MAIN_TIP_ADDRESS } = import.meta.env;
-  const tipAddress =
-    network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
+  const tipAddress = network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
 
-  const { data, isLoading, trigger } = useTokenAddressHolders({
-    ticker: tick,
-    address,
-    start,
-    limit,
-  });
+  let keyPrefix = "";
+  switch (indexerLayer) {
+    case IndexerLayer.Base:
+      keyPrefix = 'base';
+      break;
+    case IndexerLayer.Satsnet:
+      keyPrefix = 'satsnet';
+      break;
+  }
+  const { data, isLoading, trigger } = useAddressUtxoList({ ticker, address, start, limit }, keyPrefix, indexerLayer);
 
   const [transferAddress, setTransferAddress] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const transferHander = async () => {
+    const inscriptionUtxo = selectItem.utxo;
+    const inscriptionValue = selectItem.amount;
+    const inscriptionTxid = inscriptionUtxo.split(':')[0];
+    const inscriptionVout = inscriptionUtxo.split(':')[1];
+    const firstUtxo = {
+      txid: inscriptionTxid,
+      vout: Number(inscriptionVout),
+      value: Number(inscriptionValue),
+    };
     try {
-      const inscriptionUtxo = selectItem.utxo;
-      const inscriptionValue = selectItem.amount;
-      const inscriptionTxid = inscriptionUtxo.split(':')[0];
-      const inscriptionVout = inscriptionUtxo.split(':')[1];
-      const firstUtxo = {
-        txid: inscriptionTxid,
-        vout: Number(inscriptionVout),
-        value: Number(inscriptionValue),
-      };
-      const data = await getUtxoByValue({
-        address: currentAccount,
-        // value: 600,
-        value: 0,
-        network,
-      });
+      const data = await indexer.utxo.getPlainUtxoList({address: currentAccount,value: 0, start: 0, limit: 1}, indexerLayer);
       const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
@@ -95,10 +97,10 @@ export const Sat20AddressHolders = ({
       await signAndPushPsbt(psbt);
       message.success(t('messages.transfer_success'));
       onTransfer?.();
-      setLoading(false);
     } catch (error: any) {
       console.error(error.message || 'Split failed');
       message.error(error.message || 'Transfer failed');
+    } finally {
       setLoading(false);
     }
   };
@@ -116,34 +118,28 @@ export const Sat20AddressHolders = ({
   const splitHandler = async (item: any) => {
     setLoading(true);
     // const utxos = await getUtxo();
+    const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
+    const inscriptionUtxo = item.utxo;
+    const inscriptionValue = item.amount;
+    const inscriptionTxid = inscriptionUtxo.split(':')[0];
+    const inscriptionVout = inscriptionUtxo.split(':')[1];
+    const splitUtxo = {
+      txid: inscriptionTxid,
+      vout: Number(inscriptionVout),
+      value: Number(inscriptionValue),
+    };
+    if (splitUtxo.value < 331) {
+      message.warning(t('messages.no_enough_utxo'));
+      setLoading(false);
+      return;
+    }
     try {
-      const virtualFee = (148 * 10 + 34 * 10 + 10) * feeRate.value;
-      const inscriptionUtxo = item.utxo;
-      const inscriptionValue = item.amount;
-      const inscriptionTxid = inscriptionUtxo.split(':')[0];
-      const inscriptionVout = inscriptionUtxo.split(':')[1];
-      const splitUtxo = {
-        txid: inscriptionTxid,
-        vout: Number(inscriptionVout),
-        value: Number(inscriptionValue),
-      };
-      if (splitUtxo.value < 331) {
-        message.warning(t('messages.no_enough_utxo'));
-        setLoading(false);
-        return;
-      }
-      const data = await getUtxoByValue({
-        address: currentAccount,
-        // value: 500,
-        value: 0,
-        network,
-      });
+      const data = await indexer.utxo.getPlainUtxoList({ address: currentAccount, value: 0, start: 0, limit: 1 }, indexerLayer);
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length || consumUtxos.length < 2) {
         message.error(t('messages.no_available_utxo'));
         return;
       }
-
       const {
         utxos: filterConsumUtxos,
         minUtxo: serviceUtxo,
@@ -155,7 +151,6 @@ export const Sat20AddressHolders = ({
       }
 
       const utxos: any[] = [serviceUtxo, splitUtxo, ...filterConsumUtxos];
-
       const serviceOutputValue = serviceUtxo.value + 1;
       const splitOutputValue = splitUtxo.value - 1;
       const outputs = [
@@ -179,12 +174,13 @@ export const Sat20AddressHolders = ({
       console.log(psbt);
       await signAndPushPsbt(psbt);
       message.success(t('messages.split_success'));
-      setLoading(false);
     } catch (error: any) {
       console.error(error);
       message.error(error.message || 'Split failed');
+    } finally {
       setLoading(false);
     }
+
   };
   const handleOk = async () => {
     if (!transferAddress) {
@@ -340,7 +336,7 @@ export const Sat20AddressHolders = ({
 
   // const [dataSource, setDataSource] = useState<any[]>();
   const generateData = () => {
-    const details = data?.data?.detail;
+    const details = data?.detail;
     const datas: any[] = [];
     if (details) {
       for (const detail of details) {
@@ -375,14 +371,14 @@ export const Sat20AddressHolders = ({
   const dataSource = useMemo(() => {
     return generateData();
   }, [data]);
-  const total = useMemo(() => data?.data?.total || 10, [data]);
+  const total = useMemo(() => data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
     console.log(page, pageSize);
   };
 
   const toInfo = () => {
-    nav(`/explorer/${tick}`);
+    nav(`/explorer/${ticker}`);
   };
 
   useEffect(() => {
@@ -390,24 +386,24 @@ export const Sat20AddressHolders = ({
   }, [dataSource]);
 
   useEffect(() => {
-    if (address && tick) {
+    if (address && ticker) {
       trigger();
     }
-    console.log('data:', data)
-  }, [address, tick, network, start, limit]);
+    // console.log('data:', data)
+  }, [address, ticker, network, start, limit]);
 
   return (
     <>
       {dataSource !== undefined && dataSource.length ? (
         <div className='rounded-2xl bg-gray-200 p-4'>
           <div className='mb-2'>
-            <span className='text-orange-500'> {tick}</span>
+            <span className='text-orange-500'> {ticker}</span>
             <span className='text-gray-500'>, {t('common.holder')}: </span>
             <span>{address}</span>
           </div>
           <div className='flex items-center mb-2'>
             <Button className='mr-2' color='rgb(249 115 22)' onClick={toInfo}>
-              {t('buttons.view')} {tick}
+              {t('buttons.view')} {ticker}
             </Button>
           </div>
           <Table

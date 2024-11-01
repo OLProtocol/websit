@@ -1,32 +1,35 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Sat20Item } from './Sat20Item';
-import { getOrdInscriptionsByAddress, getSats } from '@/api';
+import { AssetSummary } from './AssetSummary';
+import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
-import { toast } from 'react-hot-toast';
-import { useTokenBalanceSummaryListHook } from '@/hooks/TokenBalanceSummaryList';
 
-interface Sat20SummaryListProps {
+import { useTokenBalanceSummaryListHook } from '@/hooks/TokenBalanceSummaryList';
+import { IndexerLayer } from '@/api/type';
+
+interface MyAssetsSummaryProps {
   address: string;
   utxosTotal: number;
   nameTotal: number;
+  indexerLayer: IndexerLayer;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
-export const Sat20AccountSummaryList = ({
+export const MyAssetsSummary = ({
   address,
   onChange,
   onEmpty,
   utxosTotal,
   nameTotal,
-}: Sat20SummaryListProps) => {
+  indexerLayer,
+}: MyAssetsSummaryProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
-  const { value } = useTokenBalanceSummaryListHook({ address });
-  const otherTickers = useMemo(() => value?.data?.detail || [], [value]);
+  const { value } = useTokenBalanceSummaryListHook({ address }, indexerLayer);
+  const otherTickers = useMemo(() => value?.detail || [], [value]);
   const [rareSatList, setRareSatList] = useState<any[]>();
-  const [nftSumBalance, setNftBalance] = useState<any>();
+  const [nftSumBalance, setNftBalance] = useState<number>();
 
   const avialableTicker = useMemo(() => {
     return {
@@ -52,21 +55,17 @@ export const Sat20AccountSummaryList = ({
   const ordNftTicker = useMemo(() => {
     return {
       ticker: t('pages.account.ord_nft'),
-      balance: nftSumBalance || 0,
+      balance: nftSumBalance,
     };
   }, [nftSumBalance]);
   const nameTicker = useMemo(() => {
     return {
       ticker: t('pages.account.name'),
-      balance: nameTotal || 0,
+      balance: nameTotal,
     };
   }, [nameTotal]);
   const getNfts = async () => {
-    const data = await getOrdInscriptionsByAddress({
-      address,
-      start: 0,
-      limit: 1,
-    });
+    const data = await indexer.nft.getNftListWithAddress({address,start: 0,limit: 1}, indexerLayer);
     let sum = 0;
     if (data.code !== 0) {
       sum = 0;
@@ -77,11 +76,9 @@ export const Sat20AccountSummaryList = ({
   };
 
   const getRareSats = async () => {
-    const data = await getSats({ address: address });
     let tmpSats: any[] = [];
-    if (data.code !== 0) {
-      tmpSats = [];
-    } else {
+    try {
+      const data = await indexer.exotic.getExoticSatInfoList({ address }, indexerLayer);
       for (let i = 0; i < data.data.length; i++) {
         if (data.data[i].sats !== null && data.data[i].sats.length > 0) {
           data.data[i].sats.forEach((item) => {
@@ -89,9 +86,10 @@ export const Sat20AccountSummaryList = ({
           });
         }
       }
+      setRareSatList(tmpSats);
+    } catch (error: any) {
+      console.error(error);
     }
-
-    setRareSatList(tmpSats);
   };
 
   const [select, setSelect] = useState('');
@@ -137,15 +135,15 @@ export const Sat20AccountSummaryList = ({
       <Wrap>
         {tickers?.map((item, index) => (
           <WrapItem key={index}>
-            <Sat20Item
+            <AssetSummary
               key={item.ticker}
               selected={select === item.ticker}
               onClick={() => {
                 onClick(item);
               }}
               item={{
-                tick: item.ticker,
-                balance: item.balance,
+                ticker: item.ticker,
+                balance: item.balance || 0,
               }}
             />
           </WrapItem>
@@ -154,14 +152,14 @@ export const Sat20AccountSummaryList = ({
       <hr />
       <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
         {filteredTickers?.map((item) => (
-          <Sat20Item
+          <AssetSummary
             key={item.ticker}
             selected={select === item.ticker}
             onClick={() => {
               onClick(item);
             }}
             item={{
-              tick: item.ticker,
+              ticker: item.ticker,
               balance: item.balance,
             }}
           />

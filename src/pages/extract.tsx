@@ -3,7 +3,7 @@ import { Address, Signer, Tap, Tx, Script } from '@cmdcode/tapscript';
 import { keys } from '@cmdcode/crypto-utils';
 import { getFundingAddress } from '@/pages/inscribe/utils';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-import { pollPushBTCpmt, pushBTCpmt } from '@/api';
+import { pushBTCpmt } from '@/api';
 import { useNetwork } from '@/lib/wallet';
 
 export default function Extract() {
