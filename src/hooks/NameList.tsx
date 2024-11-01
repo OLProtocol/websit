@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useAddressNameList } from '@/api';
+import { useEffect, useState } from 'react';
+import { useNameList } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { NameListResp } from '@/api/types';
+import { IndexerLayer, NameList, NameListResp } from '@/api/type';
+import { getIndexerLayerKey } from '@/api/type/util';
+import indexer from '@/api/indexer';
 
 
 interface NameListProps {
@@ -11,56 +13,39 @@ interface NameListProps {
 }
 
 interface NameListRespRecord {
-    resp: NameListResp
+    resp: NameList
     timeStamp: number
 }
 
 const prefix = 'nameList_';
 const timeout = 60 * 1000;
-const getKey = (address: string, start: number, limit: number) => prefix + address + '_' + start + '_' + limit;
 
-export const useAddressNameListHook = ({ address, start, limit }: NameListProps) => {
-    const [value, setValue] = useState<NameListResp | undefined>(undefined);
-    const { resp, trigger, isLoading } = useAddressNameList({
-        address,
-        start,
-        limit,
-    });
+const getKey = (address: string, start: number, limit: number, indexerLayer: IndexerLayer) => {
+    return prefix + getIndexerLayerKey(indexerLayer) + address + '_' + start + '_' + limit;
+}
 
-    useEffect(() => {
-        if (address && limit !== undefined && start !== undefined) {
-            const key = getKey(address, start, limit);
+export const useNameListHook = ({ address, start, limit }: NameListProps, indexerLayer: IndexerLayer) => {
+    const [value, setValue] = useState<NameList | undefined>(undefined);
+    const fetchData = async () => {
+        if (address && limit > 0 && start >= 0) {
+            const key = getKey(address, start, limit, indexerLayer);
             const record: NameListRespRecord = getCachedData(key);
-            if (!record) {
-                trigger();
-                return;
+            if (!record || Date.now() - record.timeStamp > timeout) {
+                const data = await indexer.ns.getNameList({address, start, limit}, indexerLayer);
+                const record: NameListRespRecord = {
+                    resp: data.data,
+                    timeStamp: Date.now(),
+                };
+                setCacheData(key, record);
+                setValue(data.data);
+            } else {
+                setValue(record.resp);
             }
-            const diff = Date.now() - record.timeStamp;
-            if (diff > timeout) {
-                trigger();
-                return;
-            }
-            setValue(record.resp);
         }
-    }, [address, limit, start, trigger]);
-
+    };
     useEffect(() => {
-        // if (!address) return;
-        // if (limit === undefined || start === undefined) return;
-        if (!resp) return;
-        const key = getKey(address, start, limit);
-        const cache = getCachedData(key);
-        if (cache) {
-            setValue((cache as NameListRespRecord).resp);
-            return;
-        }
-        const record: NameListRespRecord = {
-            resp: resp,
-            timeStamp: Date.now(),
-        };
-        setCacheData(key, record);
-        setValue(resp);
-    }, [resp]);
+        fetchData();
+    }, [address, limit, start]);
 
-    return { value, isLoading };
+    return { value };
 };

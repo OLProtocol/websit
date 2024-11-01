@@ -1,45 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Table, Tag, Button } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useNameList } from '@/api';
-import { useCommonStore } from '@/store';
-import { BlockAndTime } from '@/components/BlockAndTime';
+import { useNameStatusList } from '@/swr';
 import { useNavigate } from 'react-router-dom';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { hideStr } from '@/lib/utils'
 import { useTranslation } from 'react-i18next';
 import { CopyButton } from '@/components/CopyButton';
-import { removeObjectEmptyValue } from '../../inscribe/utils';
-import {
-  Box,
-  Card,
-  CardBody,
-  CardHeader,
-  Heading,
-  SimpleGrid,
-  Stack,
-  useToast,
-} from '@chakra-ui/react';
-import { generateMempoolUrl } from '@/lib/utils';
-import { setCacheData, getCachedData } from '@/lib/utils/cache';
-import { useNetwork } from '@/lib/wallet';
+import { useToast } from '@chakra-ui/react';
 
 export const NameList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const toast = useToast();
-
-  const network = useNetwork();
-
   const [start, setStart] = useState(0);
   const [limit] = useState(10);
   const [loading, setLoading] = useState(false);
-
-
-  const { data, error, isLoading } = useNameList({ start, limit });
-  const list = useMemo(() => data?.data?.names || [], [data]);
-  const total = useMemo(() => data?.data?.total || 0, [data]);
+  const { data, error, isLoading } = useNameStatusList({ start, limit });
+  const list = useMemo(() => data?.names || [], [data]);
+  const total = useMemo(() => data?.total || 0, [data]);
 
   useEffect(() => {
     setLoading(isLoading);
@@ -52,18 +30,7 @@ export const NameList = () => {
       });
       return
     }
-    if (data && data.code !== 0) {
-      toast({
-        title: data?.msg,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return
-    }
   }, [error, isLoading, data, toast]);
-
-
 
   const columns: ColumnsType<any> = [
     {
@@ -141,13 +108,14 @@ export const NameList = () => {
   ];
 
   const dataSource: any[] = useMemo(
-    () =>
-      list.map((item, i) => {
+    () => {
+      return list.map((item, i) => {
         return {
           index: i + 1,
           ...item,
         };
-      }),
+      })
+    },
     [list],
   );
 

@@ -1,4 +1,4 @@
-import { BtcNetwork } from "@/types";
+import { BtcNetwork } from "@/type";
 
 export const generateMempoolUrl = ({
   network,

@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { InscribeType } from '@/types';
-import { savePaidOrder } from '@/api';
+import { InscribeType } from '@/type';
 
 type OrderStatus =
   | 'pending'
@@ -153,14 +152,14 @@ export const useOrderStore = create<OrderState>()(
             list,
           });
         },
-        savePaidOrder: async (address) => {
+        savePaidOrder: async (/*address*/) => {
           const { list, saveLength } = get();
           const paidList = list.filter(
             (item) =>
               item.status == 'inscribe_fail' || item.status == 'commit_error',
           );
           if (paidList.length && saveLength !== paidList.length) {
-            await savePaidOrder({ address, list: paidList });
+            // await savePaidOrder({ address, list: paidList });
             set({
               saveLength: paidList.length,
             });
