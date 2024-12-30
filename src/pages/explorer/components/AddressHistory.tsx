@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { Button, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useTokenAddressHistory } from '@/api';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
+import { useAddressMintHistory } from '@/swr';
 import { generateMempoolUrl } from '@/lib/utils';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
@@ -11,18 +10,18 @@ import { hideStr } from '@/lib/utils';
 import { useNetwork } from '@/lib/wallet';
 
 interface HistoryProps {
-  tick: string;
+  ticker: string;
   address: string;
   onEmpty?: (b: boolean) => void;
 }
-export const AddressHistory = ({ tick, address, onEmpty }: HistoryProps) => {
+export const AddressHistory = ({ ticker, address, onEmpty }: HistoryProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const network = useNetwork();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { data, isLoading, trigger } = useTokenAddressHistory({
-    ticker: tick,
+  const { data, isLoading, trigger } = useAddressMintHistory({
+    ticker,
     address,
     start,
     limit,
@@ -94,37 +93,37 @@ export const AddressHistory = ({ tick, address, onEmpty }: HistoryProps) => {
       align: 'center',
     },
   ];
-  const dataSource = useMemo(() => data?.data?.detail || [], [data]);
-  const total = useMemo(() => data?.data?.total || 10, [data]);
+  const dataSource = useMemo(() => data?.detail?.items || [], [data]);
+  const total = useMemo(() => data?.total || 10, [data]);
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
     console.log(page, pageSize);
   };
   const toInfo = () => {
-    nav(`/explorer/${tick}`);
+    nav(`/explorer/${ticker}`);
   };
   useEffect(() => {
     onEmpty?.(dataSource.length === 0);
   }, [dataSource]);
   useEffect(() => {
-    console.log(address, tick);
-    if (address && tick) {
+    console.log(address, ticker);
+    if (address && ticker) {
       trigger();
     }
-  }, [address, tick, network, start, limit]);
+  }, [address, ticker, network, start, limit]);
 
   return (
     <>
       {dataSource.length ? (
         <div className='rounded-2xl bg-gray-200 p-4'>
           <div className='mb-2'>
-            <span className='text-orange-500'> {tick}</span>
+            <span className='text-orange-500'> {ticker}</span>
             <span className='text-gray-500'>, {t('common.founder')}: </span>
             <span>{address}</span>
           </div>
           <div className='flex items-center mb-2'>
             <Button className='mr-2' color='rgb(249 115 22)' onClick={toInfo}>
-              {t('buttons.view')} {tick}
+              {t('buttons.view')} {ticker}
             </Button>
           </div>
           {/* <Segmented

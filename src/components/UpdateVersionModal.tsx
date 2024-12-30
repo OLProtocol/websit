@@ -1,13 +1,12 @@
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-import React, { useEffect, useRef, useState } from 'react';
-import { Button, Modal, Space } from 'antd';
-import version from '@/assets/version.txt?raw';
-import { useAppVersion } from '@/api';
+import { useEffect, useRef, useState } from 'react';
+import { Modal } from 'antd';
+import curVersion from '@/assets/version.txt?raw';
+import { useAppVersion } from '@/swr';
 
 export const UpdateVersionModal = () => {
   // console.log('version', version);
   const [open, setOpen] = useState(false);
-  const { data: appVersion } = useAppVersion();
+  const { data: lastVersion } = useAppVersion();
   const timer = useRef<any>();
   const showModal = () => {
     setOpen(true);
@@ -19,7 +18,7 @@ export const UpdateVersionModal = () => {
   const checkVersion = () => {
     // console.log('appVersion', appVersion);
     // console.log('version', version);
-    if (appVersion && appVersion > version) {
+    if (lastVersion && lastVersion > curVersion) {
       showModal();
     }
   };
@@ -32,7 +31,7 @@ export const UpdateVersionModal = () => {
   };
   useEffect(() => {
     checkVersion();
-  }, [appVersion]);
+  }, [lastVersion]);
   return (
     <Modal
       title='有新版本，是否更新'
