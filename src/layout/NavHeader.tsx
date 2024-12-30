@@ -77,15 +77,15 @@ export const NavHeader = () => {
           : 'https://docs.sat20.org/',
       type: 'link',
     },
-    {
-      key: "satsnet_browser",
-      label: t('nav.satsnet_browser'),
-      value:
-        needNetwork == 'mainnet'
-          ? VITE_SATSNET_DOMAIN
-          : VITE_SATSTESTNET_DOMAIN,
-      type: 'link',
-    },
+    // {
+    //   key: "satsnet_browser",
+    //   label: t('nav.satsnet_browser'),
+    //   value:
+    //     needNetwork == 'mainnet'
+    //       ? VITE_SATSNET_DOMAIN
+    //       : VITE_SATSTESTNET_DOMAIN,
+    //   type: 'link',
+    // },
     // {
     //   key: "chain",
     //   label: t('nav.chain'),
@@ -96,6 +96,18 @@ export const NavHeader = () => {
     //   type: 'link',
     // },
   ];
+
+  if (VITE_SATSNET_DOMAIN) {
+    items.push({
+      key: "satsnet_browser",
+      label: t('nav.satsnet_browser'),
+      value:
+        needNetwork == 'mainnet'
+          ? VITE_SATSNET_DOMAIN
+          : VITE_SATSTESTNET_DOMAIN,
+      type: 'link',
+    })
+  }
 
   const options = [
     { value: 'en', label: 'EN' },

@@ -63,9 +63,14 @@ const getBestHeight = async (indexerLayer = IndexerLayer.Base): Promise<BestHeig
     return data;
 };
 
-const getBlockInfo = async (height, indexerLayer = IndexerLayer.Base): Promise<BlockInfoResp> => {
+// const getBlockInfo = async (height, indexerLayer = IndexerLayer.Base): Promise<BlockInfoResp> => {
+//     const url = `height/${height}`
+//     return handleApiRequest(() => axios.get<BlockInfoResp>(generateUrl(url, indexerLayer)));
+// };
+
+const getBlockInfo = async (height, indexerLayer = IndexerLayer.Base): Promise<any> => {
     const url = `height/${height}`
-    return handleApiRequest(() => axios.get<BlockInfoResp>(generateUrl(url, indexerLayer)));
+    return handleApiRequest(() => axios.get<any>(generateUrl(url, indexerLayer)));
 };
 
 const getSatributeList = async (indexerLayer = IndexerLayer.Base): Promise<SatributeListResp> => {
