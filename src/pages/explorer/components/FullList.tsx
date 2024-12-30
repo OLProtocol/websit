@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table, Tag, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { useFtList } from '@/api';
+import { useTickerStatusList } from '@/swr';
 import { useCommonStore } from '@/store';
 import { BlockAndTime } from '@/components/BlockAndTime';
 import { useNavigate } from 'react-router-dom';
@@ -13,12 +13,12 @@ import { useToast } from '@chakra-ui/react';
 import { useNetwork } from '@/lib/wallet';
 
 interface DataType {
-  tick: string;
+  ticker: string;
   block: string;
   rarity: string;
 }
 
-export const Sat20FullList = () => {
+export const FullList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const toast = useToast();
@@ -32,15 +32,10 @@ export const Sat20FullList = () => {
   const { VITE_ORDX_MINT_URL } = import.meta.env;
 
   const clickHandler = (item) => {
-    nav(`/explorer/${item.tick}`);
+    nav(`/explorer/${item.ticker}`);
   };
 
-  const { data, error, isLoading } = useFtList({ start, limit });
-  const list = useMemo(() => data?.data?.detail || [], [data]);
-  const total = useMemo(() => data?.data?.total || 0, [data]);
-  const height = useMemo(() => {
-    return data?.data?.height;
-  }, [data]);
+  const { data, error, isLoading } = useTickerStatusList({ start, limit });
 
   useEffect(() => {
     setLoading(isLoading);
@@ -53,20 +48,11 @@ export const Sat20FullList = () => {
       });
       return
     }
-    if (data && data.code !== 0) {
-      toast({
-        title: data?.msg,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return
-    }
   }, [error, isLoading, data, toast]);
 
   const toInscribe = (e: any, item: any) => {
     e.stopPropagation();
-    const url = VITE_ORDX_MINT_URL.replace('%s', item.tick);
+    const url = VITE_ORDX_MINT_URL.replace('%s', item.ticker);
     window.open(url, '_blank');
     // console.log(item);
     // nav('/inscribe', { state: { type: 'ordx', item } });
@@ -94,12 +80,12 @@ export const Sat20FullList = () => {
     },
     {
       title: t('common.tick'),
-      dataIndex: 'tick',
-      key: 'tick',
+      dataIndex: 'ticker',
+      key: 'ticker',
       width: 80,
       align: 'center',
-      render: (tick) => {
-        return <div className='cursor-pointer'>{tick}</div>;
+      render: (ticker) => {
+        return <div className='cursor-pointer'>{ticker}</div>;
       },
     },
     {
@@ -247,9 +233,9 @@ export const Sat20FullList = () => {
     },
   ];
 
-  const dataSource: DataType[] = useMemo(
+  const dataSource = useMemo(
     () =>
-      list.map((item) => {
+      data?.detail?.map((item) => {
         const isSpecial =
           item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         let status;
@@ -285,12 +271,12 @@ export const Sat20FullList = () => {
         if (isSpecial) {
           attrArr.push(`rar=${item.rarity}`);
         }
-        if (item.cn) {
-          attrArr.push(`cn=${item.cn}`);
-        }
-        if (item.trz) {
-          attrArr.push(`trz=${item.trz}`);
-        }
+        // if (item.cn) {
+        //   attrArr.push(`cn=${item.cn}`);
+        // }
+        // if (item.trz) {
+        //   attrArr.push(`trz=${item.trz}`);
+        // }
         let attr;
         if (attrArr.length) {
           attr = attrArr.join(';');
@@ -299,8 +285,8 @@ export const Sat20FullList = () => {
           removeObjectEmptyValue({
             p: 'ordx',
             op: 'deploy',
-            tick: item.ticker?.toString(),
-            block: item.blockChecked ? item.block?.toString() : undefined,
+            ticker: item.ticker?.toString(),
+            block: undefined,
             lim: item.limit?.toString(),
             attr,
             des: item.description?.toString(),
@@ -308,15 +294,13 @@ export const Sat20FullList = () => {
         );
         return {
           id: item.id + 1,
-          tick: item.ticker,
+          ticker: item.ticker,
           block:
             item.startBlock > 0 ? `${item.startBlock}-${item.endBlock}` : '-',
           startBlock: item.startBlock,
           endBlock: item.endBlock,
           rarity: item.rarity,
-
           description: item.description,
-          reg: item.reg,
           content: value,
           holders: item.holdersCount,
           delegate: item.delegate,
@@ -331,7 +315,7 @@ export const Sat20FullList = () => {
           deploy_time: new Date(item.deployBlocktime).toLocaleString('af'),
         };
       }),
-    [list, height],
+    [data],
   );
 
   const paginationChange = (page: number, pageSize: number) => {
@@ -348,7 +332,7 @@ export const Sat20FullList = () => {
       pagination={{
         position: ['bottomCenter'],
         defaultPageSize: 10,
-        total: total,
+        total: data?.total,
         onChange: paginationChange,
         showSizeChanger: false,
       }}

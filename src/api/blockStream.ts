@@ -1,5 +1,11 @@
 import axios from 'axios';
 import { Address, Signer, Tap, Tx, Script } from '@cmdcode/tapscript';
+
+export interface TxStatusParams {
+  txid: string;
+  network: string;
+}
+
 export const pushBTCpmt = async (rawtx, network) => {
   let txid;
   try {
@@ -91,3 +97,52 @@ export const getBlockStatus = async ({ height, network }: any) => {
     throw error;
   }
 };
+
+
+
+// tx status
+export const getTxStatus = async ({ txid, network }: TxStatusParams) => {
+  const { data } = await axios.get(
+    `https://blockstream.info/${network === 'testnet' ? 'testnet/' : ''
+    }api/tx/${txid}`,
+  );
+  return data;
+};
+
+export async function pollGetTxStatus(
+  txid: string,
+  network: string,
+  delay = 2000,
+  retryCount = 30,
+) {
+  try {
+    const result = await getTxStatus({ txid, network });
+    if (result?.status) {
+      console.log('getTxStatus succeeded, stopping poll.');
+      console.log(result);
+      return result;
+    } else if (retryCount > 0) {
+      console.log('getTxStatus returned no result, retrying...');
+      return new Promise((resolve) => {
+        setTimeout(
+          () => resolve(pollGetTxStatus(txid, network, delay, retryCount - 1)),
+          delay,
+        );
+      });
+    } else {
+      throw new Error('Maximum retry attempts exceeded');
+    }
+  } catch (error) {
+    if (retryCount > 0) {
+      console.error('getTxStatus failed, retrying...');
+      return new Promise((resolve) => {
+        setTimeout(
+          () => resolve(pollGetTxStatus(txid, network, delay, retryCount - 1)),
+          delay,
+        );
+      });
+    } else {
+      throw new Error('Maximum retry attempts exceeded');
+    }
+  }
+}

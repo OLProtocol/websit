@@ -2,40 +2,37 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
-import { useTokenHolderList } from '@/api';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
-
+import { useTickHolderList } from '@/swr';
 import { useTranslation } from 'react-i18next';
 import { hideStr } from '@/lib/utils';
 import { CopyButton } from '@/components/CopyButton';
 import { useNetwork } from '@/lib/wallet';
 
 interface DataType {
-  rank: string;
   address: string;
   percentage: string;
   value: number;
 }
 interface InfoHoldersProps {
-  tick: string;
+  ticker: string;
   totalQuantity: number;
 }
-export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
+export const InfoHolders = ({ ticker, totalQuantity }: InfoHoldersProps) => {
   const nav = useNavigate();
   const { t } = useTranslation();
   const network = useNetwork();
   const [start, setStart] = useState(0);
   const [limit, setLimit] = useState(10);
-  const { data, isLoading, trigger } = useTokenHolderList({
-    tick,
+  const { data: resp, isLoading, error,trigger } = useTickHolderList({
+    ticker,
     start,
     limit
   });
 
-  const list = useMemo(() => data?.data?.detail || [], [data]);
+  const list = useMemo(() => resp?.detail, [resp]);
   useEffect(() => {
     trigger();
-  }, [network, tick]);
+  }, [network, ticker]);
 
   const columns: ColumnsType<DataType> = [
     {
@@ -69,9 +66,9 @@ export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
       key: 'percentage',
     },
   ];
-  const dataSource: DataType[] = useMemo(
+  const dataSource = useMemo(
     () =>
-      list.map((item, index) => ({
+      list?.map((item, index) => ({
         key: index,
         address: item.wallet,
         value: item.total_balance,
@@ -79,7 +76,7 @@ export const InfoHolders = ({ tick, totalQuantity }: InfoHoldersProps) => {
       })),
     [list],
   );
-  const total = useMemo(() => data?.data?.total || 10, [data]);
+  const total = useMemo(() => resp?.total || 10, [resp]);
 
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);

@@ -1,26 +1,22 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import { useNavigate, useParams } from 'react-router-dom';
-import { useInscriptiontInfo } from '@/api';
-import { useEffect, useState, useMemo } from 'react';
+import { useInscriptiontInfo } from '@/swr';
+import { useEffect, useMemo } from 'react';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
-import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { Spin } from 'antd';
 import { UtxoContent } from '@/components/UtxoContent';
 import { useTranslation } from 'react-i18next';
 import { generateMempoolUrl, genOrdinalsUrl } from '@/lib/utils';
 import { useNetwork } from '@/lib/wallet';
+import { MintDetailInfoResp } from '@/api/type';
+import { TriggerWithoutArgs } from 'swr/mutation';
 
 export default function Inscription() {
   const { t } = useTranslation();
   const { inscriptionId } = useParams();
   const network = useNetwork();
   const nav = useNavigate();
-
-  const { data, trigger, isLoading } = useInscriptiontInfo({
-    inscriptionId: inscriptionId,
-  });
-
-  const detail = useMemo(() => data?.data || {}, [data]);
+  const { data: detail, trigger, isLoading } = inscriptionId ? useInscriptiontInfo(inscriptionId) : { data: undefined, trigger: () => {}, isLoading: false };
 
   const satsText = useMemo(() => {
     const ranges =
@@ -58,7 +54,9 @@ export default function Inscription() {
   }, [network, txid]);
 
   const toTick = () => {
-    nav(`/explorer/${detail.ticker}`);
+    if (detail?.ticker) {
+      nav(`/explorer/${detail.ticker}`);
+    }
   };
 
   useEffect(() => {
@@ -73,11 +71,11 @@ export default function Inscription() {
       <div className='max-w-4xl mx-auto mt-8'>
         <div className='flex justify-between mb-4 items-center'>
           <a href={ordinalLink} className=' text-2xl' target='_blank'>
-            {detail.inscriptionNumber === 9223372036854775807 ? (
+            {detail?.inscriptionNumber === 9223372036854775807 ? (
               <span className='text-orange-400'>{detail.inscriptionId}</span>
             ) : (
               <span className='text-orange-400'>
-                #{detail.inscriptionNumber}
+                #{detail?.inscriptionNumber}
               </span>
             )}
           </a>
@@ -99,7 +97,7 @@ export default function Inscription() {
                 <p className='text-gray-400'>{t('common.content')}:</p>
                 <div className='h-80'>
                   <UtxoContent
-                    inscriptionId={detail?.inscriptionId}
+                    inscriptionId={detail?.inscriptionId || ''}
                   />
                 </div>
               </div>
@@ -122,7 +120,7 @@ export default function Inscription() {
             <div className='mb-2'>
               <p className='text-gray-400'>{t('common.deploy_time')}:</p>
               <p className='indent-2'>
-                {new Date(detail?.mintTimes * 1000).toLocaleString('af')}
+                {detail && detail.mintTimes && new Date(detail.mintTimes * 1000).toLocaleString('af')}
               </p>
             </div>
 

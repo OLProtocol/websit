@@ -1,8 +1,7 @@
 import { message, Table, Modal, Input } from 'antd';
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
-import { getUtxoByValue } from '@/api';
+import indexer from '@/api/indexer';
 import { CopyButton } from '@/components/CopyButton';
-import * as bitcoin from 'bitcoinjs-lib';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
 import type { ColumnsType } from 'antd/es/table';
@@ -24,15 +23,19 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { IndexerLayer } from '@/api/type';
+import { fi } from 'date-fns/locale';
 
 interface AvailableUtxoListProps {
   address: string;
+  indexerLayer: IndexerLayer;
   onEmpty?: (b: boolean) => void;
   onTransfer?: () => void;
   onTotalChange?: (total: number) => void;
 }
 export const AvailableUtxoList = ({
   address,
+  indexerLayer,
   onEmpty,
   onTransfer,
   onTotalChange,
@@ -119,20 +122,15 @@ export const AvailableUtxoList = ({
   };
 
   const transferHander = async () => {
+    const inscriptionUtxo = selectItem.utxo;
+    const inscriptionValue = selectItem.value;
+    const firstUtxo = {
+      txid: selectItem.txid,
+      vout: selectItem.vout,
+      value: Number(inscriptionValue),
+    };
     try {
-      const inscriptionUtxo = selectItem.utxo;
-      const inscriptionValue = selectItem.value;
-      const firstUtxo = {
-        txid: selectItem.txid,
-        vout: selectItem.vout,
-        value: Number(inscriptionValue),
-      };
-      const data = await getUtxoByValue({
-        address: currentAccount,
-        // value: 600,
-        value: 0,
-        network,
-      });
+      const data = await indexer.utxo.getPlainUtxoList({address: currentAccount,value: 0}, indexerLayer);
       const virtualFee = (148 * 4 + 34 * 3 + 10) * feeRate.value;
       const consumUtxos = data?.data || [];
       if (!consumUtxos.length) {
@@ -291,23 +289,19 @@ export const AvailableUtxoList = ({
 
   const getAvailableUtxos = async () => {
     setLoading(true);
-    const resp = await getUtxoByValue({
-      address,
-      network,
-      value: 0,
-    });
-    if (resp.code !== 0) {
+    try {
+      const resp = await indexer.utxo.getPlainUtxoList({address,value: 0, start:0, limit:1}, indexerLayer);
+      setData(resp);
+    } catch (error: any) {
       toast({
-        title: resp.msg,
+        title: error.msg,
         status: 'error',
         duration: 3000,
         isClosable: true,
       });
+    } finally {
       setLoading(false);
-      return;
     }
-    setLoading(false);
-    setData(resp);
   };
 
   useEffect(() => {
