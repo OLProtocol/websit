@@ -25,7 +25,7 @@ export const getTimeByHeight = async (height: number) => {
     return +lcoalCache;
   }
   try {
-    const { data: blockInfo } = await indexer.common.getBlockInfo(height);
+    const { info: blockInfo } = await indexer.common.getBlockInfo(height);
     const timestamp = blockInfo?.timestamp || 0;
     const time = timestamp * 1000;
     if (time) {
