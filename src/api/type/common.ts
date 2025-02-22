@@ -1,5 +1,5 @@
 
-import { ListReq, BaseResp, AddressReq, TickerReq } from './base'
+import { ListReq, BaseResp, AddressReq } from './base'
 
 export interface HealthStatusResp {
   status: string
@@ -35,7 +35,7 @@ export interface SplittedSatNameListResp extends BaseResp {
 
 export interface AddressListReq extends ListReq, AddressReq {}
 
-export interface TickerListReq extends ListReq, TickerReq {}
+
 
 export interface Range {
   start: number

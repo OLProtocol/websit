@@ -3,7 +3,7 @@ import { AssetsSummaryReq, UtxoListReq, UtxoListResp, AssetsSummaryResp, MintHis
 import { generateUrl, handleApiRequest } from './common';
 
 const getAssetsSummary = async (param: AssetsSummaryReq, indexerLayer: IndexerLayer): Promise<AssetsSummaryResp> => {
-    const url = `address/summary/${param.address}?start=${param.start}&limit=${param.limit}`;
+    const url = `v3/address/summary/${param.address}?start=${param.start}&limit=${param.limit}`;
     return handleApiRequest(() => axios.get<AssetsSummaryResp>(generateUrl(url, indexerLayer)));
 };
 

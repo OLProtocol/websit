@@ -7,6 +7,7 @@ import exotic from './exotic'
 import nft from './nft'
 import ns from './ns'
 import sat from './sat'
+import runes from './runes'
 
 const indexer = {
     common,
@@ -17,7 +18,8 @@ const indexer = {
     exotic,
     nft,
     ns,
-    sat
+    sat,
+    runes,
 }
 
 export default indexer

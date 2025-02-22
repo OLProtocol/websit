@@ -1,7 +1,5 @@
 
-export interface TickerReq {
-    ticker: string
-}
+
 
 export interface AddressReq {
     address: string

@@ -1,9 +1,11 @@
 import axios, { AxiosResponse } from 'axios';
-import { BestHeightResp, HealthStatusResp, BlockInfoResp, SatributeListResp, SplittedSatNameListResp, IndexerLayer } from '../type';
+import { BestHeightResp, HealthStatusResp, BlockInfoResp, SatributeListResp, SplittedSatNameListResp, IndexerLayer, BaseResp, ListResp } from '../type';
 
-export interface ApiResponse<T> {
-    code: number;
-    msg: string;
+export interface ApiResponse<T> extends BaseResp {
+    data: T;
+}
+
+export interface ListApiResponse<T> extends BaseResp, ListResp {
     data: T;
 }
 
@@ -20,6 +22,24 @@ export const handleApiRequest = async <T>(requestFn: () => Promise<AxiosResponse
             throw new Error(`API request failed, code: ${resp.data.code}, msg: ${resp.data.msg}`);
         }
         return resp.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(`API request failed, axios error: ${error.message}`);
+        }
+        throw error;
+    }
+};
+
+export const handleListApiRequest = async <T>(requestFn: () => Promise<AxiosResponse<ListApiResponse<T>>>) => {
+    try {
+        const resp = await requestFn();
+        if (resp.status !== 200) {
+            throw new Error(`API request failed, HTTP status code: ${resp.status}`);
+        }
+        if (resp.data.code !== 0) {
+            throw new Error(`API request failed, code: ${resp.data.code}, msg: ${resp.data.msg}`);
+        }
+        return resp.data
     } catch (error) {
         if (axios.isAxiosError(error)) {
             throw new Error(`API request failed, axios error: ${error.message}`);

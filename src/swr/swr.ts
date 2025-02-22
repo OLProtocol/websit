@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import indexer from '@/api/indexer';
-import { IndexerLayer, ListReq, NameListReq, NameStatusListReq, NftStatusListReq, TickerStatusReq } from '@/api/type';
+import { ListReq, NameStatusListReq, NftStatusListReq, TickerStatusReq } from '@/api/type';
 import { fetchChainFeeRate } from '@/lib/utils';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
