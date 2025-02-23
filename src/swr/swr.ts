@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import indexer from '@/api/indexer';
-import { ListReq, NameStatusListReq, NftStatusListReq, TickerStatusReq } from '@/api/type';
+import { ListReq, NameStatusListReq, NftStatusListReq, RuneListReq, RuneReq, TickerStatusReq } from '@/api/type';
 import { fetchChainFeeRate } from '@/lib/utils';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 
@@ -85,6 +85,29 @@ export const useNameStatusList = (param: NameStatusListReq) => {
   }
 };
 
+export const useRuneList = (param: RuneListReq) => {
+  const key = `rune-list-${param.start}-${param.limit}`;
+  const resp = createCommonUseSwrHook(key, indexer.runes.getRuneList, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+    total: resp.data?.total
+  }
+};
+
+export const useRune = (param: RuneReq) => {
+  const key = `rune-${param.Protocol}-${param.Type}-${param.Ticker}`;
+  const resp = createCommonUseSwrHook(key, indexer.runes.getRune, param)();
+  return {
+    data: resp.data?.data,
+    isLoading: resp.isLoading,
+    error: resp.error,
+    mutate: resp.mutate,
+  }
+};
+
 export const useNftList = (param: NftStatusListReq) => {
   const key = `nft-list-${param.start}-${param.limit}`;
   const resp = createCommonUseSwrHook(key, indexer.nft.getNftStatusList, param)();
@@ -108,6 +131,12 @@ export const useGetAssetList = (utxo: string) => {
 };
 
 export const useTickerStatus = (param: TickerStatusReq) => {
+  if (!param.ticker) return {
+    data: undefined,
+    isLoading: false,
+    error: null,
+    mutate: () => { },
+  };
   const key = `token-info-${param.ticker}`;
   const resp = createCommonUseSwrHook(key, indexer.tick.getStatus, param)();
   return {

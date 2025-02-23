@@ -56,14 +56,14 @@ export interface TickerHolderResp extends BaseResp {
 
 // v3
 export interface AssetName {
-    protocol: string; // 4种: ordx, ord, brc20, runes
-    type: string; // 4种: ASSET_TYPE_NFT = "o" , ASSET_TYPE_FT = "f", ASSET_TYPE_EXOTIC = "e", ASSET_TYPE_NS = "n"
-    ticker: string; // 如果Type是nft类型，ticker是合集名称#铭文序号（或者聪序号）
+    Protocol: string; // 4种: ordx, ord, brc20, runes
+    Type: string; // 4种: ASSET_TYPE_NFT = "o" , ASSET_TYPE_FT = "f", ASSET_TYPE_EXOTIC = "e", ASSET_TYPE_NS = "n"
+    Ticker: string; // 如果Type是nft类型，ticker是合集名称#铭文序号（或者聪序号）
 }
 
 export interface TickerInfo {
     name: AssetName;
-    displayName: string;
+    displayname: string;
     id: number;
     divisibility?: number;
     startBlock?: number;
@@ -106,4 +106,4 @@ export interface TickerListReqV3 extends ListReq {
 
 export type TickerReqV3 = AssetName 
 export type RuneReq = TickerReqV3
-export type RuneListReq = TickerListReqV3
+export type RuneListReq = ListReq

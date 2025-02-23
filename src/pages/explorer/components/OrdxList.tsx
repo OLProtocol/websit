@@ -15,13 +15,14 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { useIndexHealth } from '@/swr';
+import { RuneList } from './RuneList';
 
 export const OrdxList = () => {
   const { t } = useTranslation();
 
   const [type, setType] = useState('FT');
   const { data: ordxVersion } = useIndexHealth();
-  const segmentedList = ['FT', 'Name', 'NFT'];
+  const segmentedList = ['FT', 'Name', 'NFT', 'Rune'];
 
   return (
     <div className='flex flex-col max-w-7xl mx-auto mb-4'>
@@ -66,6 +67,8 @@ export const OrdxList = () => {
           {type === segmentedList[0] && <FullList />}
           {type === segmentedList[1] && <NameList />}
           {type === segmentedList[2] && <OrdNftList />}
+          {type === segmentedList[3] && <RuneList />}
+
         </CardBody>
       </Card>
     </div>

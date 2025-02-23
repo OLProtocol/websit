@@ -72,6 +72,21 @@
     "mint_time": "铸造时间",
     "geneses_address": "创世地址"
   },
+  "runes": {
+    "id": "id",
+    "name": "名称",
+    "ticker": "ticker",
+    "divisibility": "可分性",
+    "deployHeight": "高度",
+    "deployBlockTime": "时间",
+    "deployTx": "交易",
+    "limit": "限制",
+    "n": "n",
+    "totalMinted": "已铸造",
+    "mintTimes": "铸造次数",
+    "maxSupply": "最大供应量",
+    "holdersCount": "持有者数量"
+  },
   "toast": {
     "system_error": "系统异常，请稍后再试。",
     "insufficient_balance": "余额不足。"

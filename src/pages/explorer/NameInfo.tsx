@@ -16,7 +16,8 @@ export default function NameInfo() {
   const { name } = useParams();
   const nav = useNavigate();
   const network = useNetwork();
-  const { value, isLoading } = typeof name === 'string' && useNameInfoHook({ name }, IndexerLayer.Base) || {};
+  const validName = typeof name === 'string' ? name : '';
+  const { value, isLoading } = useNameInfoHook({ name: validName }, IndexerLayer.Base);
   const detail = useMemo(() => {
     return value;
   }, [value]);

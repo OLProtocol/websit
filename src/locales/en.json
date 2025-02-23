@@ -72,6 +72,21 @@
     "mint_time": "Minted Time",
     "geneses_address": "Genesis Address"
   },
+  "runes": {
+    "id": "id",
+    "name": "name",
+    "ticker": "ticker",
+    "divisibility": "divisibility",
+    "deployHeight": "height",
+    "deployBlockTime": "time",
+    "deployTx": "tx",
+    "limit": "limit",
+    "n": "n",
+    "totalMinted": "total minted",
+    "mintTimes": "mint times",
+    "maxSupply": "max supply",
+    "holdersCount": "holders count"
+  },
   "toast": {
     "system_error": "System Error",
     "insufficient_balance": "Insufficient balance"

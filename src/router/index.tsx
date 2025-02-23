@@ -21,6 +21,7 @@ import OrdInscription from '@/pages/account/components/OrdInscription';
 import { OrdSatInscriptionList } from '@/pages/account/components/OrdSatInscriptions';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { IndexerLayer } from '@/api/type';
+import RuneInfo from '@/pages/explorer/runeInfo';
 
 interface RareSatContainerProps {
   canSplit: boolean;
@@ -43,6 +44,7 @@ export const ROUTE_PATH = {
   INDEX: '/explorer',
   INFO: '/explorer/:ticker',
   NS: '/explorer/ns/:name',
+  RUNE: '/explorer/rune/:rune',
   UTXO_INFO: '/explorer/utxo/:utxo',
   INSCRIPTION: '/explorer/inscription/:inscriptionId',
   ORDX_INSCRIPTIONS_BY_ADDRESS: '/explorer/inscriptions/:address',
@@ -101,6 +103,10 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.NS,
         element: <NameInfo />,
+      },
+      {
+        path: ROUTE_PATH.RUNE,
+        element: <RuneInfo />,
       },
       {
         path: ROUTE_PATH.UTXO_INFO,

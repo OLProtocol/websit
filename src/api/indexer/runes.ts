@@ -14,7 +14,7 @@ import {
 import { generateUrl, handleApiRequest, handleListApiRequest } from './common';
 
 export const getTickerV3 = async (req: TickerReqV3, indexerLayer = IndexerLayer.Base): Promise<TickerRespV3> => {
-    const url = `v3/tick/info/${req}`
+    const url = `v3/tick/info/${req.Protocol}:${req.Type}:${req.Ticker}`
     return handleApiRequest(() => axios.get<TickerRespV3>(generateUrl(url, indexerLayer)));
 };
 
@@ -25,8 +25,8 @@ export const getTickerListV3 = async (param: TickerListReqV3, indexerLayer = Ind
 };
 
 
-export const getRuneList = async (indexerLayer = IndexerLayer.Base): Promise<RuneListResp> => {
-    const req: RuneListReq = { protocol: 'runes' }
+export const getRuneList = async (param: RuneListReq,indexerLayer = IndexerLayer.Base): Promise<RuneListResp> => {
+    const req: TickerListReqV3 = { protocol: 'runes',start : param.start, limit: param.limit }
     const ret = getTickerListV3(req, indexerLayer)
     return ret
 };
