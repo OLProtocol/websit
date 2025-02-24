@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite --host --mode debug",
+    "dev:testnet4": "vite --host --mode dev.testnet4",
     "build:app": "node ./updateVersion.js && tsc && vite build --mode app",
     "build:app.testnet4": "node ./updateVersion.js && tsc && vite build --mode app.testnet4",
     "build:dev": "node ./updateVersion.js && tsc && vite build --mode dev",
