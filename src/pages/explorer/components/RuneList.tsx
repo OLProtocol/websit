@@ -199,7 +199,7 @@ export const RuneList = () => {
 
   const dataSource: any[] = useMemo(
     () => {
-      return list.map((item, i) => {
+      return list.map((item) => {
         return {
           // index: i + 1,
           ...item,
