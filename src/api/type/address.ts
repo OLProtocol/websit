@@ -1,4 +1,4 @@
-import { ListReq, ListResp, BaseResp, AddressReq, TickerReq } from './base'
+import { ListReq, ListResp, BaseResp, AddressReq } from './base'
 import { Range } from './common'
 
 export interface AssetsSummaryReq extends ListReq, AddressReq { }
