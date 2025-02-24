@@ -76,7 +76,7 @@ export const MyAssetsSummary = ({
   };
 
   const getRareSats = async () => {
-    let tmpSats: any[] = [];
+    const tmpSats: any[] = [];
     try {
       const data = await indexer.exotic.getExoticSatInfoList({ address }, indexerLayer);
       for (let i = 0; i < data.data.length; i++) {

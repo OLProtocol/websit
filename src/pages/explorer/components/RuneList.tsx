@@ -233,7 +233,7 @@ export const RuneList = () => {
           onClick: (e) => {
             e.stopPropagation();
             const rune = `${record.name.Protocol}:${record.name.Type}:${record.name.Ticker}`;
-            nav(`/explorer/rune/${rune}`);
+            // nav(`/explorer/rune/${rune}`);
           }
         };
       }}
