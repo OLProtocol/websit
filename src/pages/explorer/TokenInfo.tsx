@@ -21,7 +21,6 @@ export default function TokenInfo() {
   const nav = useNavigate();
   const network = useNetwork();
 
-
   const { VITE_ORDX_MINT_URL } = import.meta.env;
 
   const handleTabsChange = (type: any) => {
@@ -29,7 +28,8 @@ export default function TokenInfo() {
       setTabText(type);
     }
   };
-  const { data: tickerStatus, isLoading } = typeof ticker === 'string' && useTickerStatus({ ticker }) || {};
+  const validTicker = typeof ticker === 'string' ? ticker : '';
+  const { data: tickerStatus, isLoading } = useTickerStatus({ ticker: validTicker });
   const status = useMemo(() => {
     let _status = '';
     if (!tickerStatus) {
@@ -94,7 +94,7 @@ export default function TokenInfo() {
     }
     return _attr;
   }, [tickerStatus]);
-  const specialStatus = useMemo(() => !!attr, [attr]);
+  
   const ordinalLink = useMemo(() => {
     return genOrdinalsUrl({
       network,

@@ -7,7 +7,7 @@ export const genOrdServiceUrl = ({
   path?: string;
   locale?: string;
 }) => {
-  const base = network === 'testnet' ? 'https://ord-testnet4.ordx.space' : 'https://ord-mainnet.ordx.space';
+  const base = network === 'testnet' ? 'https://ord-testnet4.sat20.org' : 'https://ord-mainnet.sat20.org';
   let url = base;
   if (locale) {
     url += `/${locale}`;

@@ -17,7 +17,7 @@ export const getNameStatusList = async (param: NameStatusListReq, indexerLayer: 
 
 export const getNameList = async (param: NameListReq, indexerLayer = IndexerLayer.Base): Promise<NameListResp> => {
     const url = `ns/address/${param.address}?start=${param.start}&limit=${param.limit}`
-    let ret = handleApiRequest(() => axios.get<NameListResp>(generateUrl(url, indexerLayer)));
+    const ret = handleApiRequest(() => axios.get<NameListResp>(generateUrl(url, indexerLayer)));
     return ret
 };
 
