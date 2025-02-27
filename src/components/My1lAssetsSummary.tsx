@@ -8,7 +8,7 @@ import { Wrap, WrapItem } from '@chakra-ui/react';
 import { useTokenBalanceSummaryListHook } from '@/hooks/TokenBalanceSummaryList';
 import { IndexerLayer } from '@/api/type';
 
-interface MyAssetsSummaryProps {
+interface My1lAssetsSummaryProps {
   address: string;
   utxosTotal: number;
   nameTotal: number;
@@ -16,14 +16,14 @@ interface MyAssetsSummaryProps {
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
 }
-export const MyAssetsSummary = ({
+export const My1lAssetsSummary = ({
   address,
   onChange,
   onEmpty,
   utxosTotal,
   nameTotal,
   indexerLayer,
-}: MyAssetsSummaryProps) => {
+}: My1lAssetsSummaryProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
   const { value } = useTokenBalanceSummaryListHook({ address }, indexerLayer);

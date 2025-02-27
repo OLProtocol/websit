@@ -4,7 +4,7 @@ import { Input, Empty, Segmented } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { OrdxList } from '@/pages/explorer/components/OrdxList';
-import { MyAssetsSummary } from '@/components/MyAssetsSummary';
+import { My1lAssetsSummary } from '@/components/My1lAssetsSummary';
 import { useTranslation } from 'react-i18next';
 import { NameList } from '@/components/NameList';
 import { NftList } from '@/components/NftList';
@@ -104,7 +104,7 @@ export default function Index() {
               </div>
             )}
             <div className='mb-4'>
-              <MyAssetsSummary
+              <My1lAssetsSummary
                 indexerLayer={IndexerLayer.Base}
                 onEmpty={summaryEmptyHandler}
                 address={address}
