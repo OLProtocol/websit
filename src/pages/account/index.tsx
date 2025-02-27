@@ -70,7 +70,7 @@ export default function Account() {
     <div className="flex">
       <div className="w-1/2 pr-2">
       {/* <h2 className="text-2xl font-bold text-center mb-4">一层</h2> */}
-      <h2 className="text-2xl font-bold text-center mb-4 py-2 bg-blue-100 text-blue-700 rounded-lg shadow">一层</h2>
+      <h2 className="text-2xl font-bold text-center mb-4 py-2 bg-blue-100 text-blue-700 rounded-lg shadow">{t('pages.account.first_layer')}</h2>
         {btcAssets(
           IndexerLayer.Base,
           baseTicker, setBaseIndexTicker,
@@ -79,7 +79,7 @@ export default function Account() {
       </div>
       <div className="w-1/2 pl-2">
       {/* <h2 className="text-2xl font-bold text-center mb-4">二层</h2> */}
-      <h2 className="text-2xl font-bold text-center mb-4 py-2 bg-green-100 text-green-700 rounded-lg shadow">二层</h2>
+      <h2 className="text-2xl font-bold text-center mb-4 py-2 bg-green-100 text-green-700 rounded-lg shadow">{t('pages.account.second_layer')}</h2>
         {btcAssets(IndexerLayer.Satsnet,
           satsnetTicker, setSatsnetIndexTicker,
           satsnetUtxosTotal, setSatsnetUtxosTotal,

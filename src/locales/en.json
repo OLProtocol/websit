@@ -327,7 +327,9 @@
       "quick_cut": "Quick cut",
       "quick_cut_des": "Quick cut generates 2 UTXO with 600sat.",
       "toast_oridnals_support": "Ordinals NFT is in development.",
-      "tip_enter_address": "Please enter the address"
+      "tip_enter_address": "Please enter the address",
+      "first_layer": "first layer",
+      "second_layer": "second layer"
     }
   },
   "messages": {
