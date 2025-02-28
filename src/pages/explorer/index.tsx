@@ -11,7 +11,7 @@ import { NftList } from '@/components/NftList';
 import { RareSat } from '@/pages/discover/rareSat';
 import { AvailableUtxoList } from '@/pages/account/components/AvailableUtxoList';
 import { AddressHolders } from '@/components/AddressHolders';
-import { useNameListHook } from '@/hooks/NameList';
+import { useMyNameListHook } from '@/hooks/MyNameList';
 import { IndexerLayer } from '@/api/type';
 
 const { Search } = Input;
@@ -28,7 +28,7 @@ export default function Index() {
 
  
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
-  const { value: resp } = useNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
+  const { value: resp } = useMyNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
 
   const onTotalChange = (total: number) => {
     if (total !== 0) {

@@ -36,7 +36,7 @@ export const My1lAssetsSummary = ({
       ticker: t('pages.account.available_utxo'),
       balance: utxosTotal,
     };
-  }, [utxosTotal]);
+  }, [t, utxosTotal]);
 
   const rareSatsTicker = useMemo(() => {
     let balance = 0;
@@ -50,20 +50,20 @@ export const My1lAssetsSummary = ({
       ticker: t('pages.account.rare_sats'),
       balance: balance,
     };
-  }, [rareSatList]);
+  }, [rareSatList, t]);
 
   const ordNftTicker = useMemo(() => {
     return {
       ticker: t('pages.account.ord_nft'),
       balance: nftSumBalance,
     };
-  }, [nftSumBalance]);
+  }, [nftSumBalance, t]);
   const nameTicker = useMemo(() => {
     return {
       ticker: t('pages.account.name'),
       balance: nameTotal,
     };
-  }, [nameTotal]);
+  }, [nameTotal, t]);
   const getNfts = async () => {
     const data = await indexer.nft.getNftListWithAddress({address,start: 0,limit: 1}, indexerLayer);
     let sum = 0;
@@ -117,7 +117,9 @@ export const My1lAssetsSummary = ({
 
   useEffect(() => {
     if (tickers.length) {
-      onClick(tickers[0]);
+      const ticker = tickers[0].ticker;
+      setSelect(ticker);
+      onChange?.(ticker);
     }
   }, [tickers]);
 
@@ -128,7 +130,7 @@ export const My1lAssetsSummary = ({
   useEffect(() => {
     getRareSats();
     getNfts();
-  }, [address, network]);
+  }, [address,  network]);
 
   return (
     <div>

@@ -8,7 +8,7 @@ import { AvailableUtxoList } from './components/AvailableUtxoList';
 import { AddressHolders } from '@/components/AddressHolders';
 import { NftList } from '@/components/NftList';
 import { NameList } from '@/components/NameList';
-import { useNameListHook } from '@/hooks/NameList';
+import { useMyNameListHook } from '@/hooks/MyNameList';
 import { IndexerLayer, NameList as NameListResp } from '@/api/type';
 
 export default function Account() {
@@ -21,7 +21,8 @@ export default function Account() {
   const [baseTicker, setBaseIndexTicker] = useState('');
   const [satsnetTicker, setSatsnetIndexTicker] = useState('');
 
-  const { value: baseNameListResp } = useNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
+  const { value: baseNameListResp } = useMyNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
+  // const { value: runeListResp } = useRuneListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
   
   const firstLayerAssets = (indexerLayer: IndexerLayer,
     ticker: string, setTicker: Dispatch<SetStateAction<string>>,
