@@ -5,7 +5,7 @@ import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
 
-import { useTokenBalanceSummaryListHook } from '@/hooks/TokenBalanceSummaryList';
+import { useAddressAssetsSummaryHook } from '@/hooks/useAddressAssetsSummary';
 import { IndexerLayer } from '@/api/type';
 
 interface My1lAssetsSummaryProps {
@@ -26,10 +26,10 @@ export const My1lAssetsSummary = ({
 }: My1lAssetsSummaryProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
-  const { value } = useTokenBalanceSummaryListHook({ address }, indexerLayer);
-  const otherTickers = useMemo(() => value?.detail || [], [value]);
+  const { value: addressAssetsSummary } = useAddressAssetsSummaryHook({ address }, indexerLayer);
+
   const [rareSatList, setRareSatList] = useState<any[]>();
-  const [nftSumBalance, setNftBalance] = useState<number>();
+  const [nftSumBalance, setNftBalance] = useState<string>();
 
   const avialableTicker = useMemo(() => {
     return {
@@ -72,7 +72,7 @@ export const My1lAssetsSummary = ({
     } else {
       sum = data.data.total;
     }
-    setNftBalance(sum);
+    setNftBalance(sum.toString());
   };
 
   const getRareSats = async () => {
@@ -93,13 +93,6 @@ export const My1lAssetsSummary = ({
   };
 
   const [select, setSelect] = useState('');
-
-  const filteredTickers = useMemo(() => {
-    return otherTickers.filter(
-      // no show assert for: o(Ordinals NFT), e(Rare), n(Name)
-      (ticker) => ticker.type !== "o" && ticker.type !== "e" && ticker.type !== "n",
-    );
-  }, [otherTickers]);
   const tickers = useMemo(() => {
     return [
       avialableTicker,
@@ -145,28 +138,12 @@ export const My1lAssetsSummary = ({
               }}
               item={{
                 ticker: item.ticker,
-                balance: item.balance || 0,
+                balance: typeof item.balance === 'number' ? item.balance.toString() : (item.balance || 'undefined'),
               }}
             />
           </WrapItem>
         ))}
       </Wrap>
-      <hr />
-      <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
-        {filteredTickers?.map((item) => (
-          <AssetSummary
-            key={item.ticker}
-            selected={select === item.ticker}
-            onClick={() => {
-              onClick(item);
-            }}
-            item={{
-              ticker: item.ticker,
-              balance: item.balance,
-            }}
-          />
-        ))}
-      </div>
     </div>
   );
 };

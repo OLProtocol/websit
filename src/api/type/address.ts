@@ -1,16 +1,23 @@
 import { ListReq, ListResp, BaseResp, AddressReq } from './base'
-import { Range } from './common'
 
-export interface AssetsSummaryReq extends ListReq, AddressReq { }
+import { AssetName } from './ticker';
 
-export interface AssetsSummary extends ListResp{
-    detail: {type: string
-    ticker: string
-    balance: number}[]
+export interface AddressAssetsSummaryReq extends ListReq, AddressReq { }
+
+export interface Range {
+    Start: number;
+    End: number;
 }
 
-export interface AssetsSummaryResp extends BaseResp {
-    data: AssetsSummary
+export interface DisplayAsset {
+    Name: AssetName;
+    Ammount: string;
+    BindingSat: number;
+    Offset?: Range[];
+}
+
+export interface AddressAssetsSummaryResp extends BaseResp {
+    data: DisplayAsset[]
 }
 
 export interface MintHistoryReq extends ListReq {

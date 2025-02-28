@@ -81,7 +81,6 @@ export const SatTable = ({ sats, canSplit }: SatTableProps) => {
             : false
         }
       />
-      <p>Hostname: {location.hostname}</p>
     </div>
 
   );

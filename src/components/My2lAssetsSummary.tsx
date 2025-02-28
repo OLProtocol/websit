@@ -67,7 +67,7 @@ export const My2lAssetsSummary = ({
               }}
               item={{
                 ticker: item.ticker,
-                balance: item.balance || 0,
+                balance: typeof item.balance === 'number' ? item.balance.toString() : (item.balance || 'undefined'),
               }}
             />
           </WrapItem>

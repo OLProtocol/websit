@@ -7,12 +7,12 @@ import {
   TickerHolderReq,
   MintHistoryResp,
   UtxoListResp,
-  AssetsSummaryReq,
+  AddressAssetsSummaryReq,
   TickerHolderResp,
   NameListReq,
   MintDetailInfoResp,
   NftDetailResp,
-  AssetsSummaryResp,
+  AddressAssetsSummaryResp,
   NameListResp,
   NameResp,
   IndexerLayer,
@@ -111,9 +111,9 @@ export const useOrdInscriptiontInfo = ( inscriptionId : string, keyPrefix: strin
   }
 };
 
-export const useAddressAssetsSummary = (param: AssetsSummaryReq, keyPrefix: string = 'default', indexerLayer: IndexerLayer = IndexerLayer.Base) => {
+export const useAddressAssetsSummary = (param: AddressAssetsSummaryReq, keyPrefix: string = 'default', indexerLayer: IndexerLayer = IndexerLayer.Base) => {
   const key = `${keyPrefix}-address-assets-summary-${param.address}-${param.start}-${param.limit}`;
-  const { data, trigger, reset, isLoading, error } = useSWRMutationHook<AssetsSummaryReq, AssetsSummaryResp>(key, param, indexer.address.getAssetsSummary, indexerLayer);
+  const { data, trigger, reset, isLoading, error } = useSWRMutationHook<AddressAssetsSummaryReq, AddressAssetsSummaryResp>(key, param, indexer.address.getAssetsSummary, indexerLayer);
   return {
     data: data?.data,
     trigger,
