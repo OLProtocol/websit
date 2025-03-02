@@ -16,9 +16,6 @@ export default function InscribeCheck() {
     nav(ROUTE_PATH.TOOLS_UTXO);
   }
 
-  const toTransact = () => {
-    nav(ROUTE_PATH.TOOLS_TRANSACT, { state: { initInputList: [], initOutputList: [] } });
-  }
 
   const toSat = () => {
     nav(ROUTE_PATH.TOOLS_SEARCH_SAT);
@@ -38,7 +35,7 @@ export default function InscribeCheck() {
         </Card>
 
         {['ordx.space'].every((v) => location.hostname !== v) && (
-          <Card title={t('pages.tools.transaction.title')} className='w-60 cursor-pointer' onClick={toTransact}>
+          <Card title={t('pages.tools.transaction.title')} className='w-60 cursor-pointer'>
             {t('pages.tools.transaction.des')}
           </Card>
         )}

@@ -33,13 +33,6 @@ export const SplitSatButton = ({
     const size = sat.size;
     const offset = sat.offset;
 
-    const toTransact = async () => {
-        const { inputList, outputList } = await generateInputsAndOutputs();
-        if (inputList.length > 0) {
-            nav(ROUTE_PATH.TOOLS_TRANSACT, { state: { initInputList: inputList, initOutputList: outputList } });
-        }
-    }
-
     const getValueOfUtxo = async () => {
         let value = 0;
         try {
@@ -247,7 +240,7 @@ export const SplitSatButton = ({
             <Icon
                 icon='game-icons:miner'
                 className={`text-gray-500 text-lg pt-1`}
-                onClick={toTransact}></Icon>
+                ></Icon>
         </Tooltip>
     );
 };
