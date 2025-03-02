@@ -5,7 +5,7 @@ import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
 
-import { useAddressAssetsSummaryHook } from '@/hooks/useAddressAssetsSummary';
+
 import { IndexerLayer } from '@/api/type';
 
 interface My1lAssetsSummaryProps {
@@ -15,6 +15,7 @@ interface My1lAssetsSummaryProps {
   indexerLayer: IndexerLayer;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
+  runeTotal?: number;
 }
 export const My1lAssetsSummary = ({
   address,
@@ -23,10 +24,11 @@ export const My1lAssetsSummary = ({
   utxosTotal,
   nameTotal,
   indexerLayer,
+  runeTotal,
 }: My1lAssetsSummaryProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
-  const { value: addressAssetsSummary } = useAddressAssetsSummaryHook({ address }, indexerLayer);
+
 
   const [rareSatList, setRareSatList] = useState<any[]>();
   const [nftSumBalance, setNftBalance] = useState<string>();
@@ -37,6 +39,13 @@ export const My1lAssetsSummary = ({
       balance: utxosTotal,
     };
   }, [t, utxosTotal]);
+
+  const runeTicker = useMemo(() => {
+    return {
+      ticker: t('pages.account.runes'),
+      balance: runeTotal,
+    };
+  }, [runeTotal, t]);
 
   const rareSatsTicker = useMemo(() => {
     let balance = 0;
@@ -99,8 +108,9 @@ export const My1lAssetsSummary = ({
       nameTicker,
       rareSatsTicker,
       ordNftTicker,
+      runeTicker,
     ];
-  }, [avialableTicker, nameTicker, rareSatsTicker, ordNftTicker]);
+  }, [avialableTicker, nameTicker, rareSatsTicker, ordNftTicker, runeTicker]);
 
   const onClick = (item) => {
     const ticker = item.ticker;

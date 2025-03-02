@@ -323,6 +323,7 @@
       "available_utxo": "Plain UTXO",
       "rare_sats": "Rare Sats",
       "ord_nft": "Ordinals NFT",
+      "runes": "Runes",
       "cut": "Cut",
       "quick_cut": "Quick cut",
       "quick_cut_des": "Quick cut generates 2 UTXO with 600sat.",

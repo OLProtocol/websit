@@ -11,7 +11,7 @@ export interface Range {
 
 export interface DisplayAsset {
     Name: AssetName;
-    Ammount: string;
+    Amount: string;
     BindingSat: number;
     Offset?: Range[];
 }

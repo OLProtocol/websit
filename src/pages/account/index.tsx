@@ -1,15 +1,17 @@
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { My1lAssetsSummary } from '@/components/My1lAssetsSummary';
 import { My2lAssetsSummary } from '@/components/My2lAssetsSummary';
 import { RareSat } from '../discover/rareSat';
 import { AvailableUtxoList } from './components/AvailableUtxoList';
 import { AddressHolders } from '@/components/AddressHolders';
-import { NftList } from '@/components/NftList';
+import { MyNftList } from '@/components/MyNftList';
 import { NameList } from '@/components/NameList';
 import { useMyNameListHook } from '@/hooks/MyNameList';
-import { IndexerLayer, NameList as NameListResp } from '@/api/type';
+import { DisplayAsset, IndexerLayer, NameList as NameListResp } from '@/api/type';
+import { useAddressAssetsSummaryHook } from '@/hooks/useAddressAssetsSummary';
+import { MyRuneList } from '@/components/MyRuneList';
 
 export default function Account() {
   const { t } = useTranslation();
@@ -24,6 +26,25 @@ export default function Account() {
   const { value: baseNameListResp } = useMyNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
   // const { value: runeListResp } = useRuneListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
   
+  const { value: baseAddressAssetsSummary } = useAddressAssetsSummaryHook({ address }, IndexerLayer.Base);
+  const baseRuneSummary: DisplayAsset[] = useMemo(() => {
+    const ret: DisplayAsset[] = [];
+    for (const assetSummary of baseAddressAssetsSummary) {
+      if (assetSummary.Name.Protocol === 'runes' && assetSummary.Name.Type === 'f') {
+        ret.push(assetSummary);
+      }
+    }
+    return ret;
+  }, [baseAddressAssetsSummary]);
+
+  const baseRuneTotal = useMemo(() => {
+    let total = 0;
+    for (const rune of baseRuneSummary) {
+      total += Number(rune.Amount);
+    }
+    return total;
+  }, [baseRuneSummary]);
+    
   const firstLayerAssets = (indexerLayer: IndexerLayer,
     ticker: string, setTicker: Dispatch<SetStateAction<string>>,
     utxosTotal: number, setUtxosTotal: Dispatch<SetStateAction<number>>,
@@ -38,6 +59,7 @@ export default function Account() {
             utxosTotal={utxosTotal}
             nameTotal={nameListResp?.total || 0}
             onChange={(ticker) => setTicker(ticker)}
+            runeTotal={baseRuneTotal}
           />
           {ticker === t('pages.account.available_utxo') && (
             <AvailableUtxoList
@@ -56,11 +78,14 @@ export default function Account() {
             <RareSat canSplit={true} targetAddress={address} indexerLayer={indexerLayer} />
           )}
           {ticker === t('pages.account.ord_nft') && (
-            <NftList targetAddress={address} indexerLayer={indexerLayer} />
+            <MyNftList targetAddress={address} indexerLayer={indexerLayer} />
           )}
-          {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && (
+          {ticker === t('pages.account.runes') && (
+            <MyRuneList address={address} baseRuneSummary={baseRuneSummary}/>
+          )}
+          {/* {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && (
             <AddressHolders ticker={ticker} address={address} indexerLayer={indexerLayer} />
-          )}
+          )} */}
         </div>
       ) : (
         <div className='text-xl text-center mt-20'>{t('common.hint_connect')}</div>

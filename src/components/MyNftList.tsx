@@ -16,7 +16,7 @@ interface NftListProps {
 }
 
 
-export const NftList = ({ targetAddress, indexerLayer } : NftListProps) => {
+export const MyNftList = ({ targetAddress, indexerLayer } : NftListProps) => {
   const { t } = useTranslation();
   const nav = useNavigate();
 1
