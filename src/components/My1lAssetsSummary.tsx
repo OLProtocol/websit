@@ -15,7 +15,7 @@ interface My1lAssetsSummaryProps {
   indexerLayer: IndexerLayer;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
-  runeTotal?: number;
+  runeTotal?: string;
 }
 export const My1lAssetsSummary = ({
   address,

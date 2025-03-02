@@ -31,6 +31,7 @@
     "@unisat/wallet-sdk": "1.4.1",
     "antd": "5.12.6",
     "axios": "1.7.3",
+    "bignumber.js": "^9.1.2",
     "bitcoinjs-lib": "6.1.5",
     "buffer": "6.0.3",
     "cbor-web": "9.0.2",

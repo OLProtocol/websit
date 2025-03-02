@@ -12,6 +12,7 @@ import { useMyNameListHook } from '@/hooks/MyNameList';
 import { DisplayAsset, IndexerLayer, NameList as NameListResp } from '@/api/type';
 import { useAddressAssetsSummaryHook } from '@/hooks/useAddressAssetsSummary';
 import { MyRuneList } from '@/components/MyRuneList';
+import BigNumber from 'bignumber.js';
 
 export default function Account() {
   const { t } = useTranslation();
@@ -38,19 +39,22 @@ export default function Account() {
   }, [baseAddressAssetsSummary]);
 
   const baseRuneTotal = useMemo(() => {
-    let total = 0;
+    let total = new BigNumber('0', 10);
     for (const rune of baseRuneSummary) {
-      total += Number(rune.Amount);
+      const value = new BigNumber(rune.Amount, 10);
+      total = total.plus(value);
     }
-    return total;
+    console.log('total', total.toString());
+    return total.toString();
   }, [baseRuneSummary]);
     
   const firstLayerAssets = (indexerLayer: IndexerLayer,
-    ticker: string, setTicker: Dispatch<SetStateAction<string>>,
+    assetType: string, setAssetType: Dispatch<SetStateAction<string>>,
     utxosTotal: number, setUtxosTotal: Dispatch<SetStateAction<number>>,
     nameListResp: NameListResp | undefined
   ) => (
     <div className='max-w-6xl mx-auto pt-4'>
+      {assetType}
       {address ? (
         <div>
           <My1lAssetsSummary
@@ -58,10 +62,10 @@ export default function Account() {
             address={address}
             utxosTotal={utxosTotal}
             nameTotal={nameListResp?.total || 0}
-            onChange={(ticker) => setTicker(ticker)}
+            onChange={(assetType) => setAssetType(assetType)}
             runeTotal={baseRuneTotal}
           />
-          {ticker === t('pages.account.available_utxo') && (
+          {assetType === t('pages.account.available_utxo') && (
             <AvailableUtxoList
               address={address}
               onTotalChange={(total: number) => {
@@ -71,17 +75,17 @@ export default function Account() {
               }}
               indexerLayer={indexerLayer} />
           )}
-          {ticker === t('pages.account.name') && (
+          {assetType === t('pages.account.name') && (
             <NameList address={address} indexerLayer={indexerLayer} />
           )}
-          {ticker === t('pages.account.rare_sats') && (
+          {assetType === t('pages.account.rare_sats') && (
             <RareSat canSplit={true} targetAddress={address} indexerLayer={indexerLayer} />
           )}
-          {ticker === t('pages.account.ord_nft') && (
+          {assetType === t('pages.account.ord_nft') && (
             <MyNftList targetAddress={address} indexerLayer={indexerLayer} />
           )}
-          {ticker === t('pages.account.runes') && (
-            <MyRuneList address={address} baseRuneSummary={baseRuneSummary}/>
+          {assetType === t('pages.account.runes') && (
+            <MyRuneList baseRuneSummary={baseRuneSummary}/>
           )}
           {/* {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && (
             <AddressHolders ticker={ticker} address={address} indexerLayer={indexerLayer} />

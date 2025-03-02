@@ -14,6 +14,7 @@ import { AddressHolders } from '@/components/AddressHolders';
 import { useMyNameListHook } from '@/hooks/MyNameList';
 import { DisplayAsset, IndexerLayer } from '@/api/type';
 import { useAddressAssetsSummaryHook } from '@/hooks/useAddressAssetsSummary';
+import BigNumber from 'bignumber.js';
 
 const { Search } = Input;
 
@@ -32,23 +33,24 @@ export default function Index() {
   const { value: resp } = useMyNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
 
     const { value: baseAddressAssetsSummary } = useAddressAssetsSummaryHook({ address }, IndexerLayer.Base);
-    const baseRuneList: DisplayAsset[] = useMemo(() => {
+    const baseRuneSummary: DisplayAsset[] = useMemo(() => {
       const ret: DisplayAsset[] = [];
       for (const assetSummary of baseAddressAssetsSummary) {
         if (assetSummary.Name.Protocol === 'f' && assetSummary.Name.Type === 'runes') {
-          baseRuneList.push(assetSummary);
+          ret.push(assetSummary);
         }
       }
       return ret;
     }, [baseAddressAssetsSummary]);
   
-    const baseRuneTotal = useMemo(() => {
-      let total = 0;
-      for (const rune of baseRuneList) {
-        total += Number(rune.Amount);
-      }
-      return total;
-    }, [baseRuneList]);
+  const baseRuneTotal = useMemo(() => {
+    let total = new BigNumber('0', 10);
+    for (const rune of baseRuneSummary) {
+      const value = new BigNumber(rune.Amount, 10);
+      total = total.plus(value);
+    }
+    return total.toString();
+  }, [baseRuneSummary]);
     
   const onTotalChange = (total: number) => {
     if (total !== 0) {
