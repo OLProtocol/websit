@@ -4,7 +4,7 @@ import { AssetName } from './ticker';
 
 export interface AddressAssetsSummaryReq extends ListReq, AddressReq { }
 
-export interface Range {
+export interface RangeV1 {
     Start: number;
     End: number;
 }
@@ -13,7 +13,7 @@ export interface DisplayAsset {
     Name: AssetName;
     Amount: string;
     BindingSat: number;
-    Offset?: Range[];
+    Offset?: RangeV1[];
 }
 
 export interface AddressAssetsSummaryResp extends BaseResp {
@@ -63,7 +63,7 @@ export interface TickerAsset {
         inscriptionId: number
         inscriptionnum: string
         assetamount: number
-        ranges: Range[]
+        ranges: RangeV1[]
     }[]
 }
 
