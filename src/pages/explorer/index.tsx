@@ -4,15 +4,17 @@ import { Input, Empty, Segmented } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
 import { OrdxList } from '@/pages/explorer/components/OrdxList';
-import { MyAssetsSummary } from '@/components/MyAssetsSummary';
+import { My1lAssetsSummary } from '@/components/My1lAssetsSummary';
 import { useTranslation } from 'react-i18next';
 import { NameList } from '@/components/NameList';
-import { NftList } from '@/components/NftList';
+import { MyNftList } from '@/components/MyNftList';
 import { RareSat } from '@/pages/discover/rareSat';
 import { AvailableUtxoList } from '@/pages/account/components/AvailableUtxoList';
 import { AddressHolders } from '@/components/AddressHolders';
-import { useNameListHook } from '@/hooks/NameList';
-import { IndexerLayer } from '@/api/type';
+import { useMyNameListHook } from '@/hooks/MyNameList';
+import { DisplayAsset, IndexerLayer } from '@/api/type';
+import { useAddressAssetsSummaryHook } from '@/hooks/useAddressAssetsSummary';
+import BigNumber from 'bignumber.js';
 
 const { Search } = Input;
 
@@ -28,8 +30,28 @@ export default function Index() {
 
  
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
-  const { value: resp } = useNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
+  const { value: resp } = useMyNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
 
+    const { value: baseAddressAssetsSummary } = useAddressAssetsSummaryHook({ address }, IndexerLayer.Base);
+    const baseRuneSummary: DisplayAsset[] = useMemo(() => {
+      const ret: DisplayAsset[] = [];
+      for (const assetSummary of baseAddressAssetsSummary) {
+        if (assetSummary.Name.Protocol === 'f' && assetSummary.Name.Type === 'runes') {
+          ret.push(assetSummary);
+        }
+      }
+      return ret;
+    }, [baseAddressAssetsSummary]);
+  
+  const baseRuneTotal = useMemo(() => {
+    let total = new BigNumber('0', 10);
+    for (const rune of baseRuneSummary) {
+      const value = new BigNumber(rune.Amount, 10);
+      total = total.plus(value);
+    }
+    return total.toString();
+  }, [baseRuneSummary]);
+    
   const onTotalChange = (total: number) => {
     if (total !== 0) {
       setUtxosTotal(total);
@@ -104,13 +126,14 @@ export default function Index() {
               </div>
             )}
             <div className='mb-4'>
-              <MyAssetsSummary
+              <My1lAssetsSummary
                 indexerLayer={IndexerLayer.Base}
                 onEmpty={summaryEmptyHandler}
                 address={address}
                 utxosTotal={utxosTotal}
                 nameTotal={resp?.total || 0}
                 onChange={(tick) => setSelectTick(tick)}
+                runeTotal={baseRuneTotal}
               />
             </div>
             {selectTick === t('pages.account.available_utxo') && (
@@ -123,11 +146,11 @@ export default function Index() {
               <RareSat canSplit={true} targetAddress={address} indexerLayer={IndexerLayer.Base} />
             )}
             {selectTick === t('pages.account.ord_nft') && (
-              <NftList targetAddress={address} indexerLayer={IndexerLayer.Base} />
+              <MyNftList targetAddress={address} indexerLayer={IndexerLayer.Base} />
             )}
-            {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
+            {/* {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
               <AddressHolders ticker={selectTick} address={address} indexerLayer={IndexerLayer.Base} />
-            )}
+            )} */}
           </>
         )}
         {!showAddress && (

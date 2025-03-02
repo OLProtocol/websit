@@ -1,4 +1,4 @@
-import { ListReq, ListResp, BaseResp } from './base';
+import { ListReq, ListResp, BaseResp, AddressReq } from './base';
 
 export interface TickerReq {
     ticker: string
@@ -107,3 +107,5 @@ export interface TickerListReqV3 extends ListReq {
 export type TickerReqV3 = AssetName 
 export type RuneReq = TickerReqV3
 export type RuneListReq = ListReq
+
+

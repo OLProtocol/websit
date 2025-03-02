@@ -3,7 +3,7 @@ import { getAssetTypeLabel } from '@/lib/utils';
 interface AssetProps {
   item: {
     ticker: string;
-    balance: number;
+    balance: string;
   };
   selected?: boolean;
   onClick?: () => void;

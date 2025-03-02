@@ -1,34 +1,34 @@
 import { useEffect, useState } from 'react';
 import { useAddressAssetsSummary } from '@/swr';
 import { getCachedData, setCacheData } from '@/lib/utils/cache';
-import { AssetsSummary, AssetsSummaryResp, IndexerLayer } from '@/api/type';
+import { AddressAssetsSummaryResp, DisplayAsset, IndexerLayer } from '@/api/type';
 import { getIndexerLayerKey } from '@/api/type/util';
 
 
-interface TokenBalanceSummaryListProps {
+interface AddressAssetsSummaryProps {
     address: string;
 }
 
-interface TokenBalanceSummaryRespRecord {
-    data: AssetsSummary
+interface AddressAssetsSummaryRespRecord {
+    data: DisplayAsset[]
     timeStamp: number
 }
 
-const prefix = 'token_balance_summary_list_';
+const prefix = '_address_assets_summary_';
 const timeout = 60 * 1000;
 const getKey = (address: string, indexerLayer: IndexerLayer) => {
     return prefix + getIndexerLayerKey(indexerLayer) + address;
 }
 
-export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryListProps, indexerLayer: IndexerLayer = IndexerLayer.Base) => {
-    const [value, setValue] = useState<AssetsSummary | undefined>(undefined);
-    let keyPreFix = getIndexerLayerKey(indexerLayer);
+export const useAddressAssetsSummaryHook = ({ address }: AddressAssetsSummaryProps, indexerLayer: IndexerLayer = IndexerLayer.Base) => {
+    const [value, setValue] = useState<DisplayAsset[]>([]);
+    const keyPreFix = getIndexerLayerKey(indexerLayer);
     const { data, trigger, isLoading } = useAddressAssetsSummary({ start:0, limit: 100, address }, keyPreFix, indexerLayer);
 
     useEffect(() => {
         if (address) {
             const key = getKey(address, indexerLayer);
-            const record: TokenBalanceSummaryRespRecord = getCachedData(key);
+            const record: AddressAssetsSummaryRespRecord = getCachedData(key);
             if (!record) {
                 trigger();
                 return;
@@ -38,7 +38,7 @@ export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryL
                 trigger();
                 return;
             }
-            setValue(record.data);
+            setValue(record.data || []);
         }
     }, [address, trigger]);
 
@@ -48,10 +48,10 @@ export const useTokenBalanceSummaryListHook = ({ address }: TokenBalanceSummaryL
         const key = getKey(address, indexerLayer);
         const cache = getCachedData(key);
         if (cache) {
-            setValue((cache as TokenBalanceSummaryRespRecord).data);
+            setValue((cache as DisplayAsset[]));
             return;
         }
-        const record: TokenBalanceSummaryRespRecord = {
+        const record: AddressAssetsSummaryRespRecord = {
             data: data,
             timeStamp: Date.now(),
         };

@@ -17,14 +17,14 @@ interface NameListRespRecord {
     timeStamp: number
 }
 
-const prefix = 'nameList_';
+const prefix = 'myNameList_';
 const timeout = 60 * 1000;
 
 const getKey = (address: string, start: number, limit: number, indexerLayer: IndexerLayer) => {
     return prefix + getIndexerLayerKey(indexerLayer) + address + '_' + start + '_' + limit;
 }
 
-export const useNameListHook = ({ address, start, limit }: NameListProps, indexerLayer: IndexerLayer) => {
+export const useMyNameListHook = ({ address, start, limit }: NameListProps, indexerLayer: IndexerLayer) => {
     const [value, setValue] = useState<NameList | undefined>(undefined);
     const fetchData = async () => {
         if (address && limit > 0 && start >= 0) {

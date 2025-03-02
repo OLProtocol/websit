@@ -1,6 +1,6 @@
 import {
     NameListResp,
-    AssetsSummaryResp,
+    AddressAssetsSummaryResp,
     NameResp,
     TickerStatusResp,
 } from '@/api/type';
@@ -8,7 +8,7 @@ import {
 import { TriggerWithoutArgs } from "swr/mutation";
 
 export interface SwrAddressAssetsSummary {
-    resp?: AssetsSummaryResp;
+    resp?: AddressAssetsSummaryResp;
     error: any;
     isLoading: boolean;
     reset: () => void;

@@ -5,38 +5,47 @@ import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
 
-import { useTokenBalanceSummaryListHook } from '@/hooks/TokenBalanceSummaryList';
+
 import { IndexerLayer } from '@/api/type';
 
-interface MyAssetsSummaryProps {
+interface My1lAssetsSummaryProps {
   address: string;
   utxosTotal: number;
   nameTotal: number;
   indexerLayer: IndexerLayer;
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
+  runeTotal?: string;
 }
-export const MyAssetsSummary = ({
+export const My1lAssetsSummary = ({
   address,
   onChange,
   onEmpty,
   utxosTotal,
   nameTotal,
   indexerLayer,
-}: MyAssetsSummaryProps) => {
+  runeTotal,
+}: My1lAssetsSummaryProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
-  const { value } = useTokenBalanceSummaryListHook({ address }, indexerLayer);
-  const otherTickers = useMemo(() => value?.detail || [], [value]);
+
+
   const [rareSatList, setRareSatList] = useState<any[]>();
-  const [nftSumBalance, setNftBalance] = useState<number>();
+  const [nftSumBalance, setNftBalance] = useState<string>();
 
   const avialableTicker = useMemo(() => {
     return {
       ticker: t('pages.account.available_utxo'),
       balance: utxosTotal,
     };
-  }, [utxosTotal]);
+  }, [t, utxosTotal]);
+
+  const runeTicker = useMemo(() => {
+    return {
+      ticker: t('pages.account.runes'),
+      balance: runeTotal,
+    };
+  }, [runeTotal, t]);
 
   const rareSatsTicker = useMemo(() => {
     let balance = 0;
@@ -50,20 +59,20 @@ export const MyAssetsSummary = ({
       ticker: t('pages.account.rare_sats'),
       balance: balance,
     };
-  }, [rareSatList]);
+  }, [rareSatList, t]);
 
   const ordNftTicker = useMemo(() => {
     return {
       ticker: t('pages.account.ord_nft'),
       balance: nftSumBalance,
     };
-  }, [nftSumBalance]);
+  }, [nftSumBalance, t]);
   const nameTicker = useMemo(() => {
     return {
       ticker: t('pages.account.name'),
       balance: nameTotal,
     };
-  }, [nameTotal]);
+  }, [nameTotal, t]);
   const getNfts = async () => {
     const data = await indexer.nft.getNftListWithAddress({address,start: 0,limit: 1}, indexerLayer);
     let sum = 0;
@@ -72,7 +81,7 @@ export const MyAssetsSummary = ({
     } else {
       sum = data.data.total;
     }
-    setNftBalance(sum);
+    setNftBalance(sum.toString());
   };
 
   const getRareSats = async () => {
@@ -93,21 +102,15 @@ export const MyAssetsSummary = ({
   };
 
   const [select, setSelect] = useState('');
-
-  const filteredTickers = useMemo(() => {
-    return otherTickers.filter(
-      // no show assert for: o(Ordinals NFT), e(Rare), n(Name)
-      (ticker) => ticker.type !== "o" && ticker.type !== "e" && ticker.type !== "n",
-    );
-  }, [otherTickers]);
   const tickers = useMemo(() => {
     return [
       avialableTicker,
       nameTicker,
       rareSatsTicker,
       ordNftTicker,
+      runeTicker,
     ];
-  }, [avialableTicker, nameTicker, rareSatsTicker, ordNftTicker]);
+  }, [avialableTicker, nameTicker, rareSatsTicker, ordNftTicker, runeTicker]);
 
   const onClick = (item) => {
     const ticker = item.ticker;
@@ -117,7 +120,9 @@ export const MyAssetsSummary = ({
 
   useEffect(() => {
     if (tickers.length) {
-      onClick(tickers[0]);
+      const ticker = tickers[0].ticker;
+      setSelect(ticker);
+      onChange?.(ticker);
     }
   }, [tickers]);
 
@@ -128,7 +133,7 @@ export const MyAssetsSummary = ({
   useEffect(() => {
     getRareSats();
     getNfts();
-  }, [address, network]);
+  }, [address,  network]);
 
   return (
     <div>
@@ -143,28 +148,12 @@ export const MyAssetsSummary = ({
               }}
               item={{
                 ticker: item.ticker,
-                balance: item.balance || 0,
+                balance: typeof item.balance === 'number' ? item.balance.toString() : (item.balance || 'undefined'),
               }}
             />
           </WrapItem>
         ))}
       </Wrap>
-      <hr />
-      <div className='max-h-96 w-full flex flex-wrap gap-4 self-stretch overflow-y-auto'>
-        {filteredTickers?.map((item) => (
-          <AssetSummary
-            key={item.ticker}
-            selected={select === item.ticker}
-            onClick={() => {
-              onClick(item);
-            }}
-            item={{
-              ticker: item.ticker,
-              balance: item.balance,
-            }}
-          />
-        ))}
-      </div>
     </div>
   );
 };

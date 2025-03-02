@@ -241,33 +241,33 @@ export const AvailableUtxoList = ({
         align: 'center',
       },
     ];
-    if (address === currentAccount) {
-      defaultColumn.push({
-        title: t('common.operation'),
-        align: 'center',
-        render: (record) => {
-          return (
-            <div className='flex gap-2 justify-center'>
-              <a
-                className='text-blue-500 cursor-pointer mr-2'
-                onClick={() => {
-                  setSelectItem(record);
-                  setIsModalOpen(true);
-                }}>
-                {t('buttons.send')}
-              </a>
-              {/* <a
-                className='text-blue-500 cursor-pointer mr-2'
-                onClick={() => {
-                  splitHandler(record);
-                }}>
-                {t('pages.account.cut')}
-              </a> */}
-            </div>
-          );
-        },
-      });
-    }
+    // if (address === currentAccount) {
+    //   defaultColumn.push({
+    //     title: t('common.operation'),
+    //     align: 'center',
+    //     render: (record) => {
+    //       return (
+    //         <div className='flex gap-2 justify-center'>
+    //           <a
+    //             className='text-blue-500 cursor-pointer mr-2'
+    //             onClick={() => {
+    //               setSelectItem(record);
+    //               setIsModalOpen(true);
+    //             }}>
+    //             {t('buttons.send')}
+    //           </a>
+    //           {/* <a
+    //             className='text-blue-500 cursor-pointer mr-2'
+    //             onClick={() => {
+    //               splitHandler(record);
+    //             }}>
+    //             {t('pages.account.cut')}
+    //           </a> */}
+    //         </div>
+    //       );
+    //     },
+    //   });
+    // }
     return defaultColumn;
   }, []);
   const dataSource = useMemo(
@@ -325,7 +325,7 @@ export const AvailableUtxoList = ({
 
   return (
     <Card>
-      <CardHeader className='text-center flex justify-between'>
+      {/* <CardHeader className='text-center flex justify-between'>
         <Tooltip label={t('pages.account.quick_cut_des')}>
           <Button
             bgColor={'white'}
@@ -346,7 +346,7 @@ export const AvailableUtxoList = ({
           onClick={getAvailableUtxos}>
           {t('buttons.fresh')}
         </Button>
-      </CardHeader>
+      </CardHeader> */}
       <CardBody>
         <Table
           bordered

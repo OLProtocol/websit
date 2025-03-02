@@ -7,7 +7,7 @@ import { genOrdinalsUrl, hideStr } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { CopyButton } from '@/components/CopyButton';
 import { useToast } from '@chakra-ui/react';
-import { useNameListHook } from '@/hooks/NameList';
+import { useMyNameListHook } from '@/hooks/MyNameList';
 import { IndexerLayer } from '@/api/type';
 
 interface NameListProps {
@@ -23,7 +23,7 @@ export const NameList = ({ onTotalChange, address, indexerLayer }: NameListProps
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const { value } = useNameListHook({ address, start, limit }, indexerLayer);
+  const { value } = useMyNameListHook({ address, start, limit }, indexerLayer);
 
   const clickHandler = (item) => {
     nav(`/explorer/ns/${item.name}`);
