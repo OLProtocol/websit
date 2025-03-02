@@ -52,7 +52,6 @@ export const ROUTE_PATH = {
   TOOLS: '/tools',
   TOOLS_SPLIT_SAT: '/tools/split-sat',
   TOOLS_UTXO: '/tools/utxo',
-  TOOLS_TRANSACT: '/tools/transact',
   TOOLS_SEARCH_SAT: '/tools/search-sat',
   TOOLS_SPLITTED_INSCRIPTION: '/tools/splitted-inscription',
   DISCOVER_RARE_SAT: '/discover',
