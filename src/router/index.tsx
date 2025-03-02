@@ -14,7 +14,7 @@ import Utxo from '@/pages/tools/utxo';
 import InscribeCheck from '@/pages/inscribe_check';
 import Tools from '@/pages/tools';
 import { RareSat } from '@/pages/discover/rareSat';
-import Transaction from '@/pages/tools/transaction';
+
 import SearchSat from '@/pages/tools/searchSat';
 import { OrdAddressInscriptionList } from '@/pages/account/components/OrdAddressInscriptions';
 import OrdInscription from '@/pages/account/components/OrdInscription';
@@ -52,7 +52,6 @@ export const ROUTE_PATH = {
   TOOLS: '/tools',
   TOOLS_SPLIT_SAT: '/tools/split-sat',
   TOOLS_UTXO: '/tools/utxo',
-  TOOLS_TRANSACT: '/tools/transact',
   TOOLS_SEARCH_SAT: '/tools/search-sat',
   TOOLS_SPLITTED_INSCRIPTION: '/tools/splitted-inscription',
   DISCOVER_RARE_SAT: '/discover',
@@ -139,10 +138,6 @@ export const routes: RouteObject[] = [
       {
         path: ROUTE_PATH.TOOLS_UTXO,
         element: <Utxo />,
-      },
-      {
-        path: ROUTE_PATH.TOOLS_TRANSACT,
-        element: <Transaction />,
       },
       {
         path: ROUTE_PATH.TOOLS_SEARCH_SAT,
