@@ -75,7 +75,7 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
 
   const clickHandler = (item:TickerInfo) => {
     const rune = `${item.name.Protocol}:${item.name.Type}:${item.name.Ticker}`;
-    nav(`/explorer/rune/${item.name}`);
+    nav(`/explorer/rune/${rune}`);
   };
 
   const columns: ColumnsType<any> = [
@@ -272,6 +272,7 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
       scroll={{ x: 1000 }}
       onRow={(record:TickerInfo) => {
         return {
+
           onClick: () => clickHandler(record), // 点击行
         };
       }}
