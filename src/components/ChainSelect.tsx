@@ -8,7 +8,7 @@ export const ChainSelect = () => {
   const { i18n } = useTranslation();
   const items: MenuProps['items'] = [
     { key: 'mainnet', label: 'mainnet' },
-    { key: 'testnet', label: 'testnet4' },
+    { key: 'testnet', label: 'testnet' },
   ];
 
   const { VITE_BTC_CHAIN, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN } = import.meta.env;
