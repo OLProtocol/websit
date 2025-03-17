@@ -132,7 +132,7 @@ export const NavHeader = () => {
       <div className='flex h-full items-center'>
         <div className='flex-1 flex h-full items-center'>
           <div className='mr-4 text-white items-center flex'>
-            <img src='/logo.png' alt='' className='h-8 mr-2' />
+            <img src='./logo.png' alt='' className='h-8 mr-2' />
             <span className='hidden md:flex'>{t('app')}</span>
           </div>
           <Menu

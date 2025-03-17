@@ -7,6 +7,7 @@ import wasm from "vite-plugin-wasm";
 // https://vitejs.dev/config/
 export default defineConfig({
   // build: { commonjsOptions: { transformMixedEsModules: true, include: ['@mempool/mempool.js'] } },
+  base: './',
   plugins: [
     wasm(),
     nodePolyfills(),
