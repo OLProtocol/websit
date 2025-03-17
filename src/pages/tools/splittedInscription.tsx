@@ -71,7 +71,7 @@ export default function SplittedInscription() {
                   ))
                 ) : (
                   <div className='max-w-max mx-auto p-2'>
-                    <img src='/images/no_data.svg' className='w-10 h-10 ml-1' />
+                    <img src='./images/no_data.svg' className='w-10 h-10 ml-1' />
                     <span className='text-gray-300'>No data</span>
                   </div>
                 )}

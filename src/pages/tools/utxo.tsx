@@ -152,7 +152,7 @@ export default function Utxo() {
                       <UtxoAssetTable assets={assetList} />
                     ) : (
                       <div className='max-w-max mx-auto p-2'>
-                        <Image src='/images/no_data.svg' className='w-10 h-10 ml-1' />
+                        <Image src='./images/no_data.svg' className='w-10 h-10 ml-1' />
                         <span className='text-gray-300'>No data</span>
                       </div>
                     )}
@@ -169,7 +169,7 @@ export default function Utxo() {
                   <CardBody>
                     {((rareSatList === undefined || rareSatList.length === 0)) && (
                       <div className='max-w-max mx-auto p-2'>
-                        <Image src='/images/no_data.svg' className='w-10 h-10 ml-1' />
+                        <Image src='./images/no_data.svg' className='w-10 h-10 ml-1' />
                         <span className='text-gray-300'>No data</span>
                       </div>
                     )}
@@ -199,7 +199,7 @@ export default function Utxo() {
                   <CardBody>
                     {((satList === undefined || satList.length === 0)) && (
                       <div className='max-w-max mx-auto p-2'>
-                        <Image src='/images/no_data.svg' className='w-10 h-10 ml-1' />
+                        <Image src='./images/no_data.svg' className='w-10 h-10 ml-1' />
                         <span className='text-gray-300'>No data</span>
                       </div>
                     )}

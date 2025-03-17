@@ -14,31 +14,31 @@ export const SatRareBox = ({ sats, canSplit }: SatRareBoxProps) => {
   const tabList = useMemo(
     () => [
       {
-        icon: '/images/sat/icon-uncommon.svg',
+        icon: './images/sat/icon-uncommon.svg',
         name: 'Uncommon',
         className: 'text-[#ac8258] ml-2 text-lg',
         list: sats.filter((item) => item.satributes.includes('uncommon')),
       },
       {
-        icon: '/images/sat/icon-rare.svg',
+        icon: './images/sat/icon-rare.svg',
         name: 'Rare',
         className: 'text-[#598858] ml-2 text-lg',
         list: sats.filter((item) => item.satributes.includes('rare')),
       },
       {
-        icon: '/images/sat/icon-epic.svg',
+        icon: './images/sat/icon-epic.svg',
         name: 'Epic',
         className: 'text-[#3c887c] ml-2 text-lg',
         list: sats.filter((item) => item.satributes.includes('epic')),
       },
       {
-        icon: '/images/sat/icon-legendary.svg',
+        icon: './images/sat/icon-legendary.svg',
         name: 'Legendary',
         className: 'text-[#829BFF] ml-2 text-lg',
         list: sats.filter((item) => item.satributes.includes('legendary')),
       },
       {
-        icon: '/images/sat/icon-mythic.svg',
+        icon: './images/sat/icon-mythic.svg',
         name: 'Mythic',
         className: 'text-[#C84EFF] ml-2 text-lg',
         list: sats.filter((item) => item.satributes.includes('mythic')),
