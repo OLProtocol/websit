@@ -70,7 +70,7 @@ export const SatItem = ({ utxo }: SatItemProps) => {
         ))}
       </div>
       <div>
-        {/* {sat.canSplit && ['ordx.space'].every((v) => location.hostname !== v) && sat.value !== sat.size && (
+        {/* {sat.canSplit && ['sat20.org'].every((v) => location.hostname !== v) && sat.value !== sat.size && (
           <SplitSatButton sat={sat} tooltip='Split Sat'/>
         )} */}
 

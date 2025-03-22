@@ -62,7 +62,7 @@ export const FullList = () => {
     return (
       <a
         className='flex items-center justify-center'
-        href='https://docs.ordx.space/ordinalsx/instruct#deploy'
+        href='https://docs.sat20.org/ordinalsx/instruct#deploy'
         target='_blank'>
         <span className='mr-1'>{t('common.satAttr')}</span>
         <QuestionCircleOutlined />

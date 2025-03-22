@@ -27,7 +27,7 @@ export default function NameInfo() {
       return ''
     }
     if (network === 'testnet') {
-      return `https://ord-testnet4.ordx.space/content/${inscriptionId}`;
+      return `https://ord-testnet4.sat20.org/content/${inscriptionId}`;
     } else {
       return `https://ordinals.com/inscription/${inscriptionId}`;
     }

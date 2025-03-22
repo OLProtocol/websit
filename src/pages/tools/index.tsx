@@ -24,7 +24,7 @@ export default function InscribeCheck() {
   return (
     <div className='flex gap-2 max-w-max mx-auto p-2'>
       <SimpleGrid columns={3} spacing={10}>
-        {['ordx.space'].every((v) => location.hostname !== v) && (
+        {['sat20.org'].every((v) => location.hostname !== v) && (
           <Card title={t('pages.tools.splitted_inscription.title')} className='w-60 cursor-pointer' onClick={toSplittedInscriptions}>
             {t('pages.tools.splitted_inscription.des')}
           </Card>
@@ -34,7 +34,7 @@ export default function InscribeCheck() {
           {t('pages.tools.utxo.des')}
         </Card>
 
-        {['ordx.space'].every((v) => location.hostname !== v) && (
+        {['sat20.org'].every((v) => location.hostname !== v) && (
           <Card title={t('pages.tools.transaction.title')} className='w-60 cursor-pointer'>
             {t('pages.tools.transaction.des')}
           </Card>
