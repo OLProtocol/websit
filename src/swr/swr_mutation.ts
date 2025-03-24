@@ -16,6 +16,8 @@ import {
   NameListResp,
   NameResp,
   IndexerLayer,
+  TickerHolderRespV3,
+  MintHistoryRespV3,
 } from '@/api/type';
 import { AxiosResponse } from "axios";
 import { ApiResponse } from "@/api/indexer/common";
@@ -138,6 +140,31 @@ export const useNameList = (param: NameListReq, keyPrefix: string = 'default', i
 export const useNameInfo = (name: string, keyPrefix: string = 'default', indexerLayer: IndexerLayer = IndexerLayer.Base) => {
   const key = `${keyPrefix}-name-info-${name}`;
   const { data, trigger, reset, isLoading, error } = useSWRMutationHook<string, NameResp>(key, name, indexer.ns.getName, indexerLayer);
+  return {
+    data: data?.data,
+    trigger,
+    reset,
+    isLoading,
+    error,
+  }
+};
+
+// v3
+export const useTickHolderListV3 = (param: TickerHolderReq, keyPrefix: string = 'default', indexerLayer: IndexerLayer = IndexerLayer.Base) => {
+  const key = `${keyPrefix}-tick-holder-list-v3`;
+  const { data, trigger, reset, isLoading, error } = useSWRMutationHook<TickerHolderReq, TickerHolderRespV3>(key, param, indexer.tick.getHolderListV3, indexerLayer);
+  return {
+    data: data?.data,
+    trigger,
+    reset,
+    isLoading,
+    error,
+  }
+};
+
+export const useTickMintHistoryV3 = (param: MintHistoryReq, keyPrefix: string = 'default', indexerLayer: IndexerLayer = IndexerLayer.Base) => {
+  const key = `${keyPrefix}-tick-mint-history-${param.ticker}-v3`;
+  const { data, trigger, reset, isLoading, error } = useSWRMutationHook<MintHistoryReq, MintHistoryRespV3>(key, param, indexer.tick.getMintHistoryV3, indexerLayer);
   return {
     data: data?.data,
     trigger,

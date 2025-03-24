@@ -1,45 +1,45 @@
 import { useParams } from 'react-router-dom';
-import { useRune, useRuneList, useTickerStatus } from '@/swr';
-import { useEffect, useState, useMemo } from 'react';
+import { useRune } from '@/swr';
+import { useState, useMemo } from 'react';
 import { Segmented } from 'antd';
 import { BtcHeightAlert } from '@/components/BtcHeightAlert';
-import { BlockAndTime } from '@/components/BlockAndTime';
-import { InfoHolders } from './components/InfoHolders';
+
+import { TickHolders } from './components/tickHolders';
 import { TickHistory } from './components/TickHistory';
-import { generateMempoolUrl, genOrdServiceUrl, genOrdinalsUrl, getAssetTypeLabel } from '@/lib/utils';
-import { Button, Tag, Spin } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { generateMempoolUrl } from '@/lib/utils';
+import { Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useCommonStore } from '@/store';
+
 import { useNetwork } from '@/lib/wallet';
 import { CopyButton } from '@/components/CopyButton';
+import { NewAssetNameFromString } from '@/api/type';
+import { TickMintHistory } from './components/tickMintHistory';
+
 
 export default function RuneInfo() {
   const { t } = useTranslation();
-  const { rune: assertName } = useParams();
-  const { btcHeight } = useCommonStore((state) => state);
+  const params = useParams();
+  const runeTicker = params.rune || '';
   const [tabText, setTabText] = useState(t('common.holders'));
-  const nav = useNavigate();
   const network = useNetwork();
+  
+  const runeAssetName = useMemo(() => NewAssetNameFromString(runeTicker), [runeTicker]);
+  const runeReq = runeAssetName ? { Protocol: runeAssetName.Protocol, Type: runeAssetName.Type, Ticker: runeAssetName.Ticker} : undefined;
+  const { data: runeInfo, isLoading } = useRune(runeReq);
 
-  const { VITE_ORDX_MINT_URL } = import.meta.env;
-
-  const validAssertName = typeof assertName === 'string' ? assertName : '';
-  const assertNameInfo = validAssertName.split(":", 3);
-  const protocol = assertNameInfo[0];
-  const type = assertNameInfo[1];
-  const ticker = assertNameInfo[2];
-  const { data: runeInfo, isLoading } = useRune({ Protocol: protocol, Type: type, Ticker: ticker });
   const getTimeStr = function(deployBlockTime) {
     const date = new Date(deployBlockTime * 1000);
-    const year = date.getFullYear();
     const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-    const ret = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+    const ret = `${date.getFullYear()}-${month.toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
     return ret
   }
+
+  const handleTabsChange = (type: any) => {
+    if (type !== tabText) {
+      setTabText(type);
+    }
+  };
+
   return (
     <Spin spinning={isLoading}>
       <BtcHeightAlert />
@@ -90,41 +90,49 @@ export default function RuneInfo() {
               <p className='text-gray-400'>{t('runes.limit')}:</p>
               <p className=''>{runeInfo?.limit}</p>
             </div>
-
-            <div className='mb-2'>
-              <p className='text-gray-400'>{t('runes.limit')}:</p>
-              <p className=''>{runeInfo?.limit}</p>
-            </div>
-
-
             <div className='mb-2'>
               <p className='text-gray-400'>{t('runes.n')}:</p>
               <p className=''>{runeInfo?.n}</p>
             </div>
-
-
             <div className='mb-2'>
               <p className='text-gray-400'>{t('runes.totalMinted')}:</p>
               <p className=''>{runeInfo?.totalMinted}</p>
             </div>
-
-
             <div className='mb-2'>
               <p className='text-gray-400'>{t('runes.mintTimes')}:</p>
               <p className=''>{runeInfo?.mintTimes}</p>
             </div>
-
             <div className='mb-2'>
               <p className='text-gray-400'>{t('runes.maxSupply')}:</p>
               <p className=''>{runeInfo?.maxSupply}</p>
             </div>
-
-
             <div className='mb-2'>
               <p className='text-gray-400'>{t('runes.holdersCount')}:</p>
               <p className=''>{runeInfo?.holdersCount}</p>
             </div>
           </div>
+        </div>
+        <div className='border-[1px] border-gray-200 rounded-xl'>
+          <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-14 items-center'>
+            <Segmented
+              options={[t('common.holders'), t('common.minted_history')]}
+              block
+              onChange={handleTabsChange}
+              className='w-72'
+            />
+          </div>
+          {tabText === t('common.holders') &&
+            runeInfo?.name.Ticker &&
+            (
+              <div className='p-4'>
+                <TickHolders ticker={runeTicker} totalQuantity={runeInfo?.totalMinted} />
+              </div>
+            )}
+          {tabText === t('common.minted_history') && runeInfo?.name.Ticker && (
+            <div className='p-4'>
+              <TickMintHistory ticker={runeTicker} />
+            </div>
+          )}
         </div>
       </div>
     </Spin>

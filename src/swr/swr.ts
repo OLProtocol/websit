@@ -97,7 +97,13 @@ export const useRuneList = (param: RuneListReq) => {
   }
 };
 
-export const useRune = (param: RuneReq) => {
+export const useRune = (param: RuneReq | undefined) => {
+  if (!param) return {
+    data: undefined,
+    isLoading: false,
+    error: null,
+    mutate: () => { },
+  };
   const key = `rune-${param.Protocol}-${param.Type}-${param.Ticker}`;
   const resp = createCommonUseSwrHook(key, indexer.runes.getRune, param)();
   return {

@@ -72,3 +72,25 @@ export interface UtxoListResp extends BaseResp {
         detail: TickerAsset[]
     }
 }
+
+// v3
+export interface MintHistoryV3 {
+    type: string
+    ticker: string
+    total: number
+    start: number
+    limit: number
+    items: {
+        mintaddress: string
+        holderaddress: string
+        balance: string
+        inscriptionId: string
+        inscriptionNumber: number
+    }[]
+}
+
+export interface MintHistoryRespV3 extends BaseResp {
+    data: ListResp & {
+        detail: MintHistoryV3
+    }
+}
