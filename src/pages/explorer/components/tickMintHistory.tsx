@@ -30,67 +30,6 @@ export const TickMintHistory = ({ ticker }: HistoryProps) => {
 
   const columns: ColumnsType<any> = [
     {
-      title: t('common.inscriptionNumber'),
-      dataIndex: 'inscriptionNumber',
-      key: 'inscriptionNumber',
-      width: 100,
-      align: 'center',
-      render: (t: any, record) => {
-        const href =
-          network === 'testnet'
-            ? `https://testnet.ordinals.com/inscription/${record.inscriptionId}`
-            : `https://ordinals.com/inscription/${record.inscriptionId}`;
-        return (
-          <div>
-            {t === 9223372036854775807 ? (
-              <span>-</span>
-            ) : (
-              // <a
-              //   className='text-blue-500 cursor-pointer'
-              //   href={href}
-              //   target='_blank'>
-              //   #{t}
-              // </a>
-              <span
-                className='text-blue-500 cursor-pointer'
-                onClick={() => toInscriptionInfo(record.inscriptionId)}>
-                #{t}
-              </span>
-            )}
-          </div>
-        );
-      },
-    },
-    {
-      title: t('common.inscriptionId'),
-      dataIndex: 'inscriptionId',
-      key: 'inscriptionId',
-      width: 100,
-      align: 'center',
-      render: (t) => {
-        const href =
-          network === 'testnet'
-            ? `https://testnet.ordinals.com/inscription/${t}`
-            : `https://ordinals.com/inscription/${t}`;
-        return (
-          <div className='flex item-center justify-center'>
-            <span
-              className='text-blue-500 cursor-pointer'
-              onClick={() => toInscriptionInfo(t)}>
-              {hideStr(t)}
-            </span>&nbsp;&nbsp;
-            {/* <a
-              className='text-blue-500 cursor-pointer'
-              href={href}
-              target='_blank'>
-              {hideStr(t)}
-            </a>&nbsp;&nbsp; */}
-            <CopyButton text={t} tooltip='Copy Inscription ID' />
-          </div>
-        );
-      },
-    },
-    {
       title: t('common.address'),
       dataIndex: 'mintaddress',
       key: 'mintaddress',
