@@ -10,7 +10,7 @@ import { useToast } from '@chakra-ui/react';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { TickerInfo } from '@/api/type';
 
-export const RuneList = () => {
+export const RunesList = () => {
   const { t } = useTranslation();
   const nav = useNavigate();
   const toast = useToast();
