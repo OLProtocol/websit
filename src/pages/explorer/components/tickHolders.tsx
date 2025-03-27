@@ -71,7 +71,6 @@ export const TickHolders = ({ ticker, totalQuantity, divisibility }: InfoHolders
   const dataSource = useMemo(
     () =>
       list?.map((item, index) => {
-        // debugger
         return ({
         key: index,
         address: item.wallet,
@@ -84,10 +83,14 @@ export const TickHolders = ({ ticker, totalQuantity, divisibility }: InfoHolders
       })}),
     [list, totalQuantity],
   );
-  const total = useMemo(() => resp?.total || 10, [resp]);
+  const total = useMemo(() => {
+    // debugger
+    return resp?.total || 10
+  }, [resp]);
 
   const paginationChange = (page: number, pageSize: number) => {
     setStart((page - 1) * pageSize);
+    trigger();
   };
 
   return (
