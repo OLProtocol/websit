@@ -115,7 +115,8 @@ export default function RuneInfo() {
         <div className='border-[1px] border-gray-200 rounded-xl'>
           <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-14 items-center'>
             <Segmented
-              options={[t('common.holders'), t('common.minted_history')]}
+              // options={[t('common.holders'), t('common.minted_history')]}
+              options={[t('common.holders')]}
               block
               onChange={handleTabsChange}
               className='w-72'
@@ -125,7 +126,7 @@ export default function RuneInfo() {
             runeInfo?.name.Ticker &&
             (
               <div className='p-4'>
-                <TickHolders ticker={runeTicker} totalQuantity={runeInfo?.totalMinted} />
+                <TickHolders ticker={runeTicker} totalQuantity={runeInfo?.totalMinted} divisibility={runeInfo?.divisibility || 0} />
               </div>
             )}
           {tabText === t('common.minted_history') && runeInfo?.name.Ticker && (

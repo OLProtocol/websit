@@ -17,8 +17,9 @@ interface DataType {
 interface InfoHoldersProps {
   ticker: string;
   totalQuantity: string ;
+  divisibility: number
 }
-export const TickHolders = ({ ticker, totalQuantity }: InfoHoldersProps) => {
+export const TickHolders = ({ ticker, totalQuantity, divisibility }: InfoHoldersProps) => {
   const nav = useNavigate();
   const { t } = useTranslation();
   const network = useNetwork();
@@ -69,15 +70,18 @@ export const TickHolders = ({ ticker, totalQuantity }: InfoHoldersProps) => {
   ];
   const dataSource = useMemo(
     () =>
-      list?.map((item, index) => ({
+      list?.map((item, index) => {
+        // debugger
+        return ({
         key: index,
         address: item.wallet,
         value: item.total_balance,
         percentage: new BigNumber(item.total_balance)
           .dividedBy(new BigNumber(totalQuantity))
+          .dividedBy(new BigNumber(10).pow(divisibility))
           .multipliedBy(100)
           .toFixed(2) + '%',
-      })),
+      })}),
     [list, totalQuantity],
   );
   const total = useMemo(() => resp?.total || 10, [resp]);
