@@ -260,6 +260,7 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
   return (
     <Table
       bordered
+      loading={loading}
       columns={columns}
       dataSource={dataSource}
       pagination={{

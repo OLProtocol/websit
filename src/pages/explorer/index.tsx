@@ -15,6 +15,7 @@ import { useMyNameListHook } from '@/hooks/MyNameList';
 import { DisplayAsset, IndexerLayer } from '@/api/type';
 import { useAddressAssetsSummaryHook } from '@/hooks/useAddressAssetsSummary';
 import BigNumber from 'bignumber.js';
+import { MyRuneList } from '@/components/MyRuneList';
 
 const { Search } = Input;
 
@@ -35,8 +36,9 @@ export default function Index() {
     const { value: baseAddressAssetsSummary } = useAddressAssetsSummaryHook({ address }, IndexerLayer.Base);
     const baseRuneSummary: DisplayAsset[] = useMemo(() => {
       const ret: DisplayAsset[] = [];
+      
       for (const assetSummary of baseAddressAssetsSummary) {
-        if (assetSummary.Name.Protocol === 'f' && assetSummary.Name.Type === 'runes') {
+        if (assetSummary.Name.Protocol === 'runes' && assetSummary.Name.Type === 'f') {
           ret.push(assetSummary);
         }
       }
@@ -49,7 +51,8 @@ export default function Index() {
       const value = new BigNumber(rune.Amount, 10);
       total = total.plus(value);
     }
-    return total.toString();
+    const ret = total.toString();
+    return ret;
   }, [baseRuneSummary]);
     
   const onTotalChange = (total: number) => {
@@ -147,6 +150,9 @@ export default function Index() {
             )}
             {selectTick === t('pages.account.ord_nft') && (
               <MyNftList targetAddress={address} indexerLayer={IndexerLayer.Base} />
+            )}
+            {selectTick === t('pages.account.runes') && (
+              <MyRuneList baseRuneSummary={baseRuneSummary}/>
             )}
             {/* {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
               <AddressHolders ticker={selectTick} address={address} indexerLayer={IndexerLayer.Base} />
