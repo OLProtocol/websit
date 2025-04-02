@@ -5,8 +5,8 @@ import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
 
-
-import { IndexerLayer } from '@/api/type';
+import { DisplayAsset, IndexerLayer } from '@/api/type';
+import { ListTypeItem } from '@/pages/account/components/ListTypeItem';
 
 interface My1lAssetsSummaryProps {
   address: string;
@@ -16,6 +16,7 @@ interface My1lAssetsSummaryProps {
   onChange?: (tick: string) => void;
   onEmpty?: (b: boolean) => void;
   runeTotal?: string;
+  ordxSummary?: DisplayAsset[];
 }
 export const My1lAssetsSummary = ({
   address,
@@ -25,10 +26,10 @@ export const My1lAssetsSummary = ({
   nameTotal,
   indexerLayer,
   runeTotal,
+  ordxSummary,
 }: My1lAssetsSummaryProps) => {
   const { network } = useReactWalletStore((state) => state);
   const { t } = useTranslation();
-
 
   const [rareSatList, setRareSatList] = useState<any[]>();
   const [nftSumBalance, setNftBalance] = useState<string>();
@@ -137,7 +138,7 @@ export const My1lAssetsSummary = ({
 
   return (
     <div>
-      <Wrap>
+      <Wrap spacing="0" className="px-4">
         {tickers?.map((item, index) => (
           <WrapItem key={index}>
             <AssetSummary
@@ -154,6 +155,21 @@ export const My1lAssetsSummary = ({
           </WrapItem>
         ))}
       </Wrap>
+      <div className='w-full flex flex-wrap self-stretch overflow-y-auto px-4'>
+        {ordxSummary?.map((item) => (
+          <ListTypeItem
+            key={item.Name.Ticker}
+            selected={select === item.Name.Ticker}
+            onClick={() => {
+              onClick(item);
+            }}
+            item={{
+              tick: item.Name.Ticker,
+              balance: item.Amount,
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 };

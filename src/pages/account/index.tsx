@@ -38,6 +38,16 @@ export default function Account() {
     return ret;
   }, [baseAddressAssetsSummary]);
 
+  const ordxSummary: DisplayAsset[] = useMemo(() => {
+    const ret: DisplayAsset[] = [];
+    for (const assetSummary of baseAddressAssetsSummary) {
+      if (assetSummary.Name.Protocol === 'ordx' && assetSummary.Name.Type === 'f') {
+        ret.push(assetSummary);
+      }
+    }
+    return ret;
+  }, [baseAddressAssetsSummary]);
+
   const baseRuneTotal = useMemo(() => {
     let total = new BigNumber('0', 10);
     for (const rune of baseRuneSummary) {
@@ -62,8 +72,9 @@ export default function Account() {
             address={address}
             utxosTotal={utxosTotal}
             nameTotal={nameListResp?.total || 0}
-            onChange={(assetType) => setAssetType(assetType)}
             runeTotal={baseRuneTotal}
+            ordxSummary={ordxSummary}
+            onChange={(assetType) => setAssetType(assetType)}
           />
           {assetType === t('pages.account.available_utxo') && (
             <AvailableUtxoList

@@ -20,31 +20,39 @@ import { MyRuneList } from '@/components/MyRuneList';
 const { Search } = Input;
 
 export default function Index() {
-  const [address, setAddress] = useState('');
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const q = searchParams.get('q');
   const [search, setSearch] = useState('');
+  const [address, setAddress] = useState('');
   const [summaryEmptyStatus, setSummaryEmptyStatus] = useState(false);
   const [historyEmptyStatus, setHistoryEmptyStatus] = useState(false);
   const [selectTick, setSelectTick] = useState('');
-  const [searchParams] = useSearchParams();
-  const q = searchParams.get('q');
-
- 
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
-  const { value: resp } = useMyNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
 
-    const { value: baseAddressAssetsSummary } = useAddressAssetsSummaryHook({ address }, IndexerLayer.Base);
-    const baseRuneSummary: DisplayAsset[] = useMemo(() => {
-      const ret: DisplayAsset[] = [];
-      
-      for (const assetSummary of baseAddressAssetsSummary) {
-        if (assetSummary.Name.Protocol === 'runes' && assetSummary.Name.Type === 'f') {
-          ret.push(assetSummary);
-        }
-      }
-      return ret;
-    }, [baseAddressAssetsSummary]);
+  const { value: resp } = useMyNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
+  const { value: baseAddressAssetsSummary } = useAddressAssetsSummaryHook({ address }, IndexerLayer.Base);
   
+  const baseRuneSummary: DisplayAsset[] = useMemo(() => {
+    const ret: DisplayAsset[] = [];
+    for (const assetSummary of baseAddressAssetsSummary) {
+      if (assetSummary.Name.Protocol === 'runes' && assetSummary.Name.Type === 'f') {
+        ret.push(assetSummary);
+      }
+    }
+    return ret;
+  }, [baseAddressAssetsSummary]);
+
+  const ordxSummary: DisplayAsset[] = useMemo(() => {
+    const ret: DisplayAsset[] = [];
+    for (const assetSummary of baseAddressAssetsSummary) {
+      if (assetSummary.Name.Protocol === 'ordx' && assetSummary.Name.Type === 'f') {
+        ret.push(assetSummary);
+      }
+    }
+    return ret;
+  }, [baseAddressAssetsSummary]);
+
   const baseRuneTotal = useMemo(() => {
     let total = new BigNumber('0', 10);
     for (const rune of baseRuneSummary) {
@@ -54,7 +62,7 @@ export default function Index() {
     const ret = total.toString();
     return ret;
   }, [baseRuneSummary]);
-    
+
   const onTotalChange = (total: number) => {
     if (total !== 0) {
       setUtxosTotal(total);
@@ -136,8 +144,9 @@ export default function Index() {
                 address={address}
                 utxosTotal={utxosTotal}
                 nameTotal={resp?.total || 0}
-                onChange={(tick) => setSelectTick(tick)}
                 runeTotal={baseRuneTotal}
+                ordxSummary={ordxSummary}
+                onChange={(tick) => setSelectTick(tick)}
               />
             </div>
             {selectTick === t('pages.account.available_utxo') && (
@@ -153,7 +162,7 @@ export default function Index() {
               <MyNftList targetAddress={address} indexerLayer={IndexerLayer.Base} />
             )}
             {selectTick === t('pages.account.runes') && (
-              <MyRuneList baseRuneSummary={baseRuneSummary}/>
+              <MyRuneList baseRuneSummary={baseRuneSummary} />
             )}
             {/* {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
               <AddressHolders ticker={selectTick} address={address} indexerLayer={IndexerLayer.Base} />
