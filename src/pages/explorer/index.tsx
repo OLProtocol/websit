@@ -164,9 +164,10 @@ export default function Index() {
             {selectTick === t('pages.account.runes') && (
               <MyRuneList baseRuneSummary={baseRuneSummary} />
             )}
-            {/* {selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.available_utxo') && (
+            {selectTick !== t('pages.account.available_utxo') && selectTick !== t('pages.account.name') &&
+            selectTick !== t('pages.account.rare_sats') && selectTick !== t('pages.account.ord_nft') && selectTick !== t('pages.account.runes') && (
               <AddressHolders ticker={selectTick} address={address} indexerLayer={IndexerLayer.Base} />
-            )} */}
+            )}
           </>
         )}
         {!showAddress && (

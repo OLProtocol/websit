@@ -98,9 +98,11 @@ export default function Account() {
           {assetType === t('pages.account.runes') && (
             <MyRuneList baseRuneSummary={baseRuneSummary}/>
           )}
-          {/* {ticker !== t('pages.account.rare_sats') && ticker !== t('pages.account.available_utxo') && (
-            <AddressHolders ticker={ticker} address={address} indexerLayer={indexerLayer} />
-          )} */}
+          {assetType !== t('pages.account.available_utxo') && assetType !== t('pages.account.name') && 
+          assetType !== t('pages.account.ord_nft') && assetType !== t('pages.account.rare_sats') && 
+          assetType !== t('pages.account.runes') && (
+            <AddressHolders ticker={assetType} address={address} indexerLayer={indexerLayer} />
+          )}
         </div>
       ) : (
         <div className='text-xl text-center mt-20'>{t('common.hint_connect')}</div>

@@ -38,6 +38,11 @@ export const AddressHolders = ({
   const [limit, setLimit] = useState(10);
   const [selectItem, setSelectItem] = useState<any>();
 
+  // Reset pagination when ticker changes
+  useEffect(() => {
+    setStart(0);
+  }, [ticker]);
+
   const { VITE_TESTNET_TIP_ADDRESS, VITE_MAIN_TIP_ADDRESS } = import.meta.env;
   const tipAddress = network === 'testnet' ? VITE_TESTNET_TIP_ADDRESS : VITE_MAIN_TIP_ADDRESS;
 

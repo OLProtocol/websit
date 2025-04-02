@@ -113,8 +113,7 @@ export const My1lAssetsSummary = ({
     ];
   }, [avialableTicker, nameTicker, rareSatsTicker, ordNftTicker, runeTicker]);
 
-  const onClick = (item) => {
-    const ticker = item.ticker;
+  const onClick = (ticker) => {
     setSelect(ticker);
     onChange?.(ticker);
   };
@@ -145,7 +144,7 @@ export const My1lAssetsSummary = ({
               key={item.ticker}
               selected={select === item.ticker}
               onClick={() => {
-                onClick(item);
+                onClick(item.ticker);
               }}
               item={{
                 ticker: item.ticker,
@@ -161,7 +160,7 @@ export const My1lAssetsSummary = ({
             key={item.Name.Ticker}
             selected={select === item.Name.Ticker}
             onClick={() => {
-              onClick(item);
+              onClick(item.Name.Ticker);
             }}
             item={{
               tick: item.Name.Ticker,
