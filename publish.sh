@@ -54,10 +54,8 @@ set -x
 # git checkout main && printf "%s" "$NEW_VERSION1" >"$VERSION_FILE1" && printf "%s" "$NEW_VERSION2" >"$VERSION_FILE2" && git add . && git commit -m "publish: add version for next publish" && git push
 # # git checkout main && yarn build:app && git add . && git commit -m "publish: generate prd dist" && git push
 
-npm run build:app.testnet
-scp -r dist/. root@103.103.245.177:/var/www/testnet.sat20.org/browser/app/
+npm run build:app.testnet && scp -r dist/. root@103.103.245.177:/var/www/testnet.sat20.org/browser/app/
 
-npm run build:app
-scp -r dist/. root@103.103.245.177:/var/www/mainnet.sat20.org/browser/app/
+npm run build:app && scp -r dist/. root@103.103.245.177:/var/www/mainnet.sat20.org/browser/app/
 
-git add . && git commit -m "add version" && git push -u origin main
+git add . && git commit -m "publish" && git push -u origin main

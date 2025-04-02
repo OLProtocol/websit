@@ -69,7 +69,8 @@ export default function Index() {
       return;
     }
     setAddress(search);
-    history.replaceState(null, '', `/#/explorer?q=${search}`);
+    const basePath = window.location.pathname;
+    history.replaceState(null, '', `${basePath}#/explorer?q=${search}`);
   };
   const summaryEmptyHandler = (b: boolean) => {
     setSummaryEmptyStatus(b);
