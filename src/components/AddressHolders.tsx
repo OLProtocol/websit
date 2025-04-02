@@ -7,6 +7,7 @@ import { useCommonStore } from '@/store';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import BigNumber from 'bignumber.js';
 import {
   hideStr,
   filterUtxosByValue,
@@ -240,6 +241,12 @@ export const AddressHolders = ({
         key: 'assetamount',
         width: 100,
         align: 'center',
+        render: (value) => {
+          if (ticker === 'Runes' && value) {
+            return new BigNumber(value).toFixed(4, BigNumber.ROUND_DOWN);
+          }
+          return value;
+        },
       },
       {
         title: 'Asset Ranges',

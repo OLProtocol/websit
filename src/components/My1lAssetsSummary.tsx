@@ -4,6 +4,7 @@ import indexer from '@/api/indexer';
 import { useReactWalletStore } from '@sat20/btc-connect/dist/react';
 import { useTranslation } from 'react-i18next';
 import { Wrap, WrapItem } from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
 
 import { DisplayAsset, IndexerLayer } from '@/api/type';
 import { ListTypeItem } from '@/pages/account/components/ListTypeItem';
@@ -44,7 +45,7 @@ export const My1lAssetsSummary = ({
   const runeTicker = useMemo(() => {
     return {
       ticker: t('pages.account.runes'),
-      balance: runeTotal,
+      balance: runeTotal ? new BigNumber(runeTotal).toFixed(4, BigNumber.ROUND_DOWN) : runeTotal,
     };
   }, [runeTotal, t]);
 
@@ -148,7 +149,9 @@ export const My1lAssetsSummary = ({
               }}
               item={{
                 ticker: item.ticker,
-                balance: typeof item.balance === 'number' ? item.balance.toString() : (item.balance || 'undefined'),
+                balance: typeof item.balance === 'string' ? 
+                  new BigNumber(item.balance).toFixed(4, BigNumber.ROUND_DOWN) : 
+                  (typeof item.balance === 'number' ? item.balance.toString() : (item.balance || 'undefined')),
               }}
             />
           </WrapItem>
