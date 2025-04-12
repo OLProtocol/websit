@@ -136,6 +136,17 @@ export const My1lAssetsSummary = ({
     getNfts();
   }, [address,  network]);
 
+  const formatBalance = (balance: string | number) => {
+    if (typeof balance === 'number') {
+      balance = balance.toString();
+    }
+    if (balance.includes('.')) {
+      return balance.replace(/(\.\d*?[1-9])0+$/, "$1");
+    } else {
+      return balance;
+    }
+  };
+
   return (
     <div>
       <Wrap spacing="0" className="px-4">
@@ -149,9 +160,9 @@ export const My1lAssetsSummary = ({
               }}
               item={{
                 ticker: item.ticker,
-                balance: typeof item.balance === 'string' ? 
-                  new BigNumber(item.balance).toFixed(4, BigNumber.ROUND_DOWN) : 
-                  (typeof item.balance === 'number' ? item.balance.toString() : (item.balance || 'undefined')),
+                balance: typeof item.balance === 'string' || typeof item.balance === 'number' ? 
+                  formatBalance(item.balance) : 
+                  (item.balance || 'undefined'),
               }}
             />
           </WrapItem>
