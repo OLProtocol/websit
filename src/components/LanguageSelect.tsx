@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { TranslationOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { useEffect } from 'react';
+import { Icon } from '@iconify/react';
 export const LanguageSelect = () => {
   const { i18n } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,12 +31,15 @@ export const LanguageSelect = () => {
         defaultSelectedKeys: [language || "zh"],
         selectable: true,
       }}>
-      <Button
-        size='middle'
-        className='flex items-center justify-center'
-        type='primary'
-        shape='circle'
-        icon={<TranslationOutlined />}></Button>
+      <button
+        // size='middle'
+        className='flex items-center justify-center border border-zinc-500 rounded-full px-2 h-8'
+        // type='primary'
+        // shape='circle'
+        // icon={<TranslationOutlined />}
+        >
+        <span className='text-sm text-zinc-200'>{i18n.language === 'en' ? 'En' : '中'}</span>    
+        </button>
     </Dropdown>
   );
 };

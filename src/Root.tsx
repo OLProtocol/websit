@@ -30,9 +30,9 @@ export default function Root() {
     }
   }, [indexHeight]);
   return (
-    <Layout className='h-full'>
+    <Layout className='h-full w-full'>
       <UpdateVersionModal />
-      <Header className=''>
+      <Header className='w-full'>
         <NavHeader />
       </Header>
       <Content className='overflow-y-auto'>

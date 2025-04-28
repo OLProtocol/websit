@@ -328,6 +328,7 @@ export const FullList = () => {
       loading={loading}
       columns={columns}
       dataSource={dataSource}
+      className='w-full'
       rowKey="id"
       pagination={{
         position: ['bottomCenter'],

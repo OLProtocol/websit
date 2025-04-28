@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import wasm from "vite-plugin-wasm";
+import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,6 +13,7 @@ export default defineConfig({
     wasm(),
     nodePolyfills(),
     react(),
+    svgr(),
   ],
   build: {
     target: 'esnext',

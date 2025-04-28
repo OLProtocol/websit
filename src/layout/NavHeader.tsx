@@ -1,4 +1,4 @@
-import { Menu, Tag } from 'antd';
+import { Menu, Drawer, Button } from 'antd';
 import { WalletConnectButton } from '@/components/wallet/WalletConnectButton';
 import { FeerateSelectButton } from '@/components/FeerateSelectButton';
 import { LanguageSelect } from '@/components/LanguageSelect';
@@ -8,11 +8,12 @@ import { useTranslation } from 'react-i18next';
 import { ChainSelect } from '@/components/ChainSelect';
 
 import { useState, useEffect } from 'react';
+import { MenuOutlined } from '@ant-design/icons';
 import './navheader.css';
-
 
 export const NavHeader = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const nav = useNavigate();
   const { t, i18n } = useTranslation();
   const routerLocation = useLocation();
@@ -20,20 +21,17 @@ export const NavHeader = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsMobile(true);
-      } else {
-        setIsMobile(false);
-      }
+      setIsMobile(window.innerWidth < 768);
     };
     window.addEventListener('resize', handleResize);
     handleResize();
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const { VITE_BTC_CHAIN, VITE_MAINNET_DOMAIN, VITE_TESTNET_DOMAIN,
     VITE_SATSNET_DOMAIN, VITE_SATSTESTNET_DOMAIN,
   } = import.meta.env;
-  const needNetwork = VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet'
+  const needNetwork = VITE_BTC_CHAIN === 'mainnet' ? 'mainnet' : 'testnet';
   const items: any[] = [
     {
       key: ROUTE_PATH.HOME,
@@ -77,24 +75,6 @@ export const NavHeader = () => {
           : 'https://docs.sat20.org/',
       type: 'link',
     },
-    // {
-    //   key: "satsnet_browser",
-    //   label: t('nav.satsnet_browser'),
-    //   value:
-    //     needNetwork == 'mainnet'
-    //       ? VITE_SATSNET_DOMAIN
-    //       : VITE_SATSTESTNET_DOMAIN,
-    //   type: 'link',
-    // },
-    // {
-    //   key: "chain",
-    //   label: t('nav.chain'),
-    //   value:
-    //     needNetwork == 'mainnet'
-    //       ? VITE_MAINNET_DOMAIN
-    //       : VITE_TESTNET_DOMAIN,
-    //   type: 'link',
-    // },
   ];
 
   if (VITE_SATSNET_DOMAIN) {
@@ -106,13 +86,8 @@ export const NavHeader = () => {
           ? VITE_SATSNET_DOMAIN
           : VITE_SATSTESTNET_DOMAIN,
       type: 'link',
-    })
+    });
   }
-
-  const options = [
-    { value: 'en', label: 'EN' },
-    { value: 'ZH', label: 'zh' },
-  ];
 
   const onMenuSelect = (item: any) => {
     const { key } = item;
@@ -126,7 +101,6 @@ export const NavHeader = () => {
     }
   };
 
-
   return (
     <header className='h-full'>
       <div className='flex h-full items-center'>
@@ -135,25 +109,55 @@ export const NavHeader = () => {
             <img src='./logo.png' alt='' className='h-8 mr-2' />
             <span className='hidden md:flex'>{t('app')}</span>
           </div>
-          <Menu
-            onSelect={onMenuSelect}
-            theme='dark'
-            selectedKeys={[pathname]}
-            mode='horizontal'
-            items={items}
-            style={{ flex: 1, minWidth: 0 }}
-          />
+          {isMobile ? (
+            <Button
+              icon={<MenuOutlined />}
+              onClick={() => setDrawerVisible(true)}
+              type="text"
+              className='bg-transparent border border-zinc-700 rounded-lg'
+              style={{ color: 'white' }}
+            />
+          ) : (
+            <Menu
+              onSelect={onMenuSelect}
+              theme='dark'
+              selectedKeys={[pathname]}
+              mode='horizontal'
+              items={items}
+              style={{ flex: 1, minWidth: 0 }}
+            />
+          )}
         </div>
 
         <div className="flex justify-center h-full items-center gap-2" style={{ flexWrap: 'wrap' }}>
           <div className={isMobile ? 'hidden' : ''}>
             <FeerateSelectButton />
           </div>
-          <WalletConnectButton />
-          <LanguageSelect />
+                   
           <ChainSelect />
+          <LanguageSelect />
+
+          <WalletConnectButton /> 
         </div>
       </div>
+
+      <Drawer
+        title={t('nav.menu')}
+        placement="right"
+        onClose={() => setDrawerVisible(false)}
+        visible={drawerVisible}
+      >
+        <Menu
+          onSelect={(item) => {
+            onMenuSelect(item);
+            setDrawerVisible(false);
+          }}
+          theme='light'
+          selectedKeys={[pathname]}
+          mode='vertical'
+          items={items}
+        />
+      </Drawer>
     </header>
   );
 };

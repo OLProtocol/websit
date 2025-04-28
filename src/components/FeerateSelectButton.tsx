@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useCommonStore } from '@/store';
 import { BtcFeeRate } from './BtcFeeRate';
 import { useBtcFeeRate } from '@/swr';
+import { Icon } from '@iconify/react';
 
 export const FeerateSelectButton = () => {
   const [fee, setFee] = useState(1);
@@ -26,8 +27,14 @@ export const FeerateSelectButton = () => {
     }
   }, [resp]);
   return (
-    <div>
-      <Button type='dashed' size='small' ghost className='bg-transparent' onClick={() => setIsModalOpen(true)}>Gas: {feeRate.value}</Button>
+    <div className='flex items-center justify-center'>
+
+      <button
+        className="flex justify-center items-center h-10 border border-zinc-600 rounded-lg px-3 text-zinc-200"
+        onClick={() => setIsModalOpen(true)}
+      >
+        <Icon icon="mdi:gas-station" className="text-xl0" /> : {feeRate.value}
+      </button>
       <Modal
         centered
         title='Gas Fee'

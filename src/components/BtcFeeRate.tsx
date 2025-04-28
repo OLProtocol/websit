@@ -79,7 +79,7 @@ export const BtcFeeRate = ({ onChange, feeRateData }: BtcFeeRate) => {
         {list.map((item) => (
           <BtcFeeRateItem
             className={
-              type === item.label ? ' border-orange-400 ' : 'border-gray-500'
+              type === item.label ? ' border-orange-400 bg-transparent' : 'border-zinc-700 bg-transparent'
             }
             key={item.label}
             label={item.name}

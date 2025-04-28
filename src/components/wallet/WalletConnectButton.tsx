@@ -127,62 +127,135 @@ export const WalletConnectButton = () => {
     return hideStr(address, 3, '**');
   }, [address]);
 
-  return (
-    <WalletConnectReact
-      config={{
-        network: needNetwork,
-      }}
-      theme='light'
-      isSwitchNetwork={true}
-      onConnectSuccess={onConnectWalletSuccess}
-      onConnectError={onConnectError}
-      onDisconnectSuccess={onWalletDisconnectSuccess}
-    >
-      <>
-        <Popover
-          content={
-            <div>
-              <div className='flex justify-center items-center'>
-                <span className='mr-2'>{balance.total} SAT</span>
-                <Tag color='error'>{network}</Tag>
-              </div>
-              {/* <Divider style={{ margin: '10px 0' }} />
-            <div className='flex justify-center'>
-              <Button
-                type='primary'
-                className='w-28'
-                onClick={toAccount}>
-                {t('buttons.toAccount')}
-              </Button>
-            </div>  */}
-              {/* <Divider style={{ margin: '10px 0' }} />
-              <div className='flex justify-center'>
-                <Button type='primary' className='w-32' onClick={handleWalletSwitchNetwork}>
-                  {t('buttons.switchNetwork')}
-                </Button>
-              </div> */}
-              <Divider style={{ margin: '10px 0' }} />
-              <div className='flex justify-center'>
-                <Button type='primary' className='w-32' onClick={toHistory}>
-                  {t('buttons.toHistory')}
-                </Button>
-              </div>
-              <Divider style={{ margin: '10px 0' }} />
-              <div className='flex justify-center'>
-                <Button type='primary' className='w-32' onClick={disconnectWallet}>
-                  {t('buttons.disconnect')}
-                </Button>
-              </div>
+//   return (
+//     <WalletConnectReact
+//       config={{
+//         network: needNetwork,
+//       }}
+//       theme='light'
+//       isSwitchNetwork={true}
+//       onConnectSuccess={onConnectWalletSuccess}
+//       onConnectError={onConnectError}
+//       onDisconnectSuccess={onWalletDisconnectSuccess}
+//     >
+//       <>
+//         <Popover
+//           content={
+//             <div>
+//               <div className='flex h-10 justify-center items-center'>
+//                 <span className='mr-2'>{balance.total} SAT</span>
+//                 <Tag color='error'>{network}</Tag>
+//               </div>
+//               {/* <Divider style={{ margin: '10px 0' }} />
+//             <div className='flex justify-center'>
+//               <Button
+//                 type='primary'
+//                 className='w-28'
+//                 onClick={toAccount}>
+//                 {t('buttons.toAccount')}
+//               </Button>
+//             </div>  */}
+//               {/* <Divider style={{ margin: '10px 0' }} />
+//               <div className='flex justify-center'>
+//                 <Button type='primary' className='w-32' onClick={handleWalletSwitchNetwork}>
+//                   {t('buttons.switchNetwork')}
+//                 </Button>
+//               </div> */}
+//               <Divider style={{ margin: '10px 0' }} />
+//               <div className='flex justify-center'>
+//                 <Button type='primary' className='w-32' onClick={toHistory}>
+//                   {t('buttons.toHistory')}
+//                 </Button>
+//               </div>
+//               <Divider style={{ margin: '10px 0' }} />
+//               <div className='flex justify-center'>
+//                 <Button type='primary' className='w-32' onClick={disconnectWallet}>
+//                   {t('buttons.disconnect')}
+//                 </Button>
+//               </div>
+//             </div>
+//           }>
+//           <Button shape='round' size='small'>
+//             <Space>
+//               {hideAccount}
+//               <DownOutlined />
+//             </Space>
+//           </Button>
+//         </Popover>
+//       </>
+//     </WalletConnectReact>
+//   );
+// };
+return (
+  <WalletConnectReact
+    config={{
+      network: needNetwork,
+    }}
+    theme="light"
+    isSwitchNetwork={true}
+    onConnectSuccess={onConnectWalletSuccess}
+    onConnectError={onConnectError}
+    onDisconnectSuccess={onWalletDisconnectSuccess}
+  >
+    <>
+      <Popover
+        content={
+          <div style={{ width: '200px', textAlign: 'center' }}>
+            <div className="flex flex-col items-center mb-4">
+              <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                {balance.total} SAT
+              </span>
+              <Tag color={network === 'mainnet' ? 'green' : 'red'} style={{ marginTop: '8px' }}>
+                {network.toUpperCase()}
+              </Tag>
             </div>
-          }>
-          <Button shape='round' size='small'>
-            <Space>
-              {hideAccount}
-              <DownOutlined />
-            </Space>
-          </Button>
-        </Popover>
-      </>
-    </WalletConnectReact>
-  );
-};
+            <Divider style={{ margin: '10px 0' }} />
+            <div className="flex flex-col gap-2">
+              <button               
+                className="w-full h-10 px-3 py-2"
+                onClick={toHistory}
+                style={{
+                  border: '2px solid #3f3f46', // 深灰色边框 (zinc-700)
+                  borderRadius: '8px', // 圆角
+                  padding: '8px 16px', // 内边距
+                }}
+              >
+                {t('buttons.toHistory')}
+              </button>
+              <button                
+                className="w-full first-letter: border border-zinc-700 rounded-lg px-3 py-2"
+                onClick={disconnectWallet}
+                style={{ borderRadius: '8px', color: 'red', borderColor: 'red' }}
+              >
+                {t('buttons.disconnect')}
+              </button>
+            </div>
+          </div>
+        }
+        trigger="click"
+        placement="bottomRight"
+      >
+        <button
+          // shape="round"
+          // size="small"
+          className="flex justify-center items-center h-10 border border-zinc-800 rounded-lg px-3"
+          // style={{
+          //   backgroundColor: '#1890ff',
+          //   color: 'white',
+          //   border: 'none',
+          //   padding: '0 16px',
+          //   height: '40px',
+          //   display: 'flex',
+          //   alignItems: 'center',
+          // }}
+        >
+          <Space>
+            {hideAccount}
+            <DownOutlined />
+          </Space>
+        </button>
+      </Popover>
+    </>
+  </WalletConnectReact>
+);
+}
