@@ -31,7 +31,7 @@ export default function Index() {
   const [utxosTotal, setUtxosTotal] = useState<number>(0);
 
   const { value: resp } = useMyNameListHook({ address, start: 0, limit: 1 }, IndexerLayer.Base);
-  const { value: baseAddressAssetsSummary } = useAddressAssetsSummaryHook({ address }, IndexerLayer.Base);
+  const { value: baseAddressAssetsSummary = [] } = useAddressAssetsSummaryHook({ address }, IndexerLayer.Base);
   
   const baseRuneSummary: DisplayAsset[] = useMemo(() => {
     const ret: DisplayAsset[] = [];

@@ -50,39 +50,20 @@ export const RunesList = () => {
       width: 10,
       align: 'center',
       render: (id) => {
-        return <div className='cursor-pointer'>{id}</div>;
+        return <div className='cursor-pointer'>{id} 111</div>;
       },
     },
     {
       title: t('runes.name'),
-      dataIndex: 'displayname',
-      key: 'displayname',
+      dataIndex: 'displayTicker',
+      key: 'displayTicker',
       width: 180,
       align: 'center',
-      render: (displayname) => {
-        return <div className='cursor-pointer'>{displayname}</div>;
+      render: (displayTicker) => {
+        return <div className='cursor-pointer'>{displayTicker}</div>;
       },
     },
-    // {
-    //   title: t('runes.ticker'),
-    //   dataIndex: 'name',
-    //   key: 'name',
-    //   width: 20,
-    //   align: 'center',
-    //   render: (name) => {
-    //     return <div className='cursor-pointer'>{name.Ticker}</div>;
-    //   },
-    // },
-    // {
-    //   title: t('runes.divisibility'),
-    //   dataIndex: 'divisibility',
-    //   key: 'divisibility',
-    //   width: 20,
-    //   align: 'center',
-    //   render: (divisibility) => {
-    //     return <div className='cursor-pointer'>{divisibility}</div>;
-    //   },
-    // },
+
     {
       title: t('runes.deployHeight'),
       dataIndex: 'deployHeight',
@@ -134,56 +115,7 @@ export const RunesList = () => {
         );
       },
     },
-    // {
-    //   title: t('runes.limit'),
-    //   dataIndex: 'limit',
-    //   key: 'limit',
-    //   width: 20,
-    //   align: 'center',
-    //   render: (limit) => {
-    //     return <div className='cursor-pointer'>{limit}</div>;
-    //   },
-    // },
-    // {
-    //   title: t('runes.n'),
-    //   dataIndex: 'n',
-    //   key: 'n',
-    //   width: 20,
-    //   align: 'center',
-    //   render: (n) => {
-    //     return <div className='cursor-pointer'>{n}</div>;
-    //   },
-    // },
-    // {
-    //   title: t('runes.totalMinted'),
-    //   dataIndex: 'totalMinted',
-    //   key: 'totalMinted',
-    //   width: 20,
-    //   align: 'center',
-    //   render: (totalMinted) => {
-    //     return <div className='cursor-pointer'>{totalMinted}</div>;
-    //   },
-    // },
-    // {
-    //   title: t('runes.mintTimes'),
-    //   dataIndex: 'mintTimes',
-    //   key: 'mintTimes',
-    //   width: 20,
-    //   align: 'center',
-    //   render: (mintTimes) => {
-    //     return <div className='cursor-pointer'>{mintTimes}</div>;
-    //   },
-    // },
-    // {
-    //   title: t('runes.maxSupply'),
-    //   dataIndex: 'maxSupply',
-    //   key: 'maxSupply',
-    //   width: 20,
-    //   align: 'center',
-    //   render: (maxSupply) => {
-    //     return <div className='cursor-pointer'>{maxSupply}</div>;
-    //   },
-    // },
+
     {
       title: t('runes.holdersCount'),
       dataIndex: 'holdersCount',
@@ -201,8 +133,8 @@ export const RunesList = () => {
     () => {
       return list.map((item) => {
         return {
-          // index: i + 1,
           ...item,
+          displayTicker: item.name?.Ticker,
         };
       })
     },

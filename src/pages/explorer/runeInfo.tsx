@@ -35,7 +35,7 @@ export default function RuneInfo() {
   }
 
   const handleTabsChange = (type: any) => {
-    if (type !== tabText) {
+    if (type !==  tabText) {
       setTabText(type);
     }
   };
@@ -45,7 +45,7 @@ export default function RuneInfo() {
       <BtcHeightAlert />
       <div className='max-w-4xl mx-auto mt-8'>
         <div className='flex justify-between mb-4 items-center'>
-          <span className='text-orange-400 text-2xl '>{runeInfo?.displayname}</span>
+          <span className='text-orange-400 text-2xl '>{runeInfo?.name.Ticker}</span>
         </div>
         <div className='border-[1px] border-gray-200 rounded-xl mb-4'>
           <div className='border-b-[1px] border-gray-200 flex justify-between px-4 h-10 items-center'>

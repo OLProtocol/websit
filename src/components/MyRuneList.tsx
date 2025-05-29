@@ -98,12 +98,12 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
     },
     {
       title: t('runes.name'),
-      dataIndex: 'displayname',
-      key: 'displayname',
+      dataIndex: 'displayTicker',
+      key: 'displayTicker',
       width: 180,
       align: 'center',
-      render: (displayname) => {
-        return <div className='cursor-pointer'>{displayname}</div>;
+      render: (displayTicker) => {
+        return <div className='cursor-pointer'>{displayTicker}</div>;
       },
     },
     // {
@@ -246,6 +246,7 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
         return {
           key: i + 1,
           index: i + 1,
+          displayTicker: item.name?.Ticker,
           ...item,
         };
       })

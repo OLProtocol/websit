@@ -3,7 +3,7 @@ import Root from '@/Root';
 import Home from '@/pages/home';
 import Test from '@/pages/test';
 import Inscribe from '@/pages/inscribe';
-import Index from '@/pages/explorer';
+import Index from '@/pages/inscribe/components';
 import TokenInfo from '@/pages/explorer/TokenInfo';
 import NameInfo from '@/pages/explorer/NameInfo';
 import UtxoInfo from '@/pages/explorer/utxo';
