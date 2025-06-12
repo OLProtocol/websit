@@ -38,10 +38,7 @@ export const NavHeader = () => {
     {
       key: ROUTE_PATH.HOME,
       label: t('nav.home'),
-      value:
-        i18n.language == 'en'
-          ? 'https://sat20.org'
-          : 'https://sat20.org/index-zh.html',
+      value:  'https://sat20.org',
       type: 'link',
     },
     {

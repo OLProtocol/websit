@@ -57,8 +57,8 @@ export default function RuneInfo() {
               <p className=''>{runeInfo?.id}</p>
             </div>
             <div className='mb-2'>
-              <p className='text-gray-400'>{t('runes.ticker')}:</p>
-              <p className=''>{runeInfo?.name.Protocol}:{runeInfo?.name.Type}:{runeInfo?.name.Ticker}</p>
+              <p className='text-gray-400'>runeId:</p>
+              <p className=''>{runeInfo?.displayname}</p>
             </div>
             <div className='mb-2'>
               <p className='text-gray-400'>{t('runes.divisibility')}:</p>

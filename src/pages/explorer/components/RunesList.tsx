@@ -50,7 +50,7 @@ export const RunesList = () => {
       width: 10,
       align: 'center',
       render: (id) => {
-        return <div className='cursor-pointer'>{id} 111</div>;
+        return <div className='cursor-pointer'>{id}</div>;
       },
     },
     {
