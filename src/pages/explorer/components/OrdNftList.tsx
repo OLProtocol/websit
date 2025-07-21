@@ -125,7 +125,7 @@ export const OrdNftList = () => {
 
   const dataSource = useMemo(
     () =>
-      list.map((v) => ({
+      list?.map((v) => ({
         id: v.inscriptionId,
         sat: v.sat,
         address: v.address,

@@ -48,11 +48,11 @@ export const LocalOrderList = ({ onOrderClick }: LocalOrderListProps) => {
 
   const dataSource: DataType[] = useMemo(
     () =>
-      list.map((item) => ({
+      list?.map((item) => ({
         orderId: item.orderId,
         status: item.status,
         created: item.createAt,
-      })),
+      })) || [],
     [list],
   );
   useEffect(() => {

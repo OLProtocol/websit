@@ -18,9 +18,9 @@ export const RunesList = () => {
   const [limit] = useState(10);
   const [loading, setLoading] = useState(false);
   const { data, total, error, isLoading } = useRuneList({ start, limit });
-  
+
   const list = useMemo(() => data || [], [data]);
-    const { network } = useReactWalletStore((state) => state);
+  const { network } = useReactWalletStore((state) => state);
 
   useEffect(() => {
     setLoading(isLoading);
@@ -105,8 +105,8 @@ export const RunesList = () => {
               className='text-blue-500 cursor-pointer mr-2'
               onClick={(e) => {
                 e.stopPropagation();
-                const url = generateMempoolUrl({network: network, path: `tx/${deployTx}` });
-                window.open(url, '_blank');1
+                const url = generateMempoolUrl({ network: network, path: `tx/${deployTx}` });
+                window.open(url, '_blank');
               }}>
               {hideStr(deployTx)}
             </span>
@@ -131,12 +131,12 @@ export const RunesList = () => {
 
   const dataSource: any[] = useMemo(
     () => {
-      return list.map((item) => {
+      return list?.map((item) => {
         return {
           ...item,
           displayTicker: item.name?.Ticker,
         };
-      })
+      }) || []
     },
     [list],
   );

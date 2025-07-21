@@ -80,7 +80,7 @@ export const TickHolders = ({ ticker, totalQuantity, divisibility }: InfoHolders
           .dividedBy(new BigNumber(10).pow(divisibility))
           .multipliedBy(100)
           .toFixed(2) + '%',
-      })}),
+      })}) || [],
     [list, totalQuantity],
   );
   const total = useMemo(() => {

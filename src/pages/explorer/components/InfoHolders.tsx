@@ -73,7 +73,7 @@ export const InfoHolders = ({ ticker, totalQuantity }: InfoHoldersProps) => {
         address: item.wallet,
         value: item.total_balance,
         percentage: (item.total_balance / totalQuantity * 100).toFixed(2) + '%',
-      })),
+      })) || [],
     [list],
   );
   const total = useMemo(() => resp?.total || 10, [resp]);

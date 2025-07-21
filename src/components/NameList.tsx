@@ -103,13 +103,13 @@ export const NameList = ({ onTotalChange, address, indexerLayer }: NameListProps
 
   const dataSource: any[] = useMemo(
     () => {
-      return list.map((item, i) => {
+      return list?.map((item, i) => {
         return {
           key: item.inscriptionId,
           index: i + 1,
           ...item,
         };
-      })
+      }) || []
     },
     [list],
   );

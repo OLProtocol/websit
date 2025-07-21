@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import {useGetAssetList } from '@/swr';
+import { useGetAssetList } from '@/swr';
 import { useState, useMemo } from 'react';
 import { Divider, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -19,7 +19,7 @@ export default function UtxoInfo() {
   const nav = useNavigate();
   const network = useNetwork();
 
-  const { data: resp, isLoading } = typeof utxo === 'string' && useGetAssetList(utxo) || {};
+  const { data: resp, isLoading } = useGetAssetList(utxo || '') || {};
 
   const allAssetList = useMemo(() => {
     return resp?.detail;
@@ -199,11 +199,11 @@ export default function UtxoInfo() {
                 <Table
                   bordered
                   columns={columns}
-                  dataSource={asset?.assets?.map((a: any) => ({
+                  dataSource={(asset?.assets?.map((a: any) => ({
                     ...a,
                     type: asset.type,
                     key: `${index}`,
-                  }))}
+                  })) || [])}
                   scroll={{ x: 460 }}
                   pagination={{
                     position: ['bottomCenter'],

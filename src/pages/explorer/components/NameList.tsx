@@ -109,12 +109,12 @@ export const NameList = () => {
 
   const dataSource: any[] = useMemo(
     () => {
-      return list.map((item, i) => {
+      return list?.map((item, i) => {
         return {
           index: i + 1,
           ...item,
         };
-      })
+      }) || []
     },
     [list],
   );

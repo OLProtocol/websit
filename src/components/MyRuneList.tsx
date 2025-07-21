@@ -12,7 +12,7 @@ import { DisplayAsset, TickerInfo, TickerRespV3 } from '@/api/type';
 
 interface RuneListProps {
   baseRuneSummary: DisplayAsset[];
-  
+
 }
 export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
   useEffect(() => {
     const fetchRunelist = async () => {
       setLoading(true);
-      const ret: TickerInfo[]  = []
+      const ret: TickerInfo[] = []
       try {
         for (const runeSummary of baseRuneSummary) {
           const runeInfo = await getRune(runeSummary.Name.Ticker)
@@ -36,7 +36,7 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
             ret.push(runeInfo);
           }
         }
-      }finally {
+      } finally {
         setLoading(false);
       }
       setRunelist(ret);
@@ -73,7 +73,7 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
     return data?.data
   };
 
-  const clickHandler = (item:TickerInfo) => {
+  const clickHandler = (item: TickerInfo) => {
     const rune = `${item.name.Protocol}:${item.name.Type}:${item.name.Ticker}`;
     nav(`/explorer/rune/${rune}`);
   };
@@ -167,8 +167,8 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
               className='text-blue-500 cursor-pointer mr-2'
               onClick={(e) => {
                 e.stopPropagation();
-                const url = generateMempoolUrl({network: network, path: `tx/${deployTx}` });
-                window.open(url, '_blank');1
+                const url = generateMempoolUrl({ network: network, path: `tx/${deployTx}` });
+                window.open(url, '_blank'); 1
               }}>
               {hideStr(deployTx)}
             </span>
@@ -242,14 +242,14 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
 
   const dataSource: any[] = useMemo(
     () => {
-      return runelist.map((item,i) => {
+      return runelist?.map((item, i) => {
         return {
           key: i + 1,
           index: i + 1,
           displayTicker: item.name?.Ticker,
           ...item,
         };
-      })
+      }) || []
     },
     [runelist],
   );
@@ -272,7 +272,7 @@ export const MyRuneList = ({ baseRuneSummary }: RuneListProps) => {
         showSizeChanger: false,
       }}
       scroll={{ x: 1000 }}
-      onRow={(record:TickerInfo) => {
+      onRow={(record: TickerInfo) => {
         return {
 
           onClick: () => clickHandler(record), // 点击行

@@ -234,8 +234,11 @@ export const FullList = () => {
   ];
 
   const dataSource = useMemo(
-    () =>
-      data?.detail?.map((item) => {
+    () => {
+      if (!data?.detail) {
+        return [];
+      }
+      return data?.detail?.map((item) => {
         const isSpecial =
           item.rarity !== 'unknow' && item.rarity !== 'common' && !!item.rarity;
         let status;
@@ -314,7 +317,8 @@ export const FullList = () => {
           status,
           deploy_time: new Date(item.deployBlocktime).toLocaleString('af'),
         };
-      }),
+      })
+    },
     [data],
   );
 
