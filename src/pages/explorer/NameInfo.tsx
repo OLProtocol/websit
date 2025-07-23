@@ -55,7 +55,6 @@ export default function NameInfo() {
       ),
     },
   ];
-
   const dataSource = detail?.kvs || [];
 
   return (

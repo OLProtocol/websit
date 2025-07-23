@@ -127,65 +127,6 @@ export const WalletConnectButton = () => {
     return hideStr(address, 3, '**');
   }, [address]);
 
-//   return (
-//     <WalletConnectReact
-//       config={{
-//         network: needNetwork,
-//       }}
-//       theme='light'
-//       isSwitchNetwork={true}
-//       onConnectSuccess={onConnectWalletSuccess}
-//       onConnectError={onConnectError}
-//       onDisconnectSuccess={onWalletDisconnectSuccess}
-//     >
-//       <>
-//         <Popover
-//           content={
-//             <div>
-//               <div className='flex h-10 justify-center items-center'>
-//                 <span className='mr-2'>{balance.total} SAT</span>
-//                 <Tag color='error'>{network}</Tag>
-//               </div>
-//               {/* <Divider style={{ margin: '10px 0' }} />
-//             <div className='flex justify-center'>
-//               <Button
-//                 type='primary'
-//                 className='w-28'
-//                 onClick={toAccount}>
-//                 {t('buttons.toAccount')}
-//               </Button>
-//             </div>  */}
-//               {/* <Divider style={{ margin: '10px 0' }} />
-//               <div className='flex justify-center'>
-//                 <Button type='primary' className='w-32' onClick={handleWalletSwitchNetwork}>
-//                   {t('buttons.switchNetwork')}
-//                 </Button>
-//               </div> */}
-//               <Divider style={{ margin: '10px 0' }} />
-//               <div className='flex justify-center'>
-//                 <Button type='primary' className='w-32' onClick={toHistory}>
-//                   {t('buttons.toHistory')}
-//                 </Button>
-//               </div>
-//               <Divider style={{ margin: '10px 0' }} />
-//               <div className='flex justify-center'>
-//                 <Button type='primary' className='w-32' onClick={disconnectWallet}>
-//                   {t('buttons.disconnect')}
-//                 </Button>
-//               </div>
-//             </div>
-//           }>
-//           <Button shape='round' size='small'>
-//             <Space>
-//               {hideAccount}
-//               <DownOutlined />
-//             </Space>
-//           </Button>
-//         </Popover>
-//       </>
-//     </WalletConnectReact>
-//   );
-// };
 return (
   <WalletConnectReact
     config={{
